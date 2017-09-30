@@ -9,14 +9,16 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Brooklyn' => 'B',
                 'Staten Island' => 'S',
             );
+die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
+my $js = $ARGV[0];
 our $VAR1;
 do 'routedatafinal.pl';
 my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;
 
-open(HTMLFILE, ">", 'stations.htm')
-        || die "$0: can't open stations.htm for reading: $!";
+open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
+        || die "$0: can't open stations.htm for writing: $!";
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
@@ -42,14 +44,14 @@ foreach my $routename (sort keys %$VAR1) {
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-            push(@linestopshtml, '<a href="http://54.90.113.57/getTime/'.
+            push(@linestopshtml, ($js?'<a href="stop.htm#':'<a href="http://54.90.113.57/getTime/').
                  ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.'">'.$name.'</a>');
         }
     }
     push(@linesboroughhtml,$line);
 }
 print join(" \n", @lineshtml);
-print "\n<br>\n";
+print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.htm">Use JS</a>')."<br>\n";
 print join("<br>\n", @linesboroughhtml);
 print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
