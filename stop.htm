@@ -23,7 +23,10 @@ function genArvBodyStr(jsonstr){
 }
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h = '<a href=\"javascript:history.back()\">Back</a> <a href=\"javascript:window.location.reload(true)\">Refresh</a> <a href=\"'+url+'\">Raw</a><br/>';
+    /* TODO on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call, maybe refresh shud jsut rerun AJAX JS code to save the html fetch*/
+    var h = '<a href=\"javascript:history.back()\">Back</a> <a href=\''
+    +'data:text/html;charset=utf-8,<meta http-equiv%3D"refresh" content%3D"0%3B url%3Dhttp%3A%2F%2Ftinymta.us.to%2Fstop.htm'
+    +location.hash+'">'+'\'>Refresh</a> <a href=\"'+url+'\">Raw</a><br/>';
     if(r.message.errorCode == 0){
         h += r.lastUpdatedTime+' '+(jsonp?'via JSONP':'via CORS')+"<br/>\n";
         h += 'Cur Sta: '+r.stationName+"<br/>\n";
@@ -83,9 +86,7 @@ function handler(evtXHR)
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
-}
-</script>
-</html>
+}</script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
 >	mshtml.dll!CTreePos::SourceIndex()  + 0x3	
