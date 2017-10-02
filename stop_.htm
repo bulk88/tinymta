@@ -2,6 +2,7 @@
 <head><meta name="mobileoptimized" content="0"/></head>
 <body>No Javascript.</body>
 <script type="text/javascript">
+var r = /stop\.htm$/;
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
 var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -10,9 +11,13 @@ var jsonp;
 var url;
 {
     var h = location.hash;
-    h == '' || h === '#' ?
-        (document.body.innerHTML = 'No station specified in URL anchor.')
-        :(url = 'http://54.90.113.57/getTime/'+h.substring(1));
+    /* TODO on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call, maybe refresh shud jsut rerun AJAX JS code to save the html fetch*/
+    document.body.innerHTML = h == '' || h == '#' ?
+         'No station specified in URL anchor.'
+        :((url = 'http://54.90.113.57/getTime/'+h.substring(1))
+          ,'<a href=\"javascript:history.back()\">Back</a> <a href=\"javascript:location.replace(\''
+          +(r.test(location.pathname) ? "stop_.htm" : "stop.htm")+h
+          +'\')">Refresh</a> <a href=\"'+url+'\">Raw</a><br/>');
 }
 if(url) getStop(false);
 
@@ -23,10 +28,9 @@ function genArvBodyStr(jsonstr){
 }
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    /* TODO on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call, maybe refresh shud jsut rerun AJAX JS code to save the html fetch*/
-    var h = '<a href=\"javascript:history.back()\">Back</a> <a href=\"javascript:window.location.replace(\''+(location.pathname == "/stop.htm" ? "/stop_.htm" : "/stop.htm")+location.hash+'\')">Refresh</a> <a href=\"'+url+'\">Raw</a><br/>';
+    var h;
     if(r.message.errorCode == 0){
-        h += r.lastUpdatedTime+' '+(jsonp?'via JSONP':'via CORS')+"<br/>\n";
+        h = r.lastUpdatedTime+' '+(jsonp?'via JSONP':'via CORS')+"<br/>\n";
         h += 'Cur Sta: '+r.stationName+"<br/>\n";
         var i, a;
         h += r.direction1.name+"<br/>\n";
@@ -38,10 +42,10 @@ function genArvBodyObj(r){/*r=resp*/
         for (i = 0; i < a.length; i++)
             h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br/>\n";
     } else /*injection IDC*/
-        h += 'Failed: errorCode: '+r.message.errorCode
+        h = 'Failed: errorCode: '+r.message.errorCode
             /*+' MessageType '+r.message.MessageType useless*/
             +' Message: '+r.message.message;
-    document.body.innerHTML = h;  
+    document.body.innerHTML += h;
 }
 function getStop(addIMS) {
     try {
