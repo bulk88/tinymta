@@ -26,12 +26,15 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
     perl gr3.pl 0
 
 docs/rt.htm : grmp.pl routedatafinal.pl
-    perl grmp.pl 0
+    perl grmp.pl 0 0
 
 docs/js/rt.htm : grmp.pl routedatafinal.pl
-    perl grmp.pl 1
+    perl grmp.pl 1 0
+
+docs/raw/rt.htm : grmp.pl routedatafinal.pl
+    perl grmp.pl 0 1
 
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm stop_.htm docs/404.html docs/favicon.ico
-all: docs/CNAME docs/js/rt.htm
+all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm
 

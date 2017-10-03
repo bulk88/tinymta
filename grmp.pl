@@ -12,7 +12,9 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Staten Island' => 'S',
             );
 die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
+die "2nd arg must be generate proxy URLs or raw" if ! defined $ARGV[1];
 my $js = $ARGV[0];
+my $raw = $ARGV[1];
 our $VAR1;
 do 'routedatafinal.pl';
 my @lineshtml;
@@ -51,7 +53,10 @@ foreach my $routename (@routes) {
             #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
             #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
             #anyone got a better transcoder/proxy sandwich?
-            push @borohtml, (($js?'href="../stop.htm#':'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/').
+            push @borohtml,
+                (($js?'href="../stop.htm#'
+                    : ($raw?'href="http://54.90.113.57/getTime/':
+                                'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
                  ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.($js?'':'?callback=X').'">'.$name.'</a>'."\n");
         }
         my $boropages = ceil(scalar(@borohtml) / 9);
@@ -65,14 +70,14 @@ foreach my $routename (@routes) {
             if(@borohtml) {
                 $borofile .= '<a accesskey="0" href="'.$routename.$borotbl{$borough}.($pageidx+1).'.htm">More</a>'."\n";
             }
-            write_html('docs/'.($js?'js/':'').$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+            write_html('docs/'.($js?'js/':($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
             $pageidx++;
         }
 
     }
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$routename.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
-        write_html('docs/'.($js?'js/':'')."$routename.htm", $rtfile."\n");
+        write_html('docs/'.($js?'js/':($raw?'raw/':''))."$routename.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$routename.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
     }
@@ -82,21 +87,40 @@ foreach my $routename (@routes) {
 my $accesskeyidx = 1;
 my $pageidx;
 my $file;
+
+sub altRtViewHTML {
+    my $html;
+    my $pageidx = $_[0];
+    if($js) {
+        $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
+        $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
+    } else {
+        if($raw) {
+            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
+            $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
+        } else {
+            $html .= ' <a href="raw/rt'.$pageidx.'.htm">Use Raw</a>';
+            $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
+        }
+    }
+    return $html;
+}
+
 foreach my $line (@lineshtml) {
     $file .= '<a accesskey="'.$accesskeyidx.'" '.$line." \n";
     $accesskeyidx++;
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey="0" href="rt'.($pageidx+1).'.htm">More</a>'."\n";
-        write_html('docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
-            .($js?' <a href="../rt'.$pageidx.'.htm">No JS</a>':' <a href="js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
+        write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+            .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
-        .($js?' <a href="../rt'.$pageidx.'.htm">No JS</a>':' <a href="js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
+    write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+        .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name="mobileoptimized" content="0"/></head><body>
