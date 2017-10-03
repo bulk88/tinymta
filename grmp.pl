@@ -11,7 +11,7 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Brooklyn' => 'B',
                 'Staten Island' => 'S',
             );
-#die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
+die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
 my $js = $ARGV[0];
 our $VAR1;
 do 'routedatafinal.pl';
@@ -51,8 +51,8 @@ foreach my $routename (@routes) {
             #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
             #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
             #anyone got a better transcoder/proxy sandwich?
-            push @borohtml, (($js?'href="stop.htm#':'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/').
-                 ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.'?callback=X">'.$name.'</a>'."\n");
+            push @borohtml, (($js?'href="/stop.htm#':'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/').
+                 ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.($js?'':'?callback=X').'">'.$name.'</a>'."\n");
         }
         my $boropages = ceil(scalar(@borohtml) / 9);
         my $pageidx;
@@ -65,14 +65,14 @@ foreach my $routename (@routes) {
             if(@borohtml) {
                 $borofile .= '<a accesskey="0" href="'.$routename.$borotbl{$borough}.($pageidx+1).'.htm">More</a>'."\n";
             }
-            write_html('docs/'.$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+            write_html('docs/'.($js?'js/':'').$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
             $pageidx++;
         }
 
     }
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$routename.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
-        write_html("docs/$routename.htm", $rtfile."\n");
+        write_html('docs/'.($js?'js/':'')."$routename.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$routename.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
     }
@@ -88,13 +88,15 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey="0" href="rt'.($pageidx+1).'.htm">More</a>'."\n";
-        write_html("docs/rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)."<br>\n".$file);
+        write_html('docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+            .($js?' <a href="/rt'.$pageidx.'.htm">No JS</a>':' <a href="js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html("docs/rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)."<br>\n".$file);
+    write_html('docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+        .($js?' <a href="rt'.$pageidx.'.htm">No JS</a>':' <a href="/js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name="mobileoptimized" content="0"/></head><body>
