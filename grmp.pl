@@ -51,7 +51,7 @@ foreach my $routename (@routes) {
             #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
             #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
             #anyone got a better transcoder/proxy sandwich?
-            push @borohtml, (($js?'href="/stop.htm#':'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/').
+            push @borohtml, (($js?'href="../stop.htm#':'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/').
                  ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.($js?'':'?callback=X').'">'.$name.'</a>'."\n");
         }
         my $boropages = ceil(scalar(@borohtml) / 9);
@@ -89,14 +89,14 @@ foreach my $line (@lineshtml) {
         $accesskeyidx = 1;
         $file .= '<a accesskey="0" href="rt'.($pageidx+1).'.htm">More</a>'."\n";
         write_html('docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
-            .($js?' <a href="/rt'.$pageidx.'.htm">No JS</a>':' <a href="js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
+            .($js?' <a href="../rt'.$pageidx.'.htm">No JS</a>':' <a href="js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
     write_html('docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
-        .($js?' <a href="rt'.$pageidx.'.htm">No JS</a>':' <a href="/js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
+        .($js?' <a href="../rt'.$pageidx.'.htm">No JS</a>':' <a href="js/rt'.$pageidx.'.htm">Use JS</a>')."<br>\n".$file);
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name="mobileoptimized" content="0"/></head><body>
