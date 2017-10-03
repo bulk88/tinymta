@@ -51,6 +51,12 @@ Tested with:
 * Chrome 49 `stations.htm`
 * Firefox 41 `stations.htm`
 
+## Building from Source Code
+
+Web/customer facing files are in `docs` directory.  `stations.htm` and the single page implementations are usable from root or from `docs`.  Serve over the web only the files in `docs`.  Root directory shouldn't face the web.  A bunch of perl scripts convert the GTFS files into html files.  To build `docs` run `nmake all` on Windows in root directory.  Always run `nmake all` before commiting to the repo.
+
+`docs` directory is only git tracked for GitHub Pages.  You can delete it and run `nmake all` and all the files will be recreated.  The authoritative files are in root directory.
+
 ## License
 To be determined.
 
