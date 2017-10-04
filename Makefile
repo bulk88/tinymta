@@ -1,3 +1,5 @@
+.PHONY: all
+
 docs/stop_.htm docs/stop.htm stop_.htm : stop.htm
     copy /y stop.htm "$@"
 
@@ -15,6 +17,9 @@ docs/favicon.ico : favicon.ico
 
 docs/CNAME : CNAME
     copy /y CNAME "$@"
+
+docs/README.md : README.md
+    copy /y README.md "$@"
 
 docs/stationsnojs.htm : stationsnojs.htm
     copy /y stationsnojs.htm "$@"
@@ -36,5 +41,5 @@ docs/raw/rt.htm : grmp.pl routedatafinal.pl
 
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm stop_.htm docs/404.html docs/favicon.ico
-all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm
+all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md
 
