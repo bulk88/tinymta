@@ -4,6 +4,8 @@ use File::Slurp;
 use POSIX qw/ceil/;
 use Data::Dumper;
 
+#BUGGGG 6X.htm is broken
+
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
                 'Manhattan' => 'M',
@@ -40,7 +42,7 @@ foreach my $routename (@routes) {
     my $rtfile = "$routename:";
     my $accesskeyidx = 1; #only 5 boroughs so no overflow check
     foreach my $borough (@boroughs) {
-        $rtfile .= ' <a accesskey="'.$accesskeyidx++.'" href="'.$routename.$borotbl{$borough}.'.htm">'.$borough.'</a>';
+        $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$routename.$borotbl{$borough}.'.htm">'.$borough.'</a>';
         my @borohtml;
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
@@ -65,10 +67,10 @@ foreach my $routename (@routes) {
             my $borofile = "$routename: $borough".($boropages > 1 ? ' '.($pageidx+1).' of '.$boropages:'')."<br>\n";
             my $accesskeyidx = 1;
             foreach my $stopline (@dumbborohtml) {
-                $borofile .= '<a accesskey="'.$accesskeyidx++.'" '.$stopline;
+                $borofile .= '<a accesskey='.$accesskeyidx++.' '.$stopline;
             }
             if(@borohtml) {
-                $borofile .= '<a accesskey="0" href="'.$routename.$borotbl{$borough}.($pageidx+1).'.htm">More</a>'."\n";
+                $borofile .= '<a accesskey=0 href='.$routename.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
             }
             write_html('docs/'.($js?'js/':($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
             $pageidx++;
@@ -107,11 +109,11 @@ sub altRtViewHTML {
 }
 
 foreach my $line (@lineshtml) {
-    $file .= '<a accesskey="'.$accesskeyidx.'" '.$line." \n";
+    $file .= '<a accesskey='.$accesskeyidx.' '.$line." \n";
     $accesskeyidx++;
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
-        $file .= '<a accesskey="0" href="rt'.($pageidx+1).'.htm">More</a>'."\n";
+        $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
         write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
@@ -123,6 +125,5 @@ if($file){
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
-    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name="mobileoptimized" content="0"></head><body>
-'.$_[1].'</body></html>');
+    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0></head><body>'.$_[1].'</body></html>');
 }
