@@ -2,6 +2,13 @@
 
 docs/stop_.htm docs/stop.htm stop_.htm : stop.htm
     copy /y stop.htm "$@"
+    html-minifier --collapse-boolean-attributes --collapse-whitespace \
+    --html5 --remove-attribute-quotes --remove-comments \
+    --remove-empty-attributes --remove-optional-tags \
+    --remove-redundant-attributes --remove-script-type-attributes \
+    --remove-style-link-type-attributes --remove-tag-whitespace \
+    --sort-attributes --sort-class-name --trim-custom-fragments \
+    --use-short-doctype --minify-js -o "$@" "$@"
 
 docs/stations.htm : stations.htm
     copy /y stations.htm "$@"
