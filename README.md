@@ -21,6 +21,10 @@ The 2nd line of `stop.htm` has generation time of the Arrivals data on the MTA s
 
 `Cur Sta` means Current Station.  Some not-yet-officially supported stations have incorrect, strange, or no name at all in the MTA's database.
 
+`Refresh Fast` update arrival times, `Fast` avoids 1 network call compared to `Slow` so on 2G networks it is a tiny bit faster
+
+`Refresh Slow` update arrival times, reloads entire page, this is more of a diagnostic tool, you should use `Fast` unless you are having problems with old arrival data or no updates or incorrect redrawing
+
 Tinymta can fetch the arrival information for stations on routes that the MTA doesn't yet officially publish arrival time information.  Either the server returns `Realtime data is currently unavailable for this station` or no trains in either or both Uptown/Downtown directions.  Above-ground station reporting is almost none-existant.  The departure times from Terminals are also flakey and often represent *ghost* trains that exist only on paper and failed to depart on-time or get cancelled.
 
 ### Implementations
