@@ -1,5 +1,5 @@
 <html>
-<head><meta name="mobileoptimized" content="0"/></head>
+<head><meta name="mobileoptimized" content="0"></head>
 <body>No Javascript.</body>
 <script type="text/javascript">
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
@@ -24,7 +24,7 @@ if(t != '' && t != '#') {
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
           +(/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")+t
-          +'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br/>';
+          +'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
 }
 
 if(url)
@@ -41,17 +41,17 @@ function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
     var h;
     if(r.message.errorCode == 0){
-        h = r.lastUpdatedTime+' '+(jsonp?'via JSONP':'via CORS')+"<br/>\n";
-        h += 'Cur Sta: '+r.stationName+"<br/>\n";
+        h = r.lastUpdatedTime+' '+(jsonp?'via JSONP':'via CORS')+"<br>\n";
+        h += 'Cur Sta: '+r.stationName+"<br>\n";
         var i, a;
-        h += r.direction1.name+"<br/>\n";
+        h += r.direction1.name+"<br>\n";
         a = r.direction1.times;
         for (i = 0; i < a.length; i++)
-            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br/>\n";
-        h += r.direction2.name+"<br/>\n";
+            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>\n";
+        h += r.direction2.name+"<br>\n";
         a = r.direction2.times;
         for (i = 0; i < a.length; i++)
-            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br/>\n";
+            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>\n";
     } else /*injection IDC*/
         h = 'Failed: errorCode: '+r.message.errorCode
             /*+' MessageType '+r.message.MessageType useless*/

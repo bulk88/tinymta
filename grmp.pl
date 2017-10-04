@@ -123,6 +123,6 @@ if($file){
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
-    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name="mobileoptimized" content="0"/></head><body>
+    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name="mobileoptimized" content="0"></head><body>
 '.$_[1].'</body></html>');
 }
