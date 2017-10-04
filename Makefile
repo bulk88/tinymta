@@ -46,6 +46,12 @@ docs/js/rt.htm : grmp.pl routedatafinal.pl
 docs/raw/rt.htm : grmp.pl routedatafinal.pl
     perl grmp.pl 0 1
 
+#routedatafinal.pl : gr2.pl routedata.pl stops.txt
+#    perl gr2.pl
+#
+#routedata.pl : trips.txt stop_times.txt
+#    perl gr.pl > routedata.pl
+
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm stop_.htm docs/404.html docs/favicon.ico
 all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md
