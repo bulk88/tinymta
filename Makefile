@@ -25,6 +25,9 @@ docs/favicon.ico : favicon.ico
 docs/CNAME : CNAME
     copy /y CNAME "$@"
 
+docs/_config.yml : _config.yml
+    copy /y _config.yml "$@"
+
 docs/README.md : README.md
     copy /y README.md "$@"
 
@@ -41,9 +44,11 @@ docs/rt.htm : grmp.pl routedatafinal.pl
     perl grmp.pl 0 0
 
 docs/js/rt.htm : grmp.pl routedatafinal.pl
+    -mkdir "docs/js"
     perl grmp.pl 1 0
 
 docs/raw/rt.htm : grmp.pl routedatafinal.pl
+    -mkdir "docs/raw"
     perl grmp.pl 0 1
 
 #routedatafinal.pl : gr2.pl routedata.pl stops.txt
@@ -54,5 +59,5 @@ docs/raw/rt.htm : grmp.pl routedatafinal.pl
 
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm stop_.htm docs/404.html docs/favicon.ico
-all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md
+all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md docs/_config.yml
 

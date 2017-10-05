@@ -5,8 +5,8 @@ use Data::Dumper;
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
                 'Manhattan' => 'M',
-                'Bronx' => 'X',
-                'Brooklyn' => 'B',
+                'Bronx' => 'B',
+                'Brooklyn' => 'K',
                 'Staten Island' => 'S',
             );
 die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
