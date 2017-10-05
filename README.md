@@ -6,7 +6,7 @@ Lightweight Javascript-free HTML client for NYC MTA Subway Train arrival times
 
 The official SubwayTime website at [http://subwaytime.mta.info/index.html#/app/home](http://subwaytime.mta.info/index.html#/app/home) is too bloated.  It uses a modern huge Javascript framework.  Does not scroll with up/down key presses on modern desktop browsers.  Does not work on smartphones older than 3 years (like my Windows Mobile phone).  Does not work on dumb phones.  Too slow to use over 2G cell networks.  Its UI takes too long to find the correct station.  "goto your appstore and get a real subway time app" is not a solution if you have an old phone that does not have an appstore anymore.  I have never seen any not-an-app web-front end for subway time arrival data except the MTA's official [http://apps.mta.info/traintime3/index.html#/app/home](http://subwaytime.mta.info/index.html#/app/home) and [http://boerumhillscott.com/transit/](http://boerumhillscott.com/transit/) (not real time AFAIK).
 
-Tinymta uses the thinnest, oldest web standards (ES3/HTML4), so it works on every web browser in history.  The recommended browser is any browser with Javascript support from 2001 or newer.  In reduced functionality mode (no Javascript mode), it will work on any HTML browser in history.  Theoretically, it will even work with NCSA Mosaic from 1993.
+Tinymta uses the thinnest, oldest web standards (ES3/HTML4), so it works on almost every web browser in history.  The recommended browser is any browser with Javascript support from 2001 or newer.  In reduced functionality mode (no Javascript mode), it will work on any HTTP 1.1 HTML browser (after about 1995). It doesn't work with NCSA Mosaic because that only supports HTTP 1.0 and doesn't send a Host header.
 
 Tinymta gets its arrival information from the same server as [http://subwaytime.mta.info/index.html#/app/home](http://subwaytime.mta.info/index.html#/app/home). If the MTA's server is slow, unresponsive, or down, both Tinymta and the official MTA SubwayTime website equally do not work.
 
@@ -56,6 +56,7 @@ Tested with:
 * Opera Mobile 10.00 `stations.htm`
 * Chrome 49 `stations.htm`
 * Firefox 41 `stations.htm`
+* Netscape Navigator 3.0 `rt.htm`
 
 ## Repository
 
