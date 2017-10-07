@@ -4,17 +4,27 @@ use File::Slurp;
 use POSIX qw/ceil/;
 use Data::Dumper;
 
+#BUGGGG 6X.htm is broken
+
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
                 'Manhattan' => 'M',
                 'Bronx' => 'B',
                 'Brooklyn' => 'K',
                 'Staten Island' => 'S',
+                   'Fairfield' => 'FF',
+                   'Middlesex' => 'MD',
+                   'Putnam'  => 'PT',
+                   'Westchester' => 'WC',
+                   'New Haven' => 'NH',
+                   'Dutchess' => 'DU',
+                   'Rockland' => 'RL',
+                   'New London' => 'NL',
+                   'Orange' => 'OG',
             );
-die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
-die "2nd arg must be generate proxy URLs or raw" if ! defined $ARGV[1];
-my $js = $ARGV[0];
-my $raw = $ARGV[1];
+my @rtnum_to_rtname = ('empty', 'Hudson', 'Harlem', 'New Haven', 'New Canaan', 'Danbury', 'Waterbury');
+die "1st arg must be generate desktop MTA site stations or mobilized MTA site stations " if ! defined $ARGV[0];
+my $mob = $ARGV[0];
 #VERY VERY VERY slow, set to 0 during development, TODO research having 1
 #nodejs processes instead of a million system() calls
 my $minifyhtml = 1;
@@ -24,15 +34,10 @@ my @lineshtml;
 
 {
 my @routes = sort keys %$VAR1;
-#Move 7 train down to put right after 6 train, move 6X train above 7 train
-#this is so access keys for dumb phones, for the IRT lines, match keypad
-my $swap = $routes[6];
-die "swap route target 6X not found, revise code" if $swap ne '6X';
-$routes[6] = $routes[7];
-$routes[7] = $swap;
-
 foreach my $routename (@routes) {
     my $route = $$VAR1{$routename};
+    my $rtnum = $routename;
+    $routename = $rtnum_to_rtname[$routename];
     my (%boroughs, @boroughs);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
@@ -43,24 +48,18 @@ foreach my $routename (@routes) {
     my $rtfile = "$routename:";
     my $accesskeyidx = 1; #only 5 boroughs so no overflow check
     foreach my $borough (@boroughs) {
-        $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$routename.$borotbl{$borough}.'.htm">'.$borough.'</a>';
+        $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$rtnum.$borotbl{$borough}.'.htm">'.$borough.'</a>';
         my @borohtml;
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-            #MTA server returns MIME types application/json (no "callback=") or text/javascript (with "callback=")
-            #openwave dumbphone browser doesn't take either MIME, gives unsupported content warning
-            #Googleweblight gives "Transcoding test failed: Content-Type of this page is not text/html."
-            #Mobileleap in Openwave errors out since Openwave doesn't seem to accept the "Set-Cookie" header from
-            #mobileleap, it does from other sites, probably because of expiration or domain properties in the header
-            #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
-            #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
-            #anyone got a better transcoder/proxy sandwich?
-            push @borohtml,
-                (($js?'href="../stop.htm#'
-                    : ($raw?'href="http://54.90.113.57/getTime/':
-                                'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
-                 ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.($js?'':'?callback=X').'">'.$name.'</a>'."\n");
+            push(@borohtml, ($mob?
+'<form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
+<input value="'.$name.'" type="submit">
+<input value="'.$stopid.','.$name.'" name="P_AVIS_ID" type="hidden">
+</form>'
+                                  :('<a href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
+                 .$stopid.','.$name.'">'.$name.'</a>')));
         }
         my $boropages = ceil(scalar(@borohtml) / 9);
         my $pageidx;
@@ -68,21 +67,27 @@ foreach my $routename (@routes) {
             my $borofile = "$routename: $borough".($boropages > 1 ? ' '.($pageidx+1).' of '.$boropages:'')."<br>\n";
             my $accesskeyidx = 1;
             foreach my $stopline (@dumbborohtml) {
-                $borofile .= '<a accesskey='.$accesskeyidx++.' '.$stopline;
+                my $ak = 'accesskey='.$accesskeyidx++;
+                if($mob) {
+                    $stopline =~ s/type="submit">/$ak type="submit">/;
+                } else {
+                    $stopline =~ s/<a /<a $ak /;
+                }
+                $borofile .= $stopline;
             }
             if(@borohtml) {
-                $borofile .= '<a accesskey=0 href='.$routename.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
+                $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
             }
-            write_html('docs/'.($js?'js/':($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+            write_html('../docs/mn/'.($mob?'m/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', '<style>form{margin-bottom:0px;margin-top:0px;}</style>'.$borofile);
             $pageidx++;
         }
 
     }
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
-        push(@lineshtml, 'href="'.$routename.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
-        write_html('docs/'.($js?'js/':($raw?'raw/':''))."$routename.htm", $rtfile."\n");
+        push(@lineshtml, 'href="'.$rtnum.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
+        write_html('../docs/mn/'.($mob?'m/':'')."$rtnum.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
-        push(@lineshtml, 'href="'.$routename.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
+        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
     }
 }
 }
@@ -94,17 +99,10 @@ my $file;
 sub altRtViewHTML {
     my $html;
     my $pageidx = $_[0];
-    if($js) {
-        $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-        $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
+    if($mob) {
+        $html .= ' <a href="../rt'.$pageidx.'.htm">MTA No Mobile</a>';
     } else {
-        if($raw) {
-            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-            $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
-        } else {
-            $html .= ' <a href="raw/rt'.$pageidx.'.htm">Use Raw</a>';
-            $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
-        }
+        $html .= ' <a href="m/rt'.$pageidx.'.htm">MTA Mobile</a>';
     }
     return $html;
 }
@@ -115,14 +113,14 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+        write_html('../docs/mn/'.($mob?'m/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+    write_html('../docs/mn/'.($mob?'m/':'')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
