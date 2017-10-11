@@ -5,6 +5,7 @@
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
 var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+xhr.onreadystatechange = handler;
 var jsonp;
 
 var url;
@@ -65,7 +66,6 @@ function getStop(addIMS) {
         jsonp = 0;
         xhr.open('GET', url, 1);
         if(addIMS) xhr.setRequestHeader("If-Modified-Since", new Date(0));
-        xhr.onreadystatechange = handler;
         xhr.send();
     } catch (e) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
         /* alert("XHR failed-will try JSONP:\n"+e); */
