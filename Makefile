@@ -1,4 +1,4 @@
-.PHONY: all MNRR
+.PHONY: all MNRR LIRRMKF
 
 docs/stop_.htm docs/stop.htm stop_.htm : stop.htm
     copy /y stop.htm "$@"
@@ -61,6 +61,9 @@ docs/raw/rt.htm : grmp.pl routedatafinal.pl
 MNRR :
     cd mnr && $(MAKE) all
 
+LIRRMKF:
+    cd lirr && $(MAKE) all
+
 #routedatafinal.pl : gr2.pl routedata.pl stops.txt
 #    perl gr2.pl
 #
@@ -70,5 +73,5 @@ MNRR :
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm stop_.htm docs/404.html docs/favicon.ico
 all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md docs/_config.yml
-all: MNRR
+all: MNRR LIRRMKF
 

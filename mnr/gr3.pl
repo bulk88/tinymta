@@ -48,7 +48,7 @@ foreach my $routename (sort keys %$VAR1) {
         push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
     }
     if(keys %boroughs > 1) {
-        push(@lineshtml, '<a href="#'.$rtnum.'">&nbsp;'.$routename.'&nbsp;</a>');
+        push(@lineshtml, '<a href="#'.$rtnum.'">'.$routename.'</a>');
     } else {
         push(@lineshtml, '<a href="#'.$rtnum.$borotbl{(keys %boroughs)[0]}.'">&nbsp;'.$routename.'&nbsp;</a>');
     }

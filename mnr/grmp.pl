@@ -84,10 +84,10 @@ foreach my $routename (@routes) {
 
     }
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
-        push(@lineshtml, 'href="'.$rtnum.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
+        push(@lineshtml, 'href="'.$rtnum.'.htm">'.$routename.'</a>');
         write_html('../docs/mn/'.($mob?'m/':'')."$rtnum.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
-        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
+        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'.$routename.'</a>');
     }
 }
 }

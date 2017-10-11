@@ -39,17 +39,25 @@ foreach my $routename (sort keys %$VAR1) {
     }
     my $line = "<a name=\"$routename\">$routename:";
     foreach my $borough (sort keys %boroughs) {
-        $line .= ' <a href="#'.$routename.$borotbl{$borough}.'">'.$borough.'</a>';
+        if(@{$boroughs{$borough}} > 1){
+            $line .= ' <a href="#'.$routename.$borotbl{$borough}.'">'.$borough.'</a>';
+        } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
+            $line .= ' <a '.stopid_to_href($routename,${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
+        }
         push(@linestopshtml, "<a name=\"".$routename.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-            push(@linestopshtml, ($js?'<a href="stop.htm#':'<a href="http://54.90.113.57/getTime/').
-                 ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.'">'.$name.'</a>');
+            push(@linestopshtml, '<a '.stopid_to_href($routename,$stopid).'>'.$name.'</a>');
         }
     }
     push(@linesboroughhtml,$line);
 }
+sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
+    return ($js?'href="stop.htm#':'href="http://54.90.113.57/getTime/').
+                 ($_[0] eq 'SI' ? 'SIR' : $_[0]).'/'.$_[1].'"';
+}
+
 print join(" \n", @lineshtml);
 print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.htm">Use JS</a>')."<br>\n";
 print join("<br>\n", @linesboroughhtml);
