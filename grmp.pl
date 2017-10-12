@@ -43,38 +43,31 @@ foreach my $routename (@routes) {
     my $rtfile = "$routename:";
     my $accesskeyidx = 1; #only 5 boroughs so no overflow check
     foreach my $borough (@boroughs) {
-        $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$routename.$borotbl{$borough}.'.htm">'.$borough.'</a>';
-        my @borohtml;
-        foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
-            my $name = ${$boroughs{$borough}}[$stopidx]->{name};
-            my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-            #MTA server returns MIME types application/json (no "callback=") or text/javascript (with "callback=")
-            #openwave dumbphone browser doesn't take either MIME, gives unsupported content warning
-            #Googleweblight gives "Transcoding test failed: Content-Type of this page is not text/html."
-            #Mobileleap in Openwave errors out since Openwave doesn't seem to accept the "Set-Cookie" header from
-            #mobileleap, it does from other sites, probably because of expiration or domain properties in the header
-            #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
-            #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
-            #anyone got a better transcoder/proxy sandwich?
-            push @borohtml,
-                (($js?'href="../stop.htm#'
-                    : ($raw?'href="http://54.90.113.57/getTime/':
-                                'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
-                 ($routename eq 'SI' ? 'SIR' : $routename).'/'.$stopid.($js?'':'?callback=X').'">'.$name.'</a>'."\n");
-        }
-        my $boropages = ceil(scalar(@borohtml) / 9);
-        my $pageidx;
-        while (my @dumbborohtml = splice @borohtml, 0, 9) { #break down stop list into chunks of 9
-            my $borofile = "$routename: $borough".($boropages > 1 ? ' '.($pageidx+1).' of '.$boropages:'')."<br>\n";
-            my $accesskeyidx = 1;
-            foreach my $stopline (@dumbborohtml) {
-                $borofile .= '<a accesskey='.$accesskeyidx++.' '.$stopline;
+        if(@{$boroughs{$borough}} > 1 ) {
+            $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$routename.$borotbl{$borough}.'.htm">'.$borough.'</a>';
+            my @borohtml;
+            foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
+                my $name = ${$boroughs{$borough}}[$stopidx]->{name};
+                my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
+                push(@borohtml, stopid_to_href($routename,$stopid).'>'.$name."</a>\n");
             }
-            if(@borohtml) {
-                $borofile .= '<a accesskey=0 href='.$routename.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
+            my $boropages = ceil(scalar(@borohtml) / 9);
+            my $pageidx;
+            while (my @dumbborohtml = splice @borohtml, 0, 9) { #break down stop list into chunks of 9
+                my $borofile = "$routename: $borough".($boropages > 1 ? ' '.($pageidx+1).' of '.$boropages:'')."<br>\n";
+                my $accesskeyidx = 1;
+                foreach my $stopline (@dumbborohtml) {
+                    $borofile .= '<a accesskey='.$accesskeyidx++.' '.$stopline;
+                }
+                if(@borohtml) {
+                    $borofile .= '<a accesskey=0 href='.$routename.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
+                }
+                write_html('docs/'.($js?'js/':($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+                $pageidx++;
             }
-            write_html('docs/'.($js?'js/':($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
-            $pageidx++;
+        } else {    #if 1 station per boro, just jump straight to station
+                    #saves a tap, only L/Queens/Halsey has this property
+            $rtfile .= ' <a accesskey='.$accesskeyidx++.' '.stopid_to_href($routename,${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
         }
 
     }
@@ -85,6 +78,21 @@ foreach my $routename (@routes) {
         push(@lineshtml, 'href="'.$routename.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
     }
 }
+}
+
+sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
+#MTA server returns MIME types application/json (no "callback=") or text/javascript (with "callback=")
+#openwave dumbphone browser doesn't take either MIME, gives unsupported content warning
+#Googleweblight gives "Transcoding test failed: Content-Type of this page is not text/html."
+#Mobileleap in Openwave errors out since Openwave doesn't seem to accept the "Set-Cookie" header from
+#mobileleap, it does from other sites, probably because of expiration or domain properties in the header
+#but mobileleap has neither and openwave ignores the header, so mobileleap errors out
+#so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
+#anyone got a better transcoder/proxy sandwich?
+    return ($js?'href="../stop.htm#'
+                        : ($raw?'href="http://54.90.113.57/getTime/':
+                                    'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
+                     ($_[0] eq 'SI' ? 'SIR' : $_[0]).'/'.$_[1].($js?'':'?callback=X').'"';
 }
 
 my $accesskeyidx = 1;
