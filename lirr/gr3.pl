@@ -42,25 +42,27 @@ foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
     my $rtnum = $routename;
     $routename = $rtnum_to_rtname[$routename];
-    my %boroughs;
+    my (%boroughs, $line);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
         push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
     }
     if(keys %boroughs > 1) {
+        $line = "<a name=\"$rtnum\">$routename:";
         push(@lineshtml, '<a href="#'.$rtnum.'">'.$routename.'</a>');
     } else {
+        $line = "$routename:"; #dont have unused anchors
         push(@lineshtml, '<a href="#'.$rtnum.$borotbl{(keys %boroughs)[0]}.'">&nbsp;'.$routename.'&nbsp;</a>');
     }
-    my $line = "<a name=\"$rtnum\">$routename:";
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
             $line .= ' <a href="#'.$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
+            push(@linestopshtml, "<a name=\"".$rtnum.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
         } else { #if 1 station per boro, just jump straight to station, saves a tap
             $line .= ' <a '.stopid_to_href(${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
+            push(@linestopshtml, "$routename: $borough <a href=\"#hm\">Home</a>");
         }
-        push(@linestopshtml, "<a name=\"".$rtnum.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop}; #TODO HTTPS for LIRR.ORG

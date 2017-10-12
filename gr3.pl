@@ -26,25 +26,27 @@ print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise ro
 ';
 foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
-    my %boroughs;
+    my (%boroughs, $line);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
         push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
     }
     if(keys %boroughs > 1) {
+        $line = "<a name=\"$routename\">$routename:";
         push(@lineshtml, '<a href="#'.$routename.'">&nbsp;'.$routename.'&nbsp;</a>');
     } else {
+        $line = "$routename:"; #dont have unused anchors
         push(@lineshtml, '<a href="#'.$routename.$borotbl{(keys %boroughs)[0]}.'">&nbsp;'.$routename.'&nbsp;</a>');
     }
-    my $line = "<a name=\"$routename\">$routename:";
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
             $line .= ' <a href="#'.$routename.$borotbl{$borough}.'">'.$borough.'</a>';
+            push(@linestopshtml, "<a name=\"".$routename.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
         } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
             $line .= ' <a '.stopid_to_href($routename,${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
+            push(@linestopshtml, "$routename: $borough <a href=\"#hm\">Home</a>");
         }
-        push(@linestopshtml, "<a name=\"".$routename.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
