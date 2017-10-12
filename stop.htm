@@ -24,8 +24,11 @@ if(t != '' && t != '#') {
     url = 'http://54.90.113.57/getTime/'+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
-          +(/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")+t
-          +'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
+          +
+/*STARTINSERTPATH*/
+          (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
+/*ENDINSERTPATH*/
+          +t+'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
 }
 
 if(url)

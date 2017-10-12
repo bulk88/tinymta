@@ -1,7 +1,22 @@
 .PHONY: all MNRR LIRRMKF
 
-docs/stop_.htm docs/stop.htm stop_.htm : stop.htm
+stop_.htm : stop.htm
     copy /y stop.htm "$@"
+    perl adj_stoppath.pl "$@"
+    html-minifier --collapse-boolean-attributes --collapse-whitespace \
+    --html5 --remove-attribute-quotes --remove-comments \
+    --remove-empty-attributes --remove-optional-tags \
+    --remove-redundant-attributes --remove-script-type-attributes \
+    --remove-style-link-type-attributes --remove-tag-whitespace \
+    --sort-attributes --sort-class-name --trim-custom-fragments \
+    --use-short-doctype --minify-js -o "$@" "$@"
+
+docs/stop_.htm : stop_.htm
+    copy /y stop_.htm "$@"
+
+docs/stop.htm : stop.htm
+    copy /y stop.htm "$@"
+    perl adj_stoppath.pl "$@"
     html-minifier --collapse-boolean-attributes --collapse-whitespace \
     --html5 --remove-attribute-quotes --remove-comments \
     --remove-empty-attributes --remove-optional-tags \
@@ -71,7 +86,7 @@ LIRRMKF:
 #    perl gr.pl > routedata.pl
 
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
-all: docs/stop_.htm docs/stop.htm stop_.htm docs/404.html docs/favicon.ico
+all: docs/stop_.htm docs/stop.htm docs/404.html docs/favicon.ico
 all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md docs/_config.yml
 all: MNRR LIRRMKF
 

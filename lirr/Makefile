@@ -28,8 +28,23 @@ stop.htm : stations.js insertstalist.pl
 stations.js stations.pl: mkstalist.pl
     perl mkstalist.pl
 
-../docs/li/stop_.htm ../docs/li/stop.htm stop_.htm : stop.htm
+stop_.htm : stop.htm
     copy /y stop.htm "$@"
+    perl ../adj_stoppath.pl "$@"
+    html-minifier --collapse-boolean-attributes --collapse-whitespace \
+    --html5 --remove-attribute-quotes --remove-comments \
+    --remove-empty-attributes --remove-optional-tags \
+    --remove-redundant-attributes --remove-script-type-attributes \
+    --remove-style-link-type-attributes --remove-tag-whitespace \
+    --sort-attributes --sort-class-name --trim-custom-fragments \
+    --use-short-doctype --minify-js -o "$@" "$@"
+
+../docs/li/stop_.htm : stop_.htm
+    copy /y stop_.htm "$@"
+
+../docs/li/stop.htm : stop.htm
+    copy /y stop.htm "$@"
+    perl ../adj_stoppath.pl "$@"
     html-minifier --collapse-boolean-attributes --collapse-whitespace \
     --html5 --remove-attribute-quotes --remove-comments \
     --remove-empty-attributes --remove-optional-tags \
@@ -54,5 +69,5 @@ routedata.pl : trips.txt stop_times.txt
     perl gr.pl > routedata.pl
 
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
-all: ../docs/li/stop_.htm ../docs/li/stop.htm stop_.htm
+all: ../docs/li/stop_.htm ../docs/li/stop.htm
 
