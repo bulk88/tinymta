@@ -55,13 +55,13 @@ function genArvBodyObj(r){/*r=resp*/
         r.TRAINS || (r = r.contents);
         /* date useless & wastes screen space, rmv it, keep time, date causes
         scn/line overflow on phones*/
-        h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>\n";
-        h += 'Cur Sta: '+s[r.LOC]+"<br>\n";
+        h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>";
+        h += 'Cur Sta: '+s[r.LOC]+"<br>";
         /*sometimes this comes in the LIRR JSON*/
-        r.WARNING && (h += r.WARNING.text+"<br>\n");
-        r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>\n"));
-        h += "East<br>\n";
-        var i, t, l, w = "West<br>\n"; /*w=west, t=train, l=lineofhtml*/
+        r.WARNING && (h += r.WARNING.text+"<br>");
+        r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));
+        h += "East<br>";
+        var i, t, l, w = "West<br>"; /*w=west, t=train, l=lineofhtml*/
         r = r.TRAINS;
         /*I used to have a "No Scheduled trains" message for empty TRAINS array.
           I'm not sure if seasonal stations like Mets or Greenport have empty TRAINS arrays
@@ -76,7 +76,7 @@ function genArvBodyObj(r){/*r=resp*/
             t = r[i];
             l = t.SCHED.split(' ')[1].split(':').slice(0,2).join(':')
             +'Min '+(Math.ceil(t.CD/60))
-            +'-Tk'+(t.TRACK || '?')+'-'+s[t.DEST]+'-'+(t.HSF?'H':'')+(t.JAM?'J':'')+"<br>\n";
+            +'-Tk'+(t.TRACK || '?')+'-'+s[t.DEST]+'-'+(t.HSF?'H':'')+(t.JAM?'J':'')+"<br>";
             t.DIR == 'E'? h += l: w += l;
         }
         h+=w;
