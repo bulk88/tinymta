@@ -5,7 +5,6 @@
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
 var x = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-x.onreadystatechange = onRSC;
 var jsonp;
 
 var url;
@@ -98,6 +97,11 @@ function getStop(addIMS) {
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
         x.open('GET', url, 1);
+        /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
+          wont drawn train times using "Fast" beyond the 1st/initial page load
+          and only "Slow" works
+          http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
+        x.onreadystatechange = onRSC;
         if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
         x.send();
     } catch (e) {
