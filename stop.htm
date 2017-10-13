@@ -4,8 +4,8 @@
 <script type="text/javascript">
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
-var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-xhr.onreadystatechange = handler;
+var x = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+x.onreadystatechange = onRSC;
 var jsonp;
 
 var url;
@@ -36,10 +36,9 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in URL anchor.';
 
-function genArvBodyStr(jsonstr){
-    var r; 
-    eval('r='+jsonstr); /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    genArvBodyObj(r);
+function genArvBodyStr(j){/*j=jsonstr*/
+    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+    genArvBodyObj(eval('0,'+j));
 }
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
@@ -67,16 +66,16 @@ function getStop(addIMS) {
     try {
         /*throw(0);*/
         jsonp = 0;
-        xhr.open('GET', url, 1);
-        if(addIMS) xhr.setRequestHeader("If-Modified-Since", new Date(0));
-        xhr.send();
+        x.open('GET', url, 1);
+        if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
+        x.send();
     } catch (e) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
         /* alert("XHR failed-will try JSONP:\n"+e); */
         jsonp = 1;
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         var scriptElem = document.createElement("script"); 
-        scriptElem.setAttribute('src', (url+'?callback=genArvBodyObj&random='+Math.floor(Math.random() * 4294967296)));
+        scriptElem.setAttribute('src', url+'?callback=genArvBodyObj&_='+(new Date).getTime());
         var h = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -86,11 +85,11 @@ function getStop(addIMS) {
         /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
     }
 }
-function handler(evtXHR)
+function onRSC(a)
 {
-    if (xhr.readyState == 4)
+    if (x.readyState == 4)
     {
-            if (xhr.status == 200)
+            if (x.status == 200)
             {   /* IE 6 cache hit, no IP traffic happened, thats bad,
                   this detects it and resends it, on Chrome with CORS
                   XMLHttpRequest cannot load http://54.90.113.57/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
@@ -99,12 +98,12 @@ function handler(evtXHR)
                   asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
-                'withCredentials' in xhr || xhr.getResponseHeader("Date")
-                    ? genArvBodyStr(xhr.responseText)
+                'withCredentials' in x || x.getResponseHeader("Date")
+                    ? genArvBodyStr(x.responseText)
                     : getStop(1);
             }
             else
-                alert("Error HTTP Status "+xhr.status);
+                alert("Error HTTP Status "+x.status);
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
