@@ -22,7 +22,7 @@ open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
-'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="hm">
+'<html><head><meta name="mobileoptimized" content="0"></head><body>
 ';
 foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
@@ -42,10 +42,10 @@ foreach my $routename (sort keys %$VAR1) {
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
             $line .= ' <a href="#'.$routename.$borotbl{$borough}.'">'.$borough.'</a>';
-            push(@linestopshtml, "<a name=\"".$routename.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
+            push(@linestopshtml, "<a name=\"".$routename.$borotbl{$borough}."\">$routename: $borough <a href=\"#\">Home</a>");
         } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
             $line .= ' <a '.stopid_to_href($routename,${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
-            push(@linestopshtml, "$routename: $borough <a href=\"#hm\">Home</a>");
+            push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};

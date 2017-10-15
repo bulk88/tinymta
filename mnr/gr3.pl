@@ -34,8 +34,8 @@ binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 #a tiny bit of CSS needed so the buttons dont waste vertical space with 16px margin
 $mob ?
-'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="hm"><style>form{margin-bottom:0px;margin-top:0px;}</style>
-':'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="hm">
+'<html><head><meta name="mobileoptimized" content="0"></head><body><style>form{margin-bottom:0px;margin-top:0px;}</style>
+':'<html><head><meta name="mobileoptimized" content="0"></head><body>
 ';
 foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
@@ -55,7 +55,7 @@ foreach my $routename (sort keys %$VAR1) {
     my $line = "<a name=\"$rtnum\">$routename:";
     foreach my $borough (sort keys %boroughs) {
         $line .= ' <a href="#'.$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
-        push(@linestopshtml, "<a name=\"".$rtnum.$borotbl{$borough}."\">$routename: $borough <a href=\"#hm\">Home</a>");
+        push(@linestopshtml, "<a name=\"".$rtnum.$borotbl{$borough}."\">$routename: $borough <a href=\"#\">Home</a>");
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
