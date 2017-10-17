@@ -1,42 +1,24 @@
 .PHONY: all MNRR LIRRMKF
 
-stop_.htm : stop.htm
+stop_.htm : stop.htm minify_config.json
     copy /y stop.htm "$@"
     perl adj_stoppath.pl "$@"
-    html-minifier --collapse-boolean-attributes --collapse-whitespace \
-    --html5 --remove-attribute-quotes --remove-comments \
-    --remove-empty-attributes --remove-optional-tags \
-    --remove-redundant-attributes --remove-script-type-attributes \
-    --remove-style-link-type-attributes --remove-tag-whitespace \
-    --sort-attributes --sort-class-name --trim-custom-fragments \
-    --use-short-doctype --minify-js -o "$@" "$@"
+    html-minifier -c minify_config.json -o "$@" "$@"
 
 docs/stop_.htm : stop_.htm
     copy /y stop_.htm "$@"
 
-docs/stop.htm : stop.htm
+docs/stop.htm : stop.htm minify_config.json
     copy /y stop.htm "$@"
     perl adj_stoppath.pl "$@"
-    html-minifier --collapse-boolean-attributes --collapse-whitespace \
-    --html5 --remove-attribute-quotes --remove-comments \
-    --remove-empty-attributes --remove-optional-tags \
-    --remove-redundant-attributes --remove-script-type-attributes \
-    --remove-style-link-type-attributes --remove-tag-whitespace \
-    --sort-attributes --sort-class-name --trim-custom-fragments \
-    --use-short-doctype --minify-js -o "$@" "$@"
+    html-minifier -c minify_config.json -o "$@" "$@"
 
 docs/stations.htm : stations.htm
     copy /y stations.htm "$@"
 
-docs/index.htm : index.htm
+docs/index.htm : index.htm minify_config.json
     copy /y index.htm "$@"
-    html-minifier --collapse-boolean-attributes --collapse-whitespace \
-    --html5 --remove-attribute-quotes --remove-comments \
-    --remove-empty-attributes --remove-optional-tags \
-    --remove-redundant-attributes --remove-script-type-attributes \
-    --remove-style-link-type-attributes --remove-tag-whitespace \
-    --sort-attributes --sort-class-name --trim-custom-fragments \
-    --use-short-doctype --minify-js -o "$@" "$@"
+    html-minifier -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/404.html : 404.html
     copy /y 404.html "$@"
@@ -73,17 +55,28 @@ docs/raw/rt.htm : grmp.pl routedatafinal.pl
     -mkdir "docs/raw"
     perl grmp.pl 0 1
 
+grmp.pl : minify_config.json
+
 MNRR :
     cd mnr && $(MAKE) all
 
 LIRRMKF:
     cd lirr && $(MAKE) all
 
+clean :
+    del stop_.htm
+    del stations.htm
+    del stationsnojs.htm
+
 #routedatafinal.pl : gr2.pl routedata.pl stops.txt
 #    perl gr2.pl
 #
 #routedata.pl : trips.txt stop_times.txt
 #    perl gr.pl > routedata.pl
+
+#dev tool target, set F= on cmd line
+mini:
+    html-minifier -c minify_config.json -o "$(F)" "$(F)"
 
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm docs/404.html docs/favicon.ico

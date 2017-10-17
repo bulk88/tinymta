@@ -22,6 +22,12 @@ stationsmob.htm : gr3.pl routedatafinal.pl
     -mkdir "../docs/mn/m"
     perl grmp.pl 1
 
+grmp.pl : ../minify_config.json
+
+clean :
+    del stationsmob.htm
+    del stations.htm
+
 #routedatafinal.pl : gr2.pl routedata.pl stops.txt
 #    perl gr2.pl
 #
