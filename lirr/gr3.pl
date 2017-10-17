@@ -36,7 +36,7 @@ open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
-'<html><head><meta name="mobileoptimized" content="0"></head><body>
+'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
 ';
 foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
