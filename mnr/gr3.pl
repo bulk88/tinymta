@@ -55,7 +55,7 @@ foreach my $routename (sort keys %$VAR1) {
     my $line = "<a name=\"$rtnum\">$routename:";
     foreach my $borough (sort keys %boroughs) {
         $line .= ' <a href="#'.$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
-        push(@linestopshtml, "<a name=\"".$rtnum.$borotbl{$borough}."\">$routename: $borough <a href=\"#\">Home</a>");
+        push(@linestopshtml, "$routename: $borough <a name=\"".$rtnum.$borotbl{$borough}."\" href=\"#\">Home</a>");
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};

@@ -58,7 +58,7 @@ foreach my $routename (sort keys %$VAR1) {
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
             $line .= ' <a href="#'.$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
-            push(@linestopshtml, "<a name=\"".$rtnum.$borotbl{$borough}."\">$routename: $borough <a href=\"#\">Home</a>");
+            push(@linestopshtml, "$routename: $borough <a name=\"".$rtnum.$borotbl{$borough}."\" href=\"#\">Home</a>");
         } else { #if 1 station per boro, just jump straight to station, saves a tap
             $line .= ' <a '.stopid_to_href(${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
