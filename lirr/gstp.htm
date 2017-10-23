@@ -27,12 +27,7 @@ if(t != '' && t != '#') {
     /*I removed API key and the "&_" from JQuery, both aren't needed to get a resp*/
     url = 'https://traintime.lirr.org/api/Departure?loc='+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
-    t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
-          +
-/*STARTINSERTPATH*/
-          (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
-/*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
+    t = '<a href=\"gstp.htm?'+(new Date).getTime()+t+'\">Refresh</a> <a href=\"'+url+'\">Raw</a><br>';
 }
 
 if(url)
@@ -53,7 +48,12 @@ function genArvBodyObj(r){/*r=resp*/
         r.TRAINS || (r = r.contents);
         /* date useless & wastes screen space, rmv it, keep time, date causes
         scn/line overflow on phones*/
-        h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>";
+        h = new Date().toTimeString().split(' ');
+        h.splice(1,1);
+        h = 'Page Time '+h.join(' ')+"<br>";
+        h = 'MTA Time '+r.TIME.split(' ')[1]+
+        /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always JSONP for LIRR on GWL*/
+        "<br>"+h;
         h += 'Cur Sta: '+s[r.LOC]+"<br>";
         /*sometimes this comes in the LIRR JSON*/
         r.WARNING && (h += r.WARNING.text+"<br>");
@@ -94,6 +94,9 @@ function getStop(addIMS) {
           never try a CORS request again.
           Browsers without CORS like Opera 10, fail the XHR req, instantly, client
           side, without network traffic.*/
+        throw(0); /*dont bother on GWL to do the always failing due to SOP
+                   XHR req, saves some milliseconds of network traffic
+                   on Google proxy server */
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
         x.open('GET', url, 1);
@@ -117,7 +120,7 @@ function getJSONP() {
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     /* Date.now() from JQuery isn't available in Opera 10.00 */
-    scriptElem.setAttribute('src', 'http://anyorigin.com/go/?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
+    scriptElem.setAttribute('src', 'http://www.whateverorigin.org/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
