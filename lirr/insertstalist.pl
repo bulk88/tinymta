@@ -1,7 +1,7 @@
 use strict;
 use File::Slurp;
 
-my $file = read_file( 'stop.htm', { binmode => ':raw' } );
+my $file = read_file( $ARGV[0], { binmode => ':raw' } );
 my $jsfile = read_file( 'stations.js', { binmode => ':raw' } );
 my $pos = index($file,'/*STARTINSERT*/
 ',0);

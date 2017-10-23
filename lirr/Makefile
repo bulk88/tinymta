@@ -23,7 +23,10 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
     perl grmp.pl 1
 
 stop.htm : stations.js insertstalist.pl
-    perl insertstalist.pl
+    perl insertstalist.pl "$@"
+
+gstp.htm : stations.js insertstalist.pl
+    perl insertstalist.pl "$@"
 
 stations.js stations.pl: mkstalist.pl
     perl mkstalist.pl
@@ -39,6 +42,10 @@ stop_.htm : stop.htm ../minify_config.json
 ../docs/li/stop.htm : stop.htm ../minify_config.json
     copy /y stop.htm "$@"
     perl ../adj_stoppath.pl "$@"
+    html-minifier -c ../minify_config.json -o "$@" "$@"
+
+../docs/li/gstp.htm : gstp.htm ../minify_config.json
+    copy /y gstp.htm "$@"
     html-minifier -c ../minify_config.json -o "$@" "$@"
 
 grmp.pl : ../minify_config.json
