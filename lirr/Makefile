@@ -16,11 +16,15 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 
 ../docs/li/rt.htm : grmp.pl routedatafinal.pl
     -mkdir "../docs/li"
-    perl grmp.pl 0
+    perl grmp.pl 0 0
 
 ../docs/li/js/rt.htm : grmp.pl routedatafinal.pl
     -mkdir "../docs/li/js"
-    perl grmp.pl 1
+    perl grmp.pl 1 0
+
+../docs/li/gwl/rt.htm : grmp.pl routedatafinal.pl
+    -mkdir "../docs/li/gwl"
+    perl grmp.pl 1 1
 
 stop.htm : stations.js insertstalist.pl
     perl insertstalist.pl "$@"
@@ -67,5 +71,5 @@ routedata.pl : trips.txt stop_times.txt
 
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/li/stop_.htm ../docs/li/stop.htm ../docs/li/rt.htm
-all: ../docs/li/js/rt.htm
+all: ../docs/li/js/rt.htm ../docs/li/gwl/rt.htm
 
