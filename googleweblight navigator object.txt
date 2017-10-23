@@ -1,0 +1,29 @@
+connection == [object NetworkInformation]
+webkitPersistentStorage == [object DeprecatedStorageQuota]
+webkitTemporaryStorage == [object DeprecatedStorageQuota]
+geolocation == [object Geolocation]
+doNotTrack == null
+onLine == true
+languages == en-US
+language == en-US
+userAgent == Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko; googleweblight) Chrome/38.0.1025.166 Mobile Safari/535.19
+product == Gecko
+platform == Linux x86_64
+appVersion == 5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko; googleweblight) Chrome/38.0.1025.166 Mobile Safari/535.19
+appName == Netscape
+appCodeName == Mozilla
+hardwareConcurrency == 72
+maxTouchPoints == 0
+vendorSub == 
+vendor == Google Inc.
+productSub == 20030107
+cookieEnabled == true
+mimeTypes == [object MimeTypeArray]
+plugins == [object PluginArray]
+javaEnabled == function javaEnabled() { [native code] }
+getStorageUpdates == function getStorageUpdates() { [native code] }
+getGamepads == function getGamepads() { [native code] }
+webkitGetUserMedia == function webkitGetUserMedia() { [native code] }
+vibrate == function vibrate() { [native code] }
+getBattery == function getBattery() { [native code] }
+sendBeacon == function sendBeacon() { [native code] }

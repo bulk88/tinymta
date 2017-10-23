@@ -22,12 +22,8 @@ var t = location.hash;
 if(t != '' && t != '#') {
     url = 'http://54.90.113.57/getTime/'+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
-    t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
-          +
-/*STARTINSERTPATH*/
-          (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
-/*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
+    /* no fast refresh, only slow for GWL, t is a #hash anchor, date is GWL cache bust*/
+    t = '<a href=\"gstp.htm?'+(new Date).getTime()+t+'\">Refresh</a> <a href=\"'+url+'\">Raw</a><br>';
 }
 
 if(url)
@@ -43,9 +39,13 @@ function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
     var h;
     if(r.message.errorCode == 0){
-        h = r.lastUpdatedTime+' '+(jsonp?'via JSONP':'via CORS')+"<br>";
+        h = 'MTA Time '+r.lastUpdatedTime+
+        /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always CORS*/
+        "<br>";
+        var i, a = new Date().toTimeString().split(' ');
+        a.splice(1,1);
+        h += 'Page Time '+a.join(' ')+"<br>";
         h += 'Cur Sta: '+r.stationName+"<br>";
-        var i, a;
         h += r.direction1.name+"<br>";
         a = r.direction1.times;
         for (i = 0; i < a.length; i++)
@@ -65,7 +65,9 @@ function getStop(addIMS) {
     try {
         /*throw(0);*/
         jsonp = 0;
-        x.open('GET', url, 1);
+        /*google web light will cache a CORS fetch for hours/days, and either
+        I use JSONP which already has cache busting, or add cachebusting to CORS*/
+        x.open('GET', url+'?_='+(new Date).getTime(), 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works

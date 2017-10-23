@@ -13,6 +13,10 @@ docs/stop.htm : stop.htm minify_config.json
     perl adj_stoppath.pl "$@"
     html-minifier -c minify_config.json -o "$@" "$@"
 
+docs/gstp.htm : gstp.htm minify_config.json
+    copy /y gstp.htm "$@"
+    html-minifier -c minify_config.json -o "$@" "$@"
+
 docs/stations.htm : stations.htm
     copy /y stations.htm "$@"
 
@@ -81,5 +85,5 @@ mini:
 all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm docs/404.html docs/favicon.ico
 all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md docs/_config.yml
-all: MNRR LIRRMKF
+all: MNRR LIRRMKF docs/gstp.htm
 
