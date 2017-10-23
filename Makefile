@@ -55,6 +55,10 @@ docs/js/rt.htm : grmp.pl routedatafinal.pl
     -mkdir "docs/js"
     perl grmp.pl 1 0
 
+docs/gwl/rt.htm : grmp.pl routedatafinal.pl
+    -mkdir "docs/gwl"
+    perl grmp.pl 1 1
+
 docs/raw/rt.htm : grmp.pl routedatafinal.pl
     -mkdir "docs/raw"
     perl grmp.pl 0 1
@@ -82,8 +86,9 @@ clean :
 mini:
     html-minifier -c minify_config.json -o "$(F)" "$(F)"
 
-all: docs/rt.htm docs/stationsnojs.htm docs/index.htm docs/stations.htm
+all: docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm docs/404.html docs/favicon.ico
-all: docs/CNAME docs/js/rt.htm docs/raw/rt.htm docs/README.md docs/_config.yml
+all: docs/CNAME docs/README.md docs/_config.yml
 all: MNRR LIRRMKF docs/gstp.htm
+all: docs/rt.htm docs/js/rt.htm docs/raw/rt.htm docs/gwl/rt.htm
 

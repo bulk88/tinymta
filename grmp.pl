@@ -11,8 +11,12 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Brooklyn' => 'K',
                 'Staten Island' => 'S',
             );
-die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
-die "2nd arg must be generate proxy URLs or raw" if ! defined $ARGV[1];
+die "usage: grmp.pl JS RAW
+JS=1 RAW=0 stop.htm/JS/CORS/JSONP
+JS=1 RAW=1 GWL proxy
+JS=0 RAW=0 loband/mlvb.net proxy
+JS=0 RAW=1 RAW urls" if ! defined $ARGV[0] || ! defined $ARGV[1];
+
 my $js = $ARGV[0];
 my $raw = $ARGV[1];
 #VERY VERY VERY slow, set to 0 during development, TODO research having 1
@@ -62,7 +66,7 @@ foreach my $routename (@routes) {
                 if(@borohtml) {
                     $borofile .= '<a accesskey=0 href='.$routename.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('docs/'.($js?'js/':($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+                write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -73,7 +77,7 @@ foreach my $routename (@routes) {
     }
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$routename.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
-        write_html('docs/'.($js?'js/':($raw?'raw/':''))."$routename.htm", $rtfile."\n");
+        write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."$routename.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$routename.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
     }
@@ -89,10 +93,10 @@ sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
 #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
 #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
 #anyone got a better transcoder/proxy sandwich?
-    return ($js?'href="../stop.htm#'
+    return ($js?($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/gstp.htm%23':'href="../stop.htm#')
                         : ($raw?'href="http://54.90.113.57/getTime/':
                                     'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
-                     ($_[0] eq 'SI' ? 'SIR' : $_[0]).'/'.$_[1].($js?'':'?callback=X').'"';
+                     ($_[0] eq 'SI' ? 'SIR' : $_[0]).'/'.$_[1].($js?($raw?'&f=1&lite_refresh=1':''):'?callback=X').'"';
 }
 
 my $accesskeyidx = 1;
@@ -103,15 +107,24 @@ sub altRtViewHTML {
     my $html;
     my $pageidx = $_[0];
     if($js) {
-        $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-        $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
+        if($raw) {
+            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
+            $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
+            $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
+        } else {
+            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
+            $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
+            $html .= ' <a href="../gwl/rt'.$pageidx.'.htm">Use GWL</a>';
+        }
     } else {
         if($raw) {
             $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
             $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
+            $html .= ' <a href="../gwl/rt'.$pageidx.'.htm">Use GWL</a>';
         } else {
             $html .= ' <a href="raw/rt'.$pageidx.'.htm">Use Raw</a>';
             $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
+            $html .= ' <a href="gwl/rt'.$pageidx.'.htm">Use GWL</a>';
         }
     }
     return $html;
@@ -123,14 +136,14 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+        write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('docs/'.($js?'js/':($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+    write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
