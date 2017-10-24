@@ -57,7 +57,10 @@ foreach my $routename (sort keys %$VAR1) {
 }
 sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
     return ($js?'href="stop.htm#':'href="http://54.90.113.57/getTime/').
-                 ($_[0] eq 'SI' ? 'SIR' : $_[0]).'/'.$_[1].'"';
+    #substr will merge stop IDs #1/128 #2/128 #3/128 #5/128 into #1/128
+    #to make more compressible (common) text in single page format, they are
+    #all the same station IRT "34 St - Penn Station"
+                 ($_[0] eq 'SI' ? 'SIR' : substr($_[1],0,1)).'/'.$_[1].'"';
 }
 
 print join(" \n", @lineshtml);
