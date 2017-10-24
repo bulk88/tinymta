@@ -79,7 +79,10 @@ function genArvBodyObj(r){/*r=resp*/
         }
         h+=w;
     } else
-        h = r.contents; /*anyorigin.com error string*/
+        h = r.contents; /*anyorigin.com error string (obsolete, not used anymore)*/
+/*whatever origin doesn't have good error reporting, failure looks like
+genArvBodyObj({"contents":"","status":{"url":"https://traintime.lirr.org/api/Departure%3Floc=NYK&_=1508859717102","content_type":"text/html; charset=UTF-8","http_code":500}})
+*/
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
@@ -117,7 +120,7 @@ function getJSONP() {
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     /* Date.now() from JQuery isn't available in Opera 10.00 */
-    scriptElem.setAttribute('src', 'http://anyorigin.com/go/?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
+    scriptElem.setAttribute('src', 'http://www.whateverorigin.org/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
