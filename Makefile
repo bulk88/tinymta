@@ -1,4 +1,4 @@
-.PHONY: all MNRR LIRRMKF
+.PHONY: all MNRR LIRRMKF package
 
 stop_.htm : stop.htm minify_config.json
     copy /y stop.htm "$@"
@@ -70,6 +70,23 @@ MNRR :
 
 LIRRMKF:
     cd lirr && $(MAKE) all
+
+#make a standalone tinymta for copying to memcard in a smartphone for local running
+package: docs\index.htm docs\stations.htm docs\stop.htm docs\stop_.htm \
+docs\mn\stations.htm docs\mn\stationsmob.htm docs\li\stations.htm \
+docs\li\stop.htm docs\li\stop_.htm
+    -mkdir "tinymta"
+    copy /y docs\index.htm "tinymta"
+    copy /y docs\stations.htm "tinymta"
+    copy /y docs\stop.htm "tinymta"
+    copy /y docs\stop_.htm "tinymta"
+    -mkdir "tinymta\mn"
+    copy /y docs\mn\stations.htm "tinymta\mn"
+    copy /y docs\mn\stationsmob.htm "tinymta\mn"
+    -mkdir "tinymta\li"
+    copy /y docs\li\stations.htm "tinymta\li"
+    copy /y docs\li\stop.htm "tinymta\li"
+    copy /y docs\li\stop_.htm "tinymta\li"
 
 clean :
     del stop_.htm
