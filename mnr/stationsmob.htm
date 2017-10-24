@@ -1,4 +1,4 @@
-<html><head><meta name="mobileoptimized" content="0"></head><body><style>form{margin-bottom:0px;margin-top:0px;}</style><a name="#">
+<html><head><meta name="mobileoptimized" content="0"></head><body><style>form{margin-bottom:0px;margin-top:0px}input{padding-top:0px;padding-bottom:0px}div form{display:inline}</style><a name="#">
 <a href="#1">Hudson</a> 
 <a href="#2">Harlem</a> 
 <a href="#3">New Haven</a> 
@@ -7,13 +7,19 @@
 <a href="#6">Waterbury</a>
 <br>
 <a href="stations.htm">MTA No Mobile</a><br>
+<div>
 <a name="1">Hudson: <a href="#1B">Bronx</a> <a href="#1D">Dutchess</a> <a href="#1M">Manhattan</a> <a href="#1P">Putnam</a> <a href="#1W">Westchester</a><br>
 <a name="2">Harlem: <a href="#2B">Bronx</a> <a href="#2D">Dutchess</a> <a href="#2M">Manhattan</a> <a href="#2P">Putnam</a> <a href="#2W">Westchester</a><br>
 <a name="3">New Haven: <a href="#3B">Bronx</a> <a href="#3F">Fairfield</a> <a href="#3M">Manhattan</a> <a href="#3H">New Haven</a> <a href="#3W">Westchester</a><br>
-<a name="4">New Canaan: <a href="#4B">Bronx</a> <a href="#4F">Fairfield</a> <a href="#4M">Manhattan</a> <a href="#4W">Westchester</a><br>
+<a name="4">New Canaan: <form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
+<input value="Bronx" type="submit">
+<input value="56,Fordham" name="P_AVIS_ID" type="hidden">
+</form> <a href="#4F">Fairfield</a> <a href="#4M">Manhattan</a> <a href="#4W">Westchester</a><br>
 <a name="5">Danbury: <a href="#5F">Fairfield</a> <a href="#5M">Manhattan</a><br>
 <a name="6">Waterbury: <a href="#6F">Fairfield</a> <a href="#6H">New Haven</a>
-<br><br>
+<br>
+</div>
+<br>
 Hudson: Bronx <a name="1B" href="#">Home</a>
 <form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
 <input value="Riverdale" type="submit">
@@ -437,7 +443,7 @@ New Haven: Westchester <a name="3W" href="#">Home</a>
 <input value="Mt Vernon East " type="submit">
 <input value="105,Mt Vernon East " name="P_AVIS_ID" type="hidden">
 </form>
-New Canaan: Bronx <a name="4B" href="#">Home</a>
+New Canaan: Bronx <a href="#">Home</a>
 <form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
 <input value="Fordham" type="submit">
 <input value="56,Fordham" name="P_AVIS_ID" type="hidden">
