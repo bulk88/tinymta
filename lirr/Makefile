@@ -1,12 +1,14 @@
 .PHONY: all clean
 
-../docs/li/stations.htm : stations.htm
+../docs/li/stations.htm : stations.htm ../minify_config.json
     -mkdir "../docs/li"
     copy /y stations.htm "$@"
+    html-minifier -c ../minify_config.json -o "$@" "$@"
 
-../docs/li/stationsnojs.htm : stationsnojs.htm
+../docs/li/stationsnojs.htm : stationsnojs.htm ../minify_config.json
     -mkdir "../docs/li"
     copy /y stationsnojs.htm "$@"
+    html-minifier -c ../minify_config.json -o "$@" "$@"
 
 stations.htm : gr3.pl routedatafinal.pl
     perl gr3.pl 1

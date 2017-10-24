@@ -17,8 +17,9 @@ docs/gstp.htm : gstp.htm minify_config.json
     copy /y gstp.htm "$@"
     html-minifier -c minify_config.json -o "$@" "$@"
 
-docs/stations.htm : stations.htm
+docs/stations.htm : stations.htm minify_config.json
     copy /y stations.htm "$@"
+    html-minifier -c minify_config.json -o "$@" "$@"
 
 docs/index.htm : index.htm minify_config.json
     copy /y index.htm "$@"
@@ -39,8 +40,9 @@ docs/_config.yml : _config.yml
 docs/README.md : README.md
     copy /y README.md "$@"
 
-docs/stationsnojs.htm : stationsnojs.htm
+docs/stationsnojs.htm : stationsnojs.htm minify_config.json
     copy /y stationsnojs.htm "$@"
+    html-minifier -c minify_config.json -o "$@" "$@"
 
 stations.htm : gr3.pl routedatafinal.pl
     perl gr3.pl 1
