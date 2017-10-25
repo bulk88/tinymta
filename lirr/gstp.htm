@@ -35,10 +35,6 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in URL anchor.';
 
-function genArvBodyStr(j){/*j=jsonstr*/
-    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    genArvBodyObj(eval('0,'+j));
-}
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
     var h;
@@ -143,7 +139,8 @@ function onRSC(evtXHR)
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? genArvBodyStr(x.responseText)
+    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+                    ? genArvBodyObj(eval('0,'+x.responseText))
                     : getStop(1);
             }
             else /*failed XHR BC CORS on FF doesn't throw an exeception like Opera 10,
