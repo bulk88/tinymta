@@ -40,45 +40,48 @@ foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
     my $rtnum = $routename;
     $routename = $rtnum_to_rtname[$routename];
-    my %boroughs;
+    my (%boroughs, $line, $rtanchor);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
         push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
     }
+    $line = "$routename:";
     if(keys %boroughs > 1) {
+        $rtanchor = "name=\"$rtnum\" ";
         push(@lineshtml, '<a href="#'.$rtnum.'">'.$routename.'</a>');
     } else {
+        $rtanchor = '';#dont have unused anchors
         push(@lineshtml, '<a href="#'.$rtnum.$borotbl{(keys %boroughs)[0]}.'">&nbsp;'.$routename.'&nbsp;</a>');
     }
-    my $line = "<a name=\"$rtnum\">$routename:";
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
-            $line .= ' <a href="#'.$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
+            $line .= " <a ".$rtanchor."href=\"#".$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
             push(@linestopshtml, "$routename: $borough <a name=\"".$rtnum.$borotbl{$borough}."\" href=\"#\">Home</a>");
         } else { #if 1 station per boro, just jump straight to station, saves a tap
             my $name = ${$boroughs{$borough}}[0]->{name};
-            my $stopid = ${$boroughs{$borough}}[0]->{stop};
-            $line .= ' '.stopid_to_tag($name, $stopid, $borough);
+            my $stopid = ${$boroughs{$borough}}[0]->{stop};#how to inject $rtanchor
+            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor);
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
+        $rtanchor = '';
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-            push(@linestopshtml, stopid_to_tag($name, $stopid, $name));
+            push(@linestopshtml, stopid_to_tag($name, $stopid, $name, ''));
         }
     }
     push(@linesboroughhtml,$line);
 }
 
 sub stopid_to_tag { #$href_attr = stopid_to_tag($name, $stopid, $dispname)
-my ($name, $stopid, $dispname) = @_;
+my ($name, $stopid, $dispname, $injectnameattr) = @_;
 return ($mob?
-'<form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
+'<form '.$injectnameattr.'action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
 <input value="'.$dispname.'" type="submit">
 <input value="'.$stopid.','.$name.'" name="P_AVIS_ID" type="hidden">
 </form>'
-                                  :('<a href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
+                                  :('<a '.$injectnameattr.'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
                  .$stopid.','.$name.'">'.$dispname.'</a>'));
 }
 
