@@ -1,3 +1,5 @@
+first: all
+
 .PHONY: all MNRR LIRRMKF package
 
 stop_.htm : stop.htm minify_config.json

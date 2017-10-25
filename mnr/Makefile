@@ -1,3 +1,5 @@
+first: all
+
 .PHONY: all
 
 ../docs/mn/stations.htm : stations.htm ../minify_config.json
