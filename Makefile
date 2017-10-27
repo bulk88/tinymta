@@ -2,22 +2,25 @@ first: all
 
 .PHONY: all MNRR LIRRMKF package
 
-stop_.htm : stop.htm minify_config.json
+stop_.htm : stop.htm minify_config.json adj_postmini.pl
     copy /y stop.htm "$@"
     perl adj_stoppath.pl "$@"
     html-minifier -c minify_config.json -o "$@" "$@"
+    perl adj_postmini.pl "$@"
 
 docs/stop_.htm : stop_.htm
     copy /y stop_.htm "$@"
 
-docs/stop.htm : stop.htm minify_config.json
+docs/stop.htm : stop.htm minify_config.json adj_postmini.pl
     copy /y stop.htm "$@"
     perl adj_stoppath.pl "$@"
     html-minifier -c minify_config.json -o "$@" "$@"
+    perl adj_postmini.pl "$@"
 
-docs/gstp.htm : gstp.htm minify_config.json
+docs/gstp.htm : gstp.htm minify_config.json adj_postmini.pl
     copy /y gstp.htm "$@"
     html-minifier -c minify_config.json -o "$@" "$@"
+    perl adj_postmini.pl "$@"
 
 docs/stations.htm : stations.htm minify_config.json
     copy /y stations.htm "$@"

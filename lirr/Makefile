@@ -39,22 +39,25 @@ gstp.htm : stations.js insertstalist.pl
 stations.js stations.pl: mkstalist.pl
     perl mkstalist.pl
 
-stop_.htm : stop.htm ../minify_config.json
+stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
     copy /y stop.htm "$@"
     perl ../adj_stoppath.pl "$@"
     html-minifier -c ../minify_config.json -o "$@" "$@"
+    perl ../adj_postmini.pl "$@"
 
 ../docs/li/stop_.htm : stop_.htm
     copy /y stop_.htm "$@"
 
-../docs/li/stop.htm : stop.htm ../minify_config.json
+../docs/li/stop.htm : stop.htm ../minify_config.json ../adj_postmini.pl
     copy /y stop.htm "$@"
     perl ../adj_stoppath.pl "$@"
     html-minifier -c ../minify_config.json -o "$@" "$@"
+    perl ../adj_postmini.pl "$@"
 
-../docs/li/gstp.htm : gstp.htm ../minify_config.json
+../docs/li/gstp.htm : gstp.htm ../minify_config.json ../adj_postmini.pl
     copy /y gstp.htm "$@"
     html-minifier -c ../minify_config.json -o "$@" "$@"
+    perl ../adj_postmini.pl "$@"
 
 grmp.pl : ../minify_config.json
 
