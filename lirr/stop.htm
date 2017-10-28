@@ -1,6 +1,6 @@
 <html>
 <head><meta name="mobileoptimized" content="0"></head>
-<body>No Javascript.</body>
+<body>No javascript</body>
 <script type="text/javascript">
 
 mangleIndex.name = 'mangleIndex';
@@ -42,7 +42,7 @@ if(t != '' && t != '#') {
 if(url)
     getStop();
 else
-    document.body.innerHTML = 'No station specified in URL anchor.';
+    document.body.innerHTML = 'No station specified in url anchor.';
 
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
@@ -150,7 +150,7 @@ function onRSC(evtXHR)
             else /*failed XHR BC CORS on FF doesn't throw an exeception like Opera 10,
                   supposedly you can't tell from CORS fail from timeout according to spec,
                   so just do the JSONP blindly*/
-                x.status == 0 ? getJSONP() : alert("Error HTTP Status "+x.status);
+                x.status == 0 ? getJSONP() : alert("error HTTP status "+x.status);
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
