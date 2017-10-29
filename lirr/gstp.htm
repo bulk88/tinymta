@@ -50,11 +50,11 @@ function genArvBodyObj(r){/*r=resp*/
         scn/line overflow on phones*/
         h = new Date().toTimeString().split(' ');
         h.splice(1,1);
-        h = 'Page Time '+h.join(' ')+"<br>";
         h = 'MTA Time '+r.TIME.split(' ')[1]+
         /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always JSONP for LIRR on GWL*/
-        "<br>"+h;
-        h += 'Cur Sta: '+s[r.LOC]+"<br>";
+        "<br>"
+            + 'Page Time '+h.join(' ')+"<br>";
+            + 'Cur Sta: '+s[r.LOC]+"<br>";
         /*sometimes this comes in the LIRR JSON*/
         r.WARNING && (h += r.WARNING.text+"<br>");
         r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));

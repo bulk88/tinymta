@@ -53,8 +53,8 @@ function genArvBodyObj(r){/*r=resp*/
         r.TRAINS || (r = r.contents);
         /* date useless & wastes screen space, rmv it, keep time, date causes
         scn/line overflow on phones*/
-        h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>";
-        h += 'Cur Sta: '+s[r.LOC]+"<br>";
+        h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>"
+            + 'Cur Sta: '+s[r.LOC]+"<br>";
         /*sometimes this comes in the LIRR JSON*/
         r.WARNING && (h += r.WARNING.text+"<br>");
         r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));

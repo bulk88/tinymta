@@ -39,14 +39,14 @@ function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
     var h;
     if(r.message.errorCode == 0){
-        h = 'MTA Time '+r.lastUpdatedTime+
-        /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always CORS*/
-        "<br>";
         var i, a = new Date().toTimeString().split(' ');
         a.splice(1,1);
-        h += 'Page Time '+a.join(' ')+"<br>";
-        h += 'Cur Sta: '+r.stationName+"<br>";
-        h += r.direction1.name+"<br>";
+        h = 'MTA Time '+r.lastUpdatedTime+
+        /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always CORS*/
+            "<br>"
+            + 'Page Time '+a.join(' ')+"<br>"
+            + 'Cur Sta: '+r.stationName+"<br>";
+            + r.direction1.name+"<br>";
         a = r.direction1.times;
         for (i = 0; i < a.length; i++)
             h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>";
