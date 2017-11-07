@@ -9,6 +9,18 @@ use Time::HiRes 'sleep';
 
 our $routes1;
 do 'routedata.pl';
+our $VAR1;
+do 'routedatafinal.pl';
+#slurp in coord to borough data, avoids a geocode network call, county names
+#will never change
+my %borocache;
+foreach my $route(keys %{$VAR1}){
+    foreach my $stop (@{$$VAR1{$route}}) {
+        my $coord = $stop->{lat}.','.$stop->{lon};
+        $borocache{$coord} = $stop->{borough};
+    }
+}
+
 $Data::Dumper::Sortkeys = 1;
 my $obj = Text::CSV::Hashify->new( {
     file        => 'stops.txt',
@@ -48,50 +60,57 @@ my $req_cnt = 0;
 my $stop_cnt = keys %{$stops};
 foreach(keys %{$stops}) {
     next if exists $$stops{$_}{borough};
-    my $url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='.
-        $$stops{$_}{stop_lat} .','. $$stops{$_}{stop_lon} .'&sensor=false';
-    my $response;
-    my $geocode_result;
-    my $one_stopid_retries = 0;
-    do {
-        $reqattempt_cnt++;
-        $one_stopid_retries++;
-        sleep .2;
-        $response = $http->get($url);
-        die "google geocode failed" if ! $response->{success};
-        $geocode_result = $coder->decode($response->{content});
-    } while ($one_stopid_retries < 20
-            && ($geocode_result->{status} eq 'OVER_QUERY_LIMIT' || $geocode_result->{status} eq 'ZERO_RESULTS')
-    );
-    $req_cnt++;
+    my $coord = $$stops{$_}{stop_lat} .','. $$stops{$_}{stop_lon};
+    my $borough; #note, stations in stop.txt but not on any route (S12,Nassau,SIR,closed)
+    #are not cached and will be refetched over network, maybe fix this one day, but
+    #majority of stations will hit
+    if(exists $borocache{$coord}){
+        $borough = $borocache{$coord};
+    } else {
+        my $url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='.
+            $coord .'&sensor=false';
+        my $response;
+        my $geocode_result;
+        my $one_stopid_retries = 0;
+        do {
+            $reqattempt_cnt++;
+            $one_stopid_retries++;
+            sleep .2;
+            $response = $http->get($url);
+            die "google geocode failed" if ! $response->{success};
+            $geocode_result = $coder->decode($response->{content});
+        } while ($one_stopid_retries < 20
+                && ($geocode_result->{status} eq 'OVER_QUERY_LIMIT' || $geocode_result->{status} eq 'ZERO_RESULTS')
+        );
+        $req_cnt++;
 
-    my $county_count = 0;
-    my $county;
-    foreach(@{$geocode_result->{results}}) {
-        my $geotype = $_->{types}[0];
-        if($geotype eq 'administrative_area_level_2'){ #a county in USA according to google
-            $county_count++;
-            $county = $_->{address_components}->[0]{long_name};
-        }
-    }
-    if($county_count == 0){ #no root county place name, try to find county fragment in a more exact street addr
-        foreach(@{$geocode_result->{results}[0]{address_components}}) {
+        my $county_count = 0;
+        my $county;
+        foreach(@{$geocode_result->{results}}) {
             my $geotype = $_->{types}[0];
             if($geotype eq 'administrative_area_level_2'){ #a county in USA according to google
                 $county_count++;
-                $county = $_->{long_name};
+                $county = $_->{address_components}->[0]{long_name};
             }
         }
-    }
-
-    if($county_count != 1){
-        $DB::single = 1;
-        print Dumper($_, $geocode_result);
-        die "more than 1 county or no county";    
-    }
+        if($county_count == 0){ #no root county place name, try to find county fragment in a more exact street addr
+            foreach(@{$geocode_result->{results}[0]{address_components}}) {
+                my $geotype = $_->{types}[0];
+                if($geotype eq 'administrative_area_level_2'){ #a county in USA according to google
+                    $county_count++;
+                    $county = $_->{long_name};
+                }
+            }
+        }
     
-    die "unknown county |$county|" if ! exists $countytable{$county};
-    my $borough = $countytable{$county};
+        if($county_count != 1){
+            $DB::single = 1;
+            print Dumper($_, $geocode_result);
+            die "more than 1 county or no county";
+        }
+        die "unknown county |$county|" if ! exists $countytable{$county};
+        $borough = $countytable{$county};
+    }
 
     #avoid 2 geocodes per station, do root, N and S stop_ids at same time
     if(substr($_,-1,1) eq 'S' || substr($_,-1,1) eq 'N'){
