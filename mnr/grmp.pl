@@ -26,7 +26,7 @@ die "1st arg must be generate desktop MTA site stations or mobilized MTA site st
 my $mob = $ARGV[0];
 #VERY VERY VERY slow, set to 0 during development, TODO research having 1
 #nodejs processes instead of a million system() calls
-my $minifyhtml = 1;
+my $minifyhtml = !$ENV{DISABLEMINI};
 our $VAR1;
 do 'routedatafinal.pl';
 my @lineshtml;
