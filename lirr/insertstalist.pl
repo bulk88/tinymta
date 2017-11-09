@@ -12,4 +12,4 @@ my $endpos = index($file,'
 /*ENDINSERT*/', $pos);
 die "bad endtag match" if $endpos == -1;
 substr($file,$pos, $endpos-$pos, $jsfile);
-write_file('stop.htm', {binmode => ':raw'}, $file);
+write_file($ARGV[0], {binmode => ':raw'}, $file);
