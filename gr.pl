@@ -65,4 +65,4 @@ foreach(keys %routes) {
 }
 
 $Data::Dumper::Varname = 'routes';
-print Dumper(\%routes);
+write_file( 'routedata.pl', {binmode => ':raw'}, Dumper(\%routes));

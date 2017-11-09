@@ -100,11 +100,11 @@ clean :
 	del stations.htm
 	del stationsnojs.htm
 
-#routedatafinal.pl : gr2.pl routedata.pl stops.txt
-#    perl gr2.pl
-#
-#routedata.pl : trips.txt stop_times.txt
-#    perl gr.pl > routedata.pl
+routedatafinal.pl : gr2.pl routedata.pl stops.txt
+	perl gr2.pl
+
+routedata.pl : trips.txt stop_times.txt gr.pl
+	perl gr.pl
 
 #dev tool target, set F= on cmd line
 mini:

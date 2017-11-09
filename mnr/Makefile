@@ -32,11 +32,11 @@ clean :
 	del stationsmob.htm
 	del stations.htm
 
-#routedatafinal.pl : gr2.pl routedata.pl stops.txt
-#    perl gr2.pl
-#
-#routedata.pl : trips.txt stop_times.txt
-#    perl gr.pl > routedata.pl
+routedatafinal.pl : gr2.pl routedata.pl stops.txt
+	perl gr2.pl
+
+routedata.pl : trips.txt stop_times.txt gr.pl
+	perl gr.pl
 
 all: ../docs/mn/stations.htm ../docs/mn/stationsmob.htm ../docs/mn/rt.htm
 all: ../docs/mn/m/rt.htm
