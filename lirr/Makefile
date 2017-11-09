@@ -46,15 +46,18 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	perl ../adj_postmini.pl "$@"
 
 ../docs/li/stop_.htm : stop_.htm
+	-mkdir "../docs/li"
 	copy /y stop_.htm "$@"
 
 ../docs/li/stop.htm : stop.htm ../minify_config.json ../adj_postmini.pl
+	-mkdir "../docs/li"
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"
 	html-minifier -c ../minify_config.json -o "$@" "$@"
 	perl ../adj_postmini.pl "$@"
 
 ../docs/li/gstp.htm : gstp.htm ../minify_config.json ../adj_postmini.pl
+	-mkdir "../docs/li"
 	copy /y gstp.htm "$@"
 	html-minifier -c ../minify_config.json -o "$@" "$@"
 	perl ../adj_postmini.pl "$@"
