@@ -48,7 +48,7 @@ foreach my $routename (sort keys %$VAR1) {
     }
     $line = "$routename:";
     if(keys %boroughs > 1) {
-        $rtanchor = "name=\"$rtnum\" ";
+        $rtanchor = $rtnum;
         push(@lineshtml, '<a href="#'.$rtnum.'">'.$routename.'</a>');
     } else {
         $rtanchor = '';#dont have unused anchors
@@ -56,7 +56,7 @@ foreach my $routename (sort keys %$VAR1) {
     }
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
-            $line .= " <a ".$rtanchor."href=\"#".$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
+            $line .= " <a ".($rtanchor?'name="'.$rtanchor.'" ':'')."href=\"#".$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
             push(@linestopshtml, "$routename: $borough <a name=\"".$rtnum.$borotbl{$borough}."\" href=\"#\">Home</a>");
         } else { #if 1 station per boro, just jump straight to station, saves a tap
             my $name = ${$boroughs{$borough}}[0]->{name};
@@ -74,14 +74,19 @@ foreach my $routename (sort keys %$VAR1) {
     push(@linesboroughhtml,$line);
 }
 
-sub stopid_to_tag { #$href_attr = stopid_to_tag($name, $stopid, $dispname)
-my ($name, $stopid, $dispname, $injectnameattr) = @_;
+sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
+my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+#name attr on input element is an anchor only on IE 6, not Openwave, Chrome, FF, or NN 3
+#id works on IE 6, Openwave, Chrome, FF, but not NN 3 (oh well)
 return ($mob?
-'<form '.$injectnameattr.'action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
-<input value="'.$dispname.'" type="submit">
+'<form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
+<input value="'.$dispname.'" '.($anchorname?'id="'.$anchorname.'" ':'')
+.($accesskey?'accesskey='.$accesskey.' ':'').'type="submit">
 <input value="'.$stopid.','.$name.'" name="P_AVIS_ID" type="hidden">
 </form>'
-                                  :('<a '.$injectnameattr.'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
+                                  :('<a '.($anchorname?'name="'.$anchorname.'" ':'')
+                                         .($accesskey?'accesskey='.$accesskey.' ':'')
+                .'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
                  .$stopid.','.$name.'">'.$dispname.'</a>'));
 }
 
