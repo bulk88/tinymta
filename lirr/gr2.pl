@@ -16,12 +16,20 @@ do 'routedatafinal.pl';
 #slurp in coord to borough data, avoids a geocode network call, county names
 #will never change
 my %borocache;
+if(-e 'borocache.tmp') {
+    our $borocache1;
+    do 'borocache.tmp';
+    %borocache = %{$borocache1};
+    delete $::{borocache1};
+}
 foreach my $route(keys %{$VAR1}){
     foreach my $stop (@{$$VAR1{$route}}) {
         my $coord = $stop->{lat}.','.$stop->{lon};
         $borocache{$coord} = $stop->{borough};
     }
 }
+delete $::{VAR1};
+
 $Data::Dumper::Sortkeys = 1;
 my $obj = Text::CSV::Hashify->new( {
     file        => 'stops.txt',
@@ -62,7 +70,10 @@ my $req_cnt = 0;
 my $stop_cnt = keys %{$stops};
 foreach(keys %{$stops}) {
     next if exists $$stops{$_}{borough};
-    my $coord = $$stops{$_}{stop_lat} .','. $$stops{$_}{stop_lon};
+    #make sure no whitespace is saved in routedatafinal.pl
+    $$stops{$_}{stop_lat} = trim($$stops{$_}{stop_lat});
+    $$stops{$_}{stop_lon} = trim($$stops{$_}{stop_lon});
+    my $coord =  $$stops{$_}{stop_lat}.','.$$stops{$_}{stop_lon};
     my $borough; #note, stations in stop.txt but not on any route (S12,Nassau,SIR,closed)
     #are not cached and will be refetched over network, maybe fix this one day, but
     #majority of stations will hit
@@ -77,9 +88,12 @@ foreach(keys %{$stops}) {
         do {
             $reqattempt_cnt++;
             $one_stopid_retries++;
-            sleep .2;
+            #sleep .2;
             $response = $http->get($url);
-            die "google geocode failed" if ! $response->{success};
+            if(!$response->{success}) {
+                print Dumper($response);
+                die "google geocode failed";
+            }
             $geocode_result = $coder->decode($response->{content});
         } while ($one_stopid_retries < 20
                 && ($geocode_result->{status} eq 'OVER_QUERY_LIMIT' || $geocode_result->{status} eq 'ZERO_RESULTS')
@@ -108,24 +122,17 @@ foreach(keys %{$stops}) {
         if($county_count != 1){
             $DB::single = 1;
             print Dumper($_, $geocode_result);
+            #typically OVER_QUERY_LIMIT death, dump coords so far for reuse on next run
+            #probably after an IP address change
+            $Data::Dumper::Varname = 'borocache';
+            write_file( 'borocache.tmp', {binmode => ':raw'}, Dumper(\%borocache));
             die "more than 1 county or no county";
         }
         die "unknown county |$county|" if ! exists $countytable{$county};
         $borough = $countytable{$county};
-    }
-
-    #avoid 2 geocodes per station, do root, N and S stop_ids at same time
-    if(substr($_,-1,1) eq 'S' || substr($_,-1,1) eq 'N'){
-        substr($_,-1,1,'');
+        $borocache{$coord} = $borough;
     }
     $$stops{$_}{borough} = $borough;
-    if(exists $$stops{$_.'N'} && ! exists $$stops{$_.'N'}{borough}) {
-       $$stops{$_.'N'}{borough} = $borough;
-    }
-    if(exists $$stops{$_.'S'} && ! exists $$stops{$_.'S'}{borough}) {
-       $$stops{$_.'S'}{borough} = $borough;
-    }
-
     0;
 }
 
@@ -141,8 +148,16 @@ foreach(keys %{$routes1}) {
     }
 }
 
+unlink('borocache.tmp');
 open(RDF, ">", 'routedatafinal.pl')
         || die "$0: can't open routedatafinal.pl for writing: $!";
 select(RDF);
 binmode(RDF);
 print Dumper($routes1);
+
+sub trim {
+    my $str = $_[0];
+    $str =~ s/^\s+//;
+    $str =~ s/\s+$//;
+    return $str;
+}
