@@ -1,7 +1,6 @@
-#generate routes, usage perl gr.pl > t.txt
+#generate routes, usage perl gr.pl
 use Text::CSV::Hashify;
 use File::Slurp;
-use Cpanel::JSON::XS;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
@@ -9,7 +8,7 @@ my $obj = Text::CSV::Hashify->new( {
     file        => 'trips.txt',
     format      => 'hoh',
     key         => "trip_id",
-    quote_char          => "'",
+    quote_char          => "\"",
     escape_char          => undef,
     allow_loose_quotes=>1,
     auto_diag => 1,
@@ -20,46 +19,61 @@ undef($obj);
 foreach(keys %{$triproute}) {
     $$triproute{$_} = $$triproute{$_}{route_id};
 }
-#print Dumper($triproute);
-#exit;
 
 my $filename =  'stop_times.txt';
 
-$obj = Text::CSV::Hashify->new( {
-    file        => $filename,
-    format      => 'aoh',
-    key         => "trip_id",
-    quote_char          => "'",
+open my $IN, "<", $filename
+    or die "Unable to open '$filename' for reading";
+binmode($IN); #less overhead for getline()
+
+my $csv = Text::CSV->new( {
     escape_char          => undef,
     allow_loose_quotes=>1,
     auto_diag => 1,
-} );
+    binary => 1,
+    quote_char          => '"',
+    } )
+    or die "Cannot use CSV: ".Text::CSV->error_diag ();
 
-$raw = $obj->all;
-undef($obj);
-my %trips;
-my %routes;
-foreach(@{$raw}) {
-    $trips{$_->{trip_id}}[$_->{stop_sequence}-1] = $_->{stop_id};
+my %col_idx; #const idx table for columns
+{
+    my $header_ref = $csv->getline($IN);
+    #$csv->column_names(@{$header_ref});
+    for(0..$#$header_ref) {
+        $col_idx{$$header_ref[$_]} = $_
+    }
 }
-undef($raw);
+my %trips; #embed integer constants in array looks
+eval '
+while (my $record = $csv->getline($IN)) {
+    $trips{$record->['.$col_idx{trip_id}.']} [$record->['.$col_idx{stop_sequence}.']-1] = $record->['.$col_idx{stop_id}.'];
+}
+';
+die $@ if $@;
 
-foreach(sort keys %trips) {
+my %routes;
+
+foreach(sort keys %trips) { #decrease randomization in psuedo route line per run
     #my $route = substr($_,20,3); #wrong this isnt the rider facing letter, Ws are Ns internally for example
     #$route =~ s/\.//g;
-    my $route = $$triproute{$_};
+    my $route = \$routes{$$triproute{$_}};
+    unless($$route) {
+        $$route = [{},[]];
+    }
+    $route = $$route;
     foreach(@{$trips{$_}}) {
         #no N/S postfix
         my $lastletter = substr($_,-1,1);
         if($lastletter eq 'N' || $lastletter eq 'S'){
             substr($_,-1,1, '');
         }
-        if(! exists $routes{$route}[0]{$_}) {
-            $routes{$route}[0]{$_} = undef;
-            push(@{$routes{$route}[1]}, $_);
+        if(! exists $route->[0]{$_}) {
+            $route->[0]{$_} = undef; #seen stopid before on route
+            push(@{$route->[1]}, $_); #stopid psuedo order
         }
     }
 }
+#eliminate stopid seen hash
 foreach(keys %routes) {
     $routes{$_} = $routes{$_}[1];
 }
