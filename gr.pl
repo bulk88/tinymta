@@ -44,7 +44,7 @@ foreach(@{$raw}) {
 }
 undef($raw);
 
-foreach(keys %trips) {
+foreach(sort keys %trips) {
     #my $route = substr($_,20,3); #wrong this isnt the rider facing letter, Ws are Ns internally for example
     #$route =~ s/\.//g;
     my $route = $$triproute{$_};

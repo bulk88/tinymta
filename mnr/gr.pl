@@ -45,7 +45,7 @@ foreach(@{$raw}) {
 }
 undef($raw);
 
-foreach(keys %trips) {
+foreach(sort keys %trips) {
     my $route = $$triproute{$_};
     foreach(@{$trips{$_}}) {
         if(! exists $routes{$route}[0]{$_}) {
