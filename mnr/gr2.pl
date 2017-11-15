@@ -5,6 +5,7 @@ use File::Slurp;
 use Cpanel::JSON::XS;
 use Data::Dumper;
 use HTTP::Tiny;
+use IO::Uncompress::Gunzip qw(gunzip $GunzipError) ;
 use Time::HiRes 'sleep';
 
 our $routes1;
@@ -42,7 +43,10 @@ my $obj = Text::CSV::Hashify->new( {
 my $stops= $obj->all;
 undef($obj);
 my $http = HTTP::Tiny->new(
-    agent => 'Mozilla/5.0 (Windows NT 5.1; rv:41.0) Gecko/20100101 Firefox/41.0'
+    agent => 'Mozilla/5.0 (Windows NT 5.1; rv:41.0) Gecko/20100101 Firefox/41.0',
+    default_headers => {
+        'Accept-Encoding'  => 'gzip'
+    }
 );
 my $coder = Cpanel::JSON::XS->new->ascii->canonical(1);
 
@@ -91,6 +95,7 @@ foreach(keys %{$stops}) {
                 print Dumper($response);
                 die "google geocode failed";
             }
+            _decompress($response);
             $geocode_result = $coder->decode($response->{content});
         } while ($one_stopid_retries < 20
                 && ($geocode_result->{status} eq 'OVER_QUERY_LIMIT' || $geocode_result->{status} eq 'ZERO_RESULTS')
@@ -157,4 +162,20 @@ sub trim {
     $str =~ s/^\s+//;
     $str =~ s/\s+$//;
     return $str;
+}
+
+sub _decompress {
+    my ( $res ) = @_;
+    if (
+      exists $res->{ headers } &&
+      exists $res->{ headers }->{ 'content-encoding' } &&
+      $res->{ headers }->{ 'content-encoding' } eq 'gzip' ) {
+        my $content = $res->{ content };
+        my ( $content_decompressed, $scalar, $GunzipError );
+        gunzip \$content => \$content_decompressed,
+        MultiStream => 1, Append => 1, TrailingData => \$scalar
+        or die "gunzip failed: $GunzipError\n";
+        $res->{ content } = $content_decompressed;
+      }
+    return $res;
 }
