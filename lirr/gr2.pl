@@ -94,14 +94,17 @@ foreach(keys %{$stops}) {
             $one_stopid_retries++;
             #sleep .2;
             $response = $http->get($url);
-            if(!$response->{success}) {
+            #500 is 'UNKNOWN_ERROR' JSON
+            if(!$response->{success} && $response->{status} != 500) {
                 print Dumper($response);
                 die "google geocode failed";
             }
             _decompress($response);
             $geocode_result = $coder->decode($response->{content});
         } while ($one_stopid_retries < 20
-                && ($geocode_result->{status} eq 'OVER_QUERY_LIMIT' || $geocode_result->{status} eq 'ZERO_RESULTS')
+                && ($geocode_result->{status} eq 'OVER_QUERY_LIMIT' || $geocode_result->{status} eq 'ZERO_RESULTS'
+                    || $geocode_result->{status} eq 'UNKNOWN_ERROR'
+                    )
         );
         $req_cnt++;
 
