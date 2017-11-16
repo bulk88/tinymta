@@ -10,6 +10,10 @@ use Time::HiRes 'sleep';
 
 our $routes1;
 do 'routedata.pl';
+#stop_id overrides, optional, if stations.pl doesn't exist, then GTFS stop_ids
+#are used unchanged
+our $stations1;
+do 'stations.pl';
 our $VAR1;
 do 'routedatafinal.pl';
 #slurp in coord to borough data, avoids a geocode network call, county names
@@ -50,21 +54,11 @@ my $http = HTTP::Tiny->new(
 );
 my $coder = Cpanel::JSON::XS->new->ascii->canonical(1);
 
-my %countytable = ('Queens County' => 'Queens',
-                   'New York County' => 'Manhattan',
-                   'Bronx County' => 'Bronx',
+#list of county name overrides, if unknown county, just strip County and pass it
+#through
+my %countytable = ('New York County' => 'Manhattan',
                    'Kings County' => 'Brooklyn',
                    'Richmond County' => 'Staten Island',
-                   'Fairfield County' => 'Fairfield',
-                   'Middlesex County' => 'Middlesex',
-                   'Putnam County'  => 'Putnam',
-                   'Westchester County' => 'Westchester',
-                   'New Haven County' => 'New Haven',
-                   'Dutchess County' => 'Dutchess',
-                   'Rockland County' => 'Rockland',
-                   'New London County' => 'New London',
-                   'Orange County' => 'Orange',
-                   
                    );
 my $reqattempt_cnt = 0;
 my $req_cnt = 0;
@@ -133,8 +127,8 @@ foreach(keys %{$stops}) {
             write_file( 'borocache.tmp', {binmode => ':raw'}, Dumper(\%borocache));
             die "more than 1 county or no county";
         }
-        die "unknown county |$county|" if ! exists $countytable{$county};
-        $borough = $countytable{$county};
+        #override county name with nickname (AKA NYC), or strip County suffix
+        $borough = exists $countytable{$county} ? $countytable{$county} : ($county =~ m/(^.+) County$/)[0];
         $borocache{$coord} = $borough;
     }
     $$stops{$_}{borough} = $borough;
@@ -146,7 +140,9 @@ foreach(keys %{$routes1}) {
     my $route = ${$routes1}{$_};
     foreach(0..(scalar(@{$route})-1)) {
         my $stop_id = $$route[$_];
-        $$route[$_] = {'stop_id' => $stop_id, 'name' => $$stops{$stop_id}{stop_name},
+        $$route[$_] = {'stop_id' => (exists $$stations1{$stop_id} ?
+                                     $$stations1{$stop_id} : $stop_id),
+                       'name' => $$stops{$stop_id}{stop_name},
                        'lat' => $$stops{$stop_id}{stop_lat},
                        'lon' => $$stops{$stop_id}{stop_lon},
                        'borough' => $$stops{$stop_id}{borough}};
