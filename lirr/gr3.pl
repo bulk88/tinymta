@@ -9,19 +9,6 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Suffolk' => 'S',
                 'Nassau' => 'N',
             );
-my @rtnum_to_rtname = ('empty',
-"Babylon",
-"Hempstead",
-"Oyster Bay",
-"Ronkonkoma",
-"Montauk",
-"Long Beach",
-"Far Rockaway",
-"West Hempstead",
-"Port Washington",
-"Port Jefferson",
-"Belmont",
-"City Zone");
 
 die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
 my $js = $ARGV[0];
@@ -30,6 +17,7 @@ do 'routedatafinal.pl';
 my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;
+my %rtdispname = getRouteDisplayNames('route_long_name');
 
 open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
         || die "$0: can't open stations.htm for writing: $!";
@@ -41,7 +29,7 @@ print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise ro
 foreach my $routename (sort keys %$VAR1) {
     my $route = $$VAR1{$routename};
     my $rtnum = $routename;
-    $routename = $rtnum_to_rtname[$routename];
+    $routename = $rtdispname{$routename};
     my (%boroughs, $line, $rtanchor);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
@@ -87,3 +75,31 @@ print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
 print "\n".'</body></html>';
 $Data::Dumper::Sortkeys = 1;
+
+#return a hash that translates route_id to a friendly display name
+#different on different systems if route_ids are more compact but still
+#understandable to public, or must translate to a friendly name but use route_id
+#for short filenames/small HTML
+sub getRouteDisplayNames {
+    if($_[0] eq 'route_id'){
+        return map {$_ => $_} keys %$VAR1;
+    } elsif($_[0] eq 'route_short_name' || $_[0] eq 'route_long_name') {
+        require Text::CSV::Hashify;
+        my $obj = Text::CSV::Hashify->new( {
+            file        => 'routes.txt',
+            format      => 'hoh',
+            key         => "route_id",
+            quote_char          => '"',
+            escape_char          => undef,
+            allow_loose_quotes=>1,
+            auto_diag => 1,
+        } );
+        my $routes= $obj->all;
+        while (my ($key,$value) = each %$routes) {
+            $$routes{$key} = $value->{$_[0]};
+        }
+        return %$routes;
+    } else {
+        die "unknown route display name type"
+    }
+}

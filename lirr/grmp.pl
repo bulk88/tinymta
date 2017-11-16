@@ -12,19 +12,6 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Suffolk' => 'S',
                 'Nassau' => 'N',
             );
-my @rtnum_to_rtname = ('empty',
-"Babylon",
-"Hempstead",
-"Oyster Bay",
-"Ronkonkoma",
-"Montauk",
-"Long Beach",
-"Far Rockaway",
-"West Hempstead",
-"Port Washington",
-"Port Jefferson",
-"Belmont",
-"City Zone");
 
 die "usage: grmp.pl JS RAW
 JS=1 RAW=0 stop.htm/JS/CORS/JSONP
@@ -39,13 +26,14 @@ my $minifyhtml = !$ENV{DISABLEMINI};
 our $VAR1;
 do 'routedatafinal.pl';
 my @lineshtml;
+my %rtdispname = getRouteDisplayNames('route_long_name');
 
 my @routes = sort keys %$VAR1;
 
 foreach my $routename (@routes) {
     my $route = $$VAR1{$routename};
     my $rtnum = $routename;
-    $routename = $rtnum_to_rtname[$routename];
+    $routename = $rtdispname{$routename};
     my (%boroughs, @boroughs);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
@@ -147,4 +135,32 @@ if($file){
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0></head><body>'.$_[1].'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
+}
+
+#return a hash that translates route_id to a friendly display name
+#different on different systems if route_ids are more compact but still
+#understandable to public, or must translate to a friendly name but use route_id
+#for short filenames/small HTML
+sub getRouteDisplayNames {
+    if($_[0] eq 'route_id'){
+        return map {$_ => $_} keys %$VAR1;
+    } elsif($_[0] eq 'route_short_name' || $_[0] eq 'route_long_name') {
+        require Text::CSV::Hashify;
+        my $obj = Text::CSV::Hashify->new( {
+            file        => 'routes.txt',
+            format      => 'hoh',
+            key         => "route_id",
+            quote_char          => '"',
+            escape_char          => undef,
+            allow_loose_quotes=>1,
+            auto_diag => 1,
+        } );
+        my $routes= $obj->all;
+        while (my ($key,$value) = each %$routes) {
+            $$routes{$key} = $value->{$_[0]};
+        }
+        return %$routes;
+    } else {
+        die "unknown route display name type"
+    }
 }

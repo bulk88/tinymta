@@ -4,8 +4,6 @@ use File::Slurp;
 use POSIX qw/ceil/;
 use Data::Dumper;
 
-#BUGGGG 6X.htm is broken
-
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
                 'Manhattan' => 'M',
@@ -21,7 +19,7 @@ my %borotbl = ( 'Queens' => 'Q',
                    'New London' => 'L',
                    'Orange' => 'O',
             );
-my @rtnum_to_rtname = ('empty', 'Hudson', 'Harlem', 'New Haven', 'New Canaan', 'Danbury', 'Waterbury');
+
 die "1st arg must be generate desktop MTA site stations or mobilized MTA site stations " if ! defined $ARGV[0];
 my $mob = $ARGV[0];
 #VERY VERY VERY slow, set to 0 during development, TODO research having 1
@@ -30,13 +28,14 @@ my $minifyhtml = !$ENV{DISABLEMINI};
 our $VAR1;
 do 'routedatafinal.pl';
 my @lineshtml;
+my %rtdispname = getRouteDisplayNames('route_long_name');
 
 {
 my @routes = sort keys %$VAR1;
 foreach my $routename (@routes) {
     my $route = $$VAR1{$routename};
     my $rtnum = $routename;
-    $routename = $rtnum_to_rtname[$routename];
+    $routename = $rtdispname{$routename};
     my (%boroughs, @boroughs);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
@@ -138,7 +137,36 @@ if($file){
     write_html('../docs/mn/'.($mob?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
+
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0></head><body>'.$_[1].'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
+}
+
+#return a hash that translates route_id to a friendly display name
+#different on different systems if route_ids are more compact but still
+#understandable to public, or must translate to a friendly name but use route_id
+#for short filenames/small HTML
+sub getRouteDisplayNames {
+    if($_[0] eq 'route_id'){
+        return map {$_ => $_} keys %$VAR1;
+    } elsif($_[0] eq 'route_short_name' || $_[0] eq 'route_long_name') {
+        require Text::CSV::Hashify;
+        my $obj = Text::CSV::Hashify->new( {
+            file        => 'routes.txt',
+            format      => 'hoh',
+            key         => "route_id",
+            quote_char          => '"',
+            escape_char          => undef,
+            allow_loose_quotes=>1,
+            auto_diag => 1,
+        } );
+        my $routes= $obj->all;
+        while (my ($key,$value) = each %$routes) {
+            $$routes{$key} = $value->{$_[0]};
+        }
+        return %$routes;
+    } else {
+        die "unknown route display name type"
+    }
 }
