@@ -115,20 +115,21 @@ sub altRtViewHTML {
     return $html;
 }
 
+my $linespages = ceil(scalar(@lineshtml) / 9);
 foreach my $line (@lineshtml) {
     $file .= '<a accesskey='.$accesskeyidx.' '.$line." \n";
     $accesskeyidx++;
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+        write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes: ".($pageidx+1)." of ".ceil(scalar(@lineshtml) / 9)
+    write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 
