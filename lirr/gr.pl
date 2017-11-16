@@ -44,8 +44,6 @@ my %col_idx; #const idx table for columns
     }
 }
 my %trips; #embed integer constants in array looks
-#note LIRR is only GTFS feed of the 3 (MNR/LIRR/subway) whose stop_sequence
-#starts at 0 and not 1
 eval '
 while (my $record = $csv->getline($IN)) {
     $trips{$record->['.$col_idx{trip_id}.']} [$record->['.$col_idx{stop_sequence}.']] = $record->['.$col_idx{stop_id}.'];
@@ -64,6 +62,7 @@ foreach(sort keys %trips) { #decrease randomization in psuedo route line per run
     }
     $route = $$route;
     foreach(@{$trips{$_}}) {
+        next unless $_; #remove stop_sequence holes
         if(! exists $route->[0]{$_}) {
             $route->[0]{$_} = undef; #seen stopid before on route
             push(@{$route->[1]}, $_); #stopid psuedo order

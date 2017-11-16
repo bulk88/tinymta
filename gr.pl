@@ -46,7 +46,7 @@ my %col_idx; #const idx table for columns
 my %trips; #embed integer constants in array looks
 eval '
 while (my $record = $csv->getline($IN)) {
-    $trips{$record->['.$col_idx{trip_id}.']} [$record->['.$col_idx{stop_sequence}.']-1] = $record->['.$col_idx{stop_id}.'];
+    $trips{$record->['.$col_idx{trip_id}.']} [$record->['.$col_idx{stop_sequence}.']] = $record->['.$col_idx{stop_id}.'];
 }
 ';
 die $@ if $@;
@@ -62,6 +62,7 @@ foreach(sort keys %trips) { #decrease randomization in psuedo route line per run
     }
     $route = $$route;
     foreach(@{$trips{$_}}) {
+        next unless $_; #remove stop_sequence holes
         #no N/S postfix
         my $lastletter = substr($_,-1,1);
         if($lastletter eq 'N' || $lastletter eq 'S'){
