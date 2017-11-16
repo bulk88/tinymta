@@ -102,7 +102,7 @@ return ($mob?
                                   :('<a '.($anchorname?'name="'.$anchorname.'" ':'')
                                          .($accesskey?'accesskey='.$accesskey.' ':'')
                 .'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
-                 .$stopid.','.$name.'">'.$dispname.'</a>'));
+                 .$stopid.','.$name.'">'.$dispname."</a>\n"));
 }
 
 my $accesskeyidx = 1;
