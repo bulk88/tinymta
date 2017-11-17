@@ -2,6 +2,7 @@
 use strict;
 use Data::Dumper;
 
+#abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
                 'Manhattan' => 'M',
                 'Bronx' => 'B',
@@ -26,10 +27,9 @@ binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
 ';
-foreach my $routename (sort keys %$VAR1) {
-    my $route = $$VAR1{$routename};
-    my $rtnum = $routename;
-    $routename = $rtdispname{$routename};
+foreach my $rtid (sort keys %$VAR1) {
+    my $route = $$VAR1{$rtid};
+    my $routename = $rtdispname{$rtid};
     my (%boroughs, $line, $rtanchor);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
@@ -37,35 +37,45 @@ foreach my $routename (sort keys %$VAR1) {
         push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
     }
     $line = "$routename:";
+    #easier finger tapping if 1 or 2 char routenames
+    my $routenamepad = length $routename < 3 ? '&nbsp;' : '';
     if(keys %boroughs > 1) {
-        $rtanchor = "name=\"$rtnum\" ";
-        push(@lineshtml, '<a href="#'.$rtnum.'">'.$routename.'</a>');
+        $rtanchor = $rtid;
+        push(@lineshtml, '<a href="#'.$rtid.'">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
     } else {
         $rtanchor = '';#dont have unused anchors
-        push(@lineshtml, '<a href="#'.$rtnum.$borotbl{(keys %boroughs)[0]}.'">&nbsp;'.$routename.'&nbsp;</a>');
+        push(@lineshtml, '<a href="#'.$rtid.$borotbl{(keys %boroughs)[0]}.'">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
     }
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
-            $line .= " <a ".$rtanchor."href=\"#".$rtnum.$borotbl{$borough}.'">'.$borough.'</a>';
-            push(@linestopshtml, "$routename: $borough <a name=\"".$rtnum.$borotbl{$borough}."\" href=\"#\">Home</a>");
-        } else { #if 1 station per boro, just jump straight to station, saves a tap
-            $line .= " <a $rtanchor".stopid_to_href(${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
+            $line .= " <a ".($rtanchor?'name="'.$rtanchor.'" ':'')."href=\"#".$rtid.$borotbl{$borough}.'">'.$borough.'</a>';
+            push(@linestopshtml, "$routename: $borough <a name=\"".$rtid.$borotbl{$borough}."\" href=\"#\">Home</a>");
+        } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
+            my $name = ${$boroughs{$borough}}[0]->{name};
+            my $stopid = ${$boroughs{$borough}}[0]->{stop};#how to inject $rtanchor
+            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor);
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
         $rtanchor = '';
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
-            my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop}; #TODO HTTPS for LIRR.ORG
-            push(@linestopshtml, '<a '.stopid_to_href($stopid).'>'.$name.'</a>');
+            my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
+            push(@linestopshtml, stopid_to_tag($name, $stopid, $name, ''));
         }
     }
-
     push(@linesboroughhtml,$line);
 }
-sub stopid_to_href { #$href_attr = stopid_to_href($stopid)
-    return ($js?'href="stop.htm#':'href="http://www.loband.org/loband/filter/com/anyorigin/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
-            .$_[0]
-            .($js?'"':'&callback=X&_ab_type=JavaScript"');
+
+sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
+    my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+    return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
+                .($accesskey?'accesskey='.$accesskey.' ':'')
+                .($js?'href="stop.htm#':'href="http://www.loband.org/loband/filter/com/anyorigin/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
+                .$stopid
+                .($js?'"':'&callback=X&_ab_type=JavaScript"')
+                .'>'.$dispname.'</a>';
 }
 
 print join(" \n", @lineshtml);
