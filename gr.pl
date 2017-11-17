@@ -54,8 +54,6 @@ die $@ if $@;
 my %routes;
 
 foreach(sort keys %trips) { #decrease randomization in psuedo route line per run
-    #my $route = substr($_,20,3); #wrong this isnt the rider facing letter, Ws are Ns internally for example
-    #$route =~ s/\.//g;
     my $route = \$routes{$$triproute{$_}};
     unless($$route) {
         $$route = [{},[]];
@@ -63,11 +61,6 @@ foreach(sort keys %trips) { #decrease randomization in psuedo route line per run
     $route = $$route;
     foreach(@{$trips{$_}}) {
         next unless $_; #remove stop_sequence holes
-        #no N/S postfix
-        my $lastletter = substr($_,-1,1);
-        if($lastletter eq 'N' || $lastletter eq 'S'){
-            substr($_,-1,1, '');
-        }
         if(! exists $route->[0]{$_}) {
             $route->[0]{$_} = undef; #seen stopid before on route
             push(@{$route->[1]}, $_); #stopid psuedo order

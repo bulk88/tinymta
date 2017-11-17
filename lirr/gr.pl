@@ -54,8 +54,6 @@ die $@ if $@;
 my %routes;
 
 foreach(sort keys %trips) { #decrease randomization in psuedo route line per run
-    #my $route = substr($_,20,3); #wrong this isnt the rider facing letter, Ws are Ns internally for example
-    #$route =~ s/\.//g;
     my $route = \$routes{$$triproute{$_}};
     unless($$route) {
         $$route = [{},[]];

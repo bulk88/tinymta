@@ -138,15 +138,26 @@ foreach(keys %{$stops}) {
 foreach(keys %{$routes1}) {
     0;
     my $route = ${$routes1}{$_};
+    my %seen;
+    my @newroute;
+    #do same push array, add to seen hash slice as in gr.pl
+    #to elimate chance of a stations.pl merging 2 stop_id'es to one
+    #example NYC Subway N vs S stop_ids
     foreach(0..(scalar(@{$route})-1)) {
         my $stop_id = $$route[$_];
-        $$route[$_] = {'stop_id' => (exists $$stations1{$stop_id} ?
-                                     $$stations1{$stop_id} : $stop_id),
-                       'name' => $$stops{$stop_id}{stop_name},
-                       'lat' => $$stops{$stop_id}{stop_lat},
-                       'lon' => $$stops{$stop_id}{stop_lon},
-                       'borough' => $$stops{$stop_id}{borough}};
+        my $override_stop_id = exists $$stations1{$stop_id} ?
+                                     $$stations1{$stop_id} : $stop_id;
+        if(!exists $seen{$override_stop_id}) {
+            $seen{$override_stop_id} = undef;#seen it
+            my $stop = $$stops{$stop_id};
+            push @newroute, {'stop_id' => $override_stop_id,
+                           'name' => $stop->{stop_name},
+                           'lat' => $stop->{stop_lat},
+                           'lon' => $stop->{stop_lon},
+                           'borough' => $stop->{borough}};
+        }
     }
+    ${$routes1}{$_} = \@newroute;
 }
 
 unlink('borocache.tmp');
