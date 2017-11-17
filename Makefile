@@ -8,7 +8,7 @@ stations.pl: mkstalist.pl
 stop_.htm : stop.htm minify_config.json adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl adj_stoppath.pl "$@"
-	html-minifier -c minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c minify_config.json -o "$@" "$@"
 	perl adj_postmini.pl "$@"
 
 docs/stop_.htm : stop_.htm
@@ -17,21 +17,21 @@ docs/stop_.htm : stop_.htm
 docs/stop.htm : stop.htm minify_config.json adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl adj_stoppath.pl "$@"
-	html-minifier -c minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c minify_config.json -o "$@" "$@"
 	perl adj_postmini.pl "$@"
 
 docs/gstp.htm : gstp.htm minify_config.json adj_postmini.pl
 	copy /y gstp.htm "$@"
-	html-minifier -c minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c minify_config.json -o "$@" "$@"
 	perl adj_postmini.pl "$@"
 
 docs/stations.htm : stations.htm minify_config.json
 	copy /y stations.htm "$@"
-	html-minifier -c minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c minify_config.json -o "$@" "$@"
 
 docs/index.htm : index.htm minify_config.json
 	copy /y index.htm "$@"
-	html-minifier -c minify_config.json --minify-js -o "$@" "$@"
+	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/404.html : 404.html
 	copy /y 404.html "$@"
@@ -50,7 +50,7 @@ docs/README.md : README.md
 
 docs/stationsnojs.htm : stationsnojs.htm minify_config.json
 	copy /y stationsnojs.htm "$@"
-	html-minifier -c minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c minify_config.json -o "$@" "$@"
 
 stations.htm : gr3.pl routedatafinal.pl
 	perl gr3.pl 1
@@ -111,7 +111,7 @@ routedata.pl : trips.txt stop_times.txt gr.pl
 
 #dev tool target, set F= on cmd line
 mini:
-	html-minifier -c minify_config.json -o "$(F)" "$(F)"
+	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
 all: docs/stationsnojs.htm docs/index.htm docs/stations.htm
 all: docs/stop_.htm docs/stop.htm docs/404.html docs/favicon.ico

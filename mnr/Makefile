@@ -5,12 +5,12 @@ first: all
 ../docs/mn/stations.htm : stations.htm ../minify_config.json
 	-mkdir "../docs/mn"
 	copy /y stations.htm "$@"
-	html-minifier -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
 
 ../docs/mn/stationsmob.htm : stationsmob.htm ../minify_config.json
 	-mkdir "../docs/mn"
 	copy /y stationsmob.htm "$@"
-	html-minifier -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
 
 stations.htm : gr3.pl routedatafinal.pl
 	perl gr3.pl 0
