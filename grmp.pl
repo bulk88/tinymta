@@ -98,7 +98,7 @@ sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
     return ($js?($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/gstp.htm%23':'href="../stop.htm#')
                         : ($raw?'href="http://54.90.113.57/getTime/':
                                     'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
-                     ($_[0] eq 'SI' ? 'SIR' : $_[0]).'/'.$_[1].($js?($raw?'&f=1&lite_refresh=1':''):'?callback=X').'"';
+                     (($_[1] =~ m/^S(\d+$)/)[0] >= 9 ? 'SIR' : substr($_[1],0,1)).'/'.$_[1].($js?($raw?'&f=1&lite_refresh=1':''):'?callback=X').'"';
 }
 
 my $accesskeyidx = 1;
