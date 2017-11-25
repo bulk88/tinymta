@@ -1,6 +1,34 @@
 $VAR1 = {
           '1' => [
                    {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.752998',
+                     'lon' => '-73.977056',
+                     'name' => 'Grand Central',
+                     'stop_id' => '1'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.805157',
+                     'lon' => '-73.939149',
+                     'name' => 'Harlem-125th St.',
+                     'stop_id' => '4'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.076473',
+                     'lon' => '-73.864563',
+                     'name' => 'Tarrytown',
+                     'stop_id' => '27'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.157663',
+                     'lon' => '-73.869281',
+                     'name' => 'Ossining',
+                     'stop_id' => '31'
+                   },
+                   {
                      'borough' => 'Westchester',
                      'lat' => '41.189903',
                      'lon' => '-73.882394',
@@ -9,10 +37,52 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '41.157663',
-                     'lon' => '-73.869281',
-                     'name' => 'Ossining',
-                     'stop_id' => '31'
+                     'lat' => '40.935795',
+                     'lon' => '-73.902668',
+                     'name' => 'Yonkers',
+                     'stop_id' => '18'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.874333',
+                     'lon' => '-73.910941',
+                     'name' => 'Marble Hill',
+                     'stop_id' => '11'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.994109',
+                     'lon' => '-73.884512',
+                     'name' => 'Hastings-on-Hudson',
+                     'stop_id' => '22'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.012459',
+                     'lon' => '-73.87949',
+                     'name' => 'Dobbs Ferry',
+                     'stop_id' => '23'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.039993',
+                     'lon' => '-73.873083',
+                     'name' => 'Irvington',
+                     'stop_id' => '25'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.878245',
+                     'lon' => '-73.921455',
+                     'name' => 'Spuyten Duyvil',
+                     'stop_id' => '14'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.903981',
+                     'lon' => '-73.914126',
+                     'name' => 'Riverdale',
+                     'stop_id' => '16'
                    },
                    {
                      'borough' => 'Westchester',
@@ -30,38 +100,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '41.076473',
-                     'lon' => '-73.864563',
-                     'name' => 'Tarrytown',
-                     'stop_id' => '27'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.039993',
-                     'lon' => '-73.873083',
-                     'name' => 'Irvington',
-                     'stop_id' => '25'
-                   },
-                   {
-                     'borough' => 'Westchester',
                      'lat' => '41.026198',
                      'lon' => '-73.876543',
                      'name' => 'Ardsley-on-Hudson',
                      'stop_id' => '24'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.012459',
-                     'lon' => '-73.87949',
-                     'name' => 'Dobbs Ferry',
-                     'stop_id' => '23'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.994109',
-                     'lon' => '-73.884512',
-                     'name' => 'Hastings-on-Hudson',
-                     'stop_id' => '22'
                    },
                    {
                      'borough' => 'Westchester',
@@ -71,18 +113,11 @@ $VAR1 = {
                      'stop_id' => '20'
                    },
                    {
-                     'borough' => 'Westchester',
-                     'lat' => '40.950496',
-                     'lon' => '-73.899062',
-                     'name' => 'Glenwood',
-                     'stop_id' => '19'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.935795',
-                     'lon' => '-73.902668',
-                     'name' => 'Yonkers',
-                     'stop_id' => '18'
+                     'borough' => 'Bronx',
+                     'lat' => '40.8253',
+                     'lon' => '-73.9299',
+                     'name' => 'Yankees-E153 St.',
+                     'stop_id' => '622'
                    },
                    {
                      'borough' => 'Westchester',
@@ -92,88 +127,11 @@ $VAR1 = {
                      'stop_id' => '17'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.903981',
-                     'lon' => '-73.914126',
-                     'name' => 'Riverdale',
-                     'stop_id' => '16'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.878245',
-                     'lon' => '-73.921455',
-                     'name' => 'Spuyten Duyvil',
-                     'stop_id' => '14'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.874333',
-                     'lon' => '-73.910941',
-                     'name' => 'Marble Hill',
-                     'stop_id' => '11'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.862248',
-                     'lon' => '-73.91312',
-                     'name' => 'University Heights',
-                     'stop_id' => '10'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.854252',
-                     'lon' => '-73.919583',
-                     'name' => 'Morris Heights',
-                     'stop_id' => '9'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8253',
-                     'lon' => '-73.9299',
-                     'name' => 'Yankees-E153 St.',
-                     'stop_id' => '622'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.805157',
-                     'lon' => '-73.939149',
-                     'name' => 'Harlem-125th St.',
-                     'stop_id' => '4'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.752998',
-                     'lon' => '-73.977056',
-                     'name' => 'Grand Central',
-                     'stop_id' => '1'
-                   },
-                   {
                      'borough' => 'Westchester',
-                     'lat' => '41.246259',
-                     'lon' => '-73.921884',
-                     'name' => 'Cortlandt',
-                     'stop_id' => '37'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.285962',
-                     'lon' => '-73.93042',
-                     'name' => 'Peekskill',
-                     'stop_id' => '39'
-                   },
-                   {
-                     'borough' => 'Putnam',
-                     'lat' => '41.38178',
-                     'lon' => '-73.947202',
-                     'name' => 'Garrison',
-                     'stop_id' => '42'
-                   },
-                   {
-                     'borough' => 'Putnam',
-                     'lat' => '41.415283',
-                     'lon' => '-73.95809',
-                     'name' => 'Cold Spring',
-                     'stop_id' => '43'
+                     'lat' => '40.950496',
+                     'lon' => '-73.899062',
+                     'name' => 'Glenwood',
+                     'stop_id' => '19'
                    },
                    {
                      'borough' => 'Dutchess',
@@ -197,6 +155,48 @@ $VAR1 = {
                      'stop_id' => '51'
                    },
                    {
+                     'borough' => 'Westchester',
+                     'lat' => '41.285962',
+                     'lon' => '-73.93042',
+                     'name' => 'Peekskill',
+                     'stop_id' => '39'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.854252',
+                     'lon' => '-73.919583',
+                     'name' => 'Morris Heights',
+                     'stop_id' => '9'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.862248',
+                     'lon' => '-73.91312',
+                     'name' => 'University Heights',
+                     'stop_id' => '10'
+                   },
+                   {
+                     'borough' => 'Putnam',
+                     'lat' => '41.38178',
+                     'lon' => '-73.947202',
+                     'name' => 'Garrison',
+                     'stop_id' => '42'
+                   },
+                   {
+                     'borough' => 'Putnam',
+                     'lat' => '41.415283',
+                     'lon' => '-73.95809',
+                     'name' => 'Cold Spring',
+                     'stop_id' => '43'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.246259',
+                     'lon' => '-73.921884',
+                     'name' => 'Cortlandt',
+                     'stop_id' => '37'
+                   },
+                   {
                      'borough' => 'Putnam',
                      'lat' => '41.332601',
                      'lon' => '-73.970426',
@@ -213,11 +213,18 @@ $VAR1 = {
                  ],
           '2' => [
                    {
-                     'borough' => 'Westchester',
-                     'lat' => '41.049806',
-                     'lon' => '-73.773142',
-                     'name' => 'North White Plains',
-                     'stop_id' => '76'
+                     'borough' => 'Manhattan',
+                     'lat' => '40.752998',
+                     'lon' => '-73.977056',
+                     'name' => 'Grand Central',
+                     'stop_id' => '1'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.805157',
+                     'lon' => '-73.939149',
+                     'name' => 'Harlem-125th St.',
+                     'stop_id' => '4'
                    },
                    {
                      'borough' => 'Westchester',
@@ -228,10 +235,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '41.010333',
-                     'lon' => '-73.796407',
-                     'name' => 'Hartsdale',
-                     'stop_id' => '72'
+                     'lat' => '41.049806',
+                     'lon' => '-73.773142',
+                     'name' => 'North White Plains',
+                     'stop_id' => '76'
                    },
                    {
                      'borough' => 'Westchester',
@@ -242,6 +249,20 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
+                     'lat' => '41.010333',
+                     'lon' => '-73.796407',
+                     'name' => 'Hartsdale',
+                     'stop_id' => '72'
+                   },
+                   {
+                     'borough' => 'Putnam',
+                     'lat' => '41.413203',
+                     'lon' => '-73.623787',
+                     'name' => 'Southeast',
+                     'stop_id' => '94'
+                   },
+                   {
+                     'borough' => 'Westchester',
                      'lat' => '40.958997',
                      'lon' => '-73.820564',
                      'name' => 'Crestwood',
@@ -249,10 +270,17 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '40.949393',
-                     'lon' => '-73.830166',
-                     'name' => 'Tuckahoe',
-                     'stop_id' => '66'
+                     'lat' => '40.912142',
+                     'lon' => '-73.851129',
+                     'name' => 'Mt Vernon West',
+                     'stop_id' => '62'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.8615',
+                     'lon' => '-73.89058',
+                     'name' => 'Fordham',
+                     'stop_id' => '56'
                    },
                    {
                      'borough' => 'Westchester',
@@ -270,80 +298,24 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '40.912142',
-                     'lon' => '-73.851129',
-                     'name' => 'Mt Vernon West',
-                     'stop_id' => '62'
+                     'lat' => '40.949393',
+                     'lon' => '-73.830166',
+                     'name' => 'Tuckahoe',
+                     'stop_id' => '66'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.905936',
-                     'lon' => '-73.85568',
-                     'name' => 'Wakefield',
-                     'stop_id' => '61'
+                     'borough' => 'Westchester',
+                     'lat' => '41.208242',
+                     'lon' => '-73.729778',
+                     'name' => 'Mount Kisco',
+                     'stop_id' => '84'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.895361',
-                     'lon' => '-73.862916',
-                     'name' => 'Woodlawn',
-                     'stop_id' => '59'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.878569',
-                     'lon' => '-73.871064',
-                     'name' => 'Williams Bridge',
-                     'stop_id' => '58'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.866555',
-                     'lon' => '-73.883109',
-                     'name' => 'Botanical Garden',
-                     'stop_id' => '57'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8615',
-                     'lon' => '-73.89058',
-                     'name' => 'Fordham',
-                     'stop_id' => '56'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.805157',
-                     'lon' => '-73.939149',
-                     'name' => 'Harlem-125th St.',
-                     'stop_id' => '4'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.752998',
-                     'lon' => '-73.977056',
-                     'name' => 'Grand Central',
-                     'stop_id' => '1'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.847301',
-                     'lon' => '-73.89955',
-                     'name' => 'Tremont',
-                     'stop_id' => '55'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.825761',
-                     'lon' => '-73.915231',
-                     'name' => 'Melrose',
-                     'stop_id' => '54'
-                   },
-                   {
-                     'borough' => 'Putnam',
-                     'lat' => '41.413203',
-                     'lon' => '-73.623787',
-                     'name' => 'Southeast',
-                     'stop_id' => '94'
+                     'borough' => 'Westchester',
+                     'lat' => '41.158015',
+                     'lon' => '-73.774885',
+                     'name' => 'Chappaqua',
+                     'stop_id' => '83'
                    },
                    {
                      'borough' => 'Putnam',
@@ -351,20 +323,6 @@ $VAR1 = {
                      'lon' => '-73.619802',
                      'name' => 'Brewster',
                      'stop_id' => '91'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.347722',
-                     'lon' => '-73.662269',
-                     'name' => 'Croton Falls',
-                     'stop_id' => '90'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.325775',
-                     'lon' => '-73.659061',
-                     'name' => 'Purdy\'s',
-                     'stop_id' => '89'
                    },
                    {
                      'borough' => 'Westchester',
@@ -382,27 +340,6 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '41.237316',
-                     'lon' => '-73.699936',
-                     'name' => 'Bedford Hills',
-                     'stop_id' => '85'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.208242',
-                     'lon' => '-73.729778',
-                     'name' => 'Mount Kisco',
-                     'stop_id' => '84'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.158015',
-                     'lon' => '-73.774885',
-                     'name' => 'Chappaqua',
-                     'stop_id' => '83'
-                   },
-                   {
-                     'borough' => 'Westchester',
                      'lat' => '41.135222',
                      'lon' => '-73.792661',
                      'name' => 'Pleasantville',
@@ -416,6 +353,55 @@ $VAR1 = {
                      'stop_id' => '80'
                    },
                    {
+                     'borough' => 'Bronx',
+                     'lat' => '40.895361',
+                     'lon' => '-73.862916',
+                     'name' => 'Woodlawn',
+                     'stop_id' => '59'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.878569',
+                     'lon' => '-73.871064',
+                     'name' => 'Williams Bridge',
+                     'stop_id' => '58'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.325775',
+                     'lon' => '-73.659061',
+                     'name' => 'Purdy\'s',
+                     'stop_id' => '89'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.347722',
+                     'lon' => '-73.662269',
+                     'name' => 'Croton Falls',
+                     'stop_id' => '90'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.237316',
+                     'lon' => '-73.699936',
+                     'name' => 'Bedford Hills',
+                     'stop_id' => '85'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.905936',
+                     'lon' => '-73.85568',
+                     'name' => 'Wakefield',
+                     'stop_id' => '61'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.866555',
+                     'lon' => '-73.883109',
+                     'name' => 'Botanical Garden',
+                     'stop_id' => '57'
+                   },
+                   {
                      'borough' => 'Westchester',
                      'lat' => '41.072819',
                      'lon' => '-73.772599',
@@ -423,32 +409,32 @@ $VAR1 = {
                      'stop_id' => '78'
                    },
                    {
-                     'borough' => 'Westchester',
-                     'lat' => '41.095877',
-                     'lon' => '-73.793822',
-                     'name' => 'Mount Pleasant',
-                     'stop_id' => '79'
+                     'borough' => 'Bronx',
+                     'lat' => '40.825761',
+                     'lon' => '-73.915231',
+                     'name' => 'Melrose',
+                     'stop_id' => '54'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.847301',
+                     'lon' => '-73.89955',
+                     'name' => 'Tremont',
+                     'stop_id' => '55'
+                   },
+                   {
+                     'borough' => 'Putnam',
+                     'lat' => '41.511827',
+                     'lon' => '-73.604584',
+                     'name' => 'Patterson',
+                     'stop_id' => '97'
                    },
                    {
                      'borough' => 'Dutchess',
-                     'lat' => '41.814722',
-                     'lon' => '-73.562197',
-                     'name' => 'Wassaic',
-                     'stop_id' => '177'
-                   },
-                   {
-                     'borough' => 'Dutchess',
-                     'lat' => '41.779938',
-                     'lon' => '-73.558204',
-                     'name' => 'Tenmile River',
-                     'stop_id' => '176'
-                   },
-                   {
-                     'borough' => 'Dutchess',
-                     'lat' => '41.740401',
-                     'lon' => '-73.576502',
-                     'name' => 'Dover Plains',
-                     'stop_id' => '101'
+                     'lat' => '41.564205',
+                     'lon' => '-73.600524',
+                     'name' => 'Pawling',
+                     'stop_id' => '98'
                    },
                    {
                      'borough' => 'Dutchess',
@@ -459,17 +445,31 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Dutchess',
-                     'lat' => '41.564205',
-                     'lon' => '-73.600524',
-                     'name' => 'Pawling',
-                     'stop_id' => '98'
+                     'lat' => '41.740401',
+                     'lon' => '-73.576502',
+                     'name' => 'Dover Plains',
+                     'stop_id' => '101'
                    },
                    {
-                     'borough' => 'Putnam',
-                     'lat' => '41.511827',
-                     'lon' => '-73.604584',
-                     'name' => 'Patterson',
-                     'stop_id' => '97'
+                     'borough' => 'Dutchess',
+                     'lat' => '41.779938',
+                     'lon' => '-73.558204',
+                     'name' => 'Tenmile River',
+                     'stop_id' => '176'
+                   },
+                   {
+                     'borough' => 'Dutchess',
+                     'lat' => '41.814722',
+                     'lon' => '-73.562197',
+                     'name' => 'Wassaic',
+                     'stop_id' => '177'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.095877',
+                     'lon' => '-73.793822',
+                     'name' => 'Mount Pleasant',
+                     'stop_id' => '79'
                    },
                    {
                      'borough' => 'Dutchess',
@@ -488,32 +488,25 @@ $VAR1 = {
                  ],
           '3' => [
                    {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.752998',
+                     'lon' => '-73.977056',
+                     'name' => 'Grand Central',
+                     'stop_id' => '1'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.805157',
+                     'lon' => '-73.939149',
+                     'name' => 'Harlem-125th St.',
+                     'stop_id' => '4'
+                   },
+                   {
                      'borough' => 'Fairfield',
                      'lat' => '41.046611',
                      'lon' => '-73.542846',
                      'name' => 'Stamford',
                      'stop_id' => '124'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.033817',
-                     'lon' => '-73.565859',
-                     'name' => 'Old Greenwich',
-                     'stop_id' => '121'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.031682',
-                     'lon' => '-73.588173',
-                     'name' => 'Riverside',
-                     'stop_id' => '120'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.030171',
-                     'lon' => '-73.598306',
-                     'name' => 'Cos Cob',
-                     'stop_id' => '118'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -524,17 +517,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '41.000732',
-                     'lon' => '-73.6647',
-                     'name' => 'Port Chester',
-                     'stop_id' => '115'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.985922',
-                     'lon' => '-73.682553',
-                     'name' => 'Rye',
-                     'stop_id' => '114'
+                     'lat' => '40.911605',
+                     'lon' => '-73.783807',
+                     'name' => 'New Rochelle',
+                     'stop_id' => '108'
                    },
                    {
                      'borough' => 'Westchester',
@@ -545,10 +531,31 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '40.954061',
-                     'lon' => '-73.736125',
-                     'name' => 'Mamaroneck',
-                     'stop_id' => '111'
+                     'lat' => '40.985922',
+                     'lon' => '-73.682553',
+                     'name' => 'Rye',
+                     'stop_id' => '114'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.8615',
+                     'lon' => '-73.89058',
+                     'name' => 'Fordham',
+                     'stop_id' => '56'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.000732',
+                     'lon' => '-73.6647',
+                     'name' => 'Port Chester',
+                     'stop_id' => '115'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.912161',
+                     'lon' => '-73.832185',
+                     'name' => 'Mt Vernon East ',
+                     'stop_id' => '105'
                    },
                    {
                      'borough' => 'Westchester',
@@ -559,59 +566,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '40.911605',
-                     'lon' => '-73.783807',
-                     'name' => 'New Rochelle',
-                     'stop_id' => '108'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.910321',
-                     'lon' => '-73.810242',
-                     'name' => 'Pelham',
-                     'stop_id' => '106'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.912161',
-                     'lon' => '-73.832185',
-                     'name' => 'Mt Vernon East ',
-                     'stop_id' => '105'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8615',
-                     'lon' => '-73.89058',
-                     'name' => 'Fordham',
-                     'stop_id' => '56'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.805157',
-                     'lon' => '-73.939149',
-                     'name' => 'Harlem-125th St.',
-                     'stop_id' => '4'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.752998',
-                     'lon' => '-73.977056',
-                     'name' => 'Grand Central',
-                     'stop_id' => '1'
-                   },
-                   {
-                     'borough' => 'New Haven',
-                     'lat' => '41.296501',
-                     'lon' => '-72.92829',
-                     'name' => 'New Haven',
-                     'stop_id' => '149'
-                   },
-                   {
-                     'borough' => 'New Haven',
-                     'lat' => '41.223231',
-                     'lon' => '-73.057647',
-                     'name' => 'Milford',
-                     'stop_id' => '145'
+                     'lat' => '40.954061',
+                     'lon' => '-73.736125',
+                     'name' => 'Mamaroneck',
+                     'stop_id' => '111'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -621,60 +579,11 @@ $VAR1 = {
                      'stop_id' => '140'
                    },
                    {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.069041',
-                     'lon' => '-73.49788',
-                     'name' => 'Noroton Heights',
-                     'stop_id' => '127'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.076913',
-                     'lon' => '-73.472966',
-                     'name' => 'Darien',
-                     'stop_id' => '128'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.077456',
-                     'lon' => '-73.445527',
-                     'name' => 'Rowayton',
-                     'stop_id' => '129'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.09673',
-                     'lon' => '-73.421132',
-                     'name' => 'South Norwalk',
-                     'stop_id' => '131'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.103996',
-                     'lon' => '-73.404588',
-                     'name' => 'East Norwalk',
-                     'stop_id' => '133'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.118928',
-                     'lon' => '-73.371413',
-                     'name' => 'Westport',
-                     'stop_id' => '134'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.122265',
-                     'lon' => '-73.315408',
-                     'name' => 'Green\'s Farms',
-                     'stop_id' => '136'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.134844',
-                     'lon' => '-73.28897',
-                     'name' => 'Southport',
-                     'stop_id' => '137'
+                     'borough' => 'Westchester',
+                     'lat' => '40.910321',
+                     'lon' => '-73.810242',
+                     'name' => 'Pelham',
+                     'stop_id' => '106'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -691,6 +600,48 @@ $VAR1 = {
                      'stop_id' => '188'
                    },
                    {
+                     'borough' => 'New Haven',
+                     'lat' => '41.296501',
+                     'lon' => '-72.92829',
+                     'name' => 'New Haven',
+                     'stop_id' => '149'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.030171',
+                     'lon' => '-73.598306',
+                     'name' => 'Cos Cob',
+                     'stop_id' => '118'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.031682',
+                     'lon' => '-73.588173',
+                     'name' => 'Riverside',
+                     'stop_id' => '120'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.033817',
+                     'lon' => '-73.565859',
+                     'name' => 'Old Greenwich',
+                     'stop_id' => '121'
+                   },
+                   {
+                     'borough' => 'New Haven',
+                     'lat' => '41.223231',
+                     'lon' => '-73.057647',
+                     'name' => 'Milford',
+                     'stop_id' => '145'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.09673',
+                     'lon' => '-73.421132',
+                     'name' => 'South Norwalk',
+                     'stop_id' => '131'
+                   },
+                   {
                      'borough' => 'Fairfield',
                      'lat' => '41.194255',
                      'lon' => '-73.131532',
@@ -703,6 +654,55 @@ $VAR1 = {
                      'lon' => '-72.963488',
                      'name' => 'West Haven',
                      'stop_id' => '190'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.118928',
+                     'lon' => '-73.371413',
+                     'name' => 'Westport',
+                     'stop_id' => '134'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.076913',
+                     'lon' => '-73.472966',
+                     'name' => 'Darien',
+                     'stop_id' => '128'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.103996',
+                     'lon' => '-73.404588',
+                     'name' => 'East Norwalk',
+                     'stop_id' => '133'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.134844',
+                     'lon' => '-73.28897',
+                     'name' => 'Southport',
+                     'stop_id' => '137'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.122265',
+                     'lon' => '-73.315408',
+                     'name' => 'Green\'s Farms',
+                     'stop_id' => '136'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.069041',
+                     'lon' => '-73.49788',
+                     'name' => 'Noroton Heights',
+                     'stop_id' => '127'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.077456',
+                     'lon' => '-73.445527',
+                     'name' => 'Rowayton',
+                     'stop_id' => '129'
                    },
                    {
                      'borough' => 'New Haven',
@@ -756,25 +756,18 @@ $VAR1 = {
                      'stop_id' => '157'
                    },
                    {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.033817',
-                     'lon' => '-73.565859',
-                     'name' => 'Old Greenwich',
-                     'stop_id' => '121'
+                     'borough' => 'Manhattan',
+                     'lat' => '40.752998',
+                     'lon' => '-73.977056',
+                     'name' => 'Grand Central',
+                     'stop_id' => '1'
                    },
                    {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.031682',
-                     'lon' => '-73.588173',
-                     'name' => 'Riverside',
-                     'stop_id' => '120'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.030171',
-                     'lon' => '-73.598306',
-                     'name' => 'Cos Cob',
-                     'stop_id' => '118'
+                     'borough' => 'Manhattan',
+                     'lat' => '40.805157',
+                     'lon' => '-73.939149',
+                     'name' => 'Harlem-125th St.',
+                     'stop_id' => '4'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -785,31 +778,38 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '41.000732',
-                     'lon' => '-73.6647',
-                     'name' => 'Port Chester',
-                     'stop_id' => '115'
-                   },
-                   {
-                     'borough' => 'Westchester',
                      'lat' => '40.985922',
                      'lon' => '-73.682553',
                      'name' => 'Rye',
                      'stop_id' => '114'
                    },
                    {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.805157',
-                     'lon' => '-73.939149',
-                     'name' => 'Harlem-125th St.',
-                     'stop_id' => '4'
+                     'borough' => 'Westchester',
+                     'lat' => '41.000732',
+                     'lon' => '-73.6647',
+                     'name' => 'Port Chester',
+                     'stop_id' => '115'
                    },
                    {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.752998',
-                     'lon' => '-73.977056',
-                     'name' => 'Grand Central',
-                     'stop_id' => '1'
+                     'borough' => 'Fairfield',
+                     'lat' => '41.030171',
+                     'lon' => '-73.598306',
+                     'name' => 'Cos Cob',
+                     'stop_id' => '118'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.031682',
+                     'lon' => '-73.588173',
+                     'name' => 'Riverside',
+                     'stop_id' => '120'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.033817',
+                     'lon' => '-73.565859',
+                     'name' => 'Old Greenwich',
+                     'stop_id' => '121'
                    },
                    {
                      'borough' => 'Bronx',
@@ -827,17 +827,24 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '40.910321',
-                     'lon' => '-73.810242',
-                     'name' => 'Pelham',
-                     'stop_id' => '106'
-                   },
-                   {
-                     'borough' => 'Westchester',
                      'lat' => '40.911605',
                      'lon' => '-73.783807',
                      'name' => 'New Rochelle',
                      'stop_id' => '108'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.969432',
+                     'lon' => '-73.712964',
+                     'name' => 'Harrison',
+                     'stop_id' => '112'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.910321',
+                     'lon' => '-73.810242',
+                     'name' => 'Pelham',
+                     'stop_id' => '106'
                    },
                    {
                      'borough' => 'Westchester',
@@ -852,13 +859,6 @@ $VAR1 = {
                      'lon' => '-73.736125',
                      'name' => 'Mamaroneck',
                      'stop_id' => '111'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.969432',
-                     'lon' => '-73.712964',
-                     'name' => 'Harrison',
-                     'stop_id' => '112'
                    }
                  ],
           '5' => [
@@ -920,17 +920,24 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Fairfield',
-                     'lat' => '41.077456',
-                     'lon' => '-73.445527',
-                     'name' => 'Rowayton',
-                     'stop_id' => '129'
+                     'lat' => '41.046611',
+                     'lon' => '-73.542846',
+                     'name' => 'Stamford',
+                     'stop_id' => '124'
                    },
                    {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.076913',
-                     'lon' => '-73.472966',
-                     'name' => 'Darien',
-                     'stop_id' => '128'
+                     'borough' => 'Manhattan',
+                     'lat' => '40.752998',
+                     'lon' => '-73.977056',
+                     'name' => 'Grand Central',
+                     'stop_id' => '1'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.805157',
+                     'lon' => '-73.939149',
+                     'name' => 'Harlem-125th St.',
+                     'stop_id' => '4'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -941,24 +948,17 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Fairfield',
-                     'lat' => '41.046611',
-                     'lon' => '-73.542846',
-                     'name' => 'Stamford',
-                     'stop_id' => '124'
+                     'lat' => '41.076913',
+                     'lon' => '-73.472966',
+                     'name' => 'Darien',
+                     'stop_id' => '128'
                    },
                    {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.805157',
-                     'lon' => '-73.939149',
-                     'name' => 'Harlem-125th St.',
-                     'stop_id' => '4'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.752998',
-                     'lon' => '-73.977056',
-                     'name' => 'Grand Central',
-                     'stop_id' => '1'
+                     'borough' => 'Fairfield',
+                     'lat' => '41.077456',
+                     'lon' => '-73.445527',
+                     'name' => 'Rowayton',
+                     'stop_id' => '129'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -1020,17 +1020,17 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Fairfield',
-                     'lat' => '41.046611',
-                     'lon' => '-73.542846',
-                     'name' => 'Stamford',
-                     'stop_id' => '124'
-                   },
-                   {
-                     'borough' => 'Fairfield',
                      'lat' => '41.194255',
                      'lon' => '-73.131532',
                      'name' => 'Stratford',
                      'stop_id' => '143'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.046611',
+                     'lon' => '-73.542846',
+                     'name' => 'Stamford',
+                     'stop_id' => '124'
                    }
                  ]
         };

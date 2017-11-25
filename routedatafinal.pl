@@ -1465,6 +1465,83 @@ $VAR1 = {
                  ],
           '5' => [
                    {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.666235',
+                     'lon' => '-73.884079',
+                     'name' => 'New Lots Av',
+                     'stop_id' => '257'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.665449',
+                     'lon' => '-73.889395',
+                     'name' => 'Van Siclen Av',
+                     'stop_id' => '256'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.664635',
+                     'lon' => '-73.894895',
+                     'name' => 'Pennsylvania Av',
+                     'stop_id' => '255'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.663515',
+                     'lon' => '-73.902447',
+                     'name' => 'Junius St',
+                     'stop_id' => '254'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.662549',
+                     'lon' => '-73.908946',
+                     'name' => 'Rockaway Av',
+                     'stop_id' => '253'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.661453',
+                     'lon' => '-73.916327',
+                     'name' => 'Saratoga Av',
+                     'stop_id' => '252'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.664717',
+                     'lon' => '-73.92261',
+                     'name' => 'Sutter Av - Rutland Rd',
+                     'stop_id' => '251'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.668897',
+                     'lon' => '-73.932942',
+                     'name' => 'Crown Hts - Utica Av',
+                     'stop_id' => '250'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.669399',
+                     'lon' => '-73.942161',
+                     'name' => 'Kingston Av',
+                     'stop_id' => '249'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.669847',
+                     'lon' => '-73.950466',
+                     'name' => 'Nostrand Av',
+                     'stop_id' => '248'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.903125',
+                     'lon' => '-73.85062',
+                     'name' => 'Wakefield - 241 St',
+                     'stop_id' => '201'
+                   },
+                   {
                      'borough' => 'Bronx',
                      'lat' => '40.8883',
                      'lon' => '-73.830834',
@@ -1892,76 +1969,6 @@ $VAR1 = {
                      'stop_id' => '247'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.666235',
-                     'lon' => '-73.884079',
-                     'name' => 'New Lots Av',
-                     'stop_id' => '257'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.665449',
-                     'lon' => '-73.889395',
-                     'name' => 'Van Siclen Av',
-                     'stop_id' => '256'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.664635',
-                     'lon' => '-73.894895',
-                     'name' => 'Pennsylvania Av',
-                     'stop_id' => '255'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.663515',
-                     'lon' => '-73.902447',
-                     'name' => 'Junius St',
-                     'stop_id' => '254'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.662549',
-                     'lon' => '-73.908946',
-                     'name' => 'Rockaway Av',
-                     'stop_id' => '253'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.661453',
-                     'lon' => '-73.916327',
-                     'name' => 'Saratoga Av',
-                     'stop_id' => '252'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.664717',
-                     'lon' => '-73.92261',
-                     'name' => 'Sutter Av - Rutland Rd',
-                     'stop_id' => '251'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.668897',
-                     'lon' => '-73.932942',
-                     'name' => 'Crown Hts - Utica Av',
-                     'stop_id' => '250'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.669399',
-                     'lon' => '-73.942161',
-                     'name' => 'Kingston Av',
-                     'stop_id' => '249'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.669847',
-                     'lon' => '-73.950466',
-                     'name' => 'Nostrand Av',
-                     'stop_id' => '248'
-                   },
-                   {
                      'borough' => 'Bronx',
                      'lat' => '40.898379',
                      'lon' => '-73.854376',
@@ -2023,13 +2030,6 @@ $VAR1 = {
                      'lon' => '-73.868457',
                      'name' => 'Bronx Park East',
                      'stop_id' => '212'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.903125',
-                     'lon' => '-73.85062',
-                     'name' => 'Wakefield - 241 St',
-                     'stop_id' => '201'
                    }
                  ],
           '6' => [
@@ -2777,6 +2777,62 @@ $VAR1 = {
                   ],
           'A' => [
                    {
+                     'borough' => 'Queens',
+                     'lat' => '40.685951',
+                     'lon' => '-73.825798',
+                     'name' => 'Ozone Park - Lefferts Blvd',
+                     'stop_id' => 'A65'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.684331',
+                     'lon' => '-73.832163',
+                     'name' => '111 St',
+                     'stop_id' => 'A64'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.681711',
+                     'lon' => '-73.837683',
+                     'name' => '104 St',
+                     'stop_id' => 'A63'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.668234',
+                     'lon' => '-73.834058',
+                     'name' => 'Aqueduct Racetrack',
+                     'stop_id' => 'H01'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.580903',
+                     'lon' => '-73.835592',
+                     'name' => 'Rockaway Park - Beach 116 St',
+                     'stop_id' => 'H15'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.583209',
+                     'lon' => '-73.827559',
+                     'name' => 'Beach 105 St',
+                     'stop_id' => 'H14'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.585307',
+                     'lon' => '-73.820558',
+                     'name' => 'Beach 98 St',
+                     'stop_id' => 'H13'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.588034',
+                     'lon' => '-73.813641',
+                     'name' => 'Beach 90 St',
+                     'stop_id' => 'H12'
+                   },
+                   {
                      'borough' => 'Manhattan',
                      'lat' => '40.868072',
                      'lon' => '-73.919899',
@@ -3181,65 +3237,16 @@ $VAR1 = {
                      'lon' => '-73.755405',
                      'name' => 'Far Rockaway - Mott Av',
                      'stop_id' => 'H11'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.685951',
-                     'lon' => '-73.825798',
-                     'name' => 'Ozone Park - Lefferts Blvd',
-                     'stop_id' => 'A65'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.684331',
-                     'lon' => '-73.832163',
-                     'name' => '111 St',
-                     'stop_id' => 'A64'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.681711',
-                     'lon' => '-73.837683',
-                     'name' => '104 St',
-                     'stop_id' => 'A63'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.668234',
-                     'lon' => '-73.834058',
-                     'name' => 'Aqueduct Racetrack',
-                     'stop_id' => 'H01'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.580903',
-                     'lon' => '-73.835592',
-                     'name' => 'Rockaway Park - Beach 116 St',
-                     'stop_id' => 'H15'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.583209',
-                     'lon' => '-73.827559',
-                     'name' => 'Beach 105 St',
-                     'stop_id' => 'H14'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.585307',
-                     'lon' => '-73.820558',
-                     'name' => 'Beach 98 St',
-                     'stop_id' => 'H13'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.588034',
-                     'lon' => '-73.813641',
-                     'name' => 'Beach 90 St',
-                     'stop_id' => 'H12'
                    }
                  ],
           'B' => [
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.824783',
+                     'lon' => '-73.944216',
+                     'name' => '145 St',
+                     'stop_id' => 'A12'
+                   },
                    {
                      'borough' => 'Bronx',
                      'lat' => '40.873244',
@@ -3498,13 +3505,6 @@ $VAR1 = {
                      'lon' => '-73.961376',
                      'name' => 'Brighton Beach',
                      'stop_id' => 'D40'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.824783',
-                     'lon' => '-73.944216',
-                     'name' => '145 St',
-                     'stop_id' => 'A12'
                    }
                  ],
           'C' => [
@@ -5252,41 +5252,6 @@ $VAR1 = {
           'M' => [
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.69943',
-                     'lon' => '-73.912385',
-                     'name' => 'Myrtle - Wyckoff Avs',
-                     'stop_id' => 'M08'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.702762',
-                     'lon' => '-73.90774',
-                     'name' => 'Seneca Av',
-                     'stop_id' => 'M06'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.704423',
-                     'lon' => '-73.903077',
-                     'name' => 'Forest Av',
-                     'stop_id' => 'M05'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.706186',
-                     'lon' => '-73.895877',
-                     'name' => 'Fresh Pond Rd',
-                     'stop_id' => 'M04'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.711396',
-                     'lon' => '-73.889601',
-                     'name' => 'Middle Village - Metropolitan Av',
-                     'stop_id' => 'M01'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
                      'lat' => '40.679498',
                      'lon' => '-73.904512',
                      'name' => 'Broadway Jct',
@@ -5361,6 +5326,62 @@ $VAR1 = {
                      'lon' => '-73.987437',
                      'name' => 'Essex St',
                      'stop_id' => 'M18'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.72028',
+                     'lon' => '-73.993915',
+                     'name' => 'Bowery',
+                     'stop_id' => 'M19'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.718092',
+                     'lon' => '-73.999892',
+                     'name' => 'Canal St',
+                     'stop_id' => 'M20'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.713243',
+                     'lon' => '-74.003401',
+                     'name' => 'Chambers St',
+                     'stop_id' => 'M21'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.69943',
+                     'lon' => '-73.912385',
+                     'name' => 'Myrtle - Wyckoff Avs',
+                     'stop_id' => 'M08'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.702762',
+                     'lon' => '-73.90774',
+                     'name' => 'Seneca Av',
+                     'stop_id' => 'M06'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.704423',
+                     'lon' => '-73.903077',
+                     'name' => 'Forest Av',
+                     'stop_id' => 'M05'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.706186',
+                     'lon' => '-73.895877',
+                     'name' => 'Fresh Pond Rd',
+                     'stop_id' => 'M04'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.711396',
+                     'lon' => '-73.889601',
+                     'name' => 'Middle Village - Metropolitan Av',
+                     'stop_id' => 'M01'
                    },
                    {
                      'borough' => 'Queens',
@@ -5529,30 +5550,16 @@ $VAR1 = {
                      'lon' => '-73.989938',
                      'name' => '2 Av',
                      'stop_id' => 'F14'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.72028',
-                     'lon' => '-73.993915',
-                     'name' => 'Bowery',
-                     'stop_id' => 'M19'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.718092',
-                     'lon' => '-73.999892',
-                     'name' => 'Canal St',
-                     'stop_id' => 'M20'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.713243',
-                     'lon' => '-74.003401',
-                     'name' => 'Chambers St',
-                     'stop_id' => 'M21'
                    }
                  ],
           'N' => [
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.718383',
+                     'lon' => '-74.00046',
+                     'name' => 'Canal St',
+                     'stop_id' => 'Q01'
+                   },
                    {
                      'borough' => 'Queens',
                      'lat' => '40.775036',
@@ -5870,13 +5877,6 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.718383',
-                     'lon' => '-74.00046',
-                     'name' => 'Canal St',
-                     'stop_id' => 'Q01'
-                   },
-                   {
-                     'borough' => 'Manhattan',
                      'lat' => '40.784318',
                      'lon' => '-73.947152',
                      'name' => '96 St',
@@ -5905,6 +5905,90 @@ $VAR1 = {
                    }
                  ],
           'Q' => [
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.592721',
+                     'lon' => '-73.97823',
+                     'name' => '86 St',
+                     'stop_id' => 'N10'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.597473',
+                     'lon' => '-73.979137',
+                     'name' => 'Avenue U',
+                     'stop_id' => 'N09'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.603923',
+                     'lon' => '-73.980353',
+                     'name' => 'Kings Hwy',
+                     'stop_id' => 'N08'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.611815',
+                     'lon' => '-73.981848',
+                     'name' => 'Bay Pkwy',
+                     'stop_id' => 'N07'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.61741',
+                     'lon' => '-73.985026',
+                     'name' => '20 Av',
+                     'stop_id' => 'N06'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.620671',
+                     'lon' => '-73.990414',
+                     'name' => '18 Av',
+                     'stop_id' => 'N05'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.624842',
+                     'lon' => '-73.996353',
+                     'name' => 'New Utrecht Av',
+                     'stop_id' => 'N04'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.631386',
+                     'lon' => '-74.005351',
+                     'name' => 'Fort Hamilton Pkwy',
+                     'stop_id' => 'N03'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.635064',
+                     'lon' => '-74.011719',
+                     'name' => '8 Av',
+                     'stop_id' => 'N02'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.641362',
+                     'lon' => '-74.017881',
+                     'name' => '59 St',
+                     'stop_id' => 'R41'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.655144',
+                     'lon' => '-74.003549',
+                     'name' => '36 St',
+                     'stop_id' => 'R36'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.683666',
+                     'lon' => '-73.97881',
+                     'name' => 'Atlantic Av - Barclays Ctr',
+                     'stop_id' => 'R31'
+                   },
                    {
                      'borough' => 'Manhattan',
                      'lat' => '40.784318',
@@ -6142,90 +6226,6 @@ $VAR1 = {
                      'lon' => '-73.981233',
                      'name' => 'Coney Island - Stillwell Av',
                      'stop_id' => 'D43'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.592721',
-                     'lon' => '-73.97823',
-                     'name' => '86 St',
-                     'stop_id' => 'N10'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.597473',
-                     'lon' => '-73.979137',
-                     'name' => 'Avenue U',
-                     'stop_id' => 'N09'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.603923',
-                     'lon' => '-73.980353',
-                     'name' => 'Kings Hwy',
-                     'stop_id' => 'N08'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.611815',
-                     'lon' => '-73.981848',
-                     'name' => 'Bay Pkwy',
-                     'stop_id' => 'N07'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.61741',
-                     'lon' => '-73.985026',
-                     'name' => '20 Av',
-                     'stop_id' => 'N06'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.620671',
-                     'lon' => '-73.990414',
-                     'name' => '18 Av',
-                     'stop_id' => 'N05'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.624842',
-                     'lon' => '-73.996353',
-                     'name' => 'New Utrecht Av',
-                     'stop_id' => 'N04'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.631386',
-                     'lon' => '-74.005351',
-                     'name' => 'Fort Hamilton Pkwy',
-                     'stop_id' => 'N03'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.635064',
-                     'lon' => '-74.011719',
-                     'name' => '8 Av',
-                     'stop_id' => 'N02'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.641362',
-                     'lon' => '-74.017881',
-                     'name' => '59 St',
-                     'stop_id' => 'R41'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.655144',
-                     'lon' => '-74.003549',
-                     'name' => '36 St',
-                     'stop_id' => 'R36'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.683666',
-                     'lon' => '-73.97881',
-                     'name' => 'Atlantic Av - Barclays Ctr',
-                     'stop_id' => 'R31'
                    }
                  ],
           'R' => [

@@ -9,27 +9,6 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
-                     'name' => 'Woodside',
-                     'stop_id' => 'WDD'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
-                     'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
-                     'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
-                   },
-                   {
-                     'borough' => 'Queens',
                      'lat' => '40.6996',
                      'lon' => '-73.80853',
                      'name' => 'Jamaica',
@@ -127,6 +106,20 @@ $VAR1 = {
                      'stop_id' => 'BTA'
                    },
                    {
+                     'borough' => 'Queens',
+                     'lat' => '40.71957',
+                     'lon' => '-73.84481',
+                     'name' => 'Forest Hills',
+                     'stop_id' => 'FHL'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.70964',
+                     'lon' => '-73.83089',
+                     'name' => 'Kew Gardens',
+                     'stop_id' => 'KGN'
+                   },
+                   {
                      'borough' => 'Nassau',
                      'lat' => '40.65605',
                      'lon' => '-73.67607',
@@ -134,11 +127,46 @@ $VAR1 = {
                      'stop_id' => 'LYN'
                    },
                    {
+                     'borough' => 'Queens',
+                     'lat' => '40.74584',
+                     'lon' => '-73.90297',
+                     'name' => 'Woodside',
+                     'stop_id' => 'WDD'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.69118',
+                     'lon' => '-73.76551',
+                     'name' => 'St. Albans',
+                     'stop_id' => 'SAB'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.684901',
+                     'lon' => '-73.97768',
+                     'name' => 'Atlantic Terminal',
+                     'stop_id' => 'ATL'
+                   },
+                   {
                      'borough' => 'Nassau',
                      'lat' => '40.66151',
                      'lon' => '-73.70476',
                      'name' => 'Valley Stream',
                      'stop_id' => 'VSM'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.67838',
+                     'lon' => '-73.94822',
+                     'name' => 'Nostrand Avenue',
+                     'stop_id' => 'NAV'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.6758',
+                     'lon' => '-73.90281',
+                     'name' => 'East New York',
+                     'stop_id' => 'ENY'
                    },
                    {
                      'borough' => 'Queens',
@@ -162,32 +190,67 @@ $VAR1 = {
                      'stop_id' => 'LMR'
                    },
                    {
-                     'borough' => 'Queens',
-                     'lat' => '40.69118',
-                     'lon' => '-73.76551',
-                     'name' => 'St. Albans',
-                     'stop_id' => 'SAB'
+                     'borough' => 'Suffolk',
+                     'lat' => '40.82117',
+                     'lon' => '-72.70427',
+                     'name' => 'Speonk',
+                     'stop_id' => 'SPK'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
-                     'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'borough' => 'Suffolk',
+                     'lat' => '40.79898',
+                     'lon' => '-72.86442',
+                     'name' => 'Mastic Shirley',
+                     'stop_id' => 'MSY'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
-                     'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'borough' => 'Suffolk',
+                     'lat' => '40.76187',
+                     'lon' => '-73.01574',
+                     'name' => 'Patchogue',
+                     'stop_id' => 'PGE'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
-                     'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'borough' => 'Suffolk',
+                     'lat' => '40.74035',
+                     'lon' => '-73.08645',
+                     'name' => 'Sayville',
+                     'stop_id' => 'SVL'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.74342',
+                     'lon' => '-73.13243',
+                     'name' => 'Oakdale',
+                     'stop_id' => 'ODL'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.74044',
+                     'lon' => '-73.17019',
+                     'name' => 'Great River',
+                     'stop_id' => 'GRV'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.73583',
+                     'lon' => '-73.20932',
+                     'name' => 'Islip',
+                     'stop_id' => 'ISP'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.72443',
+                     'lon' => '-73.25408',
+                     'name' => 'Bay Shore',
+                     'stop_id' => 'BSR'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.77373',
+                     'lon' => '-72.94396',
+                     'name' => 'Bellport',
+                     'stop_id' => 'BPT'
                    },
                    {
                      'borough' => 'Suffolk',
@@ -258,114 +321,9 @@ $VAR1 = {
                      'lon' => '-73.95639',
                      'name' => 'Long Island City',
                      'stop_id' => 'LIC'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.82117',
-                     'lon' => '-72.70427',
-                     'name' => 'Speonk',
-                     'stop_id' => 'SPK'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.79898',
-                     'lon' => '-72.86442',
-                     'name' => 'Mastic Shirley',
-                     'stop_id' => 'MSY'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.77373',
-                     'lon' => '-72.94396',
-                     'name' => 'Bellport',
-                     'stop_id' => 'BPT'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.76187',
-                     'lon' => '-73.01574',
-                     'name' => 'Patchogue',
-                     'stop_id' => 'PGE'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.74035',
-                     'lon' => '-73.08645',
-                     'name' => 'Sayville',
-                     'stop_id' => 'SVL'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.74342',
-                     'lon' => '-73.13243',
-                     'name' => 'Oakdale',
-                     'stop_id' => 'ODL'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.74044',
-                     'lon' => '-73.17019',
-                     'name' => 'Great River',
-                     'stop_id' => 'GRV'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.73583',
-                     'lon' => '-73.20932',
-                     'name' => 'Islip',
-                     'stop_id' => 'ISP'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.72443',
-                     'lon' => '-73.25408',
-                     'name' => 'Bay Shore',
-                     'stop_id' => 'BSR'
                    }
                  ],
           '10' => [
-                    {
-                      'borough' => 'Nassau',
-                      'lat' => '40.74303',
-                      'lon' => '-73.48344',
-                      'name' => 'Bethpage',
-                      'stop_id' => 'BPG'
-                    },
-                    {
-                      'borough' => 'Nassau',
-                      'lat' => '40.74034',
-                      'lon' => '-73.64086',
-                      'name' => 'Mineola',
-                      'stop_id' => 'MIN'
-                    },
-                    {
-                      'borough' => 'Nassau',
-                      'lat' => '40.73516',
-                      'lon' => '-73.66252',
-                      'name' => 'Merillon Avenue',
-                      'stop_id' => 'MAV'
-                    },
-                    {
-                      'borough' => 'Nassau',
-                      'lat' => '40.73075',
-                      'lon' => '-73.68096',
-                      'name' => 'New Hyde Park',
-                      'stop_id' => 'NHP'
-                    },
-                    {
-                      'borough' => 'Queens',
-                      'lat' => '40.6996',
-                      'lon' => '-73.80853',
-                      'name' => 'Jamaica',
-                      'stop_id' => 'JAM'
-                    },
-                    {
-                      'borough' => 'Queens',
-                      'lat' => '40.74584',
-                      'lon' => '-73.90297',
-                      'name' => 'Woodside',
-                      'stop_id' => 'WDD'
-                    },
                     {
                       'borough' => 'Manhattan',
                       'lat' => '40.75058',
@@ -375,17 +333,17 @@ $VAR1 = {
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.71957',
-                      'lon' => '-73.84481',
-                      'name' => 'Forest Hills',
-                      'stop_id' => 'FHL'
+                      'lat' => '40.6996',
+                      'lon' => '-73.80853',
+                      'name' => 'Jamaica',
+                      'stop_id' => 'JAM'
                     },
                     {
-                      'borough' => 'Queens',
-                      'lat' => '40.70964',
-                      'lon' => '-73.83089',
-                      'name' => 'Kew Gardens',
-                      'stop_id' => 'KGN'
+                      'borough' => 'Nassau',
+                      'lat' => '40.74034',
+                      'lon' => '-73.64086',
+                      'name' => 'Mineola',
+                      'stop_id' => 'MIN'
                     },
                     {
                       'borough' => 'Nassau',
@@ -414,6 +372,41 @@ $VAR1 = {
                       'lon' => '-73.40952',
                       'name' => 'Huntington',
                       'stop_id' => 'HUN'
+                    },
+                    {
+                      'borough' => 'Nassau',
+                      'lat' => '40.73516',
+                      'lon' => '-73.66252',
+                      'name' => 'Merillon Avenue',
+                      'stop_id' => 'MAV'
+                    },
+                    {
+                      'borough' => 'Nassau',
+                      'lat' => '40.75345',
+                      'lon' => '-73.58586',
+                      'name' => 'Westbury',
+                      'stop_id' => 'WBY'
+                    },
+                    {
+                      'borough' => 'Queens',
+                      'lat' => '40.74584',
+                      'lon' => '-73.90297',
+                      'name' => 'Woodside',
+                      'stop_id' => 'WDD'
+                    },
+                    {
+                      'borough' => 'Nassau',
+                      'lat' => '40.73075',
+                      'lon' => '-73.68096',
+                      'name' => 'New Hyde Park',
+                      'stop_id' => 'NHP'
+                    },
+                    {
+                      'borough' => 'Nassau',
+                      'lat' => '40.7492',
+                      'lon' => '-73.60365',
+                      'name' => 'Carle Place',
+                      'stop_id' => 'CPL'
                     },
                     {
                       'borough' => 'Suffolk',
@@ -465,39 +458,25 @@ $VAR1 = {
                       'stop_id' => 'PJN'
                     },
                     {
-                      'borough' => 'Nassau',
-                      'lat' => '40.7492',
-                      'lon' => '-73.60365',
-                      'name' => 'Carle Place',
-                      'stop_id' => 'CPL'
+                      'borough' => 'Queens',
+                      'lat' => '40.71957',
+                      'lon' => '-73.84481',
+                      'name' => 'Forest Hills',
+                      'stop_id' => 'FHL'
+                    },
+                    {
+                      'borough' => 'Queens',
+                      'lat' => '40.70964',
+                      'lon' => '-73.83089',
+                      'name' => 'Kew Gardens',
+                      'stop_id' => 'KGN'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.75345',
-                      'lon' => '-73.58586',
-                      'name' => 'Westbury',
-                      'stop_id' => 'WBY'
-                    },
-                    {
-                      'borough' => 'Nassau',
-                      'lat' => '40.72463',
-                      'lon' => '-73.7064',
-                      'name' => 'Floral Park',
-                      'stop_id' => 'FPK'
-                    },
-                    {
-                      'borough' => 'Brooklyn',
-                      'lat' => '40.6758',
-                      'lon' => '-73.90281',
-                      'name' => 'East New York',
-                      'stop_id' => 'ENY'
-                    },
-                    {
-                      'borough' => 'Brooklyn',
-                      'lat' => '40.684901',
-                      'lon' => '-73.97768',
-                      'name' => 'Atlantic Terminal',
-                      'stop_id' => 'ATL'
+                      'lat' => '40.74303',
+                      'lon' => '-73.48344',
+                      'name' => 'Bethpage',
+                      'stop_id' => 'BPG'
                     },
                     {
                       'borough' => 'Queens',
@@ -512,23 +491,30 @@ $VAR1 = {
                       'lon' => '-73.95639',
                       'name' => 'Long Island City',
                       'stop_id' => 'LIC'
+                    },
+                    {
+                      'borough' => 'Nassau',
+                      'lat' => '40.72463',
+                      'lon' => '-73.7064',
+                      'name' => 'Floral Park',
+                      'stop_id' => 'FPK'
+                    },
+                    {
+                      'borough' => 'Brooklyn',
+                      'lat' => '40.684901',
+                      'lon' => '-73.97768',
+                      'name' => 'Atlantic Terminal',
+                      'stop_id' => 'ATL'
+                    },
+                    {
+                      'borough' => 'Brooklyn',
+                      'lat' => '40.6758',
+                      'lon' => '-73.90281',
+                      'name' => 'East New York',
+                      'stop_id' => 'ENY'
                     }
                   ],
           '11' => [
-                    {
-                      'borough' => 'Manhattan',
-                      'lat' => '40.75058',
-                      'lon' => '-73.99358',
-                      'name' => 'Penn Station',
-                      'stop_id' => 'NYK'
-                    },
-                    {
-                      'borough' => 'Queens',
-                      'lat' => '40.74584',
-                      'lon' => '-73.90297',
-                      'name' => 'Woodside',
-                      'stop_id' => 'WDD'
-                    },
                     {
                       'borough' => 'Queens',
                       'lat' => '40.6996',
@@ -542,6 +528,20 @@ $VAR1 = {
                       'lon' => '-73.72862',
                       'name' => 'Belmont',
                       'stop_id' => 'BRT'
+                    },
+                    {
+                      'borough' => 'Manhattan',
+                      'lat' => '40.75058',
+                      'lon' => '-73.99358',
+                      'name' => 'Penn Station',
+                      'stop_id' => 'NYK'
+                    },
+                    {
+                      'borough' => 'Queens',
+                      'lat' => '40.74584',
+                      'lon' => '-73.90297',
+                      'name' => 'Woodside',
+                      'stop_id' => 'WDD'
                     }
                   ],
           '12' => [
@@ -551,20 +551,6 @@ $VAR1 = {
                       'lon' => '-73.80853',
                       'name' => 'Jamaica',
                       'stop_id' => 'JAM'
-                    },
-                    {
-                      'borough' => 'Brooklyn',
-                      'lat' => '40.6758',
-                      'lon' => '-73.90281',
-                      'name' => 'East New York',
-                      'stop_id' => 'ENY'
-                    },
-                    {
-                      'borough' => 'Brooklyn',
-                      'lat' => '40.67838',
-                      'lon' => '-73.94822',
-                      'name' => 'Nostrand Avenue',
-                      'stop_id' => 'NAV'
                     },
                     {
                       'borough' => 'Brooklyn',
@@ -579,6 +565,20 @@ $VAR1 = {
                       'lon' => '-73.99358',
                       'name' => 'Penn Station',
                       'stop_id' => 'NYK'
+                    },
+                    {
+                      'borough' => 'Brooklyn',
+                      'lat' => '40.6758',
+                      'lon' => '-73.90281',
+                      'name' => 'East New York',
+                      'stop_id' => 'ENY'
+                    },
+                    {
+                      'borough' => 'Brooklyn',
+                      'lat' => '40.67838',
+                      'lon' => '-73.94822',
+                      'name' => 'Nostrand Avenue',
+                      'stop_id' => 'NAV'
                     },
                     {
                       'borough' => 'Queens',
@@ -703,6 +703,13 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Queens',
+                     'lat' => '40.71957',
+                     'lon' => '-73.84481',
+                     'name' => 'Forest Hills',
+                     'stop_id' => 'FHL'
+                   },
+                   {
+                     'borough' => 'Queens',
                      'lat' => '40.74584',
                      'lon' => '-73.90297',
                      'name' => 'Woodside',
@@ -714,13 +721,6 @@ $VAR1 = {
                      'lon' => '-73.83089',
                      'name' => 'Kew Gardens',
                      'stop_id' => 'KGN'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
-                     'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
                    }
                  ],
           '3' => [
@@ -809,11 +809,25 @@ $VAR1 = {
                      'stop_id' => 'OBY'
                    },
                    {
-                     'borough' => 'Nassau',
-                     'lat' => '40.73516',
-                     'lon' => '-73.66252',
-                     'name' => 'Merillon Avenue',
-                     'stop_id' => 'MAV'
+                     'borough' => 'Queens',
+                     'lat' => '40.74238',
+                     'lon' => '-73.94679',
+                     'name' => 'Hunterspoint Avenue',
+                     'stop_id' => 'HPA'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.74128',
+                     'lon' => '-73.95639',
+                     'name' => 'Long Island City',
+                     'stop_id' => 'LIC'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.75058',
+                     'lon' => '-73.99358',
+                     'name' => 'Penn Station',
+                     'stop_id' => 'NYK'
                    },
                    {
                      'borough' => 'Nassau',
@@ -821,6 +835,13 @@ $VAR1 = {
                      'lon' => '-73.68096',
                      'name' => 'New Hyde Park',
                      'stop_id' => 'NHP'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.73516',
+                     'lon' => '-73.66252',
+                     'name' => 'Merillon Avenue',
+                     'stop_id' => 'MAV'
                    },
                    {
                      'borough' => 'Nassau',
@@ -849,27 +870,6 @@ $VAR1 = {
                      'lon' => '-73.90297',
                      'name' => 'Woodside',
                      'stop_id' => 'WDD'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
-                     'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
-                     'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.74128',
-                     'lon' => '-73.95639',
-                     'name' => 'Long Island City',
-                     'stop_id' => 'LIC'
                    }
                  ],
           '4' => [
@@ -882,38 +882,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
-                     'name' => 'Woodside',
-                     'stop_id' => 'WDD'
-                   },
-                   {
-                     'borough' => 'Queens',
                      'lat' => '40.6996',
                      'lon' => '-73.80853',
                      'name' => 'Jamaica',
                      'stop_id' => 'JAM'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.73075',
-                     'lon' => '-73.68096',
-                     'name' => 'New Hyde Park',
-                     'stop_id' => 'NHP'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.73516',
-                     'lon' => '-73.66252',
-                     'name' => 'Merillon Avenue',
-                     'stop_id' => 'MAV'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.74034',
-                     'lon' => '-73.64086',
-                     'name' => 'Mineola',
-                     'stop_id' => 'MIN'
                    },
                    {
                      'borough' => 'Nassau',
@@ -928,6 +900,69 @@ $VAR1 = {
                      'lon' => '-73.10594',
                      'name' => 'Ronkonkoma',
                      'stop_id' => 'RON'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.76717',
+                     'lon' => '-73.52853',
+                     'name' => 'Hicksville',
+                     'stop_id' => 'HVL'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.73591',
+                     'lon' => '-73.44124',
+                     'name' => 'Farmingdale',
+                     'stop_id' => 'FMD'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.75479',
+                     'lon' => '-73.35806',
+                     'name' => 'Wyandanch',
+                     'stop_id' => 'WYD'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.76948',
+                     'lon' => '-73.29356',
+                     'name' => 'Deer Park',
+                     'stop_id' => 'DPK'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.78083',
+                     'lon' => '-73.24361',
+                     'name' => 'Brentwood',
+                     'stop_id' => 'BWD'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.79184',
+                     'lon' => '-73.19486',
+                     'name' => 'Central Islip',
+                     'stop_id' => 'CI'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.74034',
+                     'lon' => '-73.64086',
+                     'name' => 'Mineola',
+                     'stop_id' => 'MIN'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.74584',
+                     'lon' => '-73.90297',
+                     'name' => 'Woodside',
+                     'stop_id' => 'WDD'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.74535',
+                     'lon' => '-73.3996',
+                     'name' => 'Pinelawn',
+                     'stop_id' => 'PLN'
                    },
                    {
                      'borough' => 'Suffolk',
@@ -949,6 +984,13 @@ $VAR1 = {
                      'lon' => '-72.66691',
                      'name' => 'Riverhead',
                      'stop_id' => 'RHD'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.75345',
+                     'lon' => '-73.58586',
+                     'name' => 'Westbury',
+                     'stop_id' => 'WBY'
                    },
                    {
                      'borough' => 'Suffolk',
@@ -973,17 +1015,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.76717',
-                     'lon' => '-73.52853',
-                     'name' => 'Hicksville',
-                     'stop_id' => 'HVL'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.75345',
-                     'lon' => '-73.58586',
-                     'name' => 'Westbury',
-                     'stop_id' => 'WBY'
+                     'lat' => '40.73075',
+                     'lon' => '-73.68096',
+                     'name' => 'New Hyde Park',
+                     'stop_id' => 'NHP'
                    },
                    {
                      'borough' => 'Nassau',
@@ -993,53 +1028,18 @@ $VAR1 = {
                      'stop_id' => 'CPL'
                    },
                    {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.79184',
-                     'lon' => '-73.19486',
-                     'name' => 'Central Islip',
-                     'stop_id' => 'CI'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.78083',
-                     'lon' => '-73.24361',
-                     'name' => 'Brentwood',
-                     'stop_id' => 'BWD'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.75479',
-                     'lon' => '-73.35806',
-                     'name' => 'Wyandanch',
-                     'stop_id' => 'WYD'
-                   },
-                   {
                      'borough' => 'Nassau',
-                     'lat' => '40.73591',
-                     'lon' => '-73.44124',
-                     'name' => 'Farmingdale',
-                     'stop_id' => 'FMD'
+                     'lat' => '40.73516',
+                     'lon' => '-73.66252',
+                     'name' => 'Merillon Avenue',
+                     'stop_id' => 'MAV'
                    },
                    {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.76948',
-                     'lon' => '-73.29356',
-                     'name' => 'Deer Park',
-                     'stop_id' => 'DPK'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.74535',
-                     'lon' => '-73.3996',
-                     'name' => 'Pinelawn',
-                     'stop_id' => 'PLN'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
-                     'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.684901',
+                     'lon' => '-73.97768',
+                     'name' => 'Atlantic Terminal',
+                     'stop_id' => 'ATL'
                    },
                    {
                      'borough' => 'Queens',
@@ -1047,6 +1047,13 @@ $VAR1 = {
                      'lon' => '-73.83089',
                      'name' => 'Kew Gardens',
                      'stop_id' => 'KGN'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.71957',
+                     'lon' => '-73.84481',
+                     'name' => 'Forest Hills',
+                     'stop_id' => 'FHL'
                    },
                    {
                      'borough' => 'Brooklyn',
@@ -1063,13 +1070,6 @@ $VAR1 = {
                      'stop_id' => 'NAV'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
-                     'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
-                   },
-                   {
                      'borough' => 'Queens',
                      'lat' => '40.74238',
                      'lon' => '-73.94679',
@@ -1078,13 +1078,6 @@ $VAR1 = {
                    }
                  ],
           '5' => [
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
-                     'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
-                   },
                    {
                      'borough' => 'Suffolk',
                      'lat' => '40.70068',
@@ -1136,10 +1129,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.77373',
-                     'lon' => '-72.94396',
-                     'name' => 'Bellport',
-                     'stop_id' => 'BPT'
+                     'lat' => '40.82117',
+                     'lon' => '-72.70427',
+                     'name' => 'Speonk',
+                     'stop_id' => 'SPK'
                    },
                    {
                      'borough' => 'Suffolk',
@@ -1149,11 +1142,18 @@ $VAR1 = {
                      'stop_id' => 'MSY'
                    },
                    {
+                     'borough' => 'Queens',
+                     'lat' => '40.6996',
+                     'lon' => '-73.80853',
+                     'name' => 'Jamaica',
+                     'stop_id' => 'JAM'
+                   },
+                   {
                      'borough' => 'Suffolk',
-                     'lat' => '40.82117',
-                     'lon' => '-72.70427',
-                     'name' => 'Speonk',
-                     'stop_id' => 'SPK'
+                     'lat' => '40.77373',
+                     'lon' => '-72.94396',
+                     'name' => 'Bellport',
+                     'stop_id' => 'BPT'
                    },
                    {
                      'borough' => 'Suffolk',
@@ -1161,13 +1161,6 @@ $VAR1 = {
                      'lon' => '-72.65032',
                      'name' => 'Westhampton',
                      'stop_id' => 'WHN'
-                   },
-                   {
-                     'borough' => 'Suffolk',
-                     'lat' => '40.8766',
-                     'lon' => '-72.52395',
-                     'name' => 'Hampton Bays',
-                     'stop_id' => 'HBY'
                    },
                    {
                      'borough' => 'Suffolk',
@@ -1192,17 +1185,38 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Suffolk',
+                     'lat' => '41.0471',
+                     'lon' => '-71.95388',
+                     'name' => 'Montauk',
+                     'stop_id' => 'MTK'
+                   },
+                   {
+                     'borough' => 'Suffolk',
+                     'lat' => '40.8766',
+                     'lon' => '-72.52395',
+                     'name' => 'Hampton Bays',
+                     'stop_id' => 'HBY'
+                   },
+                   {
+                     'borough' => 'Suffolk',
                      'lat' => '40.98003',
                      'lon' => '-72.13233',
                      'name' => 'Amagansett',
                      'stop_id' => 'AGT'
                    },
                    {
-                     'borough' => 'Suffolk',
-                     'lat' => '41.0471',
-                     'lon' => '-71.95388',
-                     'name' => 'Montauk',
-                     'stop_id' => 'MTK'
+                     'borough' => 'Queens',
+                     'lat' => '40.74238',
+                     'lon' => '-73.94679',
+                     'name' => 'Hunterspoint Avenue',
+                     'stop_id' => 'HPA'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.75058',
+                     'lon' => '-73.99358',
+                     'name' => 'Penn Station',
+                     'stop_id' => 'NYK'
                    },
                    {
                      'borough' => 'Nassau',
@@ -1220,24 +1234,10 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
-                     'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
-                   },
-                   {
-                     'borough' => 'Queens',
                      'lat' => '40.74128',
                      'lon' => '-73.95639',
                      'name' => 'Long Island City',
                      'stop_id' => 'LIC'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
-                     'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
                    },
                    {
                      'borough' => 'Queens',
@@ -1249,39 +1249,18 @@ $VAR1 = {
                  ],
           '6' => [
                    {
-                     'borough' => 'Nassau',
-                     'lat' => '40.59017',
-                     'lon' => '-73.66482',
-                     'name' => 'Long Beach',
-                     'stop_id' => 'LBH'
+                     'borough' => 'Queens',
+                     'lat' => '40.6996',
+                     'lon' => '-73.80853',
+                     'name' => 'Jamaica',
+                     'stop_id' => 'JAM'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.60129',
-                     'lon' => '-73.65474',
-                     'name' => 'Island Park',
-                     'stop_id' => 'IPK'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.63471',
-                     'lon' => '-73.65466',
-                     'name' => 'Oceanside',
-                     'stop_id' => 'ODE'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.6422',
-                     'lon' => '-73.65821',
-                     'name' => 'East Rockaway',
-                     'stop_id' => 'ERY'
-                   },
-                   {
-                     'borough' => 'Nassau',
-                     'lat' => '40.64831',
-                     'lon' => '-73.66397',
-                     'name' => 'Centre Avenue',
-                     'stop_id' => 'CAV'
+                     'lat' => '40.66151',
+                     'lon' => '-73.70476',
+                     'name' => 'Valley Stream',
+                     'stop_id' => 'VSM'
                    },
                    {
                      'borough' => 'Nassau',
@@ -1292,59 +1271,38 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66151',
-                     'lon' => '-73.70476',
-                     'name' => 'Valley Stream',
-                     'stop_id' => 'VSM'
+                     'lat' => '40.64831',
+                     'lon' => '-73.66397',
+                     'name' => 'Centre Avenue',
+                     'stop_id' => 'CAV'
                    },
                    {
-                     'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
-                     'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'borough' => 'Nassau',
+                     'lat' => '40.6422',
+                     'lon' => '-73.65821',
+                     'name' => 'East Rockaway',
+                     'stop_id' => 'ERY'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
-                     'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'borough' => 'Nassau',
+                     'lat' => '40.63471',
+                     'lon' => '-73.65466',
+                     'name' => 'Oceanside',
+                     'stop_id' => 'ODE'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
-                     'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'borough' => 'Nassau',
+                     'lat' => '40.60129',
+                     'lon' => '-73.65474',
+                     'name' => 'Island Park',
+                     'stop_id' => 'IPK'
                    },
                    {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
-                     'name' => 'East New York',
-                     'stop_id' => 'ENY'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.67513',
-                     'lon' => '-73.76504',
-                     'name' => 'Locust Manor',
-                     'stop_id' => 'LMR'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.66847',
-                     'lon' => '-73.75175',
-                     'name' => 'Laurelton',
-                     'stop_id' => 'LTN'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.66594',
-                     'lon' => '-73.73555',
-                     'name' => 'Rosedale',
-                     'stop_id' => 'ROS'
+                     'borough' => 'Nassau',
+                     'lat' => '40.59017',
+                     'lon' => '-73.66482',
+                     'name' => 'Long Beach',
+                     'stop_id' => 'LBH'
                    },
                    {
                      'borough' => 'Manhattan',
@@ -1355,10 +1313,52 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Queens',
+                     'lat' => '40.66594',
+                     'lon' => '-73.73555',
+                     'name' => 'Rosedale',
+                     'stop_id' => 'ROS'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.66847',
+                     'lon' => '-73.75175',
+                     'name' => 'Laurelton',
+                     'stop_id' => 'LTN'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.67513',
+                     'lon' => '-73.76504',
+                     'name' => 'Locust Manor',
+                     'stop_id' => 'LMR'
+                   },
+                   {
+                     'borough' => 'Queens',
                      'lat' => '40.74584',
                      'lon' => '-73.90297',
                      'name' => 'Woodside',
                      'stop_id' => 'WDD'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.684901',
+                     'lon' => '-73.97768',
+                     'name' => 'Atlantic Terminal',
+                     'stop_id' => 'ATL'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.6758',
+                     'lon' => '-73.90281',
+                     'name' => 'East New York',
+                     'stop_id' => 'ENY'
+                   },
+                   {
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.67838',
+                     'lon' => '-73.94822',
+                     'name' => 'Nostrand Avenue',
+                     'stop_id' => 'NAV'
                    },
                    {
                      'borough' => 'Queens',
@@ -1403,27 +1403,6 @@ $VAR1 = {
                      'lon' => '-73.80853',
                      'name' => 'Jamaica',
                      'stop_id' => 'JAM'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.67513',
-                     'lon' => '-73.76504',
-                     'name' => 'Locust Manor',
-                     'stop_id' => 'LMR'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.66847',
-                     'lon' => '-73.75175',
-                     'name' => 'Laurelton',
-                     'stop_id' => 'LTN'
-                   },
-                   {
-                     'borough' => 'Queens',
-                     'lat' => '40.66594',
-                     'lon' => '-73.73555',
-                     'name' => 'Rosedale',
-                     'stop_id' => 'ROS'
                    },
                    {
                      'borough' => 'Nassau',
@@ -1483,6 +1462,34 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Queens',
+                     'lat' => '40.67513',
+                     'lon' => '-73.76504',
+                     'name' => 'Locust Manor',
+                     'stop_id' => 'LMR'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.66594',
+                     'lon' => '-73.73555',
+                     'name' => 'Rosedale',
+                     'stop_id' => 'ROS'
+                   },
+                   {
+                     'borough' => 'Queens',
+                     'lat' => '40.66847',
+                     'lon' => '-73.75175',
+                     'name' => 'Laurelton',
+                     'stop_id' => 'LTN'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.75058',
+                     'lon' => '-73.99358',
+                     'name' => 'Penn Station',
+                     'stop_id' => 'NYK'
+                   },
+                   {
+                     'borough' => 'Queens',
                      'lat' => '40.70964',
                      'lon' => '-73.83089',
                      'name' => 'Kew Gardens',
@@ -1494,13 +1501,6 @@ $VAR1 = {
                      'lon' => '-73.84481',
                      'name' => 'Forest Hills',
                      'stop_id' => 'FHL'
-                   },
-                   {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
-                     'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
                    },
                    {
                      'borough' => 'Queens',
@@ -1554,18 +1554,18 @@ $VAR1 = {
                      'stop_id' => 'WHD'
                    },
                    {
+                     'borough' => 'Queens',
+                     'lat' => '40.6996',
+                     'lon' => '-73.80853',
+                     'name' => 'Jamaica',
+                     'stop_id' => 'JAM'
+                   },
+                   {
                      'borough' => 'Brooklyn',
                      'lat' => '40.684901',
                      'lon' => '-73.97768',
                      'name' => 'Atlantic Terminal',
                      'stop_id' => 'ATL'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
-                     'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
                    },
                    {
                      'borough' => 'Brooklyn',
@@ -1575,11 +1575,11 @@ $VAR1 = {
                      'stop_id' => 'ENY'
                    },
                    {
-                     'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
-                     'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'borough' => 'Brooklyn',
+                     'lat' => '40.67838',
+                     'lon' => '-73.94822',
+                     'name' => 'Nostrand Avenue',
+                     'stop_id' => 'NAV'
                    },
                    {
                      'borough' => 'Queens',
