@@ -1,28 +1,12 @@
 #generate routes, usage perl gr.pl
 use strict;
-use Text::CSV::Hashify;
+use Text::CSV;
 use File::Slurp;
 use Data::Dumper;
 #if REALFREQ true don't group >70th percetile (fudging) and dump to disk
 #frequency counts
 use constant ('REALFREQ' => !!$ENV{REALFREQ});
 $Data::Dumper::Sortkeys = 1;
-
-my $obj = Text::CSV::Hashify->new( {
-    file        => 'trips.txt',
-    format      => 'hoh',
-    key         => "trip_id",
-    quote_char          => '"',
-    escape_char          => undef,
-    allow_loose_quotes=>1,
-    auto_diag => 1,
-} );
-
-my $triproute= $obj->all;
-undef($obj);
-foreach(keys %{$triproute}) { #use array instead of hash for perf reasons
-    $$triproute{$_} = [$$triproute{$_}{route_id}, $$triproute{$_}{direction_id}];
-}
 
 my $csv = Text::CSV->new( {
     escape_char          => undef,
@@ -33,7 +17,37 @@ my $csv = Text::CSV->new( {
     } )
     or die "Cannot use CSV: ".Text::CSV->error_diag ();
 
-open my $IN, "<", 'stops.txt'
+open my $IN, "<", 'trips.txt'
+    or die "Unable to open 'trips.txt' for reading";
+binmode($IN); #less overhead for getline()
+
+my %col_idx; #const idx table for columns
+{
+    my $header_ref = $csv->getline($IN);
+    #$csv->column_names(@{$header_ref});
+    for(0..$#$header_ref) {
+        $col_idx{$$header_ref[$_]} = $_;
+    }
+}
+my $triproute = {};
+
+eval '
+while (my $record = $csv->getline($IN)) {
+    $$triproute{$record->['.$col_idx{trip_id}.']} = [$record->['.$col_idx{route_id}.']
+        , $record->['.$col_idx{direction_id}.']];
+}
+';
+
+$csv = Text::CSV->new( {
+    escape_char          => undef,
+    allow_loose_quotes=>1,
+    auto_diag => 1,
+    binary => 1,
+    quote_char          => '"',
+    } )
+    or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+open $IN, "<", 'stops.txt'
     or die "Unable to open 'stops.txt' for reading";
 binmode($IN); #less overhead for getline()
 
