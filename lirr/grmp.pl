@@ -42,25 +42,24 @@ foreach my $routename (@routes) {
     }
     @boroughs = sort keys %boroughs;
     my $rtfile = "$routename:";
+    my $rtfileheader = '';
     my $accesskeyidx = 1; #only 5 boroughs so no overflow check
     foreach my $borough (@boroughs) {
         if(@{$boroughs{$borough}} > 1 ) {
             $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$rtnum.$borotbl{$borough}.'.htm">'.$borough.'</a>';
-            my @borohtml;
-            foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
-                my $name = ${$boroughs{$borough}}[$stopidx]->{name};
-                my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-                push(@borohtml, stopid_to_href($stopid).'>'.$name."</a>\n");
-            }
-            my $boropages = ceil(scalar(@borohtml) / 9);
+            my $boropages = ceil(scalar(@{$boroughs{$borough}}) / 9);
             my $pageidx;
-            while (my @dumbborohtml = splice @borohtml, 0, 9) { #break down stop list into chunks of 9
+            while (my @stopschunk = splice @{$boroughs{$borough}}, 0, 9) { #break down stop list into chunks of 9
                 my $borofile = "$routename: $borough".($boropages > 1 ? ' '.($pageidx+1).' of '.$boropages:'')."<br>\n";
                 my $accesskeyidx = 1;
-                foreach my $stopline (@dumbborohtml) {
-                    $borofile .= '<a accesskey='.$accesskeyidx++.' '.$stopline;
+                foreach my $stop (@stopschunk) {
+                    $borofile .= stopid_to_tag($stop->{name},
+                        $stop->{stop},
+                        $stop->{name},
+                        '', #no anchor
+                        $accesskeyidx++);
                 }
-                if(@borohtml) {
+                if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
                 write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/').$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
@@ -68,23 +67,35 @@ foreach my $routename (@routes) {
             }
         } else {    #if 1 station per boro, just jump straight to station
                     #saves a tap, only L/Queens/Halsey has this property
-            $rtfile .= ' <a accesskey='.$accesskeyidx++.' '.stopid_to_href(${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
+            $rtfile .= ' '.stopid_to_tag(${$boroughs{$borough}}[0]->{name},
+                          ${$boroughs{$borough}}[0]->{stop},
+                          $borough,
+                          '', #no anchor
+                          $accesskeyidx++);
         }
     }
+    #easier finger tapping if 1 or 2 char routenames
+    my $routenamepad = length $routename < 3 ? '&nbsp;' : '';
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
-        push(@lineshtml, 'href="'.$rtnum.'.htm">'.$routename.'</a>');
-        write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."$rtnum.htm", $rtfile."\n");
+        push(@lineshtml, 'href="'.$rtnum.'.htm">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
+        write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."$rtnum.htm", $rtfileheader.$rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
-        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'.$routename.'</a>');
+        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
     }
 }
 
-sub stopid_to_href { #$href_attr = stopid_to_href($stopid)
-    return ($js?
-                ($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/li/gstp.htm%23':'href="../stop.htm#')
-                :'href="http://www.loband.org/loband/filter/com/anyorigin/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
-            .$_[0]
-            .($js?($raw?'&f=1&lite_refresh=1"':'"'):'&callback=X&_ab_type=JavaScript"');
+sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
+    my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+    return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
+                .($accesskey?'accesskey='.$accesskey.' ':'')
+                .($js?
+                    ($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/li/gstp.htm%23':'href="../stop.htm#')
+                    :'href="http://www.loband.org/loband/filter/com/anyorigin/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
+                .$stopid
+                .($js?($raw?'&f=1&lite_refresh=1"':'"'):'&callback=X&_ab_type=JavaScript"')
+                .'>'.$dispname."</a>\n";
 }
 
 my $accesskeyidx = 1;

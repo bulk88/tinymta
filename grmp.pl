@@ -39,6 +39,8 @@ $routes[7] = $swap;
 
 foreach my $routename (@routes) {
     my $route = $$VAR1{$routename};
+    my $rtnum = $routename;
+    $routename = $rtdispname{$routename};
     my (%boroughs, @boroughs);
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
@@ -47,46 +49,56 @@ foreach my $routename (@routes) {
     }
     @boroughs = sort keys %boroughs;
     my $rtfile = "$routename:";
+    my $rtfileheader = '';
     my $accesskeyidx = 1; #only 5 boroughs so no overflow check
     foreach my $borough (@boroughs) {
         if(@{$boroughs{$borough}} > 1 ) {
-            $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$routename.$borotbl{$borough}.'.htm">'.$borough.'</a>';
-            my @borohtml;
-            foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
-                my $name = ${$boroughs{$borough}}[$stopidx]->{name};
-                my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-                push(@borohtml, stopid_to_href($routename,$stopid).'>'.$name."</a>\n");
-            }
-            my $boropages = ceil(scalar(@borohtml) / 9);
+            $rtfile .= ' <a accesskey='.$accesskeyidx++.' href="'.$rtnum.$borotbl{$borough}.'.htm">'.$borough.'</a>';
+            my $boropages = ceil(scalar(@{$boroughs{$borough}}) / 9);
             my $pageidx;
-            while (my @dumbborohtml = splice @borohtml, 0, 9) { #break down stop list into chunks of 9
+            while (my @stopschunk = splice @{$boroughs{$borough}}, 0, 9) { #break down stop list into chunks of 9
                 my $borofile = "$routename: $borough".($boropages > 1 ? ' '.($pageidx+1).' of '.$boropages:'')."<br>\n";
                 my $accesskeyidx = 1;
-                foreach my $stopline (@dumbborohtml) {
-                    $borofile .= '<a accesskey='.$accesskeyidx++.' '.$stopline;
+                foreach my $stop (@stopschunk) {
+                    $borofile .= stopid_to_tag($stop->{name},
+                        $stop->{stop},
+                        $stop->{name},
+                        '', #no anchor
+                        $accesskeyidx++);
                 }
-                if(@borohtml) {
-                    $borofile .= '<a accesskey=0 href='.$routename.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
+                if(@{$boroughs{$borough}}) {
+                    $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':'')).$routename.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+                write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':'')).$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
                     #saves a tap, only L/Queens/Halsey has this property
-            $rtfile .= ' <a accesskey='.$accesskeyidx++.' '.stopid_to_href($routename,${$boroughs{$borough}}[0]->{stop}).'>'.$borough.'</a>';
+            $rtfile .= ' '.stopid_to_tag(${$boroughs{$borough}}[0]->{name},
+                          ${$boroughs{$borough}}[0]->{stop},
+                          $borough,
+                          '', #no anchor
+                          $accesskeyidx++);
         }
 
     }
+    #easier finger tapping if 1 or 2 char routenames
+    my $routenamepad = length $routename < 3 ? '&nbsp;' : '';
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
-        push(@lineshtml, 'href="'.$routename.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
-        write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."$routename.htm", $rtfile."\n");
+        push(@lineshtml, 'href="'.$rtnum.'.htm">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
+        write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."$rtnum.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
-        push(@lineshtml, 'href="'.$routename.$borotbl{$boroughs[0]}.'.htm">&nbsp;'.$routename.'&nbsp;</a>');
+        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
     }
 }
 }
 
-sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
+sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
+    my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+    return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
+                .($accesskey?'accesskey='.$accesskey.' ':'')
 #MTA server returns MIME types application/json (no "callback=") or text/javascript (with "callback=")
 #openwave dumbphone browser doesn't take either MIME, gives unsupported content warning
 #Googleweblight gives "Transcoding test failed: Content-Type of this page is not text/html."
@@ -95,10 +107,15 @@ sub stopid_to_href { #$href_attr = stopid_to_href($routename, $stopid)
 #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
 #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
 #anyone got a better transcoder/proxy sandwich?
-    return ($js?($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/gstp.htm%23':'href="../stop.htm#')
+                .($js?($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/gstp.htm%23':'href="../stop.htm#')
                         : ($raw?'href="http://54.90.113.57/getTime/':
-                                    'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/')).
-                     (($_[1] =~ m/^S(\d+$)/)[0] >= 9 ? 'SIR' : substr($_[1],0,1)).'/'.$_[1].($js?($raw?'&f=1&lite_refresh=1':''):'?callback=X').'"';
+                                    'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/'))
+    #substr will merge stop IDs #1/128 #2/128 #3/128 #5/128 into #1/128
+    #to make more compressible (common) text in single page format, they are
+    #all the same station IRT "34 St - Penn Station"
+                .(($stopid =~ m/^S(\d+$)/)[0] >= 9 ? 'SIR' : substr($stopid,0,1)).'/'.$stopid
+                .($js?($raw?'&f=1&lite_refresh=1':''):'?callback=X')
+                .'">'.$dispname."</a>\n";
 }
 
 my $accesskeyidx = 1;

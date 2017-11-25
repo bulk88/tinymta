@@ -80,11 +80,15 @@ foreach my $routename (@routes) {
         }
 
     }
+    #easier finger tapping if 1 or 2 char routenames
+    my $routenamepad = length $routename < 3 ? '&nbsp;' : '';
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
-        push(@lineshtml, 'href="'.$rtnum.'.htm">'.$routename.'</a>');
+        push(@lineshtml, 'href="'.$rtnum.'.htm">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
         write_html('../docs/mn/'.($mob?'m/':'')."$rtnum.htm", $rtfileheader.$rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
-        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'.$routename.'</a>');
+        push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
+                        .$routenamepad.$routename.$routenamepad.'</a>');
     }
 }
 }
