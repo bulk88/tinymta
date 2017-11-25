@@ -2,9 +2,6 @@ first: all
 
 .PHONY: all MNRR LIRRMKF package
 
-stations.pl: mkstalist.pl
-	perl mkstalist.pl
-
 stop_.htm : stop.htm minify_config.json adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl adj_stoppath.pl "$@"
@@ -103,7 +100,7 @@ clean :
 	del stations.htm
 	del stationsnojs.htm
 
-routedatafinal.pl : gr2.pl routedata.pl stations.pl stops.txt
+routedatafinal.pl : gr2.pl routedata.pl stops.txt
 	perl gr2.pl
 
 routedata.pl : trips.txt stop_times.txt gr.pl
