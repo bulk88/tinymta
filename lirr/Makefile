@@ -5,12 +5,12 @@ first: all
 ../docs/li/stations.htm : stations.htm ../minify_config.json
 	-mkdir "../docs/li"
 	copy /y stations.htm "$@"
-	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
 ../docs/li/stationsnojs.htm : stationsnojs.htm ../minify_config.json
 	-mkdir "../docs/li"
 	copy /y stationsnojs.htm "$@"
-	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
 stations.htm : gr3.pl routedatafinal.pl
 	perl gr3.pl 1
@@ -42,7 +42,7 @@ stations.js stations.pl: mkstalist.pl
 stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"
-	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
 ../docs/li/stop_.htm : stop_.htm
@@ -53,13 +53,13 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	-mkdir "../docs/li"
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"
-	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
 ../docs/li/gstp.htm : gstp.htm ../minify_config.json ../adj_postmini.pl
 	-mkdir "../docs/li"
 	copy /y gstp.htm "$@"
-	html-minifier.cmd -c ../minify_config.json -o "$@" "$@"
+	html-minifier.cmd -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
 grmp.pl : ../minify_config.json
