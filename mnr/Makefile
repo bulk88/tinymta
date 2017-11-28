@@ -32,6 +32,11 @@ clean :
 	del stationsmob.htm
 	del stations.htm
 
+package : ../docs/mn/stations.htm ../docs/mn/stationsmob.htm
+	-mkdir "..\tinymta\mn"
+	copy /y ..\docs\mn\stations.htm "..\tinymta\mn"
+	copy /y ..\docs\mn\stationsmob.htm "..\tinymta\mn"
+
 routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
 	perl ../gr2.pl
 

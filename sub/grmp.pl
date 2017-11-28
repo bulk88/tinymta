@@ -69,7 +69,7 @@ foreach my $routename (@routes) {
                 if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':'')).$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+                write_html('../docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':'')).$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -87,7 +87,7 @@ foreach my $routename (@routes) {
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$rtnum.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
-        write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."$rtnum.htm", $rtfile."\n");
+        write_html('../docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."$rtnum.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
@@ -156,19 +156,19 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+        write_html('../docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+    write_html('../docs/'.($js?($raw?'gwl/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0></head><body>'.$_[1].'</body></html>');
-    system('html-minifier -c "minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
+    system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 
 #return a hash that translates route_id to a friendly display name

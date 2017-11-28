@@ -73,6 +73,12 @@ clean :
 	del stations.htm
 	del stop_.htm
 
+package : ../docs/li/stations.htm ../docs/li/stop.htm ../docs/li/stop_.htm
+	-mkdir "..\tinymta\li"
+	copy /y ..\docs\li\stations.htm "..\tinymta\li"
+	copy /y ..\docs\li\stop.htm "..\tinymta\li"
+	copy /y ..\docs\li\stop_.htm "..\tinymta\li"
+
 routedatafinal.pl : ../gr2.pl routedata.pl stations.pl stops.txt
 	perl ../gr2.pl
 
