@@ -85,6 +85,11 @@ routedatafinal.pl : ../gr2.pl routedata.pl stations.pl stops.txt
 routedata.pl : trips.txt stop_times.txt ../gr.pl
 	perl ../gr.pl
 
+stops.txt trips.txt stop_times.txt : gtfs.zip
+
+gtfs.zip :
+	perl ../getgtfs.pl
+
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/li/stop_.htm ../docs/li/stop.htm ../docs/li/rt.htm
 all: ../docs/li/js/rt.htm ../docs/li/gwl/rt.htm ../docs/li/gstp.htm

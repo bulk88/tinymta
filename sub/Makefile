@@ -71,6 +71,11 @@ routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
 routedata.pl : trips.txt stop_times.txt ../gr.pl
 	perl ../gr.pl
 
+stops.txt trips.txt stop_times.txt : gtfs.zip
+
+gtfs.zip :
+	perl ../getgtfs.pl
+
 #dev tool target, set F= on cmd line
 mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
