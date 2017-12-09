@@ -43,13 +43,6 @@ $VAR1 = {
                      'stop_id' => '18'
                    },
                    {
-                     'borough' => 'Manhattan',
-                     'lat' => '40.874333',
-                     'lon' => '-73.910941',
-                     'name' => 'Marble Hill',
-                     'stop_id' => '11'
-                   },
-                   {
                      'borough' => 'Westchester',
                      'lat' => '40.994109',
                      'lon' => '-73.884512',
@@ -69,6 +62,13 @@ $VAR1 = {
                      'lon' => '-73.873083',
                      'name' => 'Irvington',
                      'stop_id' => '25'
+                   },
+                   {
+                     'borough' => 'Manhattan',
+                     'lat' => '40.874333',
+                     'lon' => '-73.910941',
+                     'name' => 'Marble Hill',
+                     'stop_id' => '11'
                    },
                    {
                      'borough' => 'Bronx',
@@ -113,11 +113,11 @@ $VAR1 = {
                      'stop_id' => '20'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8253',
-                     'lon' => '-73.9299',
-                     'name' => 'Yankees-E153 St.',
-                     'stop_id' => '622'
+                     'borough' => 'Dutchess',
+                     'lat' => '41.504007',
+                     'lon' => '-73.984528',
+                     'name' => 'Beacon',
+                     'stop_id' => '46'
                    },
                    {
                      'borough' => 'Westchester',
@@ -132,13 +132,6 @@ $VAR1 = {
                      'lon' => '-73.899062',
                      'name' => 'Glenwood',
                      'stop_id' => '19'
-                   },
-                   {
-                     'borough' => 'Dutchess',
-                     'lat' => '41.504007',
-                     'lon' => '-73.984528',
-                     'name' => 'Beacon',
-                     'stop_id' => '46'
                    },
                    {
                      'borough' => 'Dutchess',
@@ -162,20 +155,6 @@ $VAR1 = {
                      'stop_id' => '39'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.854252',
-                     'lon' => '-73.919583',
-                     'name' => 'Morris Heights',
-                     'stop_id' => '9'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.862248',
-                     'lon' => '-73.91312',
-                     'name' => 'University Heights',
-                     'stop_id' => '10'
-                   },
-                   {
                      'borough' => 'Putnam',
                      'lat' => '41.38178',
                      'lon' => '-73.947202',
@@ -190,11 +169,32 @@ $VAR1 = {
                      'stop_id' => '43'
                    },
                    {
+                     'borough' => 'Bronx',
+                     'lat' => '40.8253',
+                     'lon' => '-73.9299',
+                     'name' => 'Yankees-E153 St.',
+                     'stop_id' => '622'
+                   },
+                   {
                      'borough' => 'Westchester',
                      'lat' => '41.246259',
                      'lon' => '-73.921884',
                      'name' => 'Cortlandt',
                      'stop_id' => '37'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.854252',
+                     'lon' => '-73.919583',
+                     'name' => 'Morris Heights',
+                     'stop_id' => '9'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.862248',
+                     'lon' => '-73.91312',
+                     'name' => 'University Heights',
+                     'stop_id' => '10'
                    },
                    {
                      'borough' => 'Putnam',
@@ -262,6 +262,13 @@ $VAR1 = {
                      'stop_id' => '94'
                    },
                    {
+                     'borough' => 'Bronx',
+                     'lat' => '40.8615',
+                     'lon' => '-73.89058',
+                     'name' => 'Fordham',
+                     'stop_id' => '56'
+                   },
+                   {
                      'borough' => 'Westchester',
                      'lat' => '40.958997',
                      'lon' => '-73.820564',
@@ -276,11 +283,11 @@ $VAR1 = {
                      'stop_id' => '62'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8615',
-                     'lon' => '-73.89058',
-                     'name' => 'Fordham',
-                     'stop_id' => '56'
+                     'borough' => 'Westchester',
+                     'lat' => '40.92699',
+                     'lon' => '-73.83948',
+                     'name' => 'Fleetwood',
+                     'stop_id' => '64'
                    },
                    {
                      'borough' => 'Westchester',
@@ -288,13 +295,6 @@ $VAR1 = {
                      'lon' => '-73.835208',
                      'name' => 'Bronxville',
                      'stop_id' => '65'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '40.92699',
-                     'lon' => '-73.83948',
-                     'name' => 'Fleetwood',
-                     'stop_id' => '64'
                    },
                    {
                      'borough' => 'Westchester',
@@ -353,20 +353,6 @@ $VAR1 = {
                      'stop_id' => '80'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.895361',
-                     'lon' => '-73.862916',
-                     'name' => 'Woodlawn',
-                     'stop_id' => '59'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.878569',
-                     'lon' => '-73.871064',
-                     'name' => 'Williams Bridge',
-                     'stop_id' => '58'
-                   },
-                   {
                      'borough' => 'Westchester',
                      'lat' => '41.325775',
                      'lon' => '-73.659061',
@@ -389,6 +375,27 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Bronx',
+                     'lat' => '40.895361',
+                     'lon' => '-73.862916',
+                     'name' => 'Woodlawn',
+                     'stop_id' => '59'
+                   },
+                   {
+                     'borough' => 'Bronx',
+                     'lat' => '40.878569',
+                     'lon' => '-73.871064',
+                     'name' => 'Williams Bridge',
+                     'stop_id' => '58'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.072819',
+                     'lon' => '-73.772599',
+                     'name' => 'Valhalla',
+                     'stop_id' => '78'
+                   },
+                   {
+                     'borough' => 'Bronx',
                      'lat' => '40.905936',
                      'lon' => '-73.85568',
                      'name' => 'Wakefield',
@@ -400,13 +407,6 @@ $VAR1 = {
                      'lon' => '-73.883109',
                      'name' => 'Botanical Garden',
                      'stop_id' => '57'
-                   },
-                   {
-                     'borough' => 'Westchester',
-                     'lat' => '41.072819',
-                     'lon' => '-73.772599',
-                     'name' => 'Valhalla',
-                     'stop_id' => '78'
                    },
                    {
                      'borough' => 'Bronx',
@@ -477,13 +477,6 @@ $VAR1 = {
                      'lon' => '-73.57871',
                      'name' => 'Appalachian Trail',
                      'stop_id' => '99'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8253',
-                     'lon' => '-73.9299',
-                     'name' => 'Yankees-E153 St.',
-                     'stop_id' => '622'
                    }
                  ],
           '3' => [
@@ -517,17 +510,17 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Westchester',
-                     'lat' => '40.911605',
-                     'lon' => '-73.783807',
-                     'name' => 'New Rochelle',
-                     'stop_id' => '108'
-                   },
-                   {
-                     'borough' => 'Westchester',
                      'lat' => '40.969432',
                      'lon' => '-73.712964',
                      'name' => 'Harrison',
                      'stop_id' => '112'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.911605',
+                     'lon' => '-73.783807',
+                     'name' => 'New Rochelle',
+                     'stop_id' => '108'
                    },
                    {
                      'borough' => 'Westchester',
@@ -537,11 +530,11 @@ $VAR1 = {
                      'stop_id' => '114'
                    },
                    {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8615',
-                     'lon' => '-73.89058',
-                     'name' => 'Fordham',
-                     'stop_id' => '56'
+                     'borough' => 'Fairfield',
+                     'lat' => '41.178677',
+                     'lon' => '-73.187076',
+                     'name' => 'Bridgeport',
+                     'stop_id' => '140'
                    },
                    {
                      'borough' => 'Westchester',
@@ -551,11 +544,11 @@ $VAR1 = {
                      'stop_id' => '115'
                    },
                    {
-                     'borough' => 'Westchester',
-                     'lat' => '40.912161',
-                     'lon' => '-73.832185',
-                     'name' => 'Mt Vernon East ',
-                     'stop_id' => '105'
+                     'borough' => 'Bronx',
+                     'lat' => '40.8615',
+                     'lon' => '-73.89058',
+                     'name' => 'Fordham',
+                     'stop_id' => '56'
                    },
                    {
                      'borough' => 'Westchester',
@@ -572,18 +565,18 @@ $VAR1 = {
                      'stop_id' => '111'
                    },
                    {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.178677',
-                     'lon' => '-73.187076',
-                     'name' => 'Bridgeport',
-                     'stop_id' => '140'
+                     'borough' => 'Westchester',
+                     'lat' => '40.912161',
+                     'lon' => '-73.832185',
+                     'name' => 'Mt Vernon East ',
+                     'stop_id' => '105'
                    },
                    {
-                     'borough' => 'Westchester',
-                     'lat' => '40.910321',
-                     'lon' => '-73.810242',
-                     'name' => 'Pelham',
-                     'stop_id' => '106'
+                     'borough' => 'New Haven',
+                     'lat' => '41.296501',
+                     'lon' => '-72.92829',
+                     'name' => 'New Haven',
+                     'stop_id' => '149'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -601,10 +594,31 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'New Haven',
-                     'lat' => '41.296501',
-                     'lon' => '-72.92829',
-                     'name' => 'New Haven',
-                     'stop_id' => '149'
+                     'lat' => '41.223231',
+                     'lon' => '-73.057647',
+                     'name' => 'Milford',
+                     'stop_id' => '145'
+                   },
+                   {
+                     'borough' => 'New Haven',
+                     'lat' => '41.27142',
+                     'lon' => '-72.963488',
+                     'name' => 'West Haven',
+                     'stop_id' => '190'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.910321',
+                     'lon' => '-73.810242',
+                     'name' => 'Pelham',
+                     'stop_id' => '106'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.194255',
+                     'lon' => '-73.131532',
+                     'name' => 'Stratford',
+                     'stop_id' => '143'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -628,11 +642,11 @@ $VAR1 = {
                      'stop_id' => '121'
                    },
                    {
-                     'borough' => 'New Haven',
-                     'lat' => '41.223231',
-                     'lon' => '-73.057647',
-                     'name' => 'Milford',
-                     'stop_id' => '145'
+                     'borough' => 'Fairfield',
+                     'lat' => '41.118928',
+                     'lon' => '-73.371413',
+                     'name' => 'Westport',
+                     'stop_id' => '134'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -640,27 +654,6 @@ $VAR1 = {
                      'lon' => '-73.421132',
                      'name' => 'South Norwalk',
                      'stop_id' => '131'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.194255',
-                     'lon' => '-73.131532',
-                     'name' => 'Stratford',
-                     'stop_id' => '143'
-                   },
-                   {
-                     'borough' => 'New Haven',
-                     'lat' => '41.27142',
-                     'lon' => '-72.963488',
-                     'name' => 'West Haven',
-                     'stop_id' => '190'
-                   },
-                   {
-                     'borough' => 'Fairfield',
-                     'lat' => '41.118928',
-                     'lon' => '-73.371413',
-                     'name' => 'Westport',
-                     'stop_id' => '134'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -678,6 +671,13 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Fairfield',
+                     'lat' => '41.069041',
+                     'lon' => '-73.49788',
+                     'name' => 'Noroton Heights',
+                     'stop_id' => '127'
+                   },
+                   {
+                     'borough' => 'Fairfield',
                      'lat' => '41.134844',
                      'lon' => '-73.28897',
                      'name' => 'Southport',
@@ -692,13 +692,6 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Fairfield',
-                     'lat' => '41.069041',
-                     'lon' => '-73.49788',
-                     'name' => 'Noroton Heights',
-                     'stop_id' => '127'
-                   },
-                   {
-                     'borough' => 'Fairfield',
                      'lat' => '41.077456',
                      'lon' => '-73.445527',
                      'name' => 'Rowayton',
@@ -710,13 +703,6 @@ $VAR1 = {
                      'lon' => '-72.921747',
                      'name' => 'NH-State St.',
                      'stop_id' => '151'
-                   },
-                   {
-                     'borough' => 'Bronx',
-                     'lat' => '40.8253',
-                     'lon' => '-73.9299',
-                     'name' => 'Yankees-E153 St.',
-                     'stop_id' => '622'
                    }
                  ],
           '4' => [
@@ -941,17 +927,17 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Fairfield',
-                     'lat' => '41.069041',
-                     'lon' => '-73.49788',
-                     'name' => 'Noroton Heights',
-                     'stop_id' => '127'
-                   },
-                   {
-                     'borough' => 'Fairfield',
                      'lat' => '41.076913',
                      'lon' => '-73.472966',
                      'name' => 'Darien',
                      'stop_id' => '128'
+                   },
+                   {
+                     'borough' => 'Fairfield',
+                     'lat' => '41.069041',
+                     'lon' => '-73.49788',
+                     'name' => 'Noroton Heights',
+                     'stop_id' => '127'
                    },
                    {
                      'borough' => 'Fairfield',
@@ -966,6 +952,20 @@ $VAR1 = {
                      'lon' => '-73.624621',
                      'name' => 'Greenwich',
                      'stop_id' => '116'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '41.000732',
+                     'lon' => '-73.6647',
+                     'name' => 'Port Chester',
+                     'stop_id' => '115'
+                   },
+                   {
+                     'borough' => 'Westchester',
+                     'lat' => '40.985922',
+                     'lon' => '-73.682553',
+                     'name' => 'Rye',
+                     'stop_id' => '114'
                    }
                  ],
           '6' => [
