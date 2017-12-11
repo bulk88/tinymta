@@ -3,6 +3,7 @@ use strict;
 use File::Slurp;
 use POSIX qw/ceil/;
 use Data::Dumper;
+use Sort::Naturally;
 
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
@@ -29,7 +30,7 @@ my @lineshtml;
 my %rtdispname = getRouteDisplayNames('route_id');
 
 {
-my @routes = sort keys %$VAR1;
+my @routes = nsort keys %$VAR1;
 #Move 7 train down to put right after 6 train, move 6X train above 7 train
 #this is so access keys for dumb phones, for the IRT lines, match keypad
 my $swap = $routes[6];

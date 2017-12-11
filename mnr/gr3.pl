@@ -1,6 +1,7 @@
 #generate routes, usage perl gr.pl > t.txt
 use strict;
 use Data::Dumper;
+use Sort::Naturally;
 
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
@@ -37,7 +38,7 @@ $mob ?
 '<html><head><meta name="mobileoptimized" content="0"></head><body><style>form{margin-bottom:0px;margin-top:0px}input{padding-top:0px;padding-bottom:0px}div form{display:inline}</style><a name="#">
 ':'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
 ';
-foreach my $rtid (sort keys %$VAR1) {
+foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
     my $routename = $rtdispname{$rtid};
     my (%boroughs, $line, $rtanchor);

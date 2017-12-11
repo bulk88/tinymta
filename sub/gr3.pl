@@ -1,6 +1,7 @@
 #generate routes, usage perl gr.pl > t.txt
 use strict;
 use Data::Dumper;
+use Sort::Naturally;
 
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
@@ -26,7 +27,7 @@ binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
 ';
-foreach my $rtid (sort keys %$VAR1) {
+foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
     my $routename = $rtdispname{$rtid};
     my (%boroughs, $line, $rtanchor);

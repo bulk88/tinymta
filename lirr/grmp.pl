@@ -3,6 +3,7 @@ use strict;
 use File::Slurp;
 use POSIX qw/ceil/;
 use Data::Dumper;
+use Sort::Naturally;
 
 #abbreviate boro links for 2-4 KB smaller html file
 my %borotbl = ( 'Queens' => 'Q',
@@ -28,7 +29,7 @@ do 'routedatafinal.pl';
 my @lineshtml;
 my %rtdispname = getRouteDisplayNames('route_long_name');
 
-my @routes = sort keys %$VAR1;
+my @routes = nsort keys %$VAR1;
 
 foreach my $routename (@routes) {
     my $route = $$VAR1{$routename};
