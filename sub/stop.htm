@@ -25,7 +25,7 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
-    url = 'http://54.90.113.57/getTime/'+t.substring(1);
+    url = 'http://54.86.125.218/getTime/'+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
           +
@@ -97,7 +97,7 @@ function onRSC(a)
             if (x.status == 200)
             {   /* IE 6 cache hit, no IP traffic happened, thats bad,
                   this detects it and resends it, on Chrome with CORS
-                  XMLHttpRequest cannot load http://54.90.113.57/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
+                  XMLHttpRequest cannot load http://54.86.125.218/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
                   so include IMS header ONLY if IE with cache bug by feature test and no CORS support
                   
                   asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value

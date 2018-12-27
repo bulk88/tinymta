@@ -109,8 +109,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
 #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
 #anyone got a better transcoder/proxy sandwich?
                 .($js?($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/gstp.htm%23':'href="../stop.htm#')
-                        : ($raw?'href="http://54.90.113.57/getTime/':
-                                    'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.90.113.57/getTime/'))
+                        : ($raw?'href="http://54.86.125.218/getTime/':
+                                    'href="http://www.loband.org/loband/filter/net/mlvb/%20/54.86.125.218/getTime/'))
     #substr will merge stop IDs #1/128 #2/128 #3/128 #5/128 into #1/128
     #to make more compressible (common) text in single page format, they are
     #all the same station IRT "34 St - Penn Station"
