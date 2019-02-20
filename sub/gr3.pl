@@ -72,7 +72,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($js?'href="stop.htm#':'href="http://54.86.125.218/getTime/')
+                .($js?'href="stop.htm#':'href="http://54.88.152.100/getTime/')
     #substr will merge stop IDs #1/128 #2/128 #3/128 #5/128 into #1/128
     #to make more compressible (common) text in single page format, they are
     #all the same station IRT "34 St - Penn Station"
