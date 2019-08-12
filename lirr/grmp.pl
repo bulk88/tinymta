@@ -25,7 +25,7 @@ my $raw = $ARGV[1];
 #nodejs processes instead of a million system() calls
 my $minifyhtml = !$ENV{DISABLEMINI};
 our $VAR1;
-do 'routedatafinal.pl';
+do '.\routedatafinal.pl';
 my @lineshtml;
 my %rtdispname = getRouteDisplayNames('route_long_name');
 
@@ -93,7 +93,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?
                     ($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/li/gstp.htm%23':'href="../stop.htm#')
-                    :'href="http://www.loband.org/loband/filter/com/anyorigin/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
+                    :'href="http://www.loband.org/loband/filter/win/allorigins/api/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
                 .$stopid
                 .($js?($raw?'&f=1&lite_refresh=1"':'"'):'&callback=X&_ab_type=JavaScript"')
                 .'>'.$dispname."</a>\n";

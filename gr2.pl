@@ -8,20 +8,21 @@ use HTTP::Tiny;
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError) ;
 use Time::HiRes 'sleep';
 
+die "must set ENV var GOOGLE_API_KEY" unless $ENV{GOOGLE_API_KEY};
 our $routes1;
-do 'routedata.pl';
+do '.\routedata.pl';
 #stop_id overrides, optional, if stations.pl doesn't exist, then GTFS stop_ids
 #are used unchanged
 our $stations1;
-do 'stations.pl';
+do '.\stations.pl';
 our $VAR1;
-do 'routedatafinal.pl';
+do '.\routedatafinal.pl';
 #slurp in coord to borough data, avoids a geocode network call, county names
 #will never change
 my %borocache;
 if(-e 'borocache.tmp') {
     our $borocache1;
-    do 'borocache.tmp';
+    do '.\borocache.tmp';
     %borocache = %{$borocache1};
     delete $::{borocache1};
 }
@@ -75,8 +76,8 @@ foreach(keys %{$stops}) {
     if(exists $borocache{$coord}){
         $borough = $borocache{$coord};
     } else {
-        my $url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='.
-            $coord .'&sensor=false';
+        my $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='.
+            $coord .'&sensor=false&key='.$ENV{GOOGLE_API_KEY};
         my $response;
         my $geocode_result;
         my $one_stopid_retries = 0;
