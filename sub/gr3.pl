@@ -14,7 +14,7 @@ my %borotbl = ( 'Queens' => 'Q',
 die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
 my $js = $ARGV[0];
 our $VAR1;
-do 'routedatafinal.pl';
+do '.\routedatafinal.pl';
 my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;

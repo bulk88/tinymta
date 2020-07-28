@@ -25,7 +25,7 @@ my $raw = $ARGV[1];
 #nodejs processes instead of a million system() calls
 my $minifyhtml = !$ENV{DISABLEMINI};
 our $VAR1;
-do 'routedatafinal.pl';
+do '.\routedatafinal.pl';
 my @lineshtml;
 my %rtdispname = getRouteDisplayNames('route_id');
 

@@ -22,7 +22,7 @@ my %borotbl = ( 'Queens' => 'Q',
 die "1st arg must be generate desktop MTA site stations or mobilized MTA site stations " if ! defined $ARGV[0];
 my $mob = $ARGV[0];
 our $VAR1;
-do 'routedatafinal.pl';
+do '.\routedatafinal.pl';
 my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;
