@@ -21,6 +21,9 @@ docs/_config.yml : _config.yml
 docs/README.md : README.md
 	copy /y README.md "$@"
 
+docs/google71e8cfa7440e51ce.html : google71e8cfa7440e51ce.html
+	copy /y google71e8cfa7440e51ce.html "$@"
+
 MNRR :
 	cd mnr && $(MAKE) all
 
@@ -49,4 +52,5 @@ mini:
 
 all: docs/index.htm docs/404.html docs/favicon.ico
 all: docs/CNAME docs/README.md docs/_config.yml
+all: docs/google71e8cfa7440e51ce.html
 all: MNRR LIRRMKF SUBMKF

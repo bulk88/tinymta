@@ -12,7 +12,6 @@ package main;
 
 die unless $ENV{GITHUB_ACCESS_TOKEN};
 
-my $tok = $
 my $gh = Net::GitHub::V3->new(
 access_token => $ENV{GITHUB_ACCESS_TOKEN},
 );
