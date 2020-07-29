@@ -6,6 +6,10 @@ docs/index.htm : index.htm minify_config.json
 	copy /y index.htm "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
+docs/more.htm : more.htm minify_config.json
+	copy /y more.htm "$@"
+	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
+
 docs/404.html : 404.html
 	copy /y 404.html "$@"
 
@@ -50,7 +54,7 @@ clean :
 mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
-all: docs/index.htm docs/404.html docs/favicon.ico
+all: docs/index.htm docs/more.htm docs/404.html docs/favicon.ico
 all: docs/CNAME docs/README.md docs/_config.yml
 all: docs/google71e8cfa7440e51ce.html
 all: MNRR LIRRMKF SUBMKF
