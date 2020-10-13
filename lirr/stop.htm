@@ -120,7 +120,7 @@ function getJSONP() {
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     /* Date.now() from JQuery isn't available in Opera 10.00 */
-    scriptElem.setAttribute('src', 'http://api.allorigins.win/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
+    scriptElem.setAttribute('src', '//api.allorigins.win/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
