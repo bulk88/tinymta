@@ -54,7 +54,16 @@ clean :
 mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
-all: docs/index.htm docs/more.htm docs/404.html docs/favicon.ico
-all: docs/CNAME docs/README.md docs/_config.yml
-all: docs/google71e8cfa7440e51ce.html
-all: MNRR LIRRMKF SUBMKF
+docs/ac.appcache : docs/index.htm docs/more.htm docs/404.html docs/favicon.ico
+docs/ac.appcache : docs/CNAME docs/README.md docs/_config.yml
+docs/ac.appcache : docs/google71e8cfa7440e51ce.html
+docs/ac.appcache : MNRR LIRRMKF SUBMKF
+	perl -e"use File::Slurp; \
+	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \
+	$$f =~  s/# v .+/\"# v \".localtime()/e;\
+	write_file('ac.appcache', {binmode => ':raw'}, $$f);\
+	write_file('docs/ac.appcache', {binmode => ':raw'}, $$f);"
+	git add docs/ac.appcache
+	git add ac.appcache
+
+all: docs/ac.appcache

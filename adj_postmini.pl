@@ -2,7 +2,7 @@ use strict;
 use File::Slurp;
 
 my $file = read_file( $ARGV[0], { binmode => ':raw' } );
-my $pos = index($file, 'mangleIndex={},mangleIndex.name="mangleIndex"');
+my $pos = index($file, 'mangleIndex={name:"mangleIndex"}');
 die "no start tag" if $pos == -1;
 
 my $endpos = index($file, ';', $pos);
