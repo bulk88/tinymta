@@ -29,20 +29,24 @@ var t = location.hash;
 */
 if(t != '' && t != '#') {
     /*I removed API key and the "&_" from JQuery, both aren't needed to get a resp*/
-    url = 'https://traintime.lirr.org/api/Departure?loc='+t.substring(1);
+    url = '//api.allorigins.win/raw?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D'+t.substring(1)+'%26_%3D';
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
 /*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
+          +t+'\')">Slow</a>] <a href=\"'+url+d()+'\">Raw</a><br>';
 }
 
 if(url)
     getStop();
 else
     document.body.innerHTML = 'No station specified in url anchor.';
+
+function d() {
+    return new Date().getTime();
+}
 
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
@@ -87,18 +91,8 @@ genArvBodyObj({"contents":"","status":{"url":"https://traintime.lirr.org/api/Dep
 function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
     try {
-        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
-          will happen over network, once browser sees no Access Control header
-          it will "fail" the req to the page, then the page does the JSONP network
-          request, stop this double request thing to save network traffic after CORS
-          fails the 1st time, the server wont magically get the header one minute.
-          Once CORS fails once, it will never succeed on that particular client, so
-          never try a CORS request again.
-          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
-          side, without network traffic.*/
-        if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('GET', url, 1);
+        x.open('GET', url+d(), 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -119,7 +113,7 @@ function getJSONP() {
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     /* Date.now() from JQuery isn't available in Opera 10.00 */
-    scriptElem.setAttribute('src', '//api.allorigins.win/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=genArvBodyObj');
+    scriptElem.setAttribute('src', url.replace('/raw?','/get?')+d()+'&callback=genArvBodyObj');
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
