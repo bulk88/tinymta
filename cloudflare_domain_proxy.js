@@ -1,0 +1,1 @@
+addEventListener("fetch",(t=>{let e=new URL(t.request.url);e.protocol="http:",e.hostname="tinymta.us.to",t.respondWith(fetch(e))}));
