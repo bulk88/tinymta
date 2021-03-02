@@ -1,3 +1,4 @@
+/* ASN/ISP lookup cloudflare worker script */
 function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
   return new Response("document.body.appendChild(document.createTextNode(" + JSON
@@ -5,7 +6,7 @@ function mkJSResp(str,etag) {
       headers: {
         "content-type": "text/javascript",
         "x-content-type-options": 'nosniff',
-        "cache-control":"no-cache",
+        "cache-control":"no-cache, no-transform",
         ...etag
       }
     })
