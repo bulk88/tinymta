@@ -5,7 +5,6 @@ function mkJSResp(str,etag) {
     .stringify(str) + "))", {
       headers: {
         "content-type": "text/javascript",
-        "x-content-type-options": 'nosniff',
         "cache-control":"no-cache, no-transform",
         ...etag
       }
@@ -114,5 +113,5 @@ async function handleRequest(request) {
   return mkJSResp("ERROR: raw data: "+new TextDecoder().decode(new Uint8Array(bufmetaobj)),{});
 }
 /* throws in CF, prints JS in browser dev console */
-try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
-catch(e){}
+//try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
+//catch(e){}
