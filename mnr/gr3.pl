@@ -36,7 +36,7 @@ print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise ro
 #a tiny bit of CSS needed so the buttons dont waste vertical space with 16px margin
 $mob ?
 '<html><head><meta name="mobileoptimized" content="0"></head><body><style>form{margin-bottom:0px;margin-top:0px}input{padding-top:0px;padding-bottom:0px}div form{display:inline}</style><a name="#">
-':'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
+':'<html><head><meta name="mobileoptimized" content="0"><link href="http://as0.mta.info" rel="preconnect"><link rel="dns-prefetch" href="http://as0.mta.info"></head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
