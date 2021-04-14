@@ -168,7 +168,9 @@ if($file){
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
-    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0></head><body>'.$_[1].'</body></html>');
+    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'
+    .($js &&!$raw?'<link href="//mtasubwaytime.info" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//mtasubwaytime.info">':'')
+    .'</head><body>'.$_[1].'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 

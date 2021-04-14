@@ -25,7 +25,9 @@ open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
-'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
+'<html><head><meta name="mobileoptimized" content="0">'
+.($js?'<link href="//mtasubwaytime.info" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//mtasubwaytime.info">':'')
+.'</head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
@@ -68,6 +70,8 @@ foreach my $rtid (nsort keys %$VAR1) {
     push(@linesboroughhtml,$line);
 }
 
+#psping and apache bench shows no time difference between TrainTimeLB-367443097.us-east-1.elb.amazonaws.com
+#and mtasubwaytime.info domains but they are different IPs
 sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
