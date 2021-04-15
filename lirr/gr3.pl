@@ -26,7 +26,9 @@ open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
-'<html><head><meta name="mobileoptimized" content="0"></head><body><a name="#">
+'<html><head><meta name="mobileoptimized" content="0">'
+.($js?'<link href="//api.allorigins.win" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//api.allorigins.win">':'')
+.'</head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
