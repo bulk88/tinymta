@@ -54,11 +54,12 @@ foreach my $rtid (nsort keys %$VAR1) {
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
             $line .= " <a ".($rtanchor?'name="'.$rtanchor.'" ':'')."href=\"#".$rtid.$borotbl{$borough}.'">'.$borough.'</a>';
-            push(@linestopshtml, "$routename: $borough <a name=\"".$rtid.$borotbl{$borough}."\" href=\"#\">Home</a>");
+            #omit </a> because next line is an anchor
+            push(@linestopshtml, "$routename: $borough <a name=\"".$rtid.$borotbl{$borough}."\" href=\"#\">Home");
         } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
             my $name = ${$boroughs{$borough}}[0]->{name};
             my $stopid = ${$boroughs{$borough}}[0]->{stop};#how to inject $rtanchor
-            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor);
+            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor).'</a>';
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
         $rtanchor = '';
@@ -67,9 +68,14 @@ foreach my $rtid (nsort keys %$VAR1) {
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
             push(@linestopshtml, stopid_to_tag($name, $stopid, $name, ''));
         }
+#add closing tag only after a list of station names to not have boro/route header be
+#part of a link
+        $linestopshtml[@linestopshtml - 1] = $linestopshtml[@linestopshtml - 1].'</a>';
     }
     push(@linesboroughhtml,$line);
 }
+#remove last </a> on entire file
+$linestopshtml[@linestopshtml - 1] = substr($linestopshtml[@linestopshtml - 1],0,length($linestopshtml[@linestopshtml - 1])-4);
 
 sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
@@ -78,7 +84,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($js?'href="stop.htm#':'href="http://www.loband.org/loband/filter/com/anyorigin/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
                 .$stopid
                 .($js?'"':'&callback=X&_ab_type=JavaScript"')
-                .'>'.$dispname.'</a>';
+    #dont include closing </a> or bytes saving when 2 sibling anchor elements
+                .'">'.$dispname;
 }
 
 print join(" \n", @lineshtml);

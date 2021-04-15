@@ -53,11 +53,12 @@ foreach my $rtid (nsort keys %$VAR1) {
     foreach my $borough (sort keys %boroughs) {
         if(@{$boroughs{$borough}} > 1){
             $line .= " <a ".($rtanchor?'name="'.$rtanchor.'" ':'')."href=\"#".$rtid.$borotbl{$borough}.'">'.$borough.'</a>';
-            push(@linestopshtml, "$routename: $borough <a name=\"".$rtid.$borotbl{$borough}."\" href=\"#\">Home</a>");
+            #omit </a> because next line is an anchor
+            push(@linestopshtml, "$routename: $borough <a name=\"".$rtid.$borotbl{$borough}."\" href=\"#\">Home");
         } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
             my $name = ${$boroughs{$borough}}[0]->{name};
             my $stopid = ${$boroughs{$borough}}[0]->{stop};#how to inject $rtanchor
-            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor);
+            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor).'</a>';
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
         $rtanchor = '';
@@ -66,9 +67,14 @@ foreach my $rtid (nsort keys %$VAR1) {
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
             push(@linestopshtml, stopid_to_tag($name, $stopid, $name, ''));
         }
+#add closing tag only after a list of station names to not have boro/route header be
+#part of a link
+        $linestopshtml[@linestopshtml - 1] = $linestopshtml[@linestopshtml - 1].'</a>';
     }
     push(@linesboroughhtml,$line);
 }
+#remove last </a> on entire file
+$linestopshtml[@linestopshtml - 1] = substr($linestopshtml[@linestopshtml - 1],0,length($linestopshtml[@linestopshtml - 1])-4);
 
 #psping and apache bench shows no time difference between TrainTimeLB-367443097.us-east-1.elb.amazonaws.com
 #and mtasubwaytime.info domains but they are different IPs
@@ -81,7 +87,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     #to make more compressible (common) text in single page format, they are
     #all the same station IRT "34 St - Penn Station"
                 .(($stopid =~ m/^S(\d+$)/)[0] >= 9 ? 'SIR' : substr($stopid,0,1)).'/'.$stopid
-                .'">'.$dispname.'</a>';
+    #dont include closing </a> or bytes saving when 2 sibling anchor elements
+                .'">'.$dispname;
 }
 
 print join(" \n", @lineshtml);
