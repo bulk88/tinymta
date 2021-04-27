@@ -28,6 +28,10 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
+    /* https://traintime.lirr.org/api/Departure?loc=CPL is one API from old MTA official LIRR Train Time app, no CORS headers, no cleartext
+	https://backend.mylirr.org/arrivals/CPL is from https://www.mylirr.org/main?
+    with cors accept-version: 1.5 header is mandatory (plus preflight) or server
+	throws an error, cleartext http works*/
     /*I removed API key and the "&_" from JQuery, both aren't needed to get a resp*/
     url = '//api.allorigins.win/raw?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D'+t.substring(1)+'%26_%3D';
     /* generate body top string once, its later used for fast refresh */
