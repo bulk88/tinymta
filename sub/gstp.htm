@@ -25,6 +25,7 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
+    //TODO make proto rel
     url = 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A'
     +t.substring(1);
     /* generate body top string once, its later used for fast refresh */
@@ -37,23 +38,13 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 
-function baseIsDate(value) {
-    //baseGetTag not implemented here, TODO elim this
-    return isObjectLike(value) && baseGetTag(value) == dateTag;
-}
-
-function isObjectLike(value) {
-    return value != null && typeof value == 'object';
-}
 //t = "2021-05-11T18:58:08-04:00" getFormattedTime
 function getFormattedTime(t) {
-    if (t) {
-        var e = baseIsDate(t) ? t : new Date(t),
-            n = e.getHours() > 11 ? "PM" : "AM",
-            a = e.getHours() > 12 ? e.getHours() - 12 : e.getHours(),
-            s = e.getMinutes() < 10 ? "0" + e.getMinutes() : e.getMinutes();
-        return "".concat(0 === a ? "12" : a, ":").concat(s, " ").concat(n)
-    }
+    var e = new Date(t),
+        n = e.getHours() > 11 ? "PM" : "AM",
+        a = e.getHours() > 12 ? e.getHours() - 12 : e.getHours(),
+        s = e.getMinutes() < 10 ? "0" + e.getMinutes() : e.getMinutes();
+    return (0 === a ? "12" : a)+ ":"+s+" "+n;
 }
 
 function genArvBodyObj(r){/*r=resp*/
@@ -74,14 +65,9 @@ if(r.length) {
         });
         //alpha sort ISO 8601 timestamps
         dir.sort(function(a, b) {
-            //TODO optimize
-            if (a.departureFmt < b.departureFmt) {
-                return -1;
-            }
-            if (a.departureFmt > b.departureFmt) {
-                return 1;
-            }
-            return 0;
+	    return a.departureFmt < b.departureFmt ? -1
+		: a.departureFmt > b.departureFmt ? 1
+		: 0;
         });
     });
     /* departureFmt becomes UI time eventually
@@ -107,7 +93,12 @@ if(r.length) {
     for (i in o) {
         h += i + "<br>";
         o[i].forEach(function(trip) {
-            var rts = (function(rts) {
+            h += getFormattedTime(trip.departureFmt)
+                + '-' + trip.shortRouteName
+                + '-' + trip.tripHeadsign
+                + '-Tk' + (trip.track === undefined ? '?' : ' '+trip.track)
+                + (!trip.realtime ? '-NRT' : '')
+                + (function(rts) {
                 switch (rts) {
                     case "SCHEDULED":
                         return "-SCH";
@@ -122,14 +113,7 @@ if(r.length) {
                     default:
                         return "-UNK";
                 }
-            })(trip.realtimeState);
-
-            h += getFormattedTime(trip.departureFmt)
-                + '-' + trip.shortRouteName
-                + '-' + trip.tripHeadsign
-                + '-Tk' + (trip.track === undefined ? '?' : ' '+trip.track)
-                + (!trip.realtime ? '-NRT' : '')
-                + rts + "<br>";
+            })(trip.realtimeState) + "<br>";
         });
     }
 } else
