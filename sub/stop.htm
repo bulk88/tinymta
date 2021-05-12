@@ -149,6 +149,10 @@ function getStop(addIMS) {
           http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
         x.onreadystatechange = onRSC;
         if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
+        //old Firefoxes send on XHR, new FF and new Chrome send */*
+        //Java EE server, if it sees "application/xml" it sends XML instead of JSON
+        //"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        x.setRequestHeader("accept","application/json");
         x.send();
     } catch (e) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
         /* alert("XHR failed-will try JSONP:\n"+e); */
@@ -191,7 +195,7 @@ function onRSC(a)
         alert("currently the application is at" + invocation.readyState); */
 }
 function onJSP(a) {
-	genArvBodyObj(eval('0,'+a.contents))
+    genArvBodyObj(eval('0,'+a.contents))
 }
 </script></html>
 <!--
