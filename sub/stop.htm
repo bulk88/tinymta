@@ -5,7 +5,7 @@
 
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
-genArvBodyObj.name = 'genArvBodyObj';
+onJSP.name = 'onJSP';
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
 var x = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -156,7 +156,7 @@ function getStop(addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         var scriptElem = document.createElement("script"); 
-        scriptElem.setAttribute('src', url+'?callback=genArvBodyObj&_='+(new Date).getTime());
+        scriptElem.setAttribute('src', 'http://api.allorigins.win/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=onJSP');
         var h = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -189,7 +189,11 @@ function onRSC(a)
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
-}</script></html>
+}
+function onJSP(a) {
+	genArvBodyObj(eval('0,'+a.contents))
+}
+</script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
 >       mshtml.dll!CTreePos::SourceIndex()  + 0x3       
