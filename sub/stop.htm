@@ -24,7 +24,24 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
-    url = '//mtasubwaytime.info/getTime/'+t.substring(1);
+/*
+unusable long IMO and doesn't have N/S combo, I didnt research if parent
+station searchable (N/S combo)
+
+http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/stops/MTASBWY:621N/stoptimes?timeRange=600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE 
+
+not enough info, no dest info
+https://api.wheresthefuckingtrain.com/by-id/82bd
+
+fails, unknown why
+http://collector-otp-prod.camsys-apps.com/realtime/MTASBWY/stopTimes?apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP
+
+use MTA UI official backend
+http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF01&timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
+*/
+
+    url = 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A'
+    +t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
           +
@@ -39,25 +56,102 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 
+function baseIsDate(value) {
+    //baseGetTag not implemented here, TODO elim this
+    return isObjectLike(value) && baseGetTag(value) == dateTag;
+}
+
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+//t = "2021-05-11T18:58:08-04:00" getFormattedTime
+function getFormattedTime(t) {
+    if (t) {
+        var e = baseIsDate(t) ? t : new Date(t),
+            n = e.getHours() > 11 ? "PM" : "AM",
+            a = e.getHours() > 12 ? e.getHours() - 12 : e.getHours(),
+            s = e.getMinutes() < 10 ? "0" + e.getMinutes() : e.getMinutes();
+        return "".concat(0 === a ? "12" : a, ":").concat(s, " ").concat(n)
+    }
+}
+
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h;
-    if(r.message.errorCode == 0){
-        h = r.lastUpdatedTime+(jsonp?' via JSONP':' via CORS')+"<br>"
-            +'Cur Sta: '+r.stationName+"<br>"
-            + r.direction1.name+"<br>";
-        var i, a;
-        a = r.direction1.times;
-        for (i = 0; i < a.length; i++)
-            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>";
-        h += r.direction2.name+"<br>";
-        a = r.direction2.times;
-        for (i = 0; i < a.length; i++)
-            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>";
-    } else /*injection IDC*/
-        h = 'Failed: errorCode: '+r.message.errorCode
-            /*+' MessageType '+r.message.MessageType useless*/
-            +' Message: '+r.message.message;
+    var h,i;
+    //initial array I think is for non subway modes (walking), query blocked out server side
+if(r.length) {
+    r = r[0];
+    var o = {};
+    //server returns sorted by route, we want sort by dir
+    r.groups.forEach(function(route) {
+        var i = route.headsign;
+        var dir = o[i] = o[i] || [];
+        route.times.forEach(function(trip) {
+            trip.shortRouteName = route.route.shortName;
+            dir.push(trip);
+        });
+        //alpha sort ISO 8601 timestamps
+        dir.sort(function(a, b) {
+            //TODO optimize
+            if (a.departureFmt < b.departureFmt) {
+                return -1;
+            }
+            if (a.departureFmt > b.departureFmt) {
+                return 1;
+            }
+            return 0;
+        });
+    });
+    /* departureFmt becomes UI time eventually
+            return _.each(t.times, function(t) {
+              e.times.push({
+                stopId: t.stopId,
+                realtime: t.realtime,
+                status: t.realtimeState,
+                departure: t.departureFmt,
+                pattern: t.pattern ? t.pattern.id : null,
+                tripHeadsign: t.tripHeadsign ? t.tripHeadsign.toLowerCase() : "",
+                tripId: t.tripId,
+                serviceDay: t.serviceDay,
+                directionId: t.directionId
+              })
+            }), e
+    */
+    /*TODO current add timestamp like old feed*/
+    h = (jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
+        'Cur Sta: ' + r.stop.name + "<br>";
+
+    for (i in o) {
+        h += i + "<br>";
+        o[i].forEach(function(trip) {
+            var rts = (function(rts) {
+                switch (rts) {
+                    case "SCHEDULED":
+                        return "-SCH";
+                    case "UPDATED":
+                        return "-UPD";
+                    case "CANCELED":
+                        return "-CNX";
+                    case "ADDED":
+                        return "-ADD";
+                    case "MODIFIED":
+                        return "-MOD";
+                    default:
+                        return "-UNK";
+                }
+            })(trip.realtimeState);
+
+            h += getFormattedTime(trip.departureFmt)
+                + '-' + trip.shortRouteName
+                + '-' + trip.tripHeadsign
+                + '-Tk' + (trip.track === undefined ? '?' : ' '+trip.track)
+                + (!trip.realtime ? '-NRT' : '')
+                + rts + "<br>";
+        });
+    }
+} else
+    h = "Station not found";
+
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
@@ -115,65 +209,65 @@ function onRSC(a)
 }</script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
->	mshtml.dll!CTreePos::SourceIndex()  + 0x3	
- 	mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b	
- 	mshtml.dll!CDoc::InsertElement()  + 0x98	
- 	mshtml.dll!CDocument::get_implementation()  + 0x135	
- 	mshtml.dll!CElement::insertBefore()  + 0xd0	
- 	mshtml.dll!CElement::appendChild()  + 0x33	
- 	mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60	
- 	mshtml.dll!CBase::ContextInvokeEx()  + 0x15b	
- 	mshtml.dll!CElement::ContextInvokeEx()  + 0x49	
- 	mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43	
- 	jscript.dll!IDispatchExInvokeEx2()  + 0x6f	
- 	jscript.dll!IDispatchExInvokeEx()  + 0x3e	
- 	jscript.dll!InvokeDispatchEx()  + 0x78	
- 	jscript.dll!VAR::InvokeByName()  + 0x9f0	
- 	jscript.dll!VAR::InvokeDispName()  + 0x40	
- 	jscript.dll!VAR::InvokeByDispID()  + 0x54	
- 	jscript.dll!CScriptRuntime::Run()  + 0x2db0	
- 	jscript.dll!ScrFncObj::Call()  + 0x85	
- 	jscript.dll!CSession::Execute()  + 0x9c	
- 	jscript.dll!NameTbl::InvokeDef()  + 0x101	
- 	jscript.dll!NameTbl::InvokeEx()  + 0xb6	
- 	jscript.dll!IDispatchExInvokeEx2()  + 0x6f	
- 	jscript.dll!IDispatchExInvokeEx()  + 0x3e	
- 	jscript.dll!NameTbl::InvokeEx()  - 0x194a0	
- 	mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f	
- 	mshtml.dll!CWindow::InvokeEx()  + 0x2c49e	
- 	mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c	
- 	mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26	
- 	jscript.dll!IDispatchExInvokeEx2()  + 0x6f	
- 	jscript.dll!IDispatchExInvokeEx()  + 0x3e	
- 	jscript.dll!InvokeDispatchEx()  + 0x78	
- 	jscript.dll!VAR::InvokeByDispID()  - 0x3b65	
- 	jscript.dll!CScriptRuntime::Run()  + 0x2db0	
- 	jscript.dll!ScrFncObj::Call()  + 0x85	
- 	jscript.dll!CSession::Execute()  + 0x9c	
- 	jscript.dll!NameTbl::InvokeDef()  + 0x101	
- 	jscript.dll!NameTbl::InvokeEx()  + 0xb6	
- 	mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce	
- 	mshtml.dll!CBase::InvokeEvent()  + 0x70e2d	
- 	mshtml.dll!CBase::FireEvent()  + 0xc5	
- 	mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed	
- 	mshtml.dll!CElement::FireEvent()  + 0x10168	
- 	mshtml.dll!CElement::Fire_onclick()  + 0x1c	
- 	mshtml.dll!CElement::DoClick()  + 0x67	
- 	mshtml.dll!CInput::DoClick()  + 0x3a	
- 	mshtml.dll!CDoc::PumpMessage()  + 0x279b9	
- 	mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7	
- 	mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a	
- 	mshtml.dll!CServer::WndProc()  + 0x76	
- 	user32.dll!_InternalCallWinProc@20()  + 0x28	
- 	user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7	
- 	user32.dll!_DispatchMessageWorker@8()  + 0xdc	
- 	user32.dll!_DispatchMessageW@4()  + 0xf	
- 	browseui.dll!TimedDispatchMessage()  + 0x33	
- 	browseui.dll!BrowserThreadProc()  + 0x336	
- 	browseui.dll!BrowserProtectedThreadProc()  + 0x50	
- 	browseui.dll!_SHOpenFolderWindow@4()  + 0x22c	
- 	shdocvw.dll!_IEWinMain@8()  + 0x133	
- 	IEXPLORE.EXE!WinMainT()  + 0x2de	
- 	IEXPLORE.EXE!__ModuleEntry@0()  + 0x99	
- 	kernel32.dll!_BaseProcessStart@4()  + 0x23	
+>       mshtml.dll!CTreePos::SourceIndex()  + 0x3       
+        mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b    
+        mshtml.dll!CDoc::InsertElement()  + 0x98        
+        mshtml.dll!CDocument::get_implementation()  + 0x135     
+        mshtml.dll!CElement::insertBefore()  + 0xd0     
+        mshtml.dll!CElement::appendChild()  + 0x33      
+        mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60      
+        mshtml.dll!CBase::ContextInvokeEx()  + 0x15b    
+        mshtml.dll!CElement::ContextInvokeEx()  + 0x49  
+        mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43    
+        jscript.dll!IDispatchExInvokeEx2()  + 0x6f      
+        jscript.dll!IDispatchExInvokeEx()  + 0x3e       
+        jscript.dll!InvokeDispatchEx()  + 0x78  
+        jscript.dll!VAR::InvokeByName()  + 0x9f0        
+        jscript.dll!VAR::InvokeDispName()  + 0x40       
+        jscript.dll!VAR::InvokeByDispID()  + 0x54       
+        jscript.dll!CScriptRuntime::Run()  + 0x2db0     
+        jscript.dll!ScrFncObj::Call()  + 0x85   
+        jscript.dll!CSession::Execute()  + 0x9c 
+        jscript.dll!NameTbl::InvokeDef()  + 0x101       
+        jscript.dll!NameTbl::InvokeEx()  + 0xb6 
+        jscript.dll!IDispatchExInvokeEx2()  + 0x6f      
+        jscript.dll!IDispatchExInvokeEx()  + 0x3e       
+        jscript.dll!NameTbl::InvokeEx()  - 0x194a0      
+        mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f        
+        mshtml.dll!CWindow::InvokeEx()  + 0x2c49e       
+        mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c        
+        mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26        
+        jscript.dll!IDispatchExInvokeEx2()  + 0x6f      
+        jscript.dll!IDispatchExInvokeEx()  + 0x3e       
+        jscript.dll!InvokeDispatchEx()  + 0x78  
+        jscript.dll!VAR::InvokeByDispID()  - 0x3b65     
+        jscript.dll!CScriptRuntime::Run()  + 0x2db0     
+        jscript.dll!ScrFncObj::Call()  + 0x85   
+        jscript.dll!CSession::Execute()  + 0x9c 
+        jscript.dll!NameTbl::InvokeDef()  + 0x101       
+        jscript.dll!NameTbl::InvokeEx()  + 0xb6 
+        mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce      
+        mshtml.dll!CBase::InvokeEvent()  + 0x70e2d      
+        mshtml.dll!CBase::FireEvent()  + 0xc5   
+        mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed       
+        mshtml.dll!CElement::FireEvent()  + 0x10168     
+        mshtml.dll!CElement::Fire_onclick()  + 0x1c     
+        mshtml.dll!CElement::DoClick()  + 0x67  
+        mshtml.dll!CInput::DoClick()  + 0x3a    
+        mshtml.dll!CDoc::PumpMessage()  + 0x279b9       
+        mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7      
+        mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a   
+        mshtml.dll!CServer::WndProc()  + 0x76   
+        user32.dll!_InternalCallWinProc@20()  + 0x28    
+        user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7        
+        user32.dll!_DispatchMessageWorker@8()  + 0xdc   
+        user32.dll!_DispatchMessageW@4()  + 0xf 
+        browseui.dll!TimedDispatchMessage()  + 0x33     
+        browseui.dll!BrowserThreadProc()  + 0x336       
+        browseui.dll!BrowserProtectedThreadProc()  + 0x50       
+        browseui.dll!_SHOpenFolderWindow@4()  + 0x22c   
+        shdocvw.dll!_IEWinMain@8()  + 0x133     
+        IEXPLORE.EXE!WinMainT()  + 0x2de        
+        IEXPLORE.EXE!__ModuleEntry@0()  + 0x99  
+        kernel32.dll!_BaseProcessStart@4()  + 0x23      
 -->

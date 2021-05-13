@@ -109,12 +109,9 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
 #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
 #anyone got a better transcoder/proxy sandwich?
                 .($js?($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/gstp.htm%23':'href="../stop.htm#')
-                        : ($raw?'href="http://TrainTimeLB-367443097.us-east-1.elb.amazonaws.com/getTime/':
+                        : ($raw?'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A':
                                     'href="http://www.loband.org/loband/filter/net/mlvb/%20/TrainTimeLB-367443097.us-east-1.elb.amazonaws.com/getTime/'))
-    #substr will merge stop IDs #1/128 #2/128 #3/128 #5/128 into #1/128
-    #to make more compressible (common) text in single page format, they are
-    #all the same station IRT "34 St - Penn Station"
-                .(($stopid =~ m/^S(\d+$)/)[0] >= 9 ? 'SIR' : substr($stopid,0,1)).'/'.$stopid
+                .$stopid
                 .($js?($raw?'&f=1&lite_refresh=1':''):'?callback=X')
                 .'">'.$dispname."</a>\n";
 }
@@ -169,7 +166,7 @@ if($file){
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'
-    .($js &&!$raw?'<link href="//mtasubwaytime.info" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//mtasubwaytime.info">':'')
+    .($js &&!$raw?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//otp-mta-prod.camsys-apps.com">':'')
     .'</head><body>'.$_[1].'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }

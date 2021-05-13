@@ -25,7 +25,8 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
-    url = '//mtasubwaytime.info/getTime/'+t.substring(1);
+    url = 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A'
+    +t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     /* no fast refresh, only slow for GWL, t is a #hash anchor, date is GWL cache bust*/
     t = '<a href=\"gstp.htm?'+(new Date).getTime()+t+'\">Refresh</a> <a href=\"'+url+'\">Raw</a><br>';
@@ -36,29 +37,104 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 
+function baseIsDate(value) {
+    //baseGetTag not implemented here, TODO elim this
+    return isObjectLike(value) && baseGetTag(value) == dateTag;
+}
+
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+//t = "2021-05-11T18:58:08-04:00" getFormattedTime
+function getFormattedTime(t) {
+    if (t) {
+        var e = baseIsDate(t) ? t : new Date(t),
+            n = e.getHours() > 11 ? "PM" : "AM",
+            a = e.getHours() > 12 ? e.getHours() - 12 : e.getHours(),
+            s = e.getMinutes() < 10 ? "0" + e.getMinutes() : e.getMinutes();
+        return "".concat(0 === a ? "12" : a, ":").concat(s, " ").concat(n)
+    }
+}
+
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h;
-    if(r.message.errorCode == 0){
-        var i, a = new Date().toTimeString().split(' ');
-        a.splice(1,1);
-        h = 'MTA Time '+r.lastUpdatedTime+
-        /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always CORS*/
-            "<br>"
-            + 'Page Time '+a.join(' ')+"<br>"
-            + 'Cur Sta: '+r.stationName+"<br>";
-            + r.direction1.name+"<br>";
-        a = r.direction1.times;
-        for (i = 0; i < a.length; i++)
-            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>";
-        h += r.direction2.name+"<br>";
-        a = r.direction2.times;
-        for (i = 0; i < a.length; i++)
-            h += 'Min '+a[i].minutes+'-'+a[i].route+'-'+a[i].lastStation+"<br>";
-    } else /*injection IDC*/
-        h = 'Failed: errorCode: '+r.message.errorCode
-            /*+' MessageType '+r.message.MessageType useless*/
-            +' Message: '+r.message.message;
+    var h,i, a = new Date().toTimeString().split(' ');
+    a.splice(1,1);
+    //initial array I think is for non subway modes (walking), query blocked out server side
+if(r.length) {
+    r = r[0];
+    var o = {};
+    //server returns sorted by route, we want sort by dir
+    r.groups.forEach(function(route) {
+        var i = route.headsign;
+        var dir = o[i] = o[i] || [];
+        route.times.forEach(function(trip) {
+            trip.shortRouteName = route.route.shortName;
+            dir.push(trip);
+        });
+        //alpha sort ISO 8601 timestamps
+        dir.sort(function(a, b) {
+            //TODO optimize
+            if (a.departureFmt < b.departureFmt) {
+                return -1;
+            }
+            if (a.departureFmt > b.departureFmt) {
+                return 1;
+            }
+            return 0;
+        });
+    });
+    /* departureFmt becomes UI time eventually
+            return _.each(t.times, function(t) {
+              e.times.push({
+                stopId: t.stopId,
+                realtime: t.realtime,
+                status: t.realtimeState,
+                departure: t.departureFmt,
+                pattern: t.pattern ? t.pattern.id : null,
+                tripHeadsign: t.tripHeadsign ? t.tripHeadsign.toLowerCase() : "",
+                tripId: t.tripId,
+                serviceDay: t.serviceDay,
+                directionId: t.directionId
+              })
+            }), e
+    */
+    /*TODO current add timestamp like old feed*/
+    h = //'MTA Time '+r.lastUpdatedTime+"<br>"+
+        'Page Time '+a.join(' ')+"<br>" +
+        'Cur Sta: ' + r.stop.name + "<br>";
+
+    for (i in o) {
+        h += i + "<br>";
+        o[i].forEach(function(trip) {
+            var rts = (function(rts) {
+                switch (rts) {
+                    case "SCHEDULED":
+                        return "-SCH";
+                    case "UPDATED":
+                        return "-UPD";
+                    case "CANCELED":
+                        return "-CNX";
+                    case "ADDED":
+                        return "-ADD";
+                    case "MODIFIED":
+                        return "-MOD";
+                    default:
+                        return "-UNK";
+                }
+            })(trip.realtimeState);
+
+            h += getFormattedTime(trip.departureFmt)
+                + '-' + trip.shortRouteName
+                + '-' + trip.tripHeadsign
+                + '-Tk' + (trip.track === undefined ? '?' : ' '+trip.track)
+                + (!trip.realtime ? '-NRT' : '')
+                + rts + "<br>";
+        });
+    }
+} else
+    h = "Station not found";
+
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
@@ -68,7 +144,7 @@ function getStop(addIMS) {
         jsonp = 0;
         /*google web light will cache a CORS fetch for hours/days, and either
         I use JSONP which already has cache busting, or add cachebusting to CORS*/
-        x.open('GET', url+'?_='+(new Date).getTime(), 1);
+        x.open('GET', url+'&_='+(new Date).getTime(), 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works

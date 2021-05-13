@@ -26,7 +26,7 @@ select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0">'
-.($js?'<link href="//mtasubwaytime.info" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//mtasubwaytime.info">':'')
+.($js?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//otp-mta-prod.camsys-apps.com">':'')
 .'</head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
@@ -82,11 +82,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($js?'href="stop.htm#':'href="http://TrainTimeLB-367443097.us-east-1.elb.amazonaws.com/getTime/')
-    #substr will merge stop IDs #1/128 #2/128 #3/128 #5/128 into #1/128
-    #to make more compressible (common) text in single page format, they are
-    #all the same station IRT "34 St - Penn Station"
-                .(($stopid =~ m/^S(\d+$)/)[0] >= 9 ? 'SIR' : substr($stopid,0,1)).'/'.$stopid
+                .($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
+                .$stopid
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
                 .'">'.$dispname;
 }
