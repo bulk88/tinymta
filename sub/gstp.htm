@@ -139,7 +139,29 @@ function getStop(addIMS) {
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
           http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
-        x.onreadystatechange = onRSC;
+        x.onreadystatechange = function ()
+{
+    if (x.readyState == 4)
+    {
+            if (x.status == 200)
+            {   /* IE 6 cache hit, no IP traffic happened, thats bad,
+                  this detects it and resends it, on Chrome with CORS
+                  XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
+                  so include IMS header ONLY if IE with cache bug by feature test and no CORS support
+                  
+                  asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
+                  which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
+                */
+                'withCredentials' in x || x.getResponseHeader("Date")
+                    ? genArvBodyObj(x.responseText)
+                    : getStop(1);
+            }
+            else
+                alert("error HTTP status "+x.status);
+    }
+    /*else
+        alert("currently the application is at" + invocation.readyState); */
+};
         if(addIMS) x.setRequestHeader("if-MODIFIED-since", new Date(0));
         //old Firefoxes send on XHR, new FF and new Chrome send */*
         //Java EE server, if it sees "application/xml" it sends XML instead of JSON
@@ -163,29 +185,7 @@ function getStop(addIMS) {
         /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
     }
 }
-function onRSC()
-{
-    if (x.readyState == 4)
-    {
-            if (x.status == 200)
-            {   /* IE 6 cache hit, no IP traffic happened, thats bad,
-                  this detects it and resends it, on Chrome with CORS
-                  XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
-                  so include IMS header ONLY if IE with cache bug by feature test and no CORS support
-                  
-                  asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
-                  which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
-                */
-                'withCredentials' in x || x.getResponseHeader("Date")
-                    ? genArvBodyObj(x.responseText)
-                    : getStop(1);
-            }
-            else
-                alert("error HTTP status "+x.status);
-    }
-    /*else
-        alert("currently the application is at" + invocation.readyState); */
-}
+
 function onJSP(a) {
     genArvBodyObj(a.contents)
 }
