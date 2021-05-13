@@ -8,7 +8,7 @@ getStop.name = 'getStop';
 onJSP.name = 'onJSP';
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
-var x = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 var jsonp;
 
 var url;
@@ -148,25 +148,25 @@ function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
     try {
         /*throw(0);*/
-        jsonp = 0;
         x.open('GET', url, 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
           http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
         x.onreadystatechange = onRSC;
-        if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
+        if(addIMS) x.setRequestHeader("if-MODIFIED-since", new Date(0));
         //old Firefoxes send on XHR, new FF and new Chrome send */*
         //Java EE server, if it sees "application/xml" it sends XML instead of JSON
         //"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
         x.setRequestHeader("accept","application/json");
         x.send();
-    } catch (e) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
+    //code byte savings, reuse error var
+    } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
         /* alert("XHR failed-will try JSONP:\n"+e); */
         jsonp = 1;
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
-        var scriptElem = document.createElement("script"); 
+        scriptElem = document.createElement("script");
         scriptElem.setAttribute('src', 'http://api.allorigins.win/get?url='+escape(url)+'%26_%3D'+new Date().getTime()+'&callback=onJSP');
         var h = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
@@ -177,7 +177,7 @@ function getStop(addIMS) {
         /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
     }
 }
-function onRSC(a)
+function onRSC()
 {
     if (x.readyState == 4)
     {
