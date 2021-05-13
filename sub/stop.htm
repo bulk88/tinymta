@@ -67,26 +67,30 @@ function getFormattedTime(t) {
 
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h,i;
+    var h,i,route,trip,o = {};
+    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+    r = eval('0,'+r);
+if (r.length) {
     //initial array I think is for non subway modes (walking), query blocked out server side
-if(r.length) {
     r = r[0];
-    var o = {};
     //server returns sorted by route, we want sort by dir
-    r.groups.forEach(function(route) {
-        var i = route.headsign;
-        var dir = o[i] = o[i] || [];
-        route.times.forEach(function(trip) {
+    for (i in r.groups) {
+        route = r.groups[i];
+        /*h=headsign*/
+        h = route.headsign;
+        for (i in route.times) {
+            trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
-            dir.push(trip);
-        });
+            (o[h] = o[h] || []).push(trip);
+        }
+    }
+    for (i in o)
         //alpha sort ISO 8601 timestamps
-        dir.sort(function(a, b) {
-            return a.departureFmt < b.departureFmt ? -1
-                : a.departureFmt > b.departureFmt ? 1
-                : 0;
+        o[i].sort(function(a, b) {
+            return a.departureFmt < b.departureFmt ? -1 :
+                a.departureFmt > b.departureFmt ? 1 :
+                0;
         });
-    });
     /* departureFmt becomes UI time eventually
             return _.each(t.times, function(t) {
               e.times.push({
@@ -108,29 +112,32 @@ if(r.length) {
 
     for (i in o) {
         h += i + "<br>";
-        o[i].forEach(function(trip) {
-            h += getFormattedTime(trip.departureFmt)
-                + '-' + trip.shortRouteName
-                + '-' + trip.tripHeadsign
-                + '-Tk' + (trip.track === undefined ? '?' : ' '+trip.track)
-                + (!trip.realtime ? '-NRT' : '')
-                + (function(rts) {
-                switch (rts) {
-                    case "SCHEDULED":
-                        return "-SCH";
-                    case "UPDATED":
-                        return "-UPD";
-                    case "CANCELED":
-                        return "-CNX";
-                    case "ADDED":
-                        return "-ADD";
-                    case "MODIFIED":
-                        return "-MOD";
-                    default:
-                        return "-UNK";
-                }
-            })(trip.realtimeState) + "<br>";
-        });
+        //route is dir really
+        route = o[i];
+        for (i in route) {
+            trip = route[i];
+            h += getFormattedTime(trip.departureFmt) +
+                '-' + trip.shortRouteName +
+                '-' + trip.tripHeadsign +
+                '-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track) +
+                (!trip.realtime ? '-NRT-' : '-') +
+                (function(rts) {
+                    switch (rts) {
+                        case "SCHEDULED":
+                            return "SCH";
+                        case "UPDATED":
+                            return "UPD";
+                        case "CANCELED":
+                            return "CNX";
+                        case "ADDED":
+                            return "ADD";
+                        case "MODIFIED":
+                            return "MOD";
+                        default:
+                            return "UNK";
+                    }
+                })(trip.realtimeState) + "<br>";
+        }
     }
 } else
     h = "Station not found";
@@ -184,8 +191,7 @@ function onRSC(a)
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-                    ? genArvBodyObj(eval('0,'+x.responseText))
+                    ? genArvBodyObj(x.responseText)
                     : getStop(1);
             }
             else
@@ -195,7 +201,7 @@ function onRSC(a)
         alert("currently the application is at" + invocation.readyState); */
 }
 function onJSP(a) {
-    genArvBodyObj(eval('0,'+a.contents))
+    genArvBodyObj(a.contents)
 }
 </script></html>
 <!--
