@@ -151,7 +151,7 @@ if (r.length) {
                             return "UNK";
                     }
                 })(trip.realtimeState) // delay can neg, chop off fractional
-                + ((r=((trip.departureDelay/60)|0)) ? '-L'+r: '') +"<br>";
+                + ((r=((trip.departureDelay/60)|0)) ? (r > 0 ? '-L' : '-E')+Math.abs(r): '') +"<br>";
         }
     }
 } else
