@@ -40,11 +40,19 @@ else
 
 //t = "2021-05-11T18:58:08-04:00" getFormattedTime
 function getFormattedTime(t) {
-    var e = new Date(t),
-        n = e.getHours() > 11 ? "PM" : "AM",
-        a = e.getHours() > 12 ? e.getHours() - 12 : e.getHours(),
-        s = e.getMinutes() < 10 ? "0" + e.getMinutes() : e.getMinutes();
-    return (0 === a ? "12" : a)+ ":"+s+" "+n;
+    var e = parseIsoDatetime(t),
+	h = e.getHours(),
+	m = e.getMinutes(),
+	a = h > 12 ? h - 12 : h;
+    return (0 === a ? "12" : a)+ ":"+(m < 10 ? "0" + m : m)+" "+(h > 11 ? "PM" : "AM");
+}
+
+function parseIsoDatetime(dt,i) {
+    dt = dt.split(/[: T-]/);
+	for(i in dt)
+		dt[i] = parseFloat(dt[i]);
+	
+    return new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0);
 }
 
 function genArvBodyObj(r){/*r=resp*/
