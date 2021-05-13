@@ -56,6 +56,7 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 
 //t = "2021-05-11T18:58:08-04:00" getFormattedTime
+/* unused since switch from abs time to Mins
 function getFormattedTime(t) {
     var e = parseIsoDatetime(t),
         h = e.getHours(),
@@ -63,16 +64,20 @@ function getFormattedTime(t) {
         a = h > 12 ? h - 12 : h;
     return (0 === a ? "12" : a)+ ":"+(m < 10 ? "0" + m : m)+" "+(h > 11 ? "PM" : "AM");
 }
+*/
 
+/* mislabeled now */
 function parseIsoDatetime(dt,i) {
     dt = dt.split(/[: T-]/);
-        for(i in dt)
-                dt[i] = parseFloat(dt[i]);
-        
-    return new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0);
+    for(i in dt)
+        dt[i] = parseFloat(dt[i]);
+    //return //modified by bulk88 to be mins away instead of parse
+    return 'Min '+Math.floor(Math.abs((
+        new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
+        - (new Date)) / 1e3) / 60);
 }
 
-/* MTA orig algo */
+/* MTA orig algo
 function minsAway(t) {
     var e = Number((new Date).getTime());
     t = Number(t.getTime());
@@ -82,7 +87,7 @@ function minsAway(t) {
     var a = null,
       s = null;
     return a = Math.trunc(n / 60), s = n % 60, " ".concat(a < 10 ? 0 : "").concat(a, ":").concat(s < 10 ? 0 : "").concat(Math.floor(s), " mins away")
-}
+}*/
 
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
@@ -134,12 +139,13 @@ if (r.length) {
         //route is dir really
         route = o[i];
         for (i in route) {
+            //if departureDelay > 0 
             //todo (49620-49080)/60 = 9 mins late
-            //MN/LIR algo, unk if NYCT reports
+            //MN/LIR algo, NYCT reports also
             //realtimeDeparture: 49620
             //scheduledDeparture: 49080
             trip = route[i];
-            h += getFormattedTime(trip.departureFmt) +
+            h += parseIsoDatetime(trip.departureFmt) +
                 '-' + trip.shortRouteName +
                 '-' + trip.tripHeadsign +
                 '-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track) +
@@ -159,7 +165,8 @@ if (r.length) {
                         default:
                             return "UNK";
                     }
-                })(trip.realtimeState) + "<br>";
+                })(trip.realtimeState) // delay can neg, chop off fractional
+                + ((r=((trip.departureDelay/60)|0)) ? '-L'+r: '') +"<br>";
         }
     }
 } else
