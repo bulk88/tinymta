@@ -133,7 +133,9 @@ if (r.length) {
             h += parseIsoDatetime(trip.departureFmt) +
                 '-' + trip.shortRouteName +
                 '-' + trip.tripHeadsign +
-                '-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track) +
+                //disable track numbers, nobody cares, this isn't Commuter rail
+                //'-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track ) +
+                (trip.track === undefined ? '-Tk?' : '') +
                 (!trip.realtime ? '-NRT-' : '-') +
                 (function(rts) {
                     switch (rts) {
@@ -154,6 +156,7 @@ if (r.length) {
                 + ((r=((trip.departureDelay/60)|0)) ? (r > 0 ? '-L' : '-E')+Math.abs(r): '') +"<br>";
         }
     }
+    h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)';
 } else
     h = "station not found";
 

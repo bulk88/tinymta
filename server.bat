@@ -1,0 +1,1 @@
+npx http-server --cors -c15 -p80 .
