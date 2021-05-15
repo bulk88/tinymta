@@ -38,8 +38,7 @@ http://collector-otp-prod.camsys-apps.com/realtime/MTASBWY/stopTimes?apikey=qeqy
 use MTA UI official backend
 http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF01&timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
 */
-    //TODO make proto rel
-    url = 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
+    url = '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
     +t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
@@ -227,7 +226,7 @@ function getStop(addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='http://api.allorigins.win/get?url='+escape(url+'&_=')+new Date().getTime()+'&callback=onJSP';
+        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback=onJSP';
         var h = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
