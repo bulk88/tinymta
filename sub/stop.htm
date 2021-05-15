@@ -167,8 +167,13 @@ if (r.length) {
                         default:
                             return "UNK";
                     }
-                })(trip.realtimeState) // delay can neg, chop off fractional
-                + ((r=((trip.departureDelay/60)|0)) ? (r > 0 ? '-L' : '-E')+Math.abs(r): '') +"<br>";
+                })(trip.realtimeState)
+/* delay can be neg, chop off fractional,
+OTP overflow bug on "service day", scheduledDeparture is seconds
+since midnight of yesterday, realtimeDeparture is seconds since
+midnight of today, happens right after 1200AM */
+                + ((r=((((r = trip.departureDelay) < -43200
+ ? r +86400 : r )/60)|0)) ? (r > 0 ? '-L' : '-E')+Math.abs(r): '') +"<br>";
         }
     }
     h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)';
