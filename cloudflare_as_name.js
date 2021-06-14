@@ -54,7 +54,9 @@ addEventListener('fetch', event => {
  * @param {Request} request
  */
 async function handleRequest(request) {
-  if (request.url.endsWith('/favicon.ico')) {
+  var url = new URL(request.url)
+    ,pathname_callback = url.pathname;
+  if (pathname_callback === '/favicon.ico') {
     return new Response(faviconStr, {
       headers: {
         "cache-control": "max-age=691200,no-transform",
@@ -62,7 +64,33 @@ async function handleRequest(request) {
       }
     });
   }
-
+else if (pathname_callback.startsWith('/li/api/')) {
+  var resp = fetch("http://backend.mylirr.org/arrivals/" + pathname_callback.substring(8), {
+    headers: { //LIRR server errors otherwise
+      'accept-version': '1.5'
+    }
+  });
+  //from express, but guarenteed JSONP no CORS
+  pathname_callback = (url.searchParams.get('callback') || '_xcallback').replace(/[^\[\]\w$.]/g, '');
+  pathname_callback = '/**/ typeof ' + pathname_callback + ' === \'function\' && ' + pathname_callback + '({http_code:';
+  resp = await resp;
+  var ct = resp.headers.get('content-type');
+  pathname_callback += resp.status + ',content_type:\'' + ct + '\',contents:';
+  resp = await resp.text();
+  return new Response(pathname_callback + (ct === 'application/json'
+    //from express
+    ?resp.replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029') :
+    JSON.stringify(resp)) + '});', {
+    headers: {
+      'content-type': 'text/javascript',
+      //no-store and IE 6, script file downloaded over the wire
+      //but never executes
+      'cache-control': 'no-cache',
+      //from express
+      "x-content-type-options": 'nosniff',
+    }
+  });
+}
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
   var cf = request?.cf || {

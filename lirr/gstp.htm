@@ -14,7 +14,7 @@ var jsonp;
 var url;
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
 /*STARTINSERT*/
-var s={"":"Meadowlands","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Avenue","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HOL":"Hollis","HPA":"Hunterspoint Avenue","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Avenue","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Avenue","NBD":"Nassau Boulevard","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank"};
+var s={"":"Meadowlands","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BOL":"Bolands-Employees","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont Park","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Av","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HIL":"Hillside-Employees","HOL":"Hollis","HPA":"Hunterspoint Av","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Av","MAV":"Merillon Avenue","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic Shirley","MSY":"Mastic-Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Av","NBD":"Nassau Blvd","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank"};
 /*ENDINSERT*/
 
 /* var t is "top" as in top of body (header) */
@@ -28,8 +28,7 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
-    /*I removed API key and the "&_" from JQuery, both aren't needed to get a resp*/
-    url = '//api.allorigins.win/raw?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D'+t.substring(1)+'%26_%3D';
+    url = '//backend.mylirr.org/arrivals/'+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"gstp.htm?'+(new Date).getTime()+t+'\">Refresh</a> <a href=\"'+url+'\">Raw</a><br>';
 }
@@ -40,49 +39,31 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 
 function d() {
-    return new Date().getTime();
+    return new Date().getTime()/1000;
 }
 
-function genArvBodyObj(r){/*r=resp*/
+function genArvBodyObj(r) {
+    /*r=resp*/
     /*h=html*/
     var h;
-        /*TRAINS is CORS (not really, sameorigin mustve been disabled),
-        contents is anyorigin.com wrapper*/
-    if (r.TRAINS || r.status.http_code == 200 && (r = eval('0,'+r.contents))) {
-        /* date useless & wastes screen space, rmv it, keep time, date causes
-        scn/line overflow on phones*/
-        h = new Date().toTimeString().split(' ');
-        h.splice(1,1);
-        h = 'MTA Time '+r.TIME.split(' ')[1]+
-        /*' '+(jsonp?'via JSONP':'via CORS')+ *//*worthless for GWL, its always JSONP for LIRR on GWL*/
-        "<br>"
-            + 'Page Time '+h.join(' ')+"<br>";
-            + 'Cur Sta: '+s[r.LOC]+"<br>";
-        /*sometimes this comes in the LIRR JSON*/
-        r.WARNING && (h += r.WARNING.text+"<br>");
-        r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));
-        h += "East<br>";
-        var i, t, l, w = "West<br>"; /*w=west, t=train, l=lineofhtml*/
-        r = r.TRAINS;
-        /*I used to have a "No Scheduled trains" message for empty TRAINS array.
-          I'm not sure if seasonal stations like Mets or Greenport have empty TRAINS arrays
-          but the MTA server returns empty TRAINS array for invalid/fake station codes
-          but with a time stamp and the fake station code reflected back in the JSON
-          so there is no real "error" or "error" string condition in this API, you can't
-          tell "no trains" from "invalid input", so draw timestamp even for invalid stations
-          to prove there was network traffic to MTA server, it just looks weird there are
-          no trains for east or west
-          */
-        for (i = 0; i < r.length; i++){
-            t = r[i];
-            l = t.SCHED.split(' ')[1].split(':').slice(0,2).join(':')
-            +'Min '+(Math.ceil(t.CD/60))
-            +'-Tk'+(t.TRACK || '?')+'-'+s[t.DEST]+'-'+(t.HSF?'H':'')+(t.JAM?'J':'')+"<br>";
-            t.DIR == 'E'? h += l: w += l;
-        }
-        h+=w;
-    } else
-        h = r.contents; /*anyorigin.com error string*/
+    h = new Date().toTimeString().split(' ');
+    h.splice(1,1);
+    h = 'Page Time '+h.join(' ')+"<br>"
+        +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>";
+    r instanceof Array || (r = r.contents);
+    var i, w = "West<br>",
+        t, l; /*w=west, t=train, l=lineofhtml*/
+    for (i = 0; i < r.length; i++) {
+        t = r[i];
+        //note to self, ceil is round up, |0 is round down
+        //console.log('x'+Math.ceil((t.time - (d())) / 60)+'   '+(((t.time - (d())) / 60)|0));
+        l = new Date((l=t.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
+        + '-Min ' + Math.ceil((l- d()) / 60)
+        + '-Tk' + t.track + "-" + s[(l=t.stops)[l.length - 1]]
+        + "<br>";
+        t.direction == 'E' ? h += l : w += l;
+    }
+    h += w;
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
@@ -102,12 +83,18 @@ function getStop(addIMS) {
                    on Google proxy server */
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('GET', url+d(), 1);
+        x.open('GET', url, 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
           http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
         x.onreadystatechange = onRSC;
+        x.setRequestHeader('accept-version','1.5');
+        //the server sends Set-Cookie: AWSALB= and Set-Cookie: AWSALBCORS=
+        //but also "Access-Control-Allow-Origin: *" and credentials doesn't
+        //allow wildcard, so never turn this on, just accept forever these
+        //cookies will come
+        //x.withCredentials = !0;
         if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
         x.send();
     } catch (e) {
@@ -122,8 +109,8 @@ function getJSONP() {
     /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
-    /* Date.now() from JQuery isn't available in Opera 10.00 */
-    scriptElem.setAttribute('src', url.replace('/raw?','/get?')+d()+'&callback=genArvBodyObj');
+    //note this WILL NOT RUN FROM 127.0.0.1 or file://
+    scriptElem.setAttribute('src', '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj');
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -160,65 +147,65 @@ function onRSC(evtXHR)
 }</script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
->	mshtml.dll!CTreePos::SourceIndex()  + 0x3	
- 	mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b	
- 	mshtml.dll!CDoc::InsertElement()  + 0x98	
- 	mshtml.dll!CDocument::get_implementation()  + 0x135	
- 	mshtml.dll!CElement::insertBefore()  + 0xd0	
- 	mshtml.dll!CElement::appendChild()  + 0x33	
- 	mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60	
- 	mshtml.dll!CBase::ContextInvokeEx()  + 0x15b	
- 	mshtml.dll!CElement::ContextInvokeEx()  + 0x49	
- 	mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43	
- 	jscript.dll!IDispatchExInvokeEx2()  + 0x6f	
- 	jscript.dll!IDispatchExInvokeEx()  + 0x3e	
- 	jscript.dll!InvokeDispatchEx()  + 0x78	
- 	jscript.dll!VAR::InvokeByName()  + 0x9f0	
- 	jscript.dll!VAR::InvokeDispName()  + 0x40	
- 	jscript.dll!VAR::InvokeByDispID()  + 0x54	
- 	jscript.dll!CScriptRuntime::Run()  + 0x2db0	
- 	jscript.dll!ScrFncObj::Call()  + 0x85	
- 	jscript.dll!CSession::Execute()  + 0x9c	
- 	jscript.dll!NameTbl::InvokeDef()  + 0x101	
- 	jscript.dll!NameTbl::InvokeEx()  + 0xb6	
- 	jscript.dll!IDispatchExInvokeEx2()  + 0x6f	
- 	jscript.dll!IDispatchExInvokeEx()  + 0x3e	
- 	jscript.dll!NameTbl::InvokeEx()  - 0x194a0	
- 	mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f	
- 	mshtml.dll!CWindow::InvokeEx()  + 0x2c49e	
- 	mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c	
- 	mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26	
- 	jscript.dll!IDispatchExInvokeEx2()  + 0x6f	
- 	jscript.dll!IDispatchExInvokeEx()  + 0x3e	
- 	jscript.dll!InvokeDispatchEx()  + 0x78	
- 	jscript.dll!VAR::InvokeByDispID()  - 0x3b65	
- 	jscript.dll!CScriptRuntime::Run()  + 0x2db0	
- 	jscript.dll!ScrFncObj::Call()  + 0x85	
- 	jscript.dll!CSession::Execute()  + 0x9c	
- 	jscript.dll!NameTbl::InvokeDef()  + 0x101	
- 	jscript.dll!NameTbl::InvokeEx()  + 0xb6	
- 	mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce	
- 	mshtml.dll!CBase::InvokeEvent()  + 0x70e2d	
- 	mshtml.dll!CBase::FireEvent()  + 0xc5	
- 	mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed	
- 	mshtml.dll!CElement::FireEvent()  + 0x10168	
- 	mshtml.dll!CElement::Fire_onclick()  + 0x1c	
- 	mshtml.dll!CElement::DoClick()  + 0x67	
- 	mshtml.dll!CInput::DoClick()  + 0x3a	
- 	mshtml.dll!CDoc::PumpMessage()  + 0x279b9	
- 	mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7	
- 	mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a	
- 	mshtml.dll!CServer::WndProc()  + 0x76	
- 	user32.dll!_InternalCallWinProc@20()  + 0x28	
- 	user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7	
- 	user32.dll!_DispatchMessageWorker@8()  + 0xdc	
- 	user32.dll!_DispatchMessageW@4()  + 0xf	
- 	browseui.dll!TimedDispatchMessage()  + 0x33	
- 	browseui.dll!BrowserThreadProc()  + 0x336	
- 	browseui.dll!BrowserProtectedThreadProc()  + 0x50	
- 	browseui.dll!_SHOpenFolderWindow@4()  + 0x22c	
- 	shdocvw.dll!_IEWinMain@8()  + 0x133	
- 	IEXPLORE.EXE!WinMainT()  + 0x2de	
- 	IEXPLORE.EXE!__ModuleEntry@0()  + 0x99	
- 	kernel32.dll!_BaseProcessStart@4()  + 0x23	
+>   mshtml.dll!CTreePos::SourceIndex()  + 0x3   
+    mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b    
+    mshtml.dll!CDoc::InsertElement()  + 0x98    
+    mshtml.dll!CDocument::get_implementation()  + 0x135 
+    mshtml.dll!CElement::insertBefore()  + 0xd0 
+    mshtml.dll!CElement::appendChild()  + 0x33  
+    mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60  
+    mshtml.dll!CBase::ContextInvokeEx()  + 0x15b    
+    mshtml.dll!CElement::ContextInvokeEx()  + 0x49  
+    mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43    
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f  
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e   
+    jscript.dll!InvokeDispatchEx()  + 0x78  
+    jscript.dll!VAR::InvokeByName()  + 0x9f0    
+    jscript.dll!VAR::InvokeDispName()  + 0x40   
+    jscript.dll!VAR::InvokeByDispID()  + 0x54   
+    jscript.dll!CScriptRuntime::Run()  + 0x2db0 
+    jscript.dll!ScrFncObj::Call()  + 0x85   
+    jscript.dll!CSession::Execute()  + 0x9c 
+    jscript.dll!NameTbl::InvokeDef()  + 0x101   
+    jscript.dll!NameTbl::InvokeEx()  + 0xb6 
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f  
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e   
+    jscript.dll!NameTbl::InvokeEx()  - 0x194a0  
+    mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f    
+    mshtml.dll!CWindow::InvokeEx()  + 0x2c49e   
+    mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c    
+    mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26    
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f  
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e   
+    jscript.dll!InvokeDispatchEx()  + 0x78  
+    jscript.dll!VAR::InvokeByDispID()  - 0x3b65 
+    jscript.dll!CScriptRuntime::Run()  + 0x2db0 
+    jscript.dll!ScrFncObj::Call()  + 0x85   
+    jscript.dll!CSession::Execute()  + 0x9c 
+    jscript.dll!NameTbl::InvokeDef()  + 0x101   
+    jscript.dll!NameTbl::InvokeEx()  + 0xb6 
+    mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce  
+    mshtml.dll!CBase::InvokeEvent()  + 0x70e2d  
+    mshtml.dll!CBase::FireEvent()  + 0xc5   
+    mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed   
+    mshtml.dll!CElement::FireEvent()  + 0x10168 
+    mshtml.dll!CElement::Fire_onclick()  + 0x1c 
+    mshtml.dll!CElement::DoClick()  + 0x67  
+    mshtml.dll!CInput::DoClick()  + 0x3a    
+    mshtml.dll!CDoc::PumpMessage()  + 0x279b9   
+    mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7  
+    mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a   
+    mshtml.dll!CServer::WndProc()  + 0x76   
+    user32.dll!_InternalCallWinProc@20()  + 0x28    
+    user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7    
+    user32.dll!_DispatchMessageWorker@8()  + 0xdc   
+    user32.dll!_DispatchMessageW@4()  + 0xf 
+    browseui.dll!TimedDispatchMessage()  + 0x33 
+    browseui.dll!BrowserThreadProc()  + 0x336   
+    browseui.dll!BrowserProtectedThreadProc()  + 0x50   
+    browseui.dll!_SHOpenFolderWindow@4()  + 0x22c   
+    shdocvw.dll!_IEWinMain@8()  + 0x133 
+    IEXPLORE.EXE!WinMainT()  + 0x2de    
+    IEXPLORE.EXE!__ModuleEntry@0()  + 0x99  
+    kernel32.dll!_BaseProcessStart@4()  + 0x23  
 -->

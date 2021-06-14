@@ -14,7 +14,7 @@ var jsonp;
 var url;
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
 /*STARTINSERT*/
-var s={"":"Meadowlands","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Avenue","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HOL":"Hollis","HPA":"Hunterspoint Avenue","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Avenue","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Avenue","NBD":"Nassau Boulevard","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank"};
+var s={"":"Meadowlands","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BOL":"Bolands-Employees","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont Park","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Av","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HIL":"Hillside-Employees","HOL":"Hollis","HPA":"Hunterspoint Av","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Av","MAV":"Merillon Avenue","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic Shirley","MSY":"Mastic-Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Av","NBD":"Nassau Blvd","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank"};
 /*ENDINSERT*/
 
 /* var t is "top" as in top of body (header) */
@@ -37,15 +37,14 @@ if(t != '' && t != '#') {
     staging: "https://traintimeqa.lirr.org/api",
     prod: "https://traintime.lirr.org/api"
     */
-    /*I removed API key and the "&_" from JQuery, both aren't needed to get a resp*/
-    url = '//api.allorigins.win/raw?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D'+t.substring(1)+'%26_%3D';
+    url = '//backend.mylirr.org/arrivals/'+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
 /*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href=\"'+url+d()+'\">Raw</a><br>';
+          +t+'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
 }
 
 if(url)
@@ -54,59 +53,57 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 
 function d() {
-    return new Date().getTime();
+    return new Date().getTime()/1000;
 }
 
-function genArvBodyObj(r){/*r=resp*/
+function genArvBodyObj(r) {
+    /*r=resp*/
     /*h=html*/
     var h;
-        /*TRAINS is CORS (not really, sameorigin mustve been disabled),
-        contents is anyorigin.com wrapper*/
-    if (r.TRAINS || r.status.http_code == 200 && (r = eval('0,'+r.contents))) {
-        /* date useless & wastes screen space, rmv it, keep time, date causes
-        scn/line overflow on phones*/
-        h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>"
-            + 'Cur Sta: '+s[r.LOC]+"<br>";
-        /*sometimes this comes in the LIRR JSON*/
-        r.WARNING && (h += r.WARNING.text+"<br>");
-        r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));
-        h += "East<br>";
-        var i, t, l, w = "West<br>"; /*w=west, t=train, l=lineofhtml*/
-        r = r.TRAINS;
-        /*I used to have a "No Scheduled trains" message for empty TRAINS array.
-          I'm not sure if seasonal stations like Mets or Greenport have empty TRAINS arrays
-          but the MTA server returns empty TRAINS array for invalid/fake station codes
-          but with a time stamp and the fake station code reflected back in the JSON
-          so there is no real "error" or "error" string condition in this API, you can't
-          tell "no trains" from "invalid input", so draw timestamp even for invalid stations
-          to prove there was network traffic to MTA server, it just looks weird there are
-          no trains for east or west
-          */
-        for (i = 0; i < r.length; i++){
-            t = r[i];
-            l = t.SCHED.split(' ')[1].split(':').slice(0,2).join(':')
-            +'Min '+(Math.ceil(t.CD/60))
-            +'-Tk'+(t.TRACK || '?')+'-'+s[t.DEST]+'-'+(t.HSF?'H':'')+(t.JAM?'J':'')+"<br>";
-            t.DIR == 'E'? h += l: w += l;
-        }
-        h+=w;
-    } else
-        h = r.contents; /*anyorigin.com error string (obsolete, not used anymore)*/
-/*whatever origin doesn't have good error reporting, failure looks like
-genArvBodyObj({"contents":"","status":{"url":"https://traintime.lirr.org/api/Departure%3Floc=NYK&_=1508859717102","content_type":"text/html; charset=UTF-8","http_code":500}})
-*/
+    r instanceof Array || (r = r.contents);
+    h = (jsonp ? 'via JSONP' : 'via CORS')
+        +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>";
+    var i, w = "West<br>",
+        t, l; /*w=west, t=train, l=lineofhtml*/
+    for (i = 0; i < r.length; i++) {
+        t = r[i];
+        //note to self, ceil is round up, |0 is round down
+        //console.log('x'+Math.ceil((t.time - (d())) / 60)+'   '+(((t.time - (d())) / 60)|0));
+        l = new Date((l=t.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
+        + '-Min ' + Math.ceil((l- d()) / 60)
+        + '-Tk' + (t.track || '?') + "-" + s[(l=t.stops)[l.length - 1]]
+        + "<br>";
+        t.direction == 'E' ? h += l : w += l;
+    }
+    h += w;
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
     try {
+        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
+          will happen over network, once browser sees no Access Control header
+          it will "fail" the req to the page, then the page does the JSONP network
+          request, stop this double request thing to save network traffic after CORS
+          fails the 1st time, the server wont magically get the header one minute.
+          Once CORS fails once, it will never succeed on that particular client, so
+          never try a CORS request again.
+          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
+          side, without network traffic.*/
+        if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('GET', url+d(), 1);
+        x.open('GET', url, 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
           http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
         x.onreadystatechange = onRSC;
+        x.setRequestHeader('accept-version','1.5');
+        //the server sends Set-Cookie: AWSALB= and Set-Cookie: AWSALBCORS=
+        //but also "Access-Control-Allow-Origin: *" and credentials doesn't
+        //allow wildcard, so never turn this on, just accept forever these
+        //cookies will come
+        //x.withCredentials = !0;
         if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
         x.send();
     } catch (e) {
@@ -121,8 +118,8 @@ function getJSONP() {
     /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
-    /* Date.now() from JQuery isn't available in Opera 10.00 */
-    scriptElem.setAttribute('src', url.replace('/raw?','/get?')+d()+'&callback=genArvBodyObj');
+    //note this WILL NOT RUN FROM 127.0.0.1 or file://
+    scriptElem.setAttribute('src', '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj');
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
