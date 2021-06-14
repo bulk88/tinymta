@@ -222,17 +222,16 @@ function getStop(addIMS) {
     //code byte savings, reuse error var
     } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
         /* alert("XHR failed-will try JSONP:\n"+e); */
-        jsonp = 1;
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
         scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback=onJSP';
-        var h = document.getElementsByTagName('head')[0];
+        jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
-        if(h.childNodes.length > 1)
-            h.removeChild(h.childNodes[1]);
-        h.appendChild(scriptElem);
+        if(jsonp.childNodes.length > 1)
+            jsonp.removeChild(jsonp.childNodes[1]);
+        jsonp.appendChild(scriptElem);
         /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
     }
 }

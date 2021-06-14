@@ -54,13 +54,10 @@ else
 
 function genArvBodyObj(r) {
     /*r=resp*/
-    /*h=html*/
-    var h;
     r instanceof Array || (r = r.contents);
-    h = (jsonp ? 'via JSONP' : 'via CORS')
-        +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>";
     var i, w = "West<br>",
-        t, l; /*w=west, t=train, l=lineofhtml*/
+        t, l, h = (jsonp ? 'via JSONP' : 'via CORS')
+        +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
     for (i = 0; i < r.length; i++) {
         t = r[i];
         //note to self, ceil is round up, |0 is round down
@@ -109,18 +106,17 @@ function getStop(addIMS) {
 function getJSONP() {
     /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
     /* alert("XHR failed-will try JSONP:\n"+e); */
-    jsonp = 1;
     /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     //note this WILL NOT RUN FROM 127.0.0.1 or file://
     scriptElem.src = '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj';
-    var h = document.getElementsByTagName('head')[0];
+    jsonp = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
-    if(h.childNodes.length > 1)
-        h.removeChild(h.childNodes[1]);
-    h.appendChild(scriptElem);
+    if(jsonp.childNodes.length > 1)
+        jsonp.removeChild(jsonp.childNodes[1]);
+    jsonp.appendChild(scriptElem);
     /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
 }
 function onRSC(evtXHR)

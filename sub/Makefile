@@ -65,8 +65,8 @@ clean :
 	del stations.htm
 	del stationsnojs.htm
 
-routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
-	perl ../gr2.pl
+#routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
+#	perl ../gr2.pl
 
 routedata.pl : trips.txt stop_times.txt ../gr.pl
 	perl ../gr.pl
