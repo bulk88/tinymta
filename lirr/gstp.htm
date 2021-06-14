@@ -38,10 +38,6 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 
-function d() {
-    return new Date().getTime()/1000;
-}
-
 function genArvBodyObj(r) {
     /*r=resp*/
     /*h=html*/
@@ -58,13 +54,12 @@ function genArvBodyObj(r) {
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - (d())) / 60)+'   '+(((t.time - (d())) / 60)|0));
         l = new Date((l=t.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
-        + '-Min ' + Math.ceil((l- d()) / 60)
+        + '-Min ' + Math.ceil((l- (new Date().getTime()/1000)) / 60)
         + '-Tk' + t.track + "-" + s[(l=t.stops)[l.length - 1]]
         + "<br>";
         t.direction == 'E' ? h += l : w += l;
     }
-    h += w;
-    document.body.innerHTML += h;
+    document.body.innerHTML += h+w;
 }
 function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
@@ -110,7 +105,7 @@ function getJSONP() {
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     //note this WILL NOT RUN FROM 127.0.0.1 or file://
-    scriptElem.setAttribute('src', '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj');
+    scriptElem.src = '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj';
     var h = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -140,7 +135,7 @@ function onRSC(evtXHR)
             else /*failed XHR BC CORS on FF doesn't throw an exeception like Opera 10,
                   supposedly you can't tell from CORS fail from timeout according to spec,
                   so just do the JSONP blindly*/
-                x.status == 0 ? getJSONP() : alert("error HTTP status "+x.status);
+                x.status ? alert("error HTTP status "+x.status) : getJSONP();
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
