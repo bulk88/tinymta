@@ -54,7 +54,7 @@ else
 
 function genArvBodyObj(r) {
     /*r=resp*/
-    r instanceof Array || (r = r.contents);
+    r = r.contents || r; //JSONP
     var i, w = "West<br>",
         t, l, h = (jsonp ? 'via JSONP' : 'via CORS')
         +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
@@ -119,7 +119,7 @@ function getJSONP() {
     jsonp.appendChild(scriptElem);
     /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
 }
-function onRSC(evtXHR)
+function onRSC()
 {
     if (x.readyState == 4)
     {

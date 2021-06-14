@@ -55,7 +55,7 @@ function genArvBodyObj(r) {
     h.splice(1,1);
     h = 'Page Time '+h.join(' ')+"<br>"
         +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>";
-    r instanceof Array || (r = r.contents);
+    r = r.contents || r; //JSONP
     var i, w = "West<br>",
         t, l; /*w=west, t=train, l=lineofhtml*/
     for (i = 0; i < r.length; i++) {
