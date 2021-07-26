@@ -14,7 +14,13 @@ my %borotbl = ( 'Queens' => 'Q',
 die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
 my $js = $ARGV[0];
 our $VAR1;
+our $nmapIDs;
 do '.\routedatafinal.pl';
+{
+    local $VAR1;
+    do '.\nmapnidsdata.pl';
+    $nmapIDs = $VAR1;
+}
 my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;
@@ -84,6 +90,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
                 .$stopid
+                .($js?$nmapIDs->{$stopid}:'')
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
                 .'">'.$dispname;
 }
