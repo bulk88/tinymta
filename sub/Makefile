@@ -30,7 +30,7 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y stationsnojs.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-stations.htm : gr3.pl routedatafinal.pl
+stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
 	perl gr3.pl 1
 
 stationsnojs.htm : gr3.pl routedatafinal.pl
@@ -50,6 +50,13 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 ../docs/raw/rt.htm : grmp.pl routedatafinal.pl
 	-mkdir "../docs/raw"
 	perl grmp.pl 0 1
+
+
+nmap_stations.json: nmap_gen1.js
+	node nmap_gen1.js
+
+nmapnidsdata.pl: nmap_gen2.pl nmap_stations.json
+	perl nmap_gen2.pl
 
 grmp.pl : ../minify_config.json
 
