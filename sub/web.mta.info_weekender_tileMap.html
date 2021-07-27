@@ -1,0 +1,1008 @@
+<html>
+<head>
+<title>The Weekender</title>
+</head>
+<script language="javascript" type="text/javascript" src="Scripts/tileMap.js"></script>
+<script language="javascript" type="text/javascript">
+var panX
+var panY
+
+var showingMap = false
+
+var tilePath
+var initialX
+var initialY
+
+function setTilePath(d)
+{
+    //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
+    tilePath = "/neighborhoodMaps/" + d + "/"
+    //tilePath = "http://10.8.86.78/WeekenderVer2/neighborhoodMaps/" + d + "/"
+}
+
+var mapWidth
+var mapHeight
+var tileDirectory
+
+function centerOnStation(staID) {
+    //debugger;
+    if (!stationLoc[staID])
+    {
+        showMapCover()
+    }
+    else
+    {
+        var stationLocInfo = stationLoc[staID].split(",")
+        tileDirectory = stationLocInfo[0]
+        var xCoor = stationLocInfo[1]
+        var yCoor = stationLocInfo[2]
+        
+        if (xCoor < 315)
+            xCoor = 315;
+        if (yCoor < 315)
+            yCoor = 315;
+            
+        if (zoomLevel == 15) {
+            if (tileDirectory != "Manhattan") {
+                if (xCoor > 1185)
+                    xCoor = 1185;
+                if (yCoor > 1185)
+                    yCoor = 1185;
+            }
+            else {
+                if (xCoor > 4685)
+                    xCoor = 4685;
+                if (yCoor > 17093)
+                    yCoor = 17093;
+            }
+        }
+        if (zoomLevel == 16) {
+            if (tileDirectory != "Manhattan") {
+                if (xCoor > 2685)
+                    xCoor = 2685;
+                if (yCoor > 2685)
+                    yCoor = 2685;
+            }
+            else {
+                if (xCoor > 9685)
+                    xCoor = 9685;
+                if (yCoor > 34501)
+                    yCoor = 34501;
+            }
+        }
+        
+        mapWidth = parseInt(mapImgDimensions[tileDirectory].split(",")[0])
+        mapHeight = parseInt(mapImgDimensions[tileDirectory].split(",")[1])
+        setTilePath(tileDirectory)
+        recenterMap(xCoor,yCoor)
+    }
+}
+
+function recenterMap(x,y)
+{
+    initialX = x
+    initialY = y
+    totalPanX = 0
+    totalPanY = 0
+    loadNewMap() 
+}
+
+var mapArea
+var scaleFactor = new Array()
+scaleFactor[13] = 0.25
+scaleFactor[14] = .5
+scaleFactor[15] = 1
+scaleFactor[16] = 2
+
+function querySt(ji) {
+hu = window.location.search.substring(1);
+gy = hu.split("&");
+for (i=0;i<gy.length;i++) {
+ft = gy[i].split("=");
+if (ft[0] == ji) {
+return ft[1];
+}
+}
+}
+
+function loadFromQueryString() {   
+if(querySt("staID") == "" || querySt("staID") == undefined)
+{
+return false;
+}
+else
+{
+centerOnStation(querySt("staID"))
+}
+}
+
+
+function loadNewMap()
+{
+hideMapCover()
+hideImageTiles() 
+zoomLevel = 15
+centerPixX = initialX
+centerPixY = initialY
+var xTopPoint, yLeftPoint = 0;
+var statusIcon = '';
+loadMap(0)
+}
+
+var initialX
+var initialY
+var centerPixX
+var centerPixY
+var startX
+var startY
+var x00Start
+var y00Start
+var x01Start
+var y01Start
+var x02Start
+var y02Start
+var x03Start
+var y03Start
+var x04Start
+var y04Start
+var x10Start
+var y10Start
+var x11Start
+var y11Start
+var x12Start
+var y12Start
+var x13Start
+var y13Start
+var x14Start
+var y14Start
+var x20Start
+var y20Start
+var x21Start
+var y21Start
+var x22Start
+var y22Start
+var x23Start
+var y23Start
+var x24Start
+var y24Start
+var x30Start
+var y30Start
+var x31Start
+var y31Start
+var x32Start
+var y32Start
+var x33Start
+var y33Start
+var x34Start
+var y34Start
+var x40Start
+var y40Start
+var x41Start
+var y41Start
+var x42Start
+var y42Start
+var x43Start
+var y43Start
+var x44Start
+var y44Start
+
+//set the initial map settings
+var zoomLevel = 15
+var defaultCenterX
+var defaultCenterY
+var maxZoom
+var minZoom
+maxZoom = 16
+minZoom = 15
+
+var OSMx
+var OSMy
+var OSMx1
+var OSMy1
+var OSMx2
+var OSMy2
+var OSMx3
+var OSMy3
+var OSMx4
+var OSMy4
+var OSMx0
+var OSMy0
+
+var zoomOutTopAdjustment = new Array()
+zoomOutTopAdjustment[10] = 0
+zoomOutTopAdjustment[11] = 0
+zoomOutTopAdjustment[12] = 0
+zoomOutTopAdjustment[13] = 0
+zoomOutTopAdjustment[14] = 0
+zoomOutTopAdjustment[15] = 0
+zoomOutTopAdjustment[16] = 0
+zoomOutTopAdjustment[17] = 0
+
+var zoomOutLeftAdjustment = new Array()
+zoomOutLeftAdjustment[10] = 0
+zoomOutLeftAdjustment[11] = 0
+zoomOutLeftAdjustment[12] = 0
+zoomOutLeftAdjustment[13] = 0
+zoomOutLeftAdjustment[14] = 0
+zoomOutLeftAdjustment[15] = 0
+zoomOutLeftAdjustment[16] = 0
+zoomOutLeftAdjustment[17] = 0
+
+var a00Style
+var a01Style
+var a02Style
+var a03Style
+var a04Style
+var a10Style
+var a11Style
+var a12Style
+var a13Style
+var a14Style
+var a20Style
+var a21Style
+var a22Style
+var a23Style
+var a24Style
+var a30Style
+var a31Style
+var a32Style
+var a33Style
+var a34Style
+var a40Style
+var a41Style
+var a42Style
+var a43Style
+var a44Style
+var aStyle = new Array()
+var aElement = new Array()
+
+function initializeDocumentObjects()
+{
+
+ aStyle[0] = document.getElementById("a00").style
+ aStyle[1] = document.getElementById("a01").style
+ aStyle[2] = document.getElementById("a02").style
+ aStyle[3] = document.getElementById("a03").style
+ aStyle[4] = document.getElementById("a04").style
+ aStyle[5] = document.getElementById("a10").style
+ aStyle[6] = document.getElementById("a11").style
+ aStyle[7] = document.getElementById("a12").style
+ aStyle[8] = document.getElementById("a13").style
+ aStyle[9] = document.getElementById("a14").style
+ aStyle[10] = document.getElementById("a20").style
+ aStyle[11] = document.getElementById("a21").style
+ aStyle[12] = document.getElementById("a22").style
+ aStyle[13] = document.getElementById("a23").style
+ aStyle[14] = document.getElementById("a24").style
+ aStyle[15] = document.getElementById("a30").style
+ aStyle[16] = document.getElementById("a31").style
+ aStyle[17] = document.getElementById("a32").style
+ aStyle[18] = document.getElementById("a33").style
+ aStyle[19] = document.getElementById("a34").style
+ aStyle[20] = document.getElementById("a40").style
+ aStyle[21] = document.getElementById("a41").style
+ aStyle[22] = document.getElementById("a42").style
+ aStyle[23] = document.getElementById("a43").style
+ aStyle[24] = document.getElementById("a44").style
+ aElement[0] = document.getElementById("a00")
+ aElement[1] = document.getElementById("a01")
+ aElement[2] = document.getElementById("a02")
+ aElement[3] = document.getElementById("a03")
+ aElement[4] = document.getElementById("a04")
+ aElement[5] = document.getElementById("a10")
+ aElement[6] = document.getElementById("a11")
+ aElement[7] = document.getElementById("a12")
+ aElement[8] = document.getElementById("a13")
+ aElement[9] = document.getElementById("a14")
+ aElement[10] = document.getElementById("a20")
+ aElement[11] = document.getElementById("a21")
+ aElement[12] = document.getElementById("a22")
+ aElement[13] = document.getElementById("a23")
+ aElement[14] = document.getElementById("a24")
+ aElement[15] = document.getElementById("a30")
+ aElement[16] = document.getElementById("a31")
+ aElement[17] = document.getElementById("a32")
+ aElement[18] = document.getElementById("a33")
+ aElement[19] = document.getElementById("a34")
+ aElement[20] = document.getElementById("a40")
+ aElement[21] = document.getElementById("a41")
+ aElement[22] = document.getElementById("a42")
+ aElement[23] = document.getElementById("a43")
+ aElement[24] = document.getElementById("a44")
+ centerPixX = defaultCenterX
+ centerPixY = defaultCenterY
+}
+
+
+var totalPanX
+var totalPanY
+function mapTouchEnd()
+{
+
+
+  centerPixX= parseInt(getCurrentCenter().split(",")[0])
+  centerPixY = parseInt(getCurrentCenter().split(",")[1])
+
+
+ var routeMapXMove = 0
+ var routeMapYMove = 0
+
+ var x
+ var y
+  for(i=0; i < aStyle.length; i++)
+ {
+  if(parseInt(aStyle[i].left) > 630)
+  {
+  x = (aElement[i].className.split("_")[0]*1)-5
+  y = aElement[i].className.split("_")[1]
+  aElement[i].className = x.toString() + "_" + y.toString()
+  aStyle[i].left = (parseInt(aStyle[i].left)-1280) + "px"
+  aStyle[i].visibility = "hidden"
+  routeMapXMove = 1
+  }
+
+  else if(parseInt(aStyle[i].left)*(-1) > 256)
+  {
+  x = (aElement[i].className.split("_")[0]*1)+5
+  y = aElement[i].className.split("_")[1]
+  aElement[i].className = x.toString() + "_" + y.toString()
+  aStyle[i].left = (parseInt(aStyle[i].left)+1280) + "px"
+  aStyle[i].visibility = "hidden"
+  routeMapXMove = -1
+  }
+
+  if(parseInt(aStyle[i].top) > 630)
+  {
+  x = aElement[i].className.split("_")[0]
+  y = (aElement[i].className.split("_")[1]*1)-5
+  aElement[i].className = x.toString() + "_" + y.toString()
+  aStyle[i].top = (parseInt(aStyle[i].top)-1280) + "px"
+  aStyle[i].visibility = "hidden"
+  routeMapYMove = 1
+  }
+
+  else if(parseInt(aStyle[i].top)*(-1) > 256)
+  {
+  x = aElement[i].className.split("_")[0]
+  y = (aElement[i].className.split("_")[1]*1)+5
+  aElement[i].className = x.toString() + "_" + y.toString()
+  aStyle[i].top = (parseInt(aStyle[i].top)+1280) + "px"
+  aStyle[i].visibility = "hidden"
+  routeMapYMove = -1
+  }
+  if(aStyle[i].visibility == "hidden")
+  {
+   x = aElement[i].className.split("_")[0]
+   y = aElement[i].className.split("_")[1]
+
+    aElement[i].src = tilePath + zoomLevel + "_" + x + "_" + y + ".png"
+  }
+ }
+
+}
+
+function showImageTiles()
+{
+ for(k=0; k<24; k++)
+ {
+ aStyle[k].visibility = "visible"
+ }
+}
+
+function hideImageTiles()
+{
+ for(k=0; k<24; k++)
+ {
+ aStyle[k].visibility = "hidden"
+ }
+return false;
+}
+
+function getCurrentCenter()
+{
+  var xOffset
+  var yOffset
+  var xPix
+  var yPix
+  var currentCenterX
+  var currentCenterY
+
+  xPix = document.getElementById("a22").className.split("_")[0]*256
+  yPix = document.getElementById("a22").className.split("_")[1]*256
+  xOffset = 315-parseInt(document.getElementById("a22").style.left)
+  yOffset = 315-parseInt(document.getElementById("a22").style.top)
+  currentCenterX = xPix+xOffset
+  currentCenterY = yPix+yOffset
+  return(currentCenterX.toString() + "," + currentCenterY.toString())
+}
+
+function zoom(i)
+{
+ hideCustomAlert()
+ if(!showingMap)
+ {
+ return false;
+ }
+ vScroll = 0
+ hScroll = 0
+  var currentCenterX = parseInt(getCurrentCenter().split(",")[0])
+  var currentCenterY = parseInt(getCurrentCenter().split(",")[1])
+  var newCenterX
+  var newCenterY
+ if(i == -1)
+ {
+ if(zoomLevel > minZoom)
+ {
+  hideImageTiles()
+  zoomLevel = zoomLevel - 1
+  newCenterX = parseInt(currentCenterX/2)
+  newCenterY = parseInt(currentCenterY/2)
+  zoomOutLeftAdjustment[zoomLevel+1] = newCenterX - (currentCenterX/2)
+  zoomOutTopAdjustment[zoomLevel+1] = newCenterY - (currentCenterY/2)
+  }
+  else
+  {
+     //alert("This is the lowest zoom level")
+     //showCustomAlert("This is the lowest zoom level")
+     return false;
+  }
+ }
+ if(i == 1)
+ {
+ if(zoomLevel < maxZoom)
+ {
+  hideImageTiles()
+  zoomLevel = zoomLevel + 1
+  newCenterX = (currentCenterX-zoomOutLeftAdjustment[zoomLevel])*2
+  newCenterY = (currentCenterY-zoomOutTopAdjustment[zoomLevel])*2
+ }
+ else
+ {
+  //alert("This is the highest zoom level")
+  //showCustomAlert("This is the highest zoom level")
+  return false;
+ }
+ }
+ centerPixX = newCenterX
+ centerPixY = newCenterY
+ totalPanX = 0
+ totalPanY = 0
+ loadMap(0)
+    var xTopPoint, yLeftPoint = 0;
+    var statusIcon = '';
+
+
+}
+
+
+function getCenterRow()
+{
+ var row
+ var row0pos
+ var row1pos
+ var row2pos
+ var row3pos
+ var row4pos
+
+ row0pos = parseInt(aStyle[2].top)+325
+ row1pos = parseInt(aStyle[7].top)+325
+ row2pos = parseInt(aStyle[12].top)+325
+ row3pos = parseInt(aStyle[17].top)+325
+ row4pos = parseInt(aStyle[22].top)+325
+
+ if(row0pos > 512 && row0pos < 769)
+ {
+  row = "0"
+ }
+ if(row1pos > 512 && row1pos < 769)
+ {
+  row = "1"
+ }
+ if(row2pos > 512 && row2pos < 769)
+ {
+  row = "2"
+ }
+ if(row3pos > 512 && row3pos < 769)
+ {
+  row = "3"
+ }
+ if(row4pos > 512 && row4pos < 769)
+ {
+  row = "4"
+ }
+
+return row
+}
+
+function getCenterCol()
+{
+ var col
+ var col0pos
+ var col1pos
+ var col2pos
+ var col3pos
+ var col4pos
+
+ col0pos = parseInt(aStyle[10].left)+325
+ col1pos = parseInt(aStyle[11].left)+325
+ col2pos = parseInt(aStyle[12].left)+325
+ col3pos = parseInt(aStyle[13].left)+325
+ col4pos = parseInt(aStyle[14].left)+325
+
+
+ if(col0pos > 512 && col0pos < 769)
+ {
+  col = "0"
+ }
+ if(col1pos > 512 && col1pos < 769)
+ {
+  col = "1"
+ }
+ if(col2pos > 512 && col2pos < 769)
+ {
+  col = "2"
+ }
+ if(col3pos > 512 && col3pos < 769)
+ {
+  col = "3"
+ }
+
+ if(col4pos > 512 && col4pos < 769)
+ {
+  col = "4"
+ }
+
+ return col
+}
+
+
+
+function getRemainderPix(totalPix)
+{
+ return totalPix%256
+}
+
+function getNumberOfTiles(totalPix)
+{
+ var remainderPix = totalPix%256
+ var tilesCount = (totalPix - remainderPix)/256
+ return tilesCount
+}
+
+
+function getCenterTile(pY,pX)
+{
+ var numberOfRows
+ numberOfRows = getNumberOfTiles(pY) 
+ OSMy = numberOfRows
+ var numberOfColumns
+ numberOfColumns = getNumberOfTiles(pX) 
+ OSMx = numberOfColumns
+}
+
+
+function loadMap(i)
+{
+ hideImageTiles()
+ vScroll = 0
+ hScroll = 0
+ var totalPixelsLat
+ var totalPixelsLon
+ var offsetLeft
+ offsetLeft = getRemainderPix(centerPixX)
+ var offsetTop
+ offsetTop = getRemainderPix(centerPixY)
+ var topShift
+ topShift = 128 - offsetTop
+ var leftShift
+ leftShift = 128 - offsetLeft
+ getCenterTile(centerPixY, centerPixX)
+ OSMx0 = OSMx - 2
+ OSMx1 = OSMx - 1
+ OSMx2 = OSMx
+ OSMx3 = OSMx + 1
+ OSMx4 = OSMx + 2
+ OSMy0 = OSMy - 2
+ OSMy1 = OSMy - 1
+ OSMy2 = OSMy
+ OSMy3 = OSMy + 1
+ OSMy4 = OSMy + 2
+ resetTileCells(topShift,leftShift)
+}
+
+function resetTileCells(topShift,leftShift)
+{
+ var x
+ var y
+
+ var TileNameOSM = new Array()
+ var TileNameBusOSM = new Array()
+ var TileNameVE = new Array()
+ var oldCenterTileSrc
+ var newCenterTileSrc
+ x = OSMx2*1
+ y = OSMy2*1
+ var nameX = new Array()
+ var nameY = new Array()
+ 
+ nameX[0] = x-2
+ nameX[1] = x-1
+ nameX[2] = x
+ nameX[3] = x+1
+ nameX[4] = x + 2
+
+ //if (tileDirectory != "Manhattan") {
+ 
+ nameY[0] = y - 2
+ nameY[1] = y - 1
+ nameY[2] = y
+ nameY[3] = y + 1
+ nameY[4] = y + 2
+ 
+ //}
+ /*else {
+     nameY[0] = y - 1
+     nameY[1] = y
+     nameY[2] = y + 1
+     nameY[3] = y + 2
+     nameY[4] = y + 3
+ }*/
+ 
+ aElement[0].className = nameX[0].toString() + "_" + nameY[0].toString()
+ aElement[1].className = nameX[1].toString() + "_" + nameY[0].toString() 
+ aElement[2].className = nameX[2].toString() + "_" + nameY[0].toString()
+ aElement[3].className = nameX[3].toString() + "_" + nameY[0].toString() 
+ aElement[4].className = nameX[4].toString() + "_" + nameY[0].toString()
+ aElement[5].className = nameX[0].toString() + "_" + nameY[1].toString() 
+ aElement[6].className = nameX[1].toString() + "_" + nameY[1].toString() 
+ aElement[7].className = nameX[2].toString() + "_" + nameY[1].toString()
+ aElement[8].className = nameX[3].toString() + "_" + nameY[1].toString() 
+ aElement[9].className = nameX[4].toString() + "_" + nameY[1].toString()
+ aElement[10].className = nameX[0].toString() + "_" + nameY[2].toString()  
+ aElement[11].className = nameX[1].toString() + "_" + nameY[2].toString() 
+ aElement[12].className = nameX[2].toString() + "_" + nameY[2].toString()
+ aElement[13].className = nameX[3].toString() + "_" + nameY[2].toString() 
+ aElement[14].className = nameX[4].toString() + "_" + nameY[2].toString() 
+ aElement[15].className = nameX[0].toString() + "_" + nameY[3].toString()  
+ aElement[16].className = nameX[1].toString() + "_" + nameY[3].toString() 
+ aElement[17].className = nameX[2].toString() + "_" + nameY[3].toString()
+ aElement[18].className = nameX[3].toString() + "_" + nameY[3].toString() 
+ aElement[19].className = nameX[4].toString() + "_" + nameY[3].toString() 
+ aElement[20].className = nameX[0].toString() + "_" + nameY[4].toString()  
+ aElement[21].className = nameX[1].toString() + "_" + nameY[4].toString() 
+ aElement[22].className = nameX[2].toString() + "_" + nameY[4].toString()
+ aElement[23].className = nameX[3].toString() + "_" + nameY[4].toString()
+ aElement[24].className = nameX[4].toString() + "_" + nameY[4].toString()
+// alert(nameX[0]);
+// alert(getTileName(nameX[0], nameY[0]));
+ TileNameOSM[0] = getTileName(nameX[0],nameY[0])
+ TileNameOSM[1] = getTileName(nameX[1],nameY[0])
+ TileNameOSM[2] = getTileName(nameX[2],nameY[0])
+ TileNameOSM[3] = getTileName(nameX[3],nameY[0])
+ TileNameOSM[4] = getTileName(nameX[4],nameY[0])
+ TileNameOSM[5] = getTileName(nameX[0],nameY[1])
+ TileNameOSM[6] = getTileName(nameX[1],nameY[1])
+ TileNameOSM[7] = getTileName(nameX[2],nameY[1])
+ TileNameOSM[8] = getTileName(nameX[3],nameY[1])
+ TileNameOSM[9] = getTileName(nameX[4],nameY[1])
+ TileNameOSM[10] = getTileName(nameX[0],nameY[2])
+ TileNameOSM[11] = getTileName(nameX[1],nameY[2])
+ TileNameOSM[12] = getTileName(nameX[2],nameY[2])
+ TileNameOSM[13] = getTileName(nameX[3],nameY[2])
+ TileNameOSM[14] = getTileName(nameX[4],nameY[2])
+ TileNameOSM[15] = getTileName(nameX[0],nameY[3])
+ TileNameOSM[16] = getTileName(nameX[1],nameY[3])
+ TileNameOSM[17] = getTileName(nameX[2],nameY[3])
+ TileNameOSM[18] = getTileName(nameX[3],nameY[3])
+ TileNameOSM[19] = getTileName(nameX[4],nameY[3])
+ TileNameOSM[20] = getTileName(nameX[0],nameY[4])
+ TileNameOSM[21] = getTileName(nameX[1],nameY[4])
+ TileNameOSM[22] = getTileName(nameX[2],nameY[4])
+ TileNameOSM[23] = getTileName(nameX[3],nameY[4])
+ TileNameOSM[24] = getTileName(nameX[4],nameY[4])
+ var k
+ k = 0
+ oldCenterTileSrc = document.getElementById("a22").src
+
+ for(j=0; j<5; j++)
+ {
+  for(i=0; i<5; i++)
+  {
+    document.getElementById("a" + j + i.toString()).src = tilePath + TileNameOSM[k] + ".png"
+   k = k + 1
+  }
+ }
+ aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px"
+ aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = "-69px"
+ aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = "187px"
+ aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = "443px"
+ aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = "699px"
+ aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = "-325px"
+ aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = "-69px"
+ aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = "187px"
+ aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = "443px"
+ aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = "699px"
+ var cell
+ var e0
+ var e1
+ var e2
+  for(j=0; j<5; j++)
+  {
+   for(i=0; i<5; i++)
+   {
+
+    e0 = document.getElementById("a" + j + i.toString())
+    e0.style.top = (parseInt(e0.style.top) + topShift) + "px"
+    e0.style.left = (parseInt(e0.style.left) + leftShift) + "px"
+
+   }
+  }
+ newCenterTileSrc = document.getElementById("a22").src
+ if(oldCenterTileSrc.toLowerCase() == newCenterTileSrc.toLowerCase())
+ {
+ showImageTiles()
+ } 
+}
+
+function initLoad()
+{
+  loadMap(0)
+}
+
+function showImage(e)
+{
+e.style.visibility = "visible"
+}
+
+function  getTileName(x,y)
+{
+var timeName
+timeName = zoomLevel + "_" + x + "_" + y
+return timeName
+}
+
+
+function getPosition(e) {
+    e = e || window.event;
+    var cursor = {x:0, y:0};
+    if (e.pageX || e.pageY) {
+        cursor.x = e.pageX;
+        cursor.y = e.pageY;
+    } 
+    else {
+        var de = document.documentElement;
+        var b = document.body;
+        cursor.x = e.clientX + 
+            (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
+        cursor.y = e.clientY + 
+            (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
+    }
+    return cursor;
+}
+
+var mapDrag = false
+function mapmousedown(e) {
+  mapDrag = true
+  startX = getPosition(e).x
+  startY = getPosition(e).y
+  x00Start = parseInt(document.getElementById("a00").style.left)
+  y00Start = parseInt(document.getElementById("a00").style.top)
+  x01Start = parseInt(document.getElementById("a01").style.left)
+  y01Start = parseInt(document.getElementById("a01").style.top)
+  x02Start = parseInt(document.getElementById("a02").style.left)
+  y02Start = parseInt(document.getElementById("a02").style.top)
+  x03Start = parseInt(document.getElementById("a03").style.left)
+  y03Start = parseInt(document.getElementById("a03").style.top)
+  x04Start = parseInt(document.getElementById("a04").style.left)
+  y04Start = parseInt(document.getElementById("a04").style.top)
+  x10Start = parseInt(document.getElementById("a10").style.left)
+  y10Start = parseInt(document.getElementById("a10").style.top)
+  x11Start = parseInt(document.getElementById("a11").style.left)
+  y11Start = parseInt(document.getElementById("a11").style.top)
+  x12Start = parseInt(document.getElementById("a12").style.left)
+  y12Start = parseInt(document.getElementById("a12").style.top)
+  x13Start = parseInt(document.getElementById("a13").style.left)
+  y13Start = parseInt(document.getElementById("a13").style.top)
+  x14Start = parseInt(document.getElementById("a14").style.left)
+  y14Start = parseInt(document.getElementById("a14").style.top)
+  x20Start = parseInt(document.getElementById("a20").style.left)
+  y20Start = parseInt(document.getElementById("a20").style.top)
+  x21Start = parseInt(document.getElementById("a21").style.left)
+  y21Start = parseInt(document.getElementById("a21").style.top)
+  x22Start = parseInt(document.getElementById("a22").style.left)
+  y22Start = parseInt(document.getElementById("a22").style.top)
+  x23Start = parseInt(document.getElementById("a23").style.left)
+  y23Start = parseInt(document.getElementById("a23").style.top)
+  x24Start = parseInt(document.getElementById("a24").style.left)
+  y24Start = parseInt(document.getElementById("a24").style.top)
+  x30Start = parseInt(document.getElementById("a30").style.left)
+  y30Start = parseInt(document.getElementById("a30").style.top)
+  x31Start = parseInt(document.getElementById("a31").style.left)
+  y31Start = parseInt(document.getElementById("a31").style.top)
+  x32Start = parseInt(document.getElementById("a32").style.left)
+  y32Start = parseInt(document.getElementById("a32").style.top)
+  x33Start = parseInt(document.getElementById("a33").style.left)
+  y33Start = parseInt(document.getElementById("a33").style.top)
+  x34Start = parseInt(document.getElementById("a34").style.left)
+  y34Start = parseInt(document.getElementById("a34").style.top)
+  x40Start = parseInt(document.getElementById("a40").style.left)
+  y40Start = parseInt(document.getElementById("a40").style.top)
+  x41Start = parseInt(document.getElementById("a41").style.left)
+  y41Start = parseInt(document.getElementById("a41").style.top)
+  x42Start = parseInt(document.getElementById("a42").style.left)
+  y42Start = parseInt(document.getElementById("a42").style.top)
+  x43Start = parseInt(document.getElementById("a43").style.left)
+  y43Start = parseInt(document.getElementById("a43").style.top)
+  x44Start = parseInt(document.getElementById("a44").style.left)
+  y44Start = parseInt(document.getElementById("a44").style.top)
+} 
+
+
+
+function mapmousemove(e) {
+    if(!mapDrag)
+    {
+    return false;
+    }
+
+    
+
+    var s
+    curX = getPosition(e).x - startX
+    curY = getPosition(e).y - startY
+
+    var curCenterX = parseInt(centerPixX)  - curX
+    var curCenterY = parseInt(centerPixY)  - curY
+    var maxX = (mapWidth*scaleFactor[zoomLevel])-315
+    var maxY = (mapHeight*scaleFactor[zoomLevel])-315
+
+    if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
+    {
+    aStyle[0].left = parseInt(x00Start + curX) + "px"
+    aStyle[1].left = parseInt(x01Start + curX) + "px"
+    aStyle[2].left = parseInt(x02Start + curX) + "px"
+    aStyle[3].left = parseInt(x03Start + curX) + "px"
+    aStyle[4].left = parseInt(x04Start + curX) + "px"
+    aStyle[5].left = parseInt(x10Start + curX) + "px"
+    aStyle[6].left = parseInt(x11Start + curX) + "px"
+    aStyle[7].left = parseInt(x12Start + curX) + "px"
+    aStyle[8].left = parseInt(x13Start + curX) + "px"
+    aStyle[9].left = parseInt(x14Start + curX) + "px"
+    aStyle[10].left = parseInt(x20Start + curX) + "px"
+    aStyle[11].left = parseInt(x21Start + curX) + "px"
+    aStyle[12].left = parseInt(x22Start + curX) + "px"
+
+    aStyle[13].left = parseInt(x23Start + curX) + "px"
+    aStyle[14].left = parseInt(x24Start + curX) + "px"
+    aStyle[15].left = parseInt(x30Start + curX) + "px"
+    aStyle[16].left = parseInt(x31Start + curX) + "px"
+    aStyle[17].left = parseInt(x32Start + curX) + "px"
+    aStyle[18].left = parseInt(x33Start + curX) + "px"
+    aStyle[19].left = parseInt(x34Start + curX) + "px"
+    aStyle[20].left = parseInt(x40Start + curX) + "px"
+    aStyle[21].left = parseInt(x41Start + curX) + "px"
+    aStyle[22].left = parseInt(x42Start + curX) + "px"
+    aStyle[23].left = parseInt(x43Start + curX) + "px"
+    aStyle[24].left = parseInt(x44Start + curX) + "px"
+    }
+
+
+
+    if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
+    {
+    aStyle[0].top = parseInt(y00Start + curY) + "px"
+    aStyle[1].top = parseInt(y01Start + curY) + "px"
+    aStyle[2].top = parseInt(y02Start + curY) + "px"
+    aStyle[3].top = parseInt(y03Start + curY) + "px"
+    aStyle[4].top = parseInt(y04Start + curY) + "px"
+    aStyle[5].top = parseInt(y10Start + curY) + "px"
+    aStyle[6].top = parseInt(y11Start + curY) + "px"
+    aStyle[7].top = parseInt(y12Start + curY) + "px"
+    aStyle[8].top = parseInt(y13Start + curY) + "px"
+    aStyle[9].top = parseInt(y14Start + curY) + "px"
+    aStyle[10].top = parseInt(y20Start + curY) + "px"
+    aStyle[11].top = parseInt(y21Start + curY) + "px"
+    aStyle[12].top = parseInt(y22Start + curY) + "px"
+    aStyle[13].top = parseInt(y23Start + curY) + "px"
+    aStyle[14].top = parseInt(y24Start + curY) + "px"
+    aStyle[15].top = parseInt(y30Start + curY) + "px"
+    aStyle[16].top = parseInt(y31Start + curY) + "px"
+    aStyle[17].top = parseInt(y32Start + curY) + "px"
+    aStyle[18].top = parseInt(y33Start + curY) + "px"
+    aStyle[19].top = parseInt(y34Start + curY) + "px"
+    aStyle[20].top = parseInt(y40Start + curY) + "px"
+    aStyle[21].top = parseInt(y41Start + curY) + "px"
+    aStyle[22].top = parseInt(y42Start + curY) + "px"
+    aStyle[23].top = parseInt(y43Start + curY) + "px"
+    aStyle[24].top = parseInt(y44Start + curY) + "px"
+    }
+
+
+} 
+
+function mapmouseup()
+{
+mapDrag = false
+mapTouchEnd()
+}
+
+function hideMapCover()
+{
+document.getElementById("mapCover").style.display = "none"
+showingMap = true
+}
+
+function showMapCover()
+{
+document.getElementById("mapCover").style.display = "inline"
+showingMap = false
+}
+
+
+var alertTimer
+function showCustomAlert(text)
+{
+document.getElementById("customAlert").innerHTML = text
+document.getElementById("customAlert").style.display = "inline"
+clearTimeout(alertTimer)
+alertTimer = setTimeout("hideCustomAlert()",3000)
+}
+
+function hideCustomAlert()
+{
+document.getElementById("customAlert").style.display = "none"
+}
+</script>
+<body onload="initializeDocumentObjects(); loadFromQueryString()" onmousedown="hideCustomAlert()" style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
+
+<div id="mapApplication"  style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+ <div id="mapContainer" style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapImages/mapTileBackground.gif); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+ <img id="a00" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a01" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a02" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a03" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a04" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+
+
+ <img id="a10" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a11" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a12" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a13" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a14" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+
+
+ <img id="a20" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a21" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a22" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a23" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a24" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+
+ <img id="a30" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a31" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a32" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a33" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a34" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+
+
+ <img id="a40" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a41" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a42" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a43" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a44" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+
+
+
+ <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(images/transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()"></div>
+ <div id="mapCover" style="position:absolute; top:0px; left:0px; width:630px; height:630px; background-color:black; color:white; font-weight:bold; font-size:24px; text-align:center;"><br /><br /><br /><br /></div>
+
+ <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+ This is the highest zoom level
+ </div>
+</div>
+
+
+</body>
+<script language="javascript" type="text/javascript">
+parent.neighborhoodMapLoaded = true;
+</script>
+</html>
