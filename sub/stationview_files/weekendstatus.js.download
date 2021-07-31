@@ -1,0 +1,301 @@
+var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
+{
+  let window = _____WB$wombat$assign$function_____("window");
+  let self = _____WB$wombat$assign$function_____("self");
+  let document = _____WB$wombat$assign$function_____("document");
+  let location = _____WB$wombat$assign$function_____("location");
+  let top = _____WB$wombat$assign$function_____("top");
+  let parent = _____WB$wombat$assign$function_____("parent");
+  let frames = _____WB$wombat$assign$function_____("frames");
+  let opener = _____WB$wombat$assign$function_____("opener");
+
+var weekendstatus = new Array();
+weekendstatus[0]="94535,3,10030,2123,2233,N,";
+weekendstatus[1]="94535,3,10033,2277,2079,N,";
+weekendstatus[2]="94535,4,10030,2123,2233,N,";
+weekendstatus[3]="94535,4,10033,2277,2079,N,";
+weekendstatus[4]="99808,6,10077,1617,308,N,";
+weekendstatus[5]="107462,2,9997,1188,682,N,";
+weekendstatus[6]="107462,5,9997,1199,682,N,";
+weekendstatus[7]="113113,A,10156,2475,1804,N,";
+weekendstatus[8]="113377,7,10112,1111,1584,Y,";
+weekendstatus[9]="113379,7,10111,1210,1584,Y,";
+weekendstatus[10]="113379,7,10112,1111,1584,Y,";
+weekendstatus[11]="113489,M,10260,1102,2019,N,";
+weekendstatus[12]="114675,4,10050,836,990,N,";
+weekendstatus[13]="114675,5,10050,847,990,N,";
+weekendstatus[14]="114675,6,10050,858,990,N,";
+weekendstatus[15]="114791,N,10179,1683,3036,N,";
+weekendstatus[16]="114791,N,10353,1969,3146,N,";
+weekendstatus[17]="114791,N,10354,1936,3113,N,";
+weekendstatus[18]="114791,N,10355,1903,3080,N,";
+weekendstatus[19]="114791,N,10357,1793,3036,N,";
+weekendstatus[20]="114791,N,10358,1749,3036,N,";
+weekendstatus[21]="114791,N,10359,1551,3036,N,";
+weekendstatus[22]="115050,4,10069,858,1122,N,";
+weekendstatus[23]="115050,6,10069,858,1122,N,";
+weekendstatus[24]="115142,F,10271,1738,2849,N,";
+weekendstatus[25]="116418,6,10089,1309,770,N,";
+weekendstatus[26]="116418,6,10090,1309,825,N,";
+weekendstatus[27]="116418,6,10091,1309,880,N,";
+weekendstatus[28]="116418,6,10092,1199,902,N,";
+weekendstatus[29]="116418,6,10093,1089,902,N,";
+weekendstatus[30]="116418,6,18086,957,902,N,";
+weekendstatus[31]="116952,1,27,528,1716,N,";
+weekendstatus[32]="116952,1,28,528,1760,N,";
+weekendstatus[33]="116952,1,29,528,1804,N,";
+weekendstatus[34]="116953,1,27,528,1716,N,";
+weekendstatus[35]="116953,1,28,528,1760,N,";
+weekendstatus[36]="116953,1,29,528,1804,N,";
+weekendstatus[37]="116954,1,27,528,1716,N,";
+weekendstatus[38]="116954,1,28,528,1760,N,";
+weekendstatus[39]="116954,1,29,528,1804,N,";
+weekendstatus[40]="116954,1,30,528,1848,N,";
+weekendstatus[41]="116954,1,31,528,1936,N,";
+weekendstatus[42]="116954,1,32,528,1980,N,";
+weekendstatus[43]="116954,1,33,528,2068,N,";
+weekendstatus[44]="116954,1,34,528,2112,N,";
+weekendstatus[45]="116954,1,35,528,2156,N,";
+weekendstatus[46]="116954,1,37,583,2332,N,";
+weekendstatus[47]="116954,1,38,814,2431,N,";
+weekendstatus[48]="116956,2,26,539,1672,N,";
+weekendstatus[49]="116956,2,27,528,1716,N,";
+weekendstatus[50]="116956,2,28,528,1760,N,";
+weekendstatus[51]="116956,2,29,528,1804,N,";
+weekendstatus[52]="116956,2,31,528,1936,N,";
+weekendstatus[53]="116956,2,32,528,1980,N,";
+weekendstatus[54]="116956,2,33,528,2068,N,";
+weekendstatus[55]="116956,2,34,528,2112,N,";
+weekendstatus[56]="116958,3,26,550,1672,N,";
+weekendstatus[57]="116960,5,9993,1199,506,N,";
+weekendstatus[58]="116960,5,10072,1298,110,N,";
+weekendstatus[59]="116960,5,10073,1298,198,N,";
+weekendstatus[60]="116960,5,10074,1298,286,N,";
+weekendstatus[61]="116960,5,10075,1276,418,N,";
+weekendstatus[62]="116960,5,10076,1232,462,N,";
+weekendstatus[63]="116964,2,9993,1188,506,N,";
+weekendstatus[64]="116967,7,10097,1969,1056,N,";
+weekendstatus[65]="116967,7,10098,1936,1089,N,";
+weekendstatus[66]="116967,7,10100,1870,1155,N,";
+weekendstatus[67]="116967,7,10101,1837,1188,N,";
+weekendstatus[68]="116967,7,10102,1804,1221,N,";
+weekendstatus[69]="116967,7,10103,1738,1287,N,";
+weekendstatus[70]="116967,7,10105,1650,1375,N,";
+weekendstatus[71]="116967,7,10106,1606,1408,N,";
+weekendstatus[72]="116967,7,10107,1540,1408,N,";
+weekendstatus[73]="116967,7,10108,1474,1408,N,";
+weekendstatus[74]="117121,A,10122,429,924,N,";
+weekendstatus[75]="117121,A,10124,429,1034,N,";
+weekendstatus[76]="117121,A,10125,429,1078,N,";
+weekendstatus[77]="117121,A,10126,429,1122,N,";
+weekendstatus[78]="117121,A,10127,429,1166,N,";
+weekendstatus[79]="117121,A,10128,429,1254,N,";
+weekendstatus[80]="117121,A,10129,429,1298,N,";
+weekendstatus[81]="117121,A,10130,429,1342,N,";
+weekendstatus[82]="117123,C,10122,429,924,N,";
+weekendstatus[83]="117123,C,10124,429,1034,N,";
+weekendstatus[84]="117123,C,10125,429,1078,N,";
+weekendstatus[85]="117123,C,10126,429,1122,N,";
+weekendstatus[86]="117123,C,10127,429,1166,N,";
+weekendstatus[87]="117123,C,10128,429,1254,N,";
+weekendstatus[88]="117123,C,10129,429,1298,N,";
+weekendstatus[89]="117123,C,10130,429,1342,N,";
+weekendstatus[90]="117131,A,10136,616,2024,N,";
+weekendstatus[91]="117131,A,10137,605,2068,N,";
+weekendstatus[92]="117131,A,10138,671,2156,N,";
+weekendstatus[93]="117131,A,10139,825,2255,N,";
+weekendstatus[94]="117131,A,10140,1210,2255,N,";
+weekendstatus[95]="117131,A,18239,418,1672,N,";
+weekendstatus[96]="117132,A,10134,429,1760,N,";
+weekendstatus[97]="117132,A,18239,418,1672,N,";
+weekendstatus[98]="117132,A,18538,440,1540,N,";
+weekendstatus[99]="117133,C,10136,616,2024,N,";
+weekendstatus[100]="117133,C,10137,616,2068,N,";
+weekendstatus[101]="117133,C,10138,682,2156,N,";
+weekendstatus[102]="117133,C,10139,825,2244,N,";
+weekendstatus[103]="117133,C,10140,1210,2244,N,";
+weekendstatus[104]="117184,E,10132,440,1584,N,";
+weekendstatus[105]="117184,E,10134,440,1760,N,";
+weekendstatus[106]="117184,E,10135,440,1848,N,";
+weekendstatus[107]="117184,E,10191,627,1936,N,";
+weekendstatus[108]="117184,E,10212,539,1507,N,";
+weekendstatus[109]="117184,E,10251,1421,1432,N,";
+weekendstatus[110]="117184,E,10252,1243,1507,N,";
+weekendstatus[111]="117184,E,10253,869,1507,N,";
+weekendstatus[112]="117184,E,10254,748,1507,N,";
+weekendstatus[113]="117184,E,10460,1804,1276,N,";
+weekendstatus[114]="117184,E,18239,440,1672,N,";
+weekendstatus[115]="117184,E,18538,440,1540,N,";
+weekendstatus[116]="117185,F,10266,1397,2717,N,";
+weekendstatus[117]="117185,F,10268,1617,2728,N,";
+weekendstatus[118]="117185,F,10269,1661,2772,N,";
+weekendstatus[119]="117200,L,10322,2354,2299,N,";
+weekendstatus[120]="117200,L,10323,2310,2255,N,";
+weekendstatus[121]="117200,L,10324,2266,2211,N,";
+weekendstatus[122]="117200,L,10325,2222,2167,N,";
+weekendstatus[123]="117200,L,10326,2178,2123,N,";
+weekendstatus[124]="117200,L,10327,2145,2090,N,";
+weekendstatus[125]="117200,L,10328,2035,1980,N,";
+weekendstatus[126]="117200,L,10329,1980,1925,N,";
+weekendstatus[127]="117200,L,10330,1925,1870,N,";
+weekendstatus[128]="117200,L,18173,2116,2061,N,";
+weekendstatus[129]="117290,2,9984,1188,110,N,";
+weekendstatus[130]="117290,2,9985,1188,154,N,";
+weekendstatus[131]="117290,2,9986,1188,198,N,";
+weekendstatus[132]="117290,2,9987,1188,242,N,";
+weekendstatus[133]="117290,2,9989,1188,330,N,";
+weekendstatus[134]="117290,2,9990,1188,374,N,";
+weekendstatus[135]="117290,2,9991,1188,418,N,";
+weekendstatus[136]="117290,2,9992,1188,462,N,";
+weekendstatus[137]="117467,A,10169,2695,1584,N,";
+weekendstatus[138]="117467,A,10170,2640,1639,N,";
+weekendstatus[139]="117563,7,10097,1969,1056,N,";
+weekendstatus[140]="117563,7,10098,1936,1089,N,";
+weekendstatus[141]="117563,7,10100,1870,1155,N,";
+weekendstatus[142]="117563,7,10101,1837,1188,N,";
+weekendstatus[143]="118595,SIR,14996,616,2684,Y,";
+weekendstatus[144]="118595,SIR,14998,649,2761,Y,";
+weekendstatus[145]="118595,SIR,15034,649,2717,Y,";
+weekendstatus[146]="118719,F,10199,1166,1386,N,";
+
+var statustitle = new Array();
+statustitle[94535]="<img src='images/routes/14px/3.gif' align='bottom' /> <img src='images/routes/14px/4.gif' align='bottom' /> Rockaway Av and Van Siclen Av Stations are closed for renovation";
+statustitle[99808]="No elevator service at the Pelham Bay Park <img src='images/routes/14px/6.gif' align='bottom' /> Station";
+statustitle[107462]="No elevator service at the Simpson St <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/5.gif' align='bottom' /> Station";
+statustitle[113113]="<img src='images/routes/14px/A.gif' align='bottom' /> Brooklyn-bound platform at 80 St is closed for renovation";
+statustitle[113377]="<img src='images/routes/14px/7.gif' align='bottom' /> Vernon Blvd-Jackson Av - All trains board at the Flushing-bound platform";
+statustitle[113379]="<img src='images/routes/14px/7.gif' align='bottom' /> Vernon Blvd-Jackson Av - All trains board at the Hudson Yards-bound platform";
+statustitle[113489]="<img src='images/routes/14px/M.gif' align='bottom' /> Service is extended to the Chambers St <img src='images/routes/14px/J.gif' align='bottom' /> Station";
+statustitle[114675]="No elevator service at the 125 St <img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/5.gif' align='bottom' /> <img src='images/routes/14px/6.gif' align='bottom' /> Station";
+statustitle[114791]="<img src='images/routes/14px/N.gif' align='bottom' /> Manhattan-bound platforms at 86 St, Avenue U, Kings Hwy, 20 Av, 18 Av, New Utrecht Av and Fort Hamilton Pkwy are closed for renovation";
+statustitle[115050]="<img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/6.gif' align='bottom' /> Uptown platform at 103 is closed for renovation";
+statustitle[115142]="<img src='images/routes/14px/F.gif' align='bottom' /> Coney Island-bound platform at Ditmas Av is closed for renovation";
+statustitle[116418]="<img src='images/routes/14px/6.gif' align='bottom' /> Pelham Bay Park-bound trains run express from 3 Av-138 St to Hunts Point Av";
+statustitle[116952]="<img src='images/routes/14px/1.gif' align='bottom' /> Downtown trains skip 28, 23 and 18 Sts<img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains provide alternate service";
+statustitle[116953]="<img src='images/routes/14px/1.gif' align='bottom' /> Uptown trains skip 18, 23 and 28 Sts<img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains provide alternate service";
+statustitle[116954]="<img src='images/routes/14px/1.gif' align='bottom' /> No trains between 14 St and South Ferry <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains and <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> free shuttle buses provide alternate service";
+statustitle[116956]="<img src='images/routes/14px/2.gif' align='bottom' /> Trains run local in both directions between 34 St-Penn Station and Chambers St";
+statustitle[116958]="<img src='images/routes/14px/3.gif' align='bottom' /> Trains run local in both directions between 34 St-Penn Station and Chambers St";
+statustitle[116960]="<img src='images/routes/14px/2.gif' align='bottom' /> trains replace the <img src='images/routes/14px/5.gif' align='bottom' /> Dyre Av Shuttle";
+statustitle[116964]="<img src='images/routes/14px/2.gif' align='bottom' /> Service operates in two sections:   1. Between 241 St and E 180 St   2. Between Flatbush Av and E 180 St, and via the <img src='images/routes/14px/5.gif' align='bottom' /> to/from Dyre Av";
+statustitle[116967]="<img src='images/routes/14px/7.gif' align='bottom' /> Hudson Yards-bound trains skip 111, 103, 90, 82, 74, 69, 52, 46, 40 and 33 Sts";
+statustitle[117121]="<img src='images/routes/14px/A.gif' align='bottom' /> Ozone Park/Far Rockaway-bound trains skip 135, 116, 110, 103, 96, 86, 81 and 72 Sts";
+statustitle[117123]="<img src='images/routes/14px/C.gif' align='bottom' /> Euclid Av-bound trains skip 135, 116, 110, 103, 96, 86, 81 and 72 Sts";
+statustitle[117131]="<img src='images/F&F_Pos_16.png' align='bottom' /><br clear=left><img src='images/routes/14px/A.gif' align='bottom' /> Trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> in both directions between W 4 St and Jay St-MetroTech <br><img src='images/routes/14px/E.gif' align='bottom' /> and <img src='images/routes/14px/J.gif' align='bottom' /> trains provide alternate service";
+statustitle[117132]="<img src='images/routes/14px/A.gif' align='bottom' /> Trains make local stops in both directions at 23 St and 50 St";
+statustitle[117133]="<img src='images/F&F_Pos_16.png' align='bottom' /><br clear=left><img src='images/routes/14px/C.gif' align='bottom' /> Trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> in both directions between W 4 St and Jay St-MetroTech <br><img src='images/routes/14px/E.gif' align='bottom' /> and <img src='images/routes/14px/J.gif' align='bottom' /> trains provide alternate service";
+statustitle[117137]="<img src='images/routes/14px/E.gif' align='bottom' /> Trains run local in both directions between 71 Av and 21 St-Queensbridge";
+statustitle[117140]="<img src='images/routes/14px/F.gif' align='bottom' /> Trains run local in both directions between 71 Av and 21 St-Queensbridge";
+statustitle[117184]="<img src='images/F&F_Pos_16.png' align='bottom' /><br clear=left><img src='images/routes/14px/E.gif' align='bottom' /> Trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> in both directions between W 4 St and 21 St-Queensbridge";
+statustitle[117185]="<img src='images/routes/14px/F.gif' align='bottom' /> Coney Island-bound trains skip 4 Av-9 St, 15 St-Prospect Park and Fort Hamilton Pkwy";
+statustitle[117187]="<img src='images/routes/14px/D.gif' align='bottom' /> Norwood-bound trains make local stops at 14 St and 23 St";
+statustitle[117200]="<img src='images/routes/14px/L.gif' align='bottom' /> No trains between Myrtle-Wyckoff Avs and Rockaway Pkwy <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> Free shuttle buses provide alternate service";
+statustitle[117290]="<img src='images/routes/14px/2.gif' align='bottom' /> E 180 St-bound trains run express from 241 St to E 180 St";
+statustitle[117467]="<img src='images/routes/14px/A.gif' align='bottom' /> Brooklyn-bound trains skip 111 St and 104 St";
+statustitle[117563]="<img src='images/routes/14px/7.gif' align='bottom' /> Hudson Yards-bound trains skip 111, 103, 90 and 82 Sts";
+statustitle[118595]="<img src='images/routes/14px/SIR.gif' align='bottom' /> Trains board at the St. George-bound platform from Stapleton to Grasmere";
+statustitle[118719]="No elevator service at the 21 St-Queensbridge <img src='images/routes/14px/F.gif' align='bottom' /> Station";
+
+var statustext = new Array();
+statustext[94535]="<img src='images/routes/14px/3.gif' align='bottom' /> <img src='images/routes/14px/4.gif' align='bottom' /> Rockaway Av and Van Siclen Av Stations are closed for renovation<br>$$All times, until Winter 2015/16*<br><br>Trains skip Rockaway and Van Siclen Avs in both directions.<br><br>Travel Alternatives<br>For Rockaway Av, use the Saratoga Av or Junius St stations instead.  <br><br><img src='images/routes/14px/shuttle_bus.png' align='bottom' /> bus service operates between Rockaway and Saratoga Avs.<br>&#149; Transfer between trains and <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses with <a  href=http://web.mta.info/metrocard/mcgtreng.htm target=_blank>MetroCard</a>   at Saratoga Av.<br>&#149; <a  href=http://web.mta.info/nyct/bus/schedule/bkln/b060cur.pdf target=_blank>B60</a>   customers can transfer to/from <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses at Rockaway Av.<br><br><span id='moretext' style='color:Blue; text-decoration:underline; cursor:pointer;' onclick=ShowCompleteStatus(94535)>Click here for more info</span>";
+statustext[99808]="No elevator service at the Pelham Bay Park <img src='images/routes/14px/6.gif' align='bottom' /> Station<br>$$All times, until March 2016<br><br>For accessible travel information call 511. Agent assistance is available from 6 AM to 10 PM, <br>automated information is available 24/7. If you are hearing impaired, use your preferred <br>relay service provider or the free 711 relay.<br><br>Click <a  href=http://web.mta.info/mta/eles.html target=_blank>here</a>   to check Elevator & Escalator Status systemwide.<br><br>*Rehabilitation work for these elevators has been extended; we apologize for any inconvenience.<br><br>";
+statustext[107462]="No elevator service at the Simpson St <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/5.gif' align='bottom' /> Station<br>$$All times, until June 2016<br><br>Click <a  href=http://web.mta.info/nyct/service/SimpsonStElevatorClosure_Sept2015.htm target=_blank>here</a>   for travel alternatives.<br><br>For accessible travel information call 511. Agent assistance is available from 6 AM to 10 PM; <br>automated information is available 24/7. If you are hearing impaired, use your preferred <br>relay service provider or the free 711 relay.<br><br>Click <a  href=http://web.mta.info/mta/eles.html target=_blank>here</a>   to check Elevator & Escalator Status systemwide.<br><br>";
+statustext[113113]="<img src='images/routes/14px/A.gif' align='bottom' /> Brooklyn-bound platform at 80 St is closed for renovation<br>$$All times, until Spring 2016<br><br>Travel Alternatives<br><br>For service to this station, take the <img src='images/routes/14px/A.gif' align='bottom' /> to Grant Av and transfer to an  Ozone Park/Far Rockaway-bound <img src='images/routes/14px/A.gif' align='bottom' />.<br><br>For service from this station, take the <img src='images/routes/14px/A.gif' align='bottom' /> to 88 St and transfer to a Brooklyn-bound <img src='images/routes/14px/A.gif' align='bottom' />.<br><br><br>";
+statustext[113377]="<img src='images/routes/14px/7.gif' align='bottom' /> Vernon Blvd-Jackson Av - All trains board at the Flushing-bound platform<br>$$Late Nights, 12:40 AM to 5 AM, Wed, Fri and Sat, until further notice (except Mar 19) <br><br>";
+statustext[113379]="<img src='images/routes/14px/7.gif' align='bottom' /> Vernon Blvd-Jackson Av - All trains board at the Hudson Yards-bound platform<br>$$Late Nights, 12:40 AM to 5 AM, Mon, Tue and Thu, until further notice (except Mar 21)<br><br>";
+statustext[113489]="<img src='images/routes/14px/M.gif' align='bottom' /> Service is extended to the Chambers St <img src='images/routes/14px/J.gif' align='bottom' /> Station<br>$$<a  href=http://advisory.mtanyct.info/pdf_files/ServiceGuide.pdf target=_blank>Weekend</a>  , Saturday and Sunday, Feb 27 - 28<br><br>Service operates between Metropolitan Av and Delancey St/Essex St, <br>and via the <img src='images/routes/14px/J.gif' align='bottom' /> to/from Chambers St.<br><br>Reminder: <a  href=http://advisory.mtanyct.info/pdf_files/NightMap.pdf target=_blank>Late Night</a>   <img src='images/routes/14px/M.gif' align='bottom' /> service operates between Metropolitan Av and Myrtle Av.<br><br>";
+statustext[114675]="No elevator service at the 125 St <img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/5.gif' align='bottom' /> <img src='images/routes/14px/6.gif' align='bottom' /> Station<br>$$All times, until October 2016<br><br>Click <a  href=http://web.mta.info/nyct/service/125StElevatorClosure_Jan2016.htm target=_blank>here</a>   for travel alternatives.<br><br>For accessible travel information call 511. Agent assistance is available from 6 AM to 10 PM; <br>automated information is available 24/7. If you are hearing impaired, use your preferred <br>relay service provider or the free 711 relay.<br><br>Click <a  href=http://web.mta.info/mta/eles.html target=_blank>here</a>   to check Elevator & Escalator Status systemwide.<br><br>";
+statustext[114791]="<img src='images/routes/14px/N.gif' align='bottom' /> Manhattan-bound platforms at 86 St, Avenue U, Kings Hwy, 20 Av, 18 Av, New Utrecht Av and Fort Hamilton Pkwy are closed for renovation<br>$$Until Spring 2017<br><br>Travel Alternatives<br><br>For service from these stations (toward Manhattan), take a Coney Island-bound <img src='images/routes/14px/N.gif' align='bottom' /> to Bay Pkwy <br>or Stillwell Av and transfer to a Manhattan-bound <img src='images/routes/14px/N.gif' align='bottom' />.<br><br>For service to these stations, take a Manhattan-bound <img src='images/routes/14px/N.gif' align='bottom' /> to Bay Pkwy or 8 Av and transfer to a <br>Coney Island-bound <img src='images/routes/14px/N.gif' align='bottom' /><br><br>For New Utrecht Av-62 St, take the <img src='images/routes/14px/D.gif' align='bottom' /> instead.  Transfer at 36 St for a Manhattan-bound <img src='images/routes/14px/N.gif' align='bottom' />.<br><br>";
+statustext[115050]="<img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/6.gif' align='bottom' /> Uptown platform at 103 is closed for renovation<br>$$All times, until Spring 2016<br><br>Travel Alternatives<br>Use nearby 96 St or 110 St stations instead.<br><br>For service to this station, take an uptown <img src='images/routes/14px/4.gif' align='bottom' /> or <img src='images/routes/14px/6.gif' align='bottom' /> to 125 St<br>and transfer to a downtown <img src='images/routes/14px/4.gif' align='bottom' /> local or <img src='images/routes/14px/6.gif' align='bottom' />. Or, take an uptown <img src='images/routes/14px/4.gif' align='bottom' /> or <img src='images/routes/14px/6.gif' align='bottom' /> <br>to 110 St and transfer to a downtown <a  href=http://web.mta.info/nyct/bus/schedule/manh/m101cur.pdf target=_blank>M101</a>   local, <a  href=http://web.mta.info/nyct/bus/schedule/manh/m102cur.pdf target=_blank>M102</a>   or <a  href=http://web.mta.info/nyct/bus/schedule/manh/m103cur.pdf target=_blank>M103</a>  .<br><br>For service from this station, take a downtown <img src='images/routes/14px/4.gif' align='bottom' /> or <img src='images/routes/14px/6.gif' align='bottom' /> to 96 St<br>and transfer to an uptown <img src='images/routes/14px/4.gif' align='bottom' /> (late night) or <img src='images/routes/14px/6.gif' align='bottom' />.<br><br>&#149; Transfer between trains and buses with <a  href=http://web.mta.info/metrocard/mcgtreng.htm target=_blank>MetroCard</a>  .<br>Reminder: <img src='images/routes/14px/4.gif' align='bottom' /> trains run local during <a  href=http://advisory.mtanyct.info/pdf_files/NightMap.pdf target=_blank>late nights</a>   only.<br><br>";
+statustext[115142]="<img src='images/routes/14px/F.gif' align='bottom' /> Coney Island-bound platform at Ditmas Av is closed for renovation<br>$$All times, until Spring 2016<br><br>Travel Alternatives<br><br>For service to this station, take the <img src='images/routes/14px/F.gif' align='bottom' /> to 18 Av and transfer to a Manhattan-bound <img src='images/routes/14px/F.gif' align='bottom' />.<br><br>For service from this station, take the <img src='images/routes/14px/F.gif' align='bottom' /> to Church Av, and transfer to a Coney Island-bound <img src='images/routes/14px/F.gif' align='bottom' />.<br><br>";
+statustext[116418]="<img src='images/routes/14px/6.gif' align='bottom' /> Pelham Bay Park-bound trains run express from 3 Av-138 St to Hunts Point Av<br>$$Weekends, 11:45 PM Fri to 5 AM Mon, until Mar 14<br><br>For service to Brook, Cypress Avs, E 143, E 149 Sts and Longwood Av,<br>take the <img src='images/routes/14px/6.gif' align='bottom' /> to Hunts Point Av and transfer to a Brooklyn Bridge-bound <img src='images/routes/14px/6.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/6.gif' align='bottom' /> to 3 Av-138 St and transfer<br>to a Pelham Bay Park-bound <img src='images/routes/14px/6.gif' align='bottom' />.<br><br>";
+statustext[116952]="<img src='images/routes/14px/1.gif' align='bottom' /> Downtown trains skip 28, 23 and 18 Sts  <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains provide alternate service<br>$$Weekends, 6 AM to 11:59 PM Sat, Feb 27 and Mar 5<br>                8 AM to 11:59 PM Sun, Feb 28 and Mar 6<br><br>&#149; Transfer between <img src='images/routes/14px/1.gif' align='bottom' /> and <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains at Times Sq-42 St (across the platform) or 14 St.<br><br>Reminder: <a  href=http://advisory.mtanyct.info/pdf_files/NightMap.pdf target=_blank>Late Night</a>   <img src='images/routes/14px/3.gif' align='bottom' /> service operates express between 148 St and Times Sq-42 St.<br><br>";
+statustext[116953]="<img src='images/routes/14px/1.gif' align='bottom' /> Uptown trains skip 18, 23 and 28 Sts  <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains provide alternate service<br>$$Weekends, 11:30 PM Fri to 5 AM Mon, Feb 26 - 29  &#149;  Mar 4 - 7<br><br>&#149; Transfer between <img src='images/routes/14px/1.gif' align='bottom' /> and <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains at 14 St or Times Sq-42 St (across the platform).<br><br>Reminder: <a  href=http://advisory.mtanyct.info/pdf_files/NightMap.pdf target=_blank>Late Night</a>   <img src='images/routes/14px/3.gif' align='bottom' /> service operates express between 148 St and Times Sq-42 St.<br><br>";
+statustext[116954]="<img src='images/routes/14px/1.gif' align='bottom' /> No trains between 14 St and South Ferry<br>$$<img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains and <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> free shuttle buses provide alternate service<br>Weekend, 11:30 PM Fri to 5 AM Mon, Feb 26 - 29<br><br><img src='images/routes/14px/1.gif' align='bottom' /> service operates between 242 St and 14 St.<br>  &#149; Uptown trains skip 18, 23 and 28 Sts.<br>  &#149; Downtown trains skip 28, 23 and 18 Sts, days and evenings.<br><br>Travel Alternatives<br><br>For 28, 23, 18, Christopher, Houston, Canal, Franklin and Chambers Sts,<br>take the <img src='images/routes/14px/2.gif' align='bottom' />* or <img src='images/routes/14px/3.gif' align='bottom' />* instead.<br>&#149; Transfer between <img src='images/routes/14px/1.gif' align='bottom' /> and <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains at Times Sq-42 St (across the platform) or 14 St.<br><br>For Rector St and South Ferry, consider the <img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/5.gif' align='bottom' /> or <img src='images/routes/14px/R.gif' align='bottom' /> to nearby stations.<br>&#149; Transfer between <img src='images/routes/14px/1.gif' align='bottom' /> and <img src='images/routes/14px/R.gif' align='bottom' /> trains at Times Sq-42 St<br>&#149; Transfer between <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> and <img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/5.gif' align='bottom' /> trains at Fulton St<br><br><img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses make stops between Chambers St and South Ferry.<br>&#149; Transfer between <img src='images/routes/14px/2.gif' align='bottom' /> <img src='images/routes/14px/3.gif' align='bottom' /> trains and <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses at Chambers St.<br><br><span id='moretext' style='color:Blue; text-decoration:underline; cursor:pointer;' onclick=ShowCompleteStatus(116954)>Click here for more info</span>";
+statustext[116956]="<img src='images/routes/14px/2.gif' align='bottom' /> Trains run local in both directions between 34 St-Penn Station and Chambers St<br>$$Weekends, 11:30 PM Fri to 5 AM Mon, Feb 26 - 29  &#149;  Mar 4 - 7<br><br>&#149; Please allow additional travel time.<br><br>";
+statustext[116958]="<img src='images/routes/14px/3.gif' align='bottom' /> Trains run local in both directions between 34 St-Penn Station and Chambers St<br>$$<a  href=http://advisory.mtanyct.info/pdf_files/ServiceGuide.pdf target=_blank>Weekends</a>  , Saturday and Sunday, Feb 27 - 28  &#149;  Mar 5 - 6 <br><br>Reminder: <a  href=http://advisory.mtanyct.info/pdf_files/NightMap.pdf target=_blank>Late Night</a>   <img src='images/routes/14px/3.gif' align='bottom' /> service operates express between 148 St and Times Sq-42 St.<br><br>";
+statustext[116960]="<img src='images/routes/14px/2.gif' align='bottom' /> trains replace the <img src='images/routes/14px/5.gif' align='bottom' /> Dyre Av Shuttle<br>$$<a  href=http://advisory.mtanyct.info/pdf_files/ServiceGuide.pdf target=_blank>Late Nights</a>  , 3:45 AM Sat to 9:30 AM Sun, Feb 27 - 28  &#149;  Mar 5 - 6<br><br><img src='images/routes/14px/2.gif' align='bottom' /> trains make all <img src='images/routes/14px/5.gif' align='bottom' /> stops between E 180 St and Dyre Av.<br><br>";
+statustext[116964]="<img src='images/routes/14px/2.gif' align='bottom' /> Service operates in two sections:<br>$$  1. Between 241 St and E 180 St<br>  2. Between Flatbush Av and E 180 St, and via the <img src='images/routes/14px/5.gif' align='bottom' /> to/from Dyre Av<br>Weekends, 3:45 AM Sat to 10 PM Sun, Feb 27 - 28  &#149;  Mar 5 - 6<br><br>&#149; Transfer at E 180 St to continue your trip.<br><br>";
+statustext[116967]="<img src='images/routes/14px/7.gif' align='bottom' /> Hudson Yards-bound trains skip 111, 103, 90, 82, 74, 69, 52, 46, 40 and 33 Sts<br>$$Weekend, 5:45 AM to 11:59 PM, Saturday, Feb 27  <br>                 <br>For service to these stations, take the <img src='images/routes/14px/7.gif' align='bottom' /> to Junction Blvd, 61 St or Queensboro Plaza<br>and transfer to a Flushing-bound <img src='images/routes/14px/7.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/7.gif' align='bottom' /> to 61 St, Junction Blvd or Willets Point <br>and transfer to a Hudson Yards-bound <img src='images/routes/14px/7.gif' align='bottom' />.<br><br>Alternate travel note:<br>For Manhattan-bound service from 74 St/Roosevelt Av, take the <img src='images/routes/14px/E.gif' align='bottom' /> <img src='images/routes/14px/F.gif' align='bottom' /> or <img src='images/routes/14px/R.gif' align='bottom' /> instead.<br><br>&nbsp;&nbsp;<img src='images/ADA_WhlChr_small.gif'  />&nbsp;&nbsp;This service change affects one or more ADA accessible stations. Please call 511 for help with planning<br>your trip. If you are deaf or hard of hearing, use your preferred relay service provider or the free 711 relay.&nbsp;&nbsp;<br><br>";
+statustext[117121]="<img src='images/routes/14px/A.gif' align='bottom' /> Ozone Park/Far Rockaway-bound trains skip 135, 116, 110, 103, 96, 86, 81 and 72 Sts<br>$$<a  href=http://advisory.mtanyct.info/pdf_files/NightMap.pdf target=_blank>Late Nights</a>  , 11:45 PM Fri to 5 AM Mon, Feb 26 - 29<br><br>For service to these stations, take the <img src='images/routes/14px/A.gif' align='bottom' /> to 125 St or 59 St-Columbus Circle and transfer to <br>an Inwood-bound <img src='images/routes/14px/A.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/A.gif' align='bottom' /> to 125 St or 145 St and transfer to a <br>Ozone Park/Far Rockaway-bound <img src='images/routes/14px/A.gif' align='bottom' />.<br><br>Alternate travel note:<br>Use nearby <img src='images/routes/14px/1.gif' align='bottom' /> stations instead; transfer between trains at 168 St or 59 St-Columbus Circle.<br><br>";
+statustext[117123]="<img src='images/routes/14px/C.gif' align='bottom' /> Euclid Av-bound trains skip 135, 116, 110, 103, 96, 86, 81 and 72 Sts<br>$$<a  href=http://advisory.mtanyct.info/pdf_files/ServiceGuide.pdf target=_blank>Weekend</a>  , Saturday and Sunday, Feb 27 - 28<br><br>For service to these stations, take the <img src='images/routes/14px/C.gif' align='bottom' /> to 125 St or 59 St-Columbus Circle and transfer <br>to a 168 St-bound <img src='images/routes/14px/C.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/C.gif' align='bottom' /> to 125 St or 145 St and transfer to a Euclid Av-bound <img src='images/routes/14px/C.gif' align='bottom' />.<br><br>Alternate travel note:<br>Use nearby <img src='images/routes/14px/1.gif' align='bottom' /> stations instead; transfer between trains at 59 St-Columbus Circle.<br><br>";
+statustext[117131]="<img src='images/F&F_Pos_16.png' align='bottom' /><br clear=left><img src='images/routes/14px/A.gif' align='bottom' /> Trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> in both directions between W 4 St and Jay St-MetroTech<br>$$<img src='images/routes/14px/E.gif' align='bottom' /> and <img src='images/routes/14px/J.gif' align='bottom' /> trains provide alternate service<br>Weekends, 11:45 PM Fri to 5 AM Mon, until Mar 21<br><br>Trains run local in both directions between 59 St-Columbus Circle and W 4 St.<br><br>No <img src='images/routes/14px/A.gif' align='bottom' /> <img src='images/routes/14px/C.gif' align='bottom' /> service at Spring, Canal, Chambers, Fulton and High Sts.<br><br>Travel Alternatives<br><br>For Spring, Canal, and Chambers Sts, take the <img src='images/routes/14px/E.gif' align='bottom' /> instead. Transfer between trains at W 4 St.<br><br>For Fulton St, take the <img src='images/routes/14px/J.gif' align='bottom' /> instead. Transfer between trains at Delancey St/Essex St <img src='images/routes/14px/F.gif' align='bottom' /> station.<br>Or, take the <img src='images/routes/14px/E.gif' align='bottom' /> at nearby <a  href=http://web.mta.info/weekender/tileMap.html?staID=10255 target=_blank>World Trade Center Station</a>  . Transfer between trains at W 4 St<br><br>For High St, use the nearby <a  href=http://web.mta.info/weekender/tileMap.html?staID=10262 target=_blank>York St <img src='images/routes/14px/F.gif' align='bottom' /> Station</a>   instead.<br><br>Alternate travel note:<br>For Fulton St, transfer to/from a <img src='images/routes/14px/4.gif' align='bottom' /> local at Bleecker St/B'wy-Lafayette St, late nights only.<br><br>Note: This weekend service change will run <a  href=http://web.mta.info/nyct/service/AClines2016/ target=_blank>periodically</a>   through late 2016. <br><br>&nbsp;&nbsp;<img src='images/ADA_WhlChr_small.gif'  />&nbsp;&nbsp;This service change affects one or more ADA accessible stations. Please call 511 for help with planning<br>your trip. If you are deaf or hard of hearing, use your preferred relay service provider or the free 711 relay.&nbsp;&nbsp;<br><br>";
+statustext[117132]="<img src='images/routes/14px/A.gif' align='bottom' /> Trains make local stops in both directions at 23 St and 50 St<br>$$Weekends, 12:01 AM Sat to 5 AM Mon, until Mar 20<br><br>&#149; Please allow additional travel time.<br><br>";
+statustext[117133]="<img src='images/F&F_Pos_16.png' align='bottom' /><br clear=left><img src='images/routes/14px/C.gif' align='bottom' /> Trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> in both directions between W 4 St and Jay St-MetroTech<br>$$<img src='images/routes/14px/E.gif' align='bottom' /> and <img src='images/routes/14px/J.gif' align='bottom' /> trains provide alternate service<br><a  href=http://advisory.mtanyct.info/pdf_files/ServiceGuide.pdf target=_blank>Weekends</a>  , Saturday and Sunday, until Mar 20 <br><br>No <img src='images/routes/14px/A.gif' align='bottom' /> <img src='images/routes/14px/C.gif' align='bottom' /> service at Spring, Canal, Chambers, Fulton and High Sts.<br><br>Travel Alternatives<br><br>For Spring, Canal, and Chambers Sts, take the <img src='images/routes/14px/E.gif' align='bottom' /> instead. Transfer between trains at W 4 St.<br><br>For Fulton St, take the <img src='images/routes/14px/J.gif' align='bottom' /> instead. Transfer between trains at Delancey St/Essex St <img src='images/routes/14px/F.gif' align='bottom' /> station.<br>Or, take the <img src='images/routes/14px/E.gif' align='bottom' /> at nearby <a  href=http://web.mta.info/weekender/tileMap.html?staID=10255 target=_blank>World Trade Center Station</a>  . Transfer between trains at W 4 St<br><br>For High St, use the nearby <a  href=http://web.mta.info/weekender/tileMap.html?staID=10262 target=_blank>York St <img src='images/routes/14px/F.gif' align='bottom' /> Station</a>   instead.<br><br>Alternate travel note:<br>For Fulton St, transfer to/from a <img src='images/routes/14px/4.gif' align='bottom' /> local at Bleecker St/B'wy-Lafayette St, late nights only.<br><br>Note: This weekend service change will run <a  href=http://web.mta.info/nyct/service/AClines2016/ target=_blank>periodically</a>   through late 2016. <br><br>&nbsp;&nbsp;<img src='images/ADA_WhlChr_small.gif'  />&nbsp;&nbsp;This service change affects one or more ADA accessible stations. Please call 511 for help with planning<br>your trip. If you are deaf or hard of hearing, use your preferred relay service provider or the free 711 relay.&nbsp;&nbsp;<br><br>";
+statustext[117137]="<img src='images/routes/14px/E.gif' align='bottom' /> Trains run local in both directions between 71 Av and 21 St-Queensbridge  <br>$$Weekends, 12:01 AM Sat to 5 AM Mon, Feb 27 - 29  &#149;  Mar 5 - 7  &#149;  Mar 12 - 14  <br><br>Trains stop at 36 St, Steinway St, 46 St, Northern Blvd, 65 St, Roosevelt,<br>Elmhurst, Grand Avs, Woodhaven Blvd, 63 Dr and 67 Av.<br><br>&#149; Please allow additional travel time.<br><br>Note: <img src='images/routes/14px/E.gif' align='bottom' /> trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> between 21 St-Queensbridge and W 4 St.<br><br>";
+statustext[117140]="<img src='images/routes/14px/F.gif' align='bottom' /> Trains run local in both directions between 71 Av and 21 St-Queensbridge<br>$$Weekends, 12:01 AM Sat to 5 AM Mon, Feb 27 - 29  &#149;  Mar 5 - 7  &#149;  Mar 12 - 14<br><br>Trains stop at 67 Av, 63 Dr, Woodhaven Blvd, Grand, Elmhurst, Roosevelt Avs,<br>65 St, Northern Blvd, 46, Steinway and 36 Sts.<br><br>&#149; Please allow additional travel time.<br><br>";
+statustext[117184]="<img src='images/F&F_Pos_16.png' align='bottom' /><br clear=left><img src='images/routes/14px/E.gif' align='bottom' /> Trains run via the <img src='images/routes/14px/F.gif' align='bottom' /> in both directions between W 4 St and 21 St-Queensbridge<br>$$Weekends, 11:45 PM Fri to 5 AM Mon, Feb 26 - 29  &#149;  Mar 4 - 7  &#149;  Mar 11 - 14    <br><br>No <img src='images/routes/14px/E.gif' align='bottom' /> service at Queens Plaza, Court-Sq-23 St, Lexington Av/53 St, 5 Av/53 St, 7 Av, 50 St,<br>42 St/Port Authority, 34 St-Penn Station, 23 St and 14 St.<br><br><img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses operate between Court Sq-23 St and 21 St-Queensbridge, stopping at Queens Plaza.<br><br>Travel Alternatives<br><br>For Queens Plaza, take the <img src='images/routes/14px/R.gif' align='bottom' /> (days/evenings), use nearby Queensboro Plaza <img src='images/routes/14px/7.gif' align='bottom' /> <img src='images/routes/14px/N.gif' align='bottom' /> station or <img src='images/routes/14px/shuttle_bus.png' align='bottom' />.<br><br>For Court Sq-23 St, use the <img src='images/routes/14px/7.gif' align='bottom' /> or <img src='images/routes/14px/shuttle_bus.png' align='bottom' />.<br> <br>For Lexington Av/53 St, use the local <img src='images/routes/14px/4.gif' align='bottom' /> <img src='images/routes/14px/6.gif' align='bottom' /> via transfer to/from the <img src='images/routes/14px/7.gif' align='bottom' /> or <img src='images/routes/14px/R.gif' align='bottom' /> (days/evenings).<br> <br>For 5 Av/53 St, use nearby <img src='images/routes/14px/F.gif' align='bottom' /> stations at 57 St or 47-50 Sts.<br><br>For 7 Av, take the <img src='images/routes/14px/D.gif' align='bottom' />.<br><br>For 50, 42, 34, 23 and 14 Sts, take the <img src='images/routes/14px/A.gif' align='bottom' /> <img src='images/routes/14px/C.gif' align='bottom' /> or use nearby <img src='images/routes/14px/F.gif' align='bottom' /> stations on 6 Av. <br><br><span id='moretext' style='color:Blue; text-decoration:underline; cursor:pointer;' onclick=ShowCompleteStatus(117184)>Click here for more info</span>";
+statustext[117185]="<img src='images/routes/14px/F.gif' align='bottom' /> Coney Island-bound trains skip 4 Av-9 St, 15 St-Prospect Park and Fort Hamilton Pkwy<br>$$Weekends, 11:45 PM Fri to 5 AM Mon, until Mar 28<br><br>Take the <img src='images/routes/14px/G.gif' align='bottom' /> instead. Transfer between <img src='images/routes/14px/F.gif' align='bottom' /> and <img src='images/routes/14px/G.gif' align='bottom' /> trains at Smith-9 Sts, 7 Av or Church Av.<br><br>";
+statustext[117187]="<img src='images/routes/14px/D.gif' align='bottom' /> Norwood-bound trains make local stops at 14 St and 23 St<br>$$Weekends, 12:01 AM Sat to 5 AM Mon, Feb 27 - 29  &#149;  Mar 5 - 7<br><br>&#149; Please allow additional travel time.<br><br>";
+statustext[117200]="<img src='images/routes/14px/L.gif' align='bottom' /> No trains between Myrtle-Wyckoff Avs and Rockaway Pkwy<br>$$<img src='images/routes/14px/shuttle_bus.png' align='bottom' /> Free shuttle buses provide alternate service<br>Weekend, 11:30 PM Fri to 5 AM Mon, Feb 26 - 29   <br><br><img src='images/routes/14px/L.gif' align='bottom' /> service operates between 8 Av and Myrtle-Wyckoff Avs.<br><br>Local <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses make all <img src='images/routes/14px/L.gif' align='bottom' /> stops between Myrtle-Wyckoff Avs and Rockaway Pkwy.<br>Express <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses operate days/evenings only between Myrtle-Wyckoff Avs and Rockaway Pkwy stopping at Broadway Junction.<br><br>&#149; Transfer between <img src='images/routes/14px/L.gif' align='bottom' /> trains and <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses at Myrtle-Wyckoff Avs.<br>&#149; Use transfer ticket for connections between <img src='images/routes/14px/shuttle_bus.png' align='bottom' /> buses and <img src='images/routes/14px/A.gif' align='bottom' /> <img src='images/routes/14px/C.gif' align='bottom' /> <img src='images/routes/14px/J.gif' align='bottom' /> trains<br>  at Broadway Junction.<br><br><span id='moretext' style='color:Blue; text-decoration:underline; cursor:pointer;' onclick=ShowCompleteStatus(117200)>Click here for more info</span>";
+statustext[117290]="<img src='images/routes/14px/2.gif' align='bottom' /> E 180 St-bound trains run express from 241 St to E 180 St<br>$$Weekends, 3:45 AM Sat to 10 PM Sun, Feb 27 - 28  &#149;  Mar 5 - 6<br><br>Trains stop at Gun Hill Rd.<br><br>For service to Nereid Av, 233, 225 and 219 Sts, take the <img src='images/routes/14px/2.gif' align='bottom' /> to Gun Hill Rd and transfer <br>to a Wakefield-bound <img src='images/routes/14px/2.gif' align='bottom' />.<br><br>For service to Burke, Allerton Avs, Pelham Pkwy and Bronx Park East, take the <img src='images/routes/14px/2.gif' align='bottom' /> to E 180 St<br>and transfer to a Wakefield-bound <img src='images/routes/14px/2.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/2.gif' align='bottom' /> to Gun Hill Rd or 241 St and transfer to an E 180 St-bound <img src='images/routes/14px/2.gif' align='bottom' />.<br><br>Alternate travel note:<br>For service to these stations, take the <a  href=http://web.mta.info/nyct/bus/schedule/bronx/bx039cur.pdf target=_blank>Bx39</a>   bus instead.<br><br>&nbsp;&nbsp;<img src='images/ADA_WhlChr_small.gif'  />&nbsp;&nbsp;This service change affects one or more ADA accessible stations. Please call 511 for help with planning<br>your trip. If you are deaf or hard of hearing, use your preferred relay service provider or the free 711 relay.&nbsp;&nbsp;<br><br>";
+statustext[117467]="<img src='images/routes/14px/A.gif' align='bottom' /> Brooklyn-bound trains skip 111 St and 104 St<br>$$Weekends, 11:45 PM Fri to 5 AM Mon, Feb 26 - 29  &#149;  Mar 4 - 7<br><br>For service to these stations, take the <a  href=http://web.mta.info/busco/schedules/q112cur.pdf target=_blank>Q112</a>   (days/evenings) bus instead or  <br>take the <img src='images/routes/14px/A.gif' align='bottom' /> to Rockaway Blvd and transfer to a Lefferts Blvd-bound <img src='images/routes/14px/A.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/A.gif' align='bottom' /> to Lefferts Blvd and transfer to a Brooklyn-bound <img src='images/routes/14px/A.gif' align='bottom' />.<br><br>Note: Brooklyn-bound platform at 111 St is closed for renovation.<br><br>";
+statustext[117563]="<img src='images/routes/14px/7.gif' align='bottom' /> Hudson Yards-bound trains skip 111, 103, 90 and 82 Sts<br>$$Weekend, 3:45 AM to 7 PM, Sunday, Feb 28<br><br>For service to these stations, take the <img src='images/routes/14px/7.gif' align='bottom' /> to Junction Blvd or 74 St <br>and transfer to a Flushing-bound <img src='images/routes/14px/7.gif' align='bottom' />.<br><br>For service from these stations, take the <img src='images/routes/14px/7.gif' align='bottom' /> to Junction Blvd or Willets Point<br>and transfer to a Hudson Yards-bound <img src='images/routes/14px/7.gif' align='bottom' />.<br><br>";
+statustext[118595]="<img src='images/routes/14px/SIR.gif' align='bottom' /> Trains board at the St. George-bound platform from Stapleton to Grasmere  <br>$$Weekend, 6 AM to 6 PM, Saturday, Feb 27<br><br>&#149; Boarding change includes Stapleton, Clifton and Grasmere Stations.<br><br>";
+statustext[118719]="No elevator service at the 21 St-Queensbridge <img src='images/routes/14px/F.gif' align='bottom' /> Station<br>$$All times, until Oct 2016<br><br>Click <a  href=http://web.mta.info/nyct/service/21StQueensbridgeElevatorClosure_Feb-Oct2016.htm target=_blank>here</a>   for travel alternatives or use <img src='images/TripPlannerPlus_logo_19px.png' align='bottom' />.<br><br>For accessible travel information call 511. Agent assistance is available from 6 AM to 10 PM; <br>automated information is available 24/7. If you are hearing impaired, use your preferred <br>relay service provider or the free 711 relay.<br><br>Click <a  href=http://web.mta.info/mta/eles.html target=_blank>here</a>   to check Elevator & Escalator Status systemwide.<br><br>";
+
+var supertitle = new Array();
+supertitle[94535]="";
+supertitle[99808]="";
+supertitle[107462]="";
+supertitle[113113]="";
+supertitle[113377]="";
+supertitle[113379]="";
+supertitle[113489]="";
+supertitle[114675]="";
+supertitle[114791]="";
+supertitle[115050]="";
+supertitle[115142]="";
+supertitle[116418]="";
+supertitle[116952]="";
+supertitle[116953]="";
+supertitle[116954]="";
+supertitle[116956]="";
+supertitle[116958]="";
+supertitle[116960]="";
+supertitle[116964]="";
+supertitle[116967]="";
+supertitle[117121]="";
+supertitle[117123]="";
+supertitle[117131]="";
+supertitle[117132]="";
+supertitle[117133]="";
+supertitle[117137]="";
+supertitle[117140]="";
+supertitle[117184]="";
+supertitle[117185]="";
+supertitle[117187]="";
+supertitle[117200]="";
+supertitle[117290]="";
+supertitle[117467]="";
+supertitle[117563]="";
+supertitle[118595]="";
+supertitle[118719]="";
+
+
+
+
+
+}
+/*
+     FILE ARCHIVED ON 20:34:23 Feb 22, 2016 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 19:26:49 Jul 31, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 146.851
+  exclusion.robots: 0.092
+  exclusion.robots.policy: 0.084
+  RedisCDXSource: 4.035
+  esindex: 0.006
+  LoadShardBlock: 125.603 (3)
+  PetaboxLoader3.datanode: 66.559 (4)
+  CDXLines.iter: 14.654 (3)
+  load_resource: 42.518
+  PetaboxLoader3.resolve: 18.839
+*/

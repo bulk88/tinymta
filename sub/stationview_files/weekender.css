@@ -1,0 +1,528 @@
+body
+{
+	background-color:#666666;	
+}
+
+/* Borough and All Line view */
+.boldtext {
+	font-family:arial; 
+	font-size:12px;
+	font-weight:bold;
+	color:black;
+	line-height:15px;
+	vertical-align:top;
+}
+
+.regulartextwithpointer {
+	font-family:arial; 
+	font-size:12px;
+	cursor:pointer;
+	line-height:15px;
+}
+
+.regulartext {
+	font-family:arial; 
+	font-size:12px;
+	line-height:15px;
+}
+.regulartextitalic  {
+	font-family:arial; 
+	font-size:12px;
+	line-height:15px;
+	font-style:italic;
+	vertical-align:top;
+}
+.spacebetweendiv {
+	width:15px;
+}
+
+.rule { 
+	border-bottom: 1px solid black;
+	width:300px;	
+} 
+.rule2{ 
+	border-bottom: 2px solid black; 
+	width:300px;
+} 
+.GrayRule
+{
+	border-bottom: 1px solid #888888; 
+}
+.linespace15px {line-height:30px;}
+.linespace30px {line-height:30px;}
+
+.leftdivheader {
+	font-family:arial; 
+	font-size:12px;
+	/*font-weight:bold;*/
+	width:300px;
+	height:45px;
+	vertical-align:top;
+	padding-top:1px;
+	border-bottom: solid 2px black;
+}
+.leftStationdivheader
+{
+	font-family:arial; 
+	font-size:12px;
+	/*font-weight:bold;*/
+	width:300px;
+	height:45px;
+	vertical-align:top;
+	padding-top:1px;
+	border-bottom: solid 2px black;
+}
+.leftLinesdivheader
+{
+	font-family:arial; 
+	font-size:12px;
+	color:#000000;	
+	height:20px;
+	padding-top:1px;
+	vertical-align:top;	
+}
+.legendText
+{
+  background-color:#EAE8E0;
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;
+  font-weight:bold;
+  margin-left:0px;
+}
+.servicestatusNormalText
+{
+  background-color:#EAE8E0;
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;
+  font-weight:normal;
+  margin-left:0px;
+}
+.OptionalMenusText
+{
+  background-color:#EAE8E0;
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;
+  text-decoration:none;
+  font-weight:bold;
+  margin-left:0px;
+}
+
+.OptionalMenusText a:link
+{
+  background-color:#EAE8E0;
+  color:red;
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;
+  text-decoration:none;
+  font-weight:bold;
+  margin-left:0px;
+}
+
+.OptionalMenusText a:hover
+{
+  text-decoration:none;
+}
+
+.showAllStationLink 
+{
+  background-color:#EAE8E0;
+  color:#888888;
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;  
+  font-weight:bold;
+  margin-left:0px;
+  text-decoration:none;
+}
+.showAllStationLink a:link
+{
+  background-color:#EAE8E0;
+  color:#888888;
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;  
+  font-weight:bold;
+  margin-left:0px;
+  text-decoration:none;
+}
+
+.centerdivheader {
+	font-family:arial; 
+	font-size:12px;	
+	width:300px;
+	height:45px;
+	padding-top:1px;
+	vertical-align:top;
+	border-bottom: solid 2px black;
+}
+.rightdivheader {
+	font-family:arial; 
+	font-size:12px;
+	font-weight:bold;
+	width:300px;
+	height:45px;
+	vertical-align:top;
+	padding-top:1px;
+	border-bottom: solid 2px black;
+}
+
+
+#weekenderDiv {
+	position:absolute; 
+	top:0px; 
+	left:0px; 
+	width:960px; 
+	height:734px; 
+	background-color:#EAE8E0;
+} 
+
+#headerDiv {
+	position:absolute; 
+	top:85px; 
+	left:15px;
+	width:945px; 
+	height:45px; 
+	background-color:#EAE8E0; 
+} 
+
+#leftDiv {
+	position:absolute; 
+	top:130px; 
+	left:15px; 
+	width:300px; 
+	height:580px; 
+	background-color:#EAE8E0; 	
+	font-family:arial; 
+	font-weight:bold; 
+	color:#888888; 
+	font-size:12px;
+	line-height:15px;
+}
+
+#centerDiv {
+	position:absolute; 
+	top:130px; 
+	left:330px; 
+	width:300px; 
+	height:580px; 
+	background-color:#EAE8E0; 
+	font-family:arial; 
+	color:#888888; 
+	font-size:12px;
+	line-height:15px;
+	overflow:auto;
+	overflow-x: hidden;
+	}
+	
+#rightDiv {
+	position:absolute; 
+	top:130px; 
+	left:645px; 
+	width:300px; 
+	height:580px; 
+	background-color:#EAE8E0; 
+	font-family:arial; 
+	font-size:12px;
+	line-height:15px;
+	overflow:auto;	
+	overflow-x: hidden;
+}
+.divStationNamedisplay {
+	font-family:arial; 
+	font-weight:bold;
+	font-size:14px;	
+	letter-spacing:-1;
+	line-height:15px;
+	cursor:default;		
+}
+
+.divStationNamedisplayRight {
+	font-family:arial; 
+	font-weight:bold;
+	font-size:14px;	
+	line-height:15px;
+	letter-spacing:-1;
+	text-align:right;
+	cursor:default;	
+}
+
+.footerDateText
+{
+	color:#FFFFFF;
+	font-family:arial;
+	font-size:14px;	
+	font-weight:bold;
+}
+
+.footerTellUsText
+{
+	/*color:#888888; 09/19/2013*/
+	color:#858585;
+	font-family:arial;
+	text-align:right;
+	font-size:14px;
+	text-decoration:none;	
+	font-weight:bold;
+}
+
+.footerAdText
+{
+	color:#ffffff;
+	font-family:arial;
+	text-align:right;
+	font-size:14px;
+	text-decoration:none;	
+	font-weight:bold;
+}
+
+.footerTellUsText a
+{
+	color:#888888;
+}
+.footerTellUsText a:hover
+{
+	color:#ffffff;
+}
+
+.statusHeaderText
+{
+color:#888888;
+font-family:arial;
+font-size:12px;
+line-height:15px;
+cursor:pointer;
+}
+
+.detailcenterdiv {
+	font-family:arial; 
+	font-size:12px;	
+	width:615px;
+	height:45px;
+	padding-top:1px;	
+	vertical-align:top;
+	/*border-bottom: solid 2px black;*/
+}
+.DIVleftrule1{ 
+	border-bottom: 2px solid black; 	
+	width:300px;
+} 
+.DIVcentrerule1{ 
+	border-bottom: 2px solid black; 	
+	width:615px;
+} 
+
+.stationListCell
+{
+border-bottom:solid black 1px;
+font-family:Arial;
+font-weight:normal;
+cursor:pointer;
+font-size:12px;
+width:114px;
+color:#888888;
+vertical-align:top;
+}
+
+.stationListSearchCell
+{
+border-bottom:solid black 1px;
+font-family:Arial Italic;
+font-weight:bold;
+cursor:pointer;
+font-size:12px;
+color:#000000;
+background-color:#F3F2EE;
+vertical-align:top;
+width:285px;
+height:30px;
+padding-top:0px;
+margin-top:0px;
+vertical-align:top;
+padding-right:15px;
+}
+
+.inputsearch
+{
+	font-family:Arial;
+	font-size:12px;
+	font-style:italic;
+	width:255px;
+	height:16px;
+	border:0px;
+	color:#B9B9B9;
+	background-color:#F3F2EE;
+	outline:none; 
+	position:absolute;
+	top:2px;
+	left:20px;
+	padding-top:0px;
+	margin-top:0px;
+	vertical-align:top;
+	padding-top:0px;
+}
+
+.inputsearchOnfocus
+{
+ 	font-family:Arial;
+	font-size:14px;
+	font-style:normal;
+	width:255px;
+	height:18px;
+	border:0px;
+	color:#000000;
+	background-color:#F3F2EE;
+	outline:none; 
+	position:absolute;
+	top:2px;
+	left:20px;
+	padding-top:0px;
+	margin-top:0px;
+	text-align:top;
+}
+
+.stationNewListCell
+{
+border-bottom:solid black 1px;
+font-family:Arial;
+font-weight:bold;
+cursor:pointer;
+font-size:12px;
+color:#888888;
+line-height:15px;
+vertical-align:text-top;
+width:135px;
+padding-right:15px;
+}
+.stationBulletCell
+{
+border-bottom:solid black 1px;
+font-size:10px;
+cursor:pointer;
+width:125px;
+vertical-align:top;
+padding-top:1px;
+margin-top:1px;
+}
+.imgMargin
+{
+	margin-right:1px;
+}
+.legendText
+{
+  vertical-align:top;  
+  font-family: Arial, Sans-Serif;
+  font-size:12px;
+  font-weight:bold;
+  margin-top:0px;
+  padding:0px;
+}
+.homepageStaticText
+{
+	font-family:Arial;
+	font-size:12px;	
+	font-weight:normal;
+	line-height:15px;
+	text-align:left;
+	color:#000000;
+	width:300px;
+}
+.homepageHeaderText
+{
+	font-family:Arial;
+	letter-spacing:-1px;
+	font-size:14px;
+	line-height:15px;
+	text-align:left;
+	color:#000000;
+	font-weight:bold;
+	width:300px;
+	margin-bottom:0;
+	padding-bottom:0;
+}
+
+table.plannedworkTableStyle
+{
+	font-family:  Arial, Sans-Serif;
+	font-size:12px;
+
+}
+
+.superText {
+	vertical-align: baseline;
+	font-size: 0.8em;
+	position: relative;
+	top: -0.4em;
+	}
+	
+.halflinebreak
+{line-height:8px;}	
+
+#weekenderleftContentPanel #contentDiv p {
+	margin-bottom:0;
+	padding-bottom:-6px;
+}
+
+#weekenderleftContentPanel #contentDiv p.half-line_space {
+	margin-top:8px;
+	margin-bottom:8px;
+	padding-bottom:0;
+}
+
+#contentDiv ul { 
+	margin-top:10px; 
+	margin-bottom:15px; 
+	margin-left:0; 
+	padding-left:0; 
+	color:#000; 
+	font-size:12px; 
+	font-weight:normal; 
+	line-height:15px; 
+	list-style-type:none;
+/*	list-style-position: outside; */
+}
+
+#contentDiv ul li {padding-left:6px; background: url('/web/20160222203424im_/http://web.mta.info/siteimages/bullet.gif') top left no-repeat; padding-bottom:0.5em;}
+#contentDiv a:link, a:visited, #contentDiv ul li a:link, #contentDiv ul li a:visited {color:#333; text-decoration:none;}
+#contentDiv a:hover, #contentDiv ul li a:hover {color:#000; text-decoration:underline;}
+#contentDiv p.homepageSubhead {
+	color: #000000;
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 15px;
+    text-align: left;
+    width: 300px;
+	border-top: 1px solid #000;
+	padding-top:4px;
+	margin-bottom:.5em;
+}
+
+#contentDiv ul li a sup {margin-top:4px; font-size: 0.75em; line-height: 0.5em}
+
+#contentDiv .nobr	{ white-space:nowrap; }
+/*
+     FILE ARCHIVED ON 20:34:24 Feb 22, 2016 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 19:26:50 Jul 31, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 115.896
+  exclusion.robots: 0.157
+  exclusion.robots.policy: 0.147
+  RedisCDXSource: 1.693
+  esindex: 0.009
+  LoadShardBlock: 91.338 (3)
+  PetaboxLoader3.datanode: 72.066 (5)
+  CDXLines.iter: 17.959 (3)
+  load_resource: 171.568 (2)
+  PetaboxLoader3.resolve: 120.972 (2)
+*/

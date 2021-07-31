@@ -1,0 +1,1252 @@
+var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
+{
+  let window = _____WB$wombat$assign$function_____("window");
+  let self = _____WB$wombat$assign$function_____("self");
+  let document = _____WB$wombat$assign$function_____("document");
+  let location = _____WB$wombat$assign$function_____("location");
+  let top = _____WB$wombat$assign$function_____("top");
+  let parent = _____WB$wombat$assign$function_____("parent");
+  let frames = _____WB$wombat$assign$function_____("frames");
+  let opener = _____WB$wombat$assign$function_____("opener");
+
+var selectedStationIDs = ''
+var currentZoomLevel = 1;
+var selectedStation = ''
+
+/* Function - to plot WhiteIcon on Clicking of the staion */
+function SelectedStationSetToWhiteIcon(stationID) {
+    var imgElementID = '';
+    SelectedStationBackToNormalIcon();
+    selectedStationIDs = '';
+    for (i = 0; i < routes.length; i++) {
+        imgElementID = stationID + "_" + routes[i];
+        if (document.getElementById(imgElementID)) {
+            plotIconByRoute('White', imgElementID);
+            selectedStationIDs = selectedStationIDs + imgElementID + ",";
+        }
+    }
+    if (selectedStationIDs != '') {
+        selectedStationIDs = selectedStationIDs.substring(0, selectedStationIDs.length - 1);
+    }
+}
+
+/* Function - to set the White Icon back to normal|flashing */
+function SelectedStationBackToNormalIcon() {
+    if (selectedStationIDs) {
+        var stationArray = selectedStationIDs.split(",");
+        for (i = 0; i < stationArray.length; i++) {
+            imgElementID = stationArray[i];
+            if (document.getElementById(imgElementID)) {
+                if (document.getElementById(imgElementID).name == "normal") {
+                    plotIconByRoute('Black', imgElementID);
+                }
+                else if (document.getElementById(imgElementID).name == "LGnormal")
+                { plotIconByRoute('LightGrey', imgElementID); }
+                else {
+                    plotIconByRoute('Flashing', imgElementID);
+                }
+            }
+        }
+    }
+}
+
+/* Route Array */
+var routes = new Array()
+routes[0] = "1"
+routes[1] = "2"
+routes[2] = "3"
+routes[3] = "4"
+routes[4] = "5"
+routes[5] = "6"
+routes[6] = "7"
+routes[7] = "8"
+routes[8] = "9"
+routes[9] = "A"
+routes[10] = "B"
+routes[11] = "C"
+routes[12] = "D"
+routes[13] = "E"
+routes[14] = "F"
+routes[15] = "G"
+routes[16] = "J"
+routes[17] = "L"
+routes[18] = "M"
+routes[19] = "N"
+routes[20] = "Q"
+routes[21] = "R"
+routes[22] = "S"
+routes[23] = "V"
+routes[24] = "W"
+routes[25] = "Z"
+routes[26] = "SIR"
+routes[27] = "AIRTRAIN"
+routes[28] = "6D"
+routes[29] = "7D"
+
+/* Function - On Station Roll OnMouseOver - WhiteIcon */
+function StationMouseRollOver(e) {
+    var stationID = e.id.split("_")[0];
+    var imgElementID = '';
+    for (i = 0; i < routes.length; i++) {
+        imgElementID = stationID + "_" + routes[i];
+        if (document.getElementById(imgElementID)) {
+            plotIconByRoute('White', imgElementID);
+        }
+    }
+}
+/* Function - On Station Roll OnMouseOut - WhiteIcon */
+function StationMouseRollOut(e) {
+    var stationID = e.id.split("_")[0];
+    var imgElementID = '';
+
+    if (selectedStation != stationID) {
+        for (i = 0; i < routes.length; i++) {
+            imgElementID = stationID + "_" + routes[i];
+            if (document.getElementById(imgElementID)) {
+                if (document.getElementById(imgElementID).name == "LGnormal")
+                    plotIconByRoute('LightGrey', imgElementID);
+                else if (document.getElementById(imgElementID).name == "normal")
+                    plotIconByRoute('Black', imgElementID);
+                else { plotIconByRoute('Flashing', imgElementID); }
+            }
+        }
+    }
+}
+
+
+var imgpxSize = '11px';
+function plotIconByRoute(iconCategory, imgsrcID) {
+    var strImgsrc = '';
+    var routeID = imgsrcID.split("_")[1]
+    if (iconCategory == 'Flashing')
+        strImgsrc = 'images/FlashingDots/' + imgpxSize;
+    else {
+        strImgsrc = 'images/routes/' + imgpxSize + '/';
+
+        if (iconCategory == 'White')
+            strImgsrc = strImgsrc + 'White';
+        if (iconCategory == 'Black')
+            strImgsrc = strImgsrc + 'Black';
+        if (iconCategory == 'Grey')
+            strImgsrc = strImgsrc + 'Grey';
+        if (iconCategory == 'LightGrey')
+            strImgsrc = strImgsrc + 'LightGrey';
+    }
+
+    if (routeID == '1' || routeID == '2' || routeID == '3')
+        strImgsrc = strImgsrc + '/123.gif';
+    if (routeID == '4' || routeID == '5' || routeID == '6')
+        strImgsrc = strImgsrc + '/456.gif';
+    
+    if (routeID == '6D') 
+    {
+        if (GetImageType(imgsrcID) == 'normal')
+            strImgsrc = strImgsrc + '/456x.gif';
+        else
+            strImgsrc = strImgsrc + '/456xsq.gif';
+    }
+        
+    if (routeID == 'A' || routeID == 'C' || routeID == 'E')
+        strImgsrc = strImgsrc + '/ACE.gif';
+    if (routeID == 'B' || routeID == 'D' || routeID == 'F' || routeID == 'M')
+        strImgsrc = strImgsrc + '/BDFM.gif';
+    if (routeID == 'J' || routeID == 'Z')
+        strImgsrc = strImgsrc + '/JZ.gif';
+    if (routeID == 'N' || routeID == 'Q' || routeID == 'R' || routeID == 'W' )
+        strImgsrc = strImgsrc + '/NQR.gif';
+    if (routeID == 'S')
+        strImgsrc = strImgsrc + '/S.gif';
+    if (routeID == 'L')
+        strImgsrc = strImgsrc + '/L.gif';
+    if (routeID == 'G')
+        strImgsrc = strImgsrc + '/G.gif';
+    if (routeID == '7')
+        strImgsrc = strImgsrc + '/7.gif';
+
+    if (routeID == '7D') 
+    {
+        if  (GetImageType(imgsrcID) == 'normal')
+            strImgsrc = strImgsrc + '/7x.gif';
+        else
+            strImgsrc = strImgsrc + '/7xsq.gif';
+    }
+
+    if (routeID == 'AIRTRAIN')
+        strImgsrc = strImgsrc + '/NQR.gif';
+    if (routeID == 'SIR')
+        strImgsrc = strImgsrc + '/ACE.gif';
+    document.getElementById(imgsrcID).src = strImgsrc;
+}
+
+function GetImageType(id) {
+    var imgtype = 'normal';
+
+    //id == '10109_7D' ||
+
+    if (id == '10081_6D' || 
+        id == '10082_6D' || 
+        id == '10083_6D' || 
+        id == '18063_6D' || 
+        id == '10079_6D' || 
+        id == '10078_6D' || 
+        id == '10077_6D' ||
+        id == '10104_7D' ||
+        id == '10099_7D' ||
+        id == '10095_7D' ||
+        id == '10096_7D') 
+            imgtype = 'square';
+
+
+    return imgtype;
+}
+
+function RenderFlashingIcons() {
+    for (i = 0; i < weekendstatus.length; i++) {
+        var imgElementID;
+        var routeID = weekendstatus[i].split(",")[1];
+        var splFlag = weekendstatus[i].split(",")[5];
+        /* Special Flag - nonbliking station but has some status message */
+        if (splFlag != "Y") {
+            imgElementID = parseInt(weekendstatus[i].split(",")[2]);
+            imgElementID = imgElementID + '_' + routeID;
+            if (document.getElementById(imgElementID)) {
+                document.getElementById(imgElementID).name = 'changes';
+                plotIconByRoute('Flashing', imgElementID);
+            }
+        }
+    }
+}
+
+
+
+var panX
+var panY
+
+var showingMap = false
+
+var tilePath
+var initialX
+var initialY
+
+//commented by Siva on 09/06/2013
+//function setTilePath() {
+//    tilePath = "images/subwaytiles/"
+//}
+
+function setTilePath()
+{
+
+	//current system date
+	var n = new Date()
+
+ 	//target date 09-8-2013 1am --> month number should be less by one 
+	var t = new Date(2013, 8, 8, 1, 0)
+
+	if(n>t)
+	{
+		//new subwaytiles folder
+		tilePath = "images/subwaytilesnew/"
+	}
+	else
+	{
+		//current subwaytiles folder
+		  tilePath = "images/subwaytiles/"
+	}
+
+}
+
+var mapWidth
+var mapHeight
+
+
+var clickOnStation = ''
+function centerOnStation(staID) {
+    selectedStation = staID;
+
+    if (zoomLevel != 15) {
+        if (zoomLevel == 16)
+            zoom(-1)
+        else {
+            zoomLevel = 14
+            zoom(1);
+        }
+    }
+
+
+    var staLocInfo = stationMapCoordinates[staID].split(",")
+    var xCoor = staLocInfo[0]
+    var yCoor = staLocInfo[1]
+    mapWidth = 3410
+    mapHeight = 3410
+    setTilePath()
+    if (xCoor < 315)
+        xCoor = 315;
+    if (yCoor < 315)
+        yCoor = 315;
+    if (yCoor > 3095)
+        yCoor = 3095;
+    xCoor = xCoor - 330
+    recenterMap(xCoor, yCoor)
+    clickOnStation = staID
+    if (clickOnStation != '') {
+        setTimeout("SelectedStationSetToWhiteIcon(clickOnStation)", 100)
+    }
+}
+
+
+function centerMapByXY(x, y) {
+
+    if (zoomLevel != 15) {
+        zoom(-1)
+    }
+
+    var xCoor = x - 330;
+    var yCoor = y;
+
+
+    yCoor = parseInt(yCoor * 5.41)
+    xCoor = parseInt(xCoor * 5.41) - 330
+
+    if (xCoor < 315)
+        xCoor = 315;
+    if (yCoor < 315)
+        yCoor = 315;
+
+    if (yCoor > 3095)
+        yCoor = 3095;
+
+    mapWidth = 3410;
+    mapHeight = 3410;
+    setTilePath()
+    recenterMap(xCoor, yCoor)
+    if (clickOnStation != '') {
+        setTimeout("SelectedStationSetToWhiteIcon(clickOnStation)", 100)
+    }
+}
+
+
+
+function recenterMap(x, y) {
+    initialX = x
+    initialY = y
+    totalPanX = 0
+    totalPanY = 0
+    loadNewMap()
+    document.getElementById("ImgDots").style.left = (x - 315) * (-1) + "px"
+    document.getElementById("ImgDots").style.top = (y - 315) * (-1) + "px"
+}
+
+
+var mapArea
+
+function querySt(ji) {
+    hu = window.location.search.substring(1);
+    gy = hu.split("&");
+    for (i = 0; i < gy.length; i++) {
+        ft = gy[i].split("=");
+        if (ft[0] == ji) {
+            return ft[1];
+        }
+    }
+}
+
+function loadFromQueryString() {
+    if (querySt("staID") == "" || querySt("staID") == undefined) {
+        return false;
+    }
+    else {
+        if (querySt("x") != "" && querySt("x") != undefined && querySt("y") != "" && querySt("y") != undefined) {
+            centerMapByXY(querySt("x"), querySt("y"));
+        }
+        else {
+            centerOnStation(querySt("staID"));
+        }
+        selectedStation = querySt("staID");
+    }
+}
+
+
+
+function loadNewMap() {
+    hideImageTiles()
+    zoomLevel = 15;
+    centerPixX = initialX
+    centerPixY = initialY
+    var xTopPoint, yLeftPoint = 0;
+    var statusIcon = '';
+    loadMap(0)
+}
+
+var initialX
+var initialY
+var centerPixX
+var centerPixY
+var startX
+var startY
+var x00Start
+var y00Start
+var x01Start
+var y01Start
+var x02Start
+var y02Start
+var x03Start
+var y03Start
+var x04Start
+var y04Start
+var x10Start
+var y10Start
+var x11Start
+var y11Start
+var x12Start
+var y12Start
+var x13Start
+var y13Start
+var x14Start
+var y14Start
+var x20Start
+var y20Start
+var x21Start
+var y21Start
+var x22Start
+var y22Start
+var x23Start
+var y23Start
+var x24Start
+var y24Start
+var x30Start
+var y30Start
+var x31Start
+var y31Start
+var x32Start
+var y32Start
+var x33Start
+var y33Start
+var x34Start
+var y34Start
+var x40Start
+var y40Start
+var x41Start
+var y41Start
+var x42Start
+var y42Start
+var x43Start
+var y43Start
+var x44Start
+var y44Start
+
+//set the initial map settings
+var zoomLevel = 15
+var defaultCenterX
+var defaultCenterY
+var maxZoom
+var minZoom
+maxZoom = 16
+minZoom = 13
+
+var OSMx
+var OSMy
+var OSMx1
+var OSMy1
+var OSMx2
+var OSMy2
+var OSMx3
+var OSMy3
+var OSMx4
+var OSMy4
+var OSMx0
+var OSMy0
+
+var zoomOutTopAdjustment = new Array()
+zoomOutTopAdjustment[10] = 0
+zoomOutTopAdjustment[11] = 0
+zoomOutTopAdjustment[12] = 0
+zoomOutTopAdjustment[13] = 0
+zoomOutTopAdjustment[14] = 0
+zoomOutTopAdjustment[15] = 0
+zoomOutTopAdjustment[16] = 0
+zoomOutTopAdjustment[17] = 0
+
+var zoomOutLeftAdjustment = new Array()
+zoomOutLeftAdjustment[10] = 0
+zoomOutLeftAdjustment[11] = 0
+zoomOutLeftAdjustment[12] = 0
+zoomOutLeftAdjustment[13] = 0
+zoomOutLeftAdjustment[14] = 0
+zoomOutLeftAdjustment[15] = 0
+zoomOutLeftAdjustment[16] = 0
+zoomOutLeftAdjustment[17] = 0
+
+var a00Style
+var a01Style
+var a02Style
+var a03Style
+var a04Style
+var a10Style
+var a11Style
+var a12Style
+var a13Style
+var a14Style
+var a20Style
+var a21Style
+var a22Style
+var a23Style
+var a24Style
+var a30Style
+var a31Style
+var a32Style
+var a33Style
+var a34Style
+var a40Style
+var a41Style
+var a42Style
+var a43Style
+var a44Style
+var aStyle = new Array()
+var aElement = new Array()
+
+function initializeDocumentObjects() {
+
+    aStyle[0] = document.getElementById("a00").style
+    aStyle[1] = document.getElementById("a01").style
+    aStyle[2] = document.getElementById("a02").style
+    aStyle[3] = document.getElementById("a03").style
+    aStyle[4] = document.getElementById("a04").style
+    aStyle[5] = document.getElementById("a10").style
+    aStyle[6] = document.getElementById("a11").style
+    aStyle[7] = document.getElementById("a12").style
+    aStyle[8] = document.getElementById("a13").style
+    aStyle[9] = document.getElementById("a14").style
+    aStyle[10] = document.getElementById("a20").style
+    aStyle[11] = document.getElementById("a21").style
+    aStyle[12] = document.getElementById("a22").style
+    aStyle[13] = document.getElementById("a23").style
+    aStyle[14] = document.getElementById("a24").style
+    aStyle[15] = document.getElementById("a30").style
+    aStyle[16] = document.getElementById("a31").style
+    aStyle[17] = document.getElementById("a32").style
+    aStyle[18] = document.getElementById("a33").style
+    aStyle[19] = document.getElementById("a34").style
+    aStyle[20] = document.getElementById("a40").style
+    aStyle[21] = document.getElementById("a41").style
+    aStyle[22] = document.getElementById("a42").style
+    aStyle[23] = document.getElementById("a43").style
+    aStyle[24] = document.getElementById("a44").style
+    aElement[0] = document.getElementById("a00")
+    aElement[1] = document.getElementById("a01")
+    aElement[2] = document.getElementById("a02")
+    aElement[3] = document.getElementById("a03")
+    aElement[4] = document.getElementById("a04")
+    aElement[5] = document.getElementById("a10")
+    aElement[6] = document.getElementById("a11")
+    aElement[7] = document.getElementById("a12")
+    aElement[8] = document.getElementById("a13")
+    aElement[9] = document.getElementById("a14")
+    aElement[10] = document.getElementById("a20")
+    aElement[11] = document.getElementById("a21")
+    aElement[12] = document.getElementById("a22")
+    aElement[13] = document.getElementById("a23")
+    aElement[14] = document.getElementById("a24")
+    aElement[15] = document.getElementById("a30")
+    aElement[16] = document.getElementById("a31")
+    aElement[17] = document.getElementById("a32")
+    aElement[18] = document.getElementById("a33")
+    aElement[19] = document.getElementById("a34")
+    aElement[20] = document.getElementById("a40")
+    aElement[21] = document.getElementById("a41")
+    aElement[22] = document.getElementById("a42")
+    aElement[23] = document.getElementById("a43")
+    aElement[24] = document.getElementById("a44")
+    centerPixX = defaultCenterX
+    centerPixY = defaultCenterY
+}
+
+
+
+
+var totalPanX
+var totalPanY
+function mapTouchEnd() {
+
+
+    centerPixX = parseInt(getCurrentCenter().split(",")[0])
+    centerPixY = parseInt(getCurrentCenter().split(",")[1])
+
+
+    var routeMapXMove = 0
+    var routeMapYMove = 0
+
+    var x
+    var y
+    for (i = 0; i < aStyle.length; i++) {
+        if (parseInt(aStyle[i].left) > 960) {
+            x = (aElement[i].className.split("_")[0] * 1) - 5
+            y = aElement[i].className.split("_")[1]
+            aElement[i].className = x.toString() + "_" + y.toString()
+            aStyle[i].left = (parseInt(aStyle[i].left) - 1280) + "px"
+            aStyle[i].visibility = "hidden"
+            routeMapXMove = 1
+        }
+
+        else if (parseInt(aStyle[i].left) * (-1) > 256) {
+            x = (aElement[i].className.split("_")[0] * 1) + 5
+            y = aElement[i].className.split("_")[1]
+            aElement[i].className = x.toString() + "_" + y.toString()
+            aStyle[i].left = (parseInt(aStyle[i].left) + 1280) + "px"
+            aStyle[i].visibility = "hidden"
+            routeMapXMove = -1
+        }
+
+        if (parseInt(aStyle[i].top) > 630) {
+            x = aElement[i].className.split("_")[0]
+            y = (aElement[i].className.split("_")[1] * 1) - 5
+            aElement[i].className = x.toString() + "_" + y.toString()
+            aStyle[i].top = (parseInt(aStyle[i].top) - 1280) + "px"
+            aStyle[i].visibility = "hidden"
+            routeMapYMove = 1
+        }
+
+        else if (parseInt(aStyle[i].top) * (-1) > 256) {
+            x = aElement[i].className.split("_")[0]
+            y = (aElement[i].className.split("_")[1] * 1) + 5
+            aElement[i].className = x.toString() + "_" + y.toString()
+            aStyle[i].top = (parseInt(aStyle[i].top) + 1280) + "px"
+            aStyle[i].visibility = "hidden"
+            routeMapYMove = -1
+        }
+        if (aStyle[i].visibility == "hidden") {
+            x = aElement[i].className.split("_")[0]
+            y = aElement[i].className.split("_")[1]
+
+            aElement[i].src = tilePath + zoomLevel + "_" + x + "_" + y + ".png"
+        }
+    }
+
+}
+
+function showImageTiles() {
+    for (k = 0; k < 24; k++) {
+        aStyle[k].visibility = "visible"
+    }
+}
+
+function hideImageTiles() {
+    for (k = 0; k < 24; k++) {
+        aStyle[k].visibility = "hidden"
+    }
+    return false;
+}
+
+function getCurrentCenter() {
+    var xOffset
+    var yOffset
+    var xPix
+    var yPix
+    var currentCenterX
+    var currentCenterY
+
+    xPix = document.getElementById("a22").className.split("_")[0] * 256
+    yPix = document.getElementById("a22").className.split("_")[1] * 256
+    xOffset = 315 - parseInt(document.getElementById("a22").style.left)
+    yOffset = 315 - parseInt(document.getElementById("a22").style.top)
+    currentCenterX = xPix + xOffset + 330
+    currentCenterY = yPix + yOffset
+    return (currentCenterX.toString() + "," + currentCenterY.toString())
+}
+
+var newCenterX = ""
+var newCenterY = ""
+
+
+var zoomFactor = new Array()
+zoomFactor[13] = 1 //0.5
+zoomFactor[14] = 0.7
+zoomFactor[15] = 1
+zoomFactor[16] = 2
+
+var fromZoom = ""
+var toZoom = ""
+var zoomDirection = ""
+
+function zoom(i) {
+    //debugger;
+    fromZoom = zoomLevel
+
+    if (i == -1) {
+        if ((zoomLevel - 1) == 13) {
+            //zoomLevel = zoomLevel - 1
+            toZoom = zoomLevel - 1
+            //parent.document.getElementById('staticmap').style.display = 'inline';
+            //parent.document.getElementById('drawer').style.display = 'none';
+            parent.document.getElementById('weekenderleftPanel').style.display = 'inline';
+            parent.document.getElementById("zoom_out").src = 'images/gray_zoom_out.png';
+            parent.document.getElementById("zoom_in").src = 'images/zoom_in_over.png';
+            return false;
+        }
+    }
+    else {
+        if (fromZoom == 13) {
+            parent.document.getElementById('staticmap').style.display = 'none';
+            parent.document.getElementById('drawer').style.display = 'inline';
+            zoomLevel = zoomLevel + 1
+            toZoom = zoomLevel
+            return false;
+        }
+    }
+
+    var zoomRatio
+    zoomDirection = i
+    hideCustomAlert()
+    vScroll = 0
+    hScroll = 0
+    var currentCenterX = parseInt(getCurrentCenter().split(",")[0])
+    var currentCenterY = parseInt(getCurrentCenter().split(",")[1])
+
+    parent.document.getElementById('staticmap').style.display = 'none';
+    parent.document.getElementById('drawer').style.display = 'inline';
+    parent.document.getElementById("zoom_out").src = 'images/zoom_out.png';
+    parent.document.getElementById("zoom_in").src = 'images/zoom_in_over.png';
+
+
+    if (i == -1) {
+        if (zoomLevel > minZoom) {
+            hideImageTiles()
+            zoomLevel = zoomLevel - 1
+            toZoom = zoomLevel
+            zoomRatio = zoomFactor[fromZoom] / zoomFactor[toZoom]
+            newCenterX = parseInt(currentCenterX / zoomRatio)
+            newCenterY = parseInt(currentCenterY / zoomRatio)
+            newCenterX = Math.round(newCenterX)
+            newCenterY = Math.round(newCenterY)
+            zoomOutLeftAdjustment[zoomLevel + 1] = newCenterX - (currentCenterX / zoomRatio)
+            zoomOutTopAdjustment[zoomLevel + 1] = newCenterY - (currentCenterY / zoomRatio)
+            currentZoomLevel = -1;
+
+            //if (zoomLevel == minZoom) {
+            //   parent.document.getElementById("zoom_out").src = 'images/gray_zoom_out.png';
+            // parent.document.getElementById("zoom_in").src = 'images/zoom_in_over.png';
+            //}
+
+        }
+        else {
+            //alert("This is the lowest zoom level")
+            //showCustomAlert("This is the lowest zoom level")
+            return false;
+        }
+    }
+    if (i == 1) {
+        if (zoomLevel < maxZoom) {
+            hideImageTiles()
+            zoomLevel = zoomLevel + 1
+            toZoom = zoomLevel
+            zoomRatio = zoomFactor[toZoom] / zoomFactor[fromZoom]
+            newCenterX = (currentCenterX - zoomOutLeftAdjustment[zoomLevel]) * zoomRatio
+            newCenterY = (currentCenterY - zoomOutTopAdjustment[zoomLevel]) * zoomRatio
+            newCenterX = Math.round(newCenterX)
+            newCenterY = Math.round(newCenterY)
+            currentZoomLevel = 1;
+
+            if (zoomLevel == maxZoom) {
+                parent.document.getElementById("zoom_in").src = 'images/gray_zoom_in.png';
+                parent.document.getElementById("zoom_out").src = 'images/zoom_out_over.png';
+            }
+        }
+        else {
+            //alert("This is the highest zoom level")
+            //showCustomAlert("This is the highest zoom level")
+            return false;
+        }
+    }
+    centerPixX = newCenterX - 330
+    centerPixY = newCenterY
+    totalPanX = 0
+    totalPanY = 0
+    loadMap(0)
+    var xTopPoint, yLeftPoint = 0;
+    var statusIcon = '';
+
+    rescaleDots()
+}
+
+var dotImagePxSize = new Array()
+//dotImagePxSize[13] = "6px"
+dotImagePxSize[14] = "8px"
+dotImagePxSize[15] = "11px"
+dotImagePxSize[16] = "22px"
+
+
+function rescaleDots() {
+    document.getElementById("ImgDots").style.left = (((newCenterX - 315) * (-1)) + 330) + "px"
+    document.getElementById("ImgDots").style.top = (newCenterY - 315) * (-1) + "px"
+
+    var dotImageArray = document.getElementById("ImgDots").getElementsByTagName("img")
+    for (i = 0; i < dotImageArray.length; i++) {
+
+        dotImageArray[i].src = dotImageArray[i].src.replace(dotImagePxSize[fromZoom], dotImagePxSize[toZoom])
+
+        //dotImageArray[i].style.left = Math.round(dotImageArray[i].hundredLeft * zoomFactor[zoomLevel]) + "px"
+        //dotImageArray[i].style.top = Math.round(dotImageArray[i].hundredTop * zoomFactor[zoomLevel]) + "px"
+        dotImageArray[i].style.left = Math.round(dotImageArray[i].className.split("_")[0] * zoomFactor[zoomLevel]) + "px"
+        dotImageArray[i].style.top = Math.round(dotImageArray[i].className.split("_")[1] * zoomFactor[zoomLevel]) + "px"
+
+        dotImageArray[i].style.height = dotImagePxSize[zoomLevel];
+        dotImageArray[i].style.width = dotImagePxSize[zoomLevel];
+        imgpxSize = dotImagePxSize[toZoom];
+    }
+}
+
+
+function getCenterRow() {
+    var row
+    var row0pos
+    var row1pos
+    var row2pos
+    var row3pos
+    var row4pos
+
+    row0pos = parseInt(aStyle[2].top) + 325
+    row1pos = parseInt(aStyle[7].top) + 325
+    row2pos = parseInt(aStyle[12].top) + 325
+    row3pos = parseInt(aStyle[17].top) + 325
+    row4pos = parseInt(aStyle[22].top) + 325
+
+    if (row0pos > 512 && row0pos < 769) {
+        row = "0"
+    }
+    if (row1pos > 512 && row1pos < 769) {
+        row = "1"
+    }
+    if (row2pos > 512 && row2pos < 769) {
+        row = "2"
+    }
+    if (row3pos > 512 && row3pos < 769) {
+        row = "3"
+    }
+    if (row4pos > 512 && row4pos < 769) {
+        row = "4"
+    }
+
+    return row
+}
+
+function getCenterCol() {
+    var col
+    var col0pos
+    var col1pos
+    var col2pos
+    var col3pos
+    var col4pos
+
+    col0pos = parseInt(aStyle[10].left) + 325
+    col1pos = parseInt(aStyle[11].left) + 325
+    col2pos = parseInt(aStyle[12].left) + 325
+    col3pos = parseInt(aStyle[13].left) + 325
+    col4pos = parseInt(aStyle[14].left) + 325
+
+
+    if (col0pos > 512 && col0pos < 769) {
+        col = "0"
+    }
+    if (col1pos > 512 && col1pos < 769) {
+        col = "1"
+    }
+    if (col2pos > 512 && col2pos < 769) {
+        col = "2"
+    }
+    if (col3pos > 512 && col3pos < 769) {
+        col = "3"
+    }
+
+    if (col4pos > 512 && col4pos < 769) {
+        col = "4"
+    }
+
+    return col
+}
+
+
+
+function getRemainderPix(totalPix) {
+    return totalPix % 256
+}
+
+function getNumberOfTiles(totalPix) {
+    var remainderPix = totalPix % 256
+    var tilesCount = (totalPix - remainderPix) / 256
+    return tilesCount
+}
+
+
+function getCenterTile(pY, pX) {
+    var numberOfRows
+    numberOfRows = getNumberOfTiles(pY)
+    OSMy = numberOfRows
+    var numberOfColumns
+    numberOfColumns = getNumberOfTiles(pX)
+    OSMx = numberOfColumns
+}
+
+
+function loadMap(i) {
+    hideImageTiles()
+    vScroll = 0
+    hScroll = 0
+    var totalPixelsLat
+    var totalPixelsLon
+    var offsetLeft
+    offsetLeft = getRemainderPix(centerPixX)
+    var offsetTop
+    offsetTop = getRemainderPix(centerPixY)
+    var topShift
+    topShift = 128 - offsetTop
+    var leftShift
+    leftShift = 128 - offsetLeft
+    getCenterTile(centerPixY, centerPixX)
+    OSMx0 = OSMx - 2
+    OSMx1 = OSMx - 1
+    OSMx2 = OSMx
+    OSMx3 = OSMx + 1
+    OSMx4 = OSMx + 2
+    OSMy0 = OSMy - 2
+    OSMy1 = OSMy - 1
+    OSMy2 = OSMy
+    OSMy3 = OSMy + 1
+    OSMy4 = OSMy + 2
+    resetTileCells(topShift, leftShift)
+    mapTouchEnd()
+}
+
+function resetTileCells(topShift, leftShift) {
+    var x
+    var y
+
+    var TileNameOSM = new Array()
+    var TileNameBusOSM = new Array()
+    var TileNameVE = new Array()
+    var oldCenterTileSrc
+    var newCenterTileSrc
+    x = OSMx2 * 1
+    y = OSMy2 * 1
+    var nameX = new Array()
+    var nameY = new Array()
+    nameX[0] = x - 2
+    nameX[1] = x - 1
+    nameX[2] = x
+    nameX[3] = x + 1
+    nameX[4] = x + 2
+    nameY[0] = y - 2
+    nameY[1] = y - 1
+    nameY[2] = y
+    nameY[3] = y + 1
+    nameY[4] = y + 2
+    aElement[0].className = nameX[0].toString() + "_" + nameY[0].toString()
+    aElement[1].className = nameX[1].toString() + "_" + nameY[0].toString()
+    aElement[2].className = nameX[2].toString() + "_" + nameY[0].toString()
+    aElement[3].className = nameX[3].toString() + "_" + nameY[0].toString()
+    aElement[4].className = nameX[4].toString() + "_" + nameY[0].toString()
+    aElement[5].className = nameX[0].toString() + "_" + nameY[1].toString()
+    aElement[6].className = nameX[1].toString() + "_" + nameY[1].toString()
+    aElement[7].className = nameX[2].toString() + "_" + nameY[1].toString()
+    aElement[8].className = nameX[3].toString() + "_" + nameY[1].toString()
+    aElement[9].className = nameX[4].toString() + "_" + nameY[1].toString()
+    aElement[10].className = nameX[0].toString() + "_" + nameY[2].toString()
+    aElement[11].className = nameX[1].toString() + "_" + nameY[2].toString()
+    aElement[12].className = nameX[2].toString() + "_" + nameY[2].toString()
+    aElement[13].className = nameX[3].toString() + "_" + nameY[2].toString()
+    aElement[14].className = nameX[4].toString() + "_" + nameY[2].toString()
+    aElement[15].className = nameX[0].toString() + "_" + nameY[3].toString()
+    aElement[16].className = nameX[1].toString() + "_" + nameY[3].toString()
+    aElement[17].className = nameX[2].toString() + "_" + nameY[3].toString()
+    aElement[18].className = nameX[3].toString() + "_" + nameY[3].toString()
+    aElement[19].className = nameX[4].toString() + "_" + nameY[3].toString()
+    aElement[20].className = nameX[0].toString() + "_" + nameY[4].toString()
+    aElement[21].className = nameX[1].toString() + "_" + nameY[4].toString()
+    aElement[22].className = nameX[2].toString() + "_" + nameY[4].toString()
+    aElement[23].className = nameX[3].toString() + "_" + nameY[4].toString()
+    aElement[24].className = nameX[4].toString() + "_" + nameY[4].toString()
+    TileNameOSM[0] = getTileName(nameX[0], nameY[0])
+    TileNameOSM[1] = getTileName(nameX[1], nameY[0])
+    TileNameOSM[2] = getTileName(nameX[2], nameY[0])
+    TileNameOSM[3] = getTileName(nameX[3], nameY[0])
+    TileNameOSM[4] = getTileName(nameX[4], nameY[0])
+    TileNameOSM[5] = getTileName(nameX[0], nameY[1])
+    TileNameOSM[6] = getTileName(nameX[1], nameY[1])
+    TileNameOSM[7] = getTileName(nameX[2], nameY[1])
+    TileNameOSM[8] = getTileName(nameX[3], nameY[1])
+    TileNameOSM[9] = getTileName(nameX[4], nameY[1])
+    TileNameOSM[10] = getTileName(nameX[0], nameY[2])
+    TileNameOSM[11] = getTileName(nameX[1], nameY[2])
+    TileNameOSM[12] = getTileName(nameX[2], nameY[2])
+    TileNameOSM[13] = getTileName(nameX[3], nameY[2])
+    TileNameOSM[14] = getTileName(nameX[4], nameY[2])
+    TileNameOSM[15] = getTileName(nameX[0], nameY[3])
+    TileNameOSM[16] = getTileName(nameX[1], nameY[3])
+    TileNameOSM[17] = getTileName(nameX[2], nameY[3])
+    TileNameOSM[18] = getTileName(nameX[3], nameY[3])
+    TileNameOSM[19] = getTileName(nameX[4], nameY[3])
+    TileNameOSM[20] = getTileName(nameX[0], nameY[4])
+    TileNameOSM[21] = getTileName(nameX[1], nameY[4])
+    TileNameOSM[22] = getTileName(nameX[2], nameY[4])
+    TileNameOSM[23] = getTileName(nameX[3], nameY[4])
+    TileNameOSM[24] = getTileName(nameX[4], nameY[4])
+    var k
+    k = 0
+    oldCenterTileSrc = document.getElementById("a22").src
+
+    for (j = 0; j < 5; j++) {
+        for (i = 0; i < 5; i++) {
+            document.getElementById("a" + j + i.toString()).src = tilePath + TileNameOSM[k] + ".png"
+            k = k + 1
+        }
+    }
+    aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px"
+    aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = "-69px"
+    aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = "187px"
+    aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = "443px"
+    aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = "699px"
+    aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = "-325px"
+    aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = "-69px"
+    aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = "187px"
+    aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = "443px"
+    aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = "699px"
+    var cell
+    var e0
+    var e1
+    var e2
+    for (j = 0; j < 5; j++) {
+        for (i = 0; i < 5; i++) {
+
+            e0 = document.getElementById("a" + j + i.toString())
+            e0.style.top = (parseInt(e0.style.top) + topShift) + "px"
+            e0.style.left = (parseInt(e0.style.left) + leftShift) + "px"
+
+        }
+    }
+    newCenterTileSrc = document.getElementById("a22").src
+    if (oldCenterTileSrc.toLowerCase() == newCenterTileSrc.toLowerCase()) {
+        showImageTiles()
+    }
+}
+
+function initLoad() {
+    loadMap(0)
+}
+
+function showImage(e) {
+    e.style.visibility = "visible"
+}
+
+function getTileName(x, y) {
+    var timeName
+    timeName = zoomLevel + "_" + x + "_" + y
+    return timeName
+}
+
+
+function getPosition(e) {
+    e = e || window.event;
+    var cursor = { x: 0, y: 0 };
+    if (e.pageX || e.pageY) {
+        cursor.x = e.pageX;
+        cursor.y = e.pageY;
+    }
+    else {
+        var de = document.documentElement;
+        var b = document.body;
+        cursor.x = e.clientX +
+            (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
+        cursor.y = e.clientY +
+            (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
+    }
+    return cursor;
+}
+
+var mapDrag = false
+var dotsStartX
+var dotsStartY
+function mapmousedown(e) {
+    mapDrag = true
+    startX = getPosition(e).x
+    startY = getPosition(e).y
+
+    dotsStartX = parseInt(document.getElementById("ImgDots").style.left)
+    dotsStartY = parseInt(document.getElementById("ImgDots").style.top)
+    x00Start = parseInt(document.getElementById("a00").style.left)
+    y00Start = parseInt(document.getElementById("a00").style.top)
+    x01Start = parseInt(document.getElementById("a01").style.left)
+    y01Start = parseInt(document.getElementById("a01").style.top)
+    x02Start = parseInt(document.getElementById("a02").style.left)
+    y02Start = parseInt(document.getElementById("a02").style.top)
+    x03Start = parseInt(document.getElementById("a03").style.left)
+    y03Start = parseInt(document.getElementById("a03").style.top)
+    x04Start = parseInt(document.getElementById("a04").style.left)
+    y04Start = parseInt(document.getElementById("a04").style.top)
+    x10Start = parseInt(document.getElementById("a10").style.left)
+    y10Start = parseInt(document.getElementById("a10").style.top)
+    x11Start = parseInt(document.getElementById("a11").style.left)
+    y11Start = parseInt(document.getElementById("a11").style.top)
+    x12Start = parseInt(document.getElementById("a12").style.left)
+    y12Start = parseInt(document.getElementById("a12").style.top)
+    x13Start = parseInt(document.getElementById("a13").style.left)
+    y13Start = parseInt(document.getElementById("a13").style.top)
+    x14Start = parseInt(document.getElementById("a14").style.left)
+    y14Start = parseInt(document.getElementById("a14").style.top)
+    x20Start = parseInt(document.getElementById("a20").style.left)
+    y20Start = parseInt(document.getElementById("a20").style.top)
+    x21Start = parseInt(document.getElementById("a21").style.left)
+    y21Start = parseInt(document.getElementById("a21").style.top)
+    x22Start = parseInt(document.getElementById("a22").style.left)
+    y22Start = parseInt(document.getElementById("a22").style.top)
+    x23Start = parseInt(document.getElementById("a23").style.left)
+    y23Start = parseInt(document.getElementById("a23").style.top)
+    x24Start = parseInt(document.getElementById("a24").style.left)
+    y24Start = parseInt(document.getElementById("a24").style.top)
+    x30Start = parseInt(document.getElementById("a30").style.left)
+    y30Start = parseInt(document.getElementById("a30").style.top)
+    x31Start = parseInt(document.getElementById("a31").style.left)
+    y31Start = parseInt(document.getElementById("a31").style.top)
+    x32Start = parseInt(document.getElementById("a32").style.left)
+    y32Start = parseInt(document.getElementById("a32").style.top)
+    x33Start = parseInt(document.getElementById("a33").style.left)
+    y33Start = parseInt(document.getElementById("a33").style.top)
+    x34Start = parseInt(document.getElementById("a34").style.left)
+    y34Start = parseInt(document.getElementById("a34").style.top)
+    x40Start = parseInt(document.getElementById("a40").style.left)
+    y40Start = parseInt(document.getElementById("a40").style.top)
+    x41Start = parseInt(document.getElementById("a41").style.left)
+    y41Start = parseInt(document.getElementById("a41").style.top)
+    x42Start = parseInt(document.getElementById("a42").style.left)
+    y42Start = parseInt(document.getElementById("a42").style.top)
+    x43Start = parseInt(document.getElementById("a43").style.left)
+    y43Start = parseInt(document.getElementById("a43").style.top)
+    x44Start = parseInt(document.getElementById("a44").style.left)
+    y44Start = parseInt(document.getElementById("a44").style.top)
+}
+
+var maphightwidthFactor = new Array()
+maphightwidthFactor[13] = 1705
+maphightwidthFactor[14] = 2387
+maphightwidthFactor[15] = 3410
+maphightwidthFactor[16] = 6820
+
+function mapmousemove(e) {
+
+    if (!mapDrag) {
+        return false;
+    }
+
+    var s
+    curX = getPosition(e).x - startX
+    curY = getPosition(e).y - startY
+
+    var curCenterX = parseInt(centerPixX) - curX
+    var curCenterY = parseInt(centerPixY) - curY
+
+    mapWidth = maphightwidthFactor[zoomLevel]
+    mapHeight = maphightwidthFactor[zoomLevel]
+
+    //var maxX = (mapWidth * zoomFactor[zoomLevel]) - 315
+    //var maxY = (mapHeight * zoomFactor[zoomLevel]) - 315
+    var maxX = (maphightwidthFactor[zoomLevel]) - 315
+    var maxY = (maphightwidthFactor[zoomLevel]) - 315
+
+
+    if ((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0)) {
+        document.getElementById("ImgDots").style.left = parseInt(dotsStartX + curX) + "px"
+        aStyle[0].left = parseInt(x00Start + curX) + "px"
+        aStyle[1].left = parseInt(x01Start + curX) + "px"
+        aStyle[2].left = parseInt(x02Start + curX) + "px"
+        aStyle[3].left = parseInt(x03Start + curX) + "px"
+        aStyle[4].left = parseInt(x04Start + curX) + "px"
+        aStyle[5].left = parseInt(x10Start + curX) + "px"
+        aStyle[6].left = parseInt(x11Start + curX) + "px"
+        aStyle[7].left = parseInt(x12Start + curX) + "px"
+        aStyle[8].left = parseInt(x13Start + curX) + "px"
+        aStyle[9].left = parseInt(x14Start + curX) + "px"
+        aStyle[10].left = parseInt(x20Start + curX) + "px"
+        aStyle[11].left = parseInt(x21Start + curX) + "px"
+        aStyle[12].left = parseInt(x22Start + curX) + "px"
+        aStyle[13].left = parseInt(x23Start + curX) + "px"
+        aStyle[14].left = parseInt(x24Start + curX) + "px"
+        aStyle[15].left = parseInt(x30Start + curX) + "px"
+        aStyle[16].left = parseInt(x31Start + curX) + "px"
+        aStyle[17].left = parseInt(x32Start + curX) + "px"
+        aStyle[18].left = parseInt(x33Start + curX) + "px"
+        aStyle[19].left = parseInt(x34Start + curX) + "px"
+        aStyle[20].left = parseInt(x40Start + curX) + "px"
+        aStyle[21].left = parseInt(x41Start + curX) + "px"
+        aStyle[22].left = parseInt(x42Start + curX) + "px"
+        aStyle[23].left = parseInt(x43Start + curX) + "px"
+        aStyle[24].left = parseInt(x44Start + curX) + "px"
+    }
+
+
+
+    if ((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0)) {
+        document.getElementById("ImgDots").style.top = parseInt(dotsStartY + curY) + "px"
+        aStyle[0].top = parseInt(y00Start + curY) + "px"
+        aStyle[1].top = parseInt(y01Start + curY) + "px"
+        aStyle[2].top = parseInt(y02Start + curY) + "px"
+        aStyle[3].top = parseInt(y03Start + curY) + "px"
+        aStyle[4].top = parseInt(y04Start + curY) + "px"
+        aStyle[5].top = parseInt(y10Start + curY) + "px"
+        aStyle[6].top = parseInt(y11Start + curY) + "px"
+        aStyle[7].top = parseInt(y12Start + curY) + "px"
+        aStyle[8].top = parseInt(y13Start + curY) + "px"
+        aStyle[9].top = parseInt(y14Start + curY) + "px"
+        aStyle[10].top = parseInt(y20Start + curY) + "px"
+        aStyle[11].top = parseInt(y21Start + curY) + "px"
+        aStyle[12].top = parseInt(y22Start + curY) + "px"
+        aStyle[13].top = parseInt(y23Start + curY) + "px"
+        aStyle[14].top = parseInt(y24Start + curY) + "px"
+        aStyle[15].top = parseInt(y30Start + curY) + "px"
+        aStyle[16].top = parseInt(y31Start + curY) + "px"
+        aStyle[17].top = parseInt(y32Start + curY) + "px"
+        aStyle[18].top = parseInt(y33Start + curY) + "px"
+        aStyle[19].top = parseInt(y34Start + curY) + "px"
+        aStyle[20].top = parseInt(y40Start + curY) + "px"
+        aStyle[21].top = parseInt(y41Start + curY) + "px"
+        aStyle[22].top = parseInt(y42Start + curY) + "px"
+        aStyle[23].top = parseInt(y43Start + curY) + "px"
+        aStyle[24].top = parseInt(y44Start + curY) + "px"
+    }
+}
+
+function mapmouseup() {
+    mapDrag = false
+    mapTouchEnd()
+}
+var alertTimer
+function showCustomAlert(text) {
+    document.getElementById("customAlert").innerHTML = text
+    document.getElementById("customAlert").style.display = "inline"
+    clearTimeout(alertTimer)
+    alertTimer = setTimeout("hideCustomAlert()", 3000)
+}
+
+function hideCustomAlert() {
+    document.getElementById("customAlert").style.display = "none"
+}
+
+}
+/*
+     FILE ARCHIVED ON 15:01:51 Mar 25, 2019 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 19:27:03 Jul 31, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 785.937
+  exclusion.robots: 0.128
+  exclusion.robots.policy: 0.119
+  RedisCDXSource: 0.61
+  esindex: 0.008
+  LoadShardBlock: 764.806 (3)
+  PetaboxLoader3.datanode: 805.2 (5)
+  CDXLines.iter: 17.997 (3)
+  load_resource: 146.459 (2)
+  PetaboxLoader3.resolve: 93.789 (2)
+*/

@@ -1,0 +1,43 @@
+
+<!-- saved from url=(0014)about:internet -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script language="javascript" type="text/javascript">
+function onSystemDiagramClick(e) {    
+	parent.onSystemDiagramClickXY(getPosition(e).x,getPosition(e).y);
+}
+function getPosition(e) 
+{    
+    e = e || window.event;
+    var cursor = {x:0, y:0};
+    if (e.pageX || e.pageY) {
+        cursor.x = e.pageX;
+        cursor.y = e.pageY;
+    } 
+    else {
+        var de = document.documentElement;
+        var b = document.body;
+        cursor.x = e.clientX + 
+            (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
+        cursor.y = e.clientY + 
+            (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
+    }
+    return cursor;
+}
+</script>
+</head><body style="width:960px; height:630px;">
+<img src="./StationView_home.png" style="position:absolute; top:0px; left:330px; width:630px; height:630px;cursor:pointer;" alt="Click here to enlarge" onclick="onSystemDiagramClick(event);">
+
+
+<!--
+playback timings (ms):
+  PetaboxLoader3.datanode: 96.068 (5)
+  captures_list: 91.297
+  load_resource: 2020.524 (2)
+  exclusion.robots.policy: 0.23
+  exclusion.robots: 0.244
+  CDXLines.iter: 20.245 (3)
+  esindex: 0.016
+  LoadShardBlock: 63.888 (3)
+  RedisCDXSource: 0.675
+  PetaboxLoader3.resolve: 1918.331 (2)
+--></body></html>

@@ -1,0 +1,108 @@
+var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
+{
+  let window = _____WB$wombat$assign$function_____("window");
+  let self = _____WB$wombat$assign$function_____("self");
+  let document = _____WB$wombat$assign$function_____("document");
+  let location = _____WB$wombat$assign$function_____("location");
+  let top = _____WB$wombat$assign$function_____("top");
+  let parent = _____WB$wombat$assign$function_____("parent");
+  let frames = _____WB$wombat$assign$function_____("frames");
+  let opener = _____WB$wombat$assign$function_____("opener");
+
+var neighborhoodMapLoaded = false;
+function recenterNeighborhoodMap(staID)
+{
+	if(neighborhoodMapLoaded)
+	{
+		window.frames["neighborhoodMap"].centerOnStation(staID)
+	}
+	else
+	{
+		window.frames["neighborhoodMap"].location.href = "web.mta.info_weekender_tileMap.html?staID=" + staID
+	}		
+}
+
+function zoomNeighborhoodMap(i)
+{
+	if(!neighborhoodMapLoaded)
+	{
+		return false;
+	}
+	else
+	{
+	window.frames["neighborhoodMap"].zoom(i)
+	}
+}
+
+function hideMaps()
+{
+//document.getElementById("mapIframe").style.display = "none"
+document.getElementById("neighborhoodMapDiv").style.display = "none"
+document.getElementById("mapDivouter").style.display = "none"
+document.getElementById('moreStatusDiv').style.display = "none";
+document.getElementById('moreStatusDiv_raw').style.display = "none";
+}
+
+function showNeighborhoodMap()
+{
+hideMaps()
+document.getElementById('staticmap').style.display = 'none';
+document.getElementById("neighborhoodMapDiv").style.display = "inline";
+document.getElementById('diagram').src = 'images/diagram.png';
+recenterNeighborhoodMap(selectedStation);
+ZoomMapName = 'neighborhoodMap';
+document.getElementById("drawer").style.display = 'none';
+document.getElementById("spanStationView").style.color = '#888888';
+document.getElementById("spanNeighborhoodView").style.color = 'black';
+}
+
+function showBingMap()
+{
+var lat;
+var lon;
+document.getElementById('diagram').src = 'images/diagram.png';
+lat = stationGeo[selectedStation].split(",")[0]
+lon = stationGeo[selectedStation].split(",")[1]
+hideMaps()
+document.getElementById("mapIframe").style.display = "inline"
+window.frames[1].showMap(lat,lon);
+ZoomMapName = 'BingMap';
+document.getElementById("drawer").style.display = 'none';
+}
+
+function showSystemDiagram()
+{
+hideMaps();
+document.getElementById("mapDivouter").style.display = "inline";
+document.getElementById('diagram').src = 'images/diagram_over.png';
+recenterSystemMap(selectedStation);
+ZoomMapName = 'SubwayMap';
+EnableZoomDrawerIconsInHeader();
+document.getElementById("spanStationView").style.color = 'black';
+document.getElementById("spanNeighborhoodView").style.color = '#888888';
+}
+
+
+}
+/*
+     FILE ARCHIVED ON 20:34:23 Feb 22, 2016 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 19:26:49 Jul 31, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 72.06
+  exclusion.robots: 0.227
+  exclusion.robots.policy: 0.214
+  RedisCDXSource: 0.714
+  esindex: 0.012
+  LoadShardBlock: 46.146 (3)
+  PetaboxLoader3.datanode: 127.586 (5)
+  CDXLines.iter: 21.659 (3)
+  load_resource: 184.541 (2)
+  PetaboxLoader3.resolve: 59.943 (2)
+*/
