@@ -111,22 +111,22 @@ var masterList = "1 Av:10339:L::2 Av:10189:F::3 Av:10340:L::3 Av - 138 St:18086:
 <!-- Top Banner Menu Div (start) -->
 <div id="bannerDiv" style="position:absolute; top:0px; left:0px; width:960px; height:84px; background-color:black;">
  <div id="bannerWhiteLine " style="position:absolute; top:9px; left:0px; width:960px; height:1px; background-color:white; overflow:hidden;"></div>
- <img name="status" id="status" src="./stationview_files/status.png" style="cursor:pointer; position:absolute; top:11px; left:15px; height:17px;" border="0" alt="Service Status" title="Service Status" onmouseover="menuImageOver(&#39;status&#39;)" onmouseout="menuImageOut(&#39;status&#39;)" onclick="window.location.href = &#39;servicestatus.html&#39;;">
  <img name="station" id="station" src="./stationview_files/station.png" style="cursor:pointer; position:absolute; top:28px; left:15px; width:120px; height:17px;" border="0" alt="Service by Station" title="Service by Station" onmouseover="menuImageOver(&#39;station&#39;)" onmouseout="menuImageOut(&#39;station&#39;)" onclick="window.location.href = &#39;stationview.html&#39;;">
- <img name="line" id="line" src="./stationview_files/line.png" style="cursor:pointer; position:absolute; top:45px; left:15px; width:101px; height:17px;" border="0" alt="Service by Line" title="Service by Line" onmouseover="menuImageOver(&#39;line&#39;)" onmouseout="menuImageOut(&#39;line&#39;)" onclick="window.location.href = &#39;lineview.html&#39;;">
- <img name="borough" id="borough" src="./stationview_files/borough.png" style="cursor:pointer; position:absolute; top:62px; left:15px; height:17px;" border="0" alt="Service by Borough" title="Service by Borough" onmouseover="menuImageOver(&#39;borough&#39;)" onmouseout="menuImageOut(&#39;borough&#39;)" onclick="window.location.href = &#39;boroughview.html&#39;;">
- <a href="https://web.archive.org/web/20160222203418/http://tripplanner.mta.info/" target="_blank"><img name="planner" id="planner" src="./stationview_files/planner.png" style="cursor:pointer; position:absolute; top:11px; left:165px; height:17px;" border="0" alt="Trip Planner+" title="Trip Planner+" onmouseover="menuImageOver(&#39;planner&#39;)" onmouseout="menuImageOut(&#39;planner&#39;)"></a>
- <a href="https://web.archive.org/web/20160222203418/http://mta.info/mnr/" target="_blank"><img name="metronorth" id="metronorth" src="./stationview_files/metro_north.png" style="cursor:pointer; position:absolute; top:28px; left:210px; height:17px;" border="0" alt="Metro-North" title="Metro-North" onmouseover="menuImageOver(&#39;metronorth&#39;)" onmouseout="menuImageOut(&#39;metronorth&#39;)"></a>
- <a href="https://web.archive.org/web/20160222203418/http://mta.info/lirr" target="_blank"><img name="lirr" id="lirr" src="./stationview_files/lirr.png" style="cursor:pointer; position:absolute; top:28px; left:165px; height:17px;" border="0" alt="LIRR" title="LIRR" onmouseover="menuImageOver(&#39;lirr&#39;)" onmouseout="menuImageOut(&#39;lirr&#39;)"></a><img src="./stationview_files/slash.gif" width="10" height="17" style="cursor:pointer; position:absolute; top:28px; left:200px; height:17px;">
- <a href="https://web.archive.org/web/20160222203418/http://mta.info/nyct/" target="_blank"><img name="buses" id="buses" src="./stationview_files/buses.png" style="cursor:pointer; position:absolute; top:45px; left:165px; height:17px;" border="0" alt="Buses" title="Buses" onmouseover="menuImageOver(&#39;buses&#39;)" onmouseout="menuImageOut(&#39;buses&#39;)"></a>
- <a href="https://web.archive.org/web/20160222203418/http://mta.info/bandt/" target="_blank"><img name="bridges" id="bridges" src="./stationview_files/bridges.png" style="cursor:pointer; position:absolute; top:62px; left:165px; height:17px;" border="0" alt="Bridges &amp; Tunnels" title="Bridges &amp; Tunnels" onmouseover="menuImageOver(&#39;bridges&#39;)" onmouseout="menuImageOut(&#39;bridges&#39;)"></a>
  <img name="home" id="home" src="./stationview_files/home.png" style="cursor:pointer; position:absolute; top:11px; left:330px;" border="0" alt="The Weekender" title="The Weekender" onclick="window.location.href = &#39;index.html&#39;;">
- <img name="diagram" id="diagram" src="./stationview_files/diagram.png" style="cursor:pointer; position:absolute; top:62px; left:330px;" border="0" alt="Subway Diagram" title="Subway Diagram" onmouseover="menuImageOver(&#39;diagram&#39;)" onclick="window.location.href = &#39;subwaydiagram.html&#39;;">
- <img name="zoom_out" id="zoom_out" src="./stationview_files/zoom_out.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:450px;" border="0" alt="" onmouseover="menuImageOver(&#39;zoom_out&#39;)" onmouseout="menuImageOut(&#39;zoom_out&#39;)" onclick="zoomOut();">
- <img name="zoom_in" id="zoom_in" src="./stationview_files/zoom_in.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:470px;" border="0" alt="" onmouseover="menuImageOver(&#39;zoom_in&#39;)" onmouseout="menuImageOut(&#39;zoom_in&#39;)" onclick="zoomIn();">
  <img name="drawer" id="drawer" src="./stationview_files/drawer.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:490px;" border="0" alt="" onmouseover="menuImageOver(&#39;drawer&#39;)" onmouseout="menuImageOut(&#39;drawer&#39;)" onclick="ShowHide(&#39;weekenderleftPanel&#39;);">
- <a href="https://web.archive.org/web/20160222203418/http://www.mta.info/" target="_blank"><img name="mtainfo" id="mtainfo" src="./stationview_files/mta_logo.png" style="cursor:pointer; position:absolute; top:11px; left:910px;" border="0" alt="MTA Homepage" title="MTA Homepage" onmouseover="menuImageOver(&#39;mtainfo&#39;)" onmouseout="menuImageOut(&#39;mtainfo&#39;)"> </a>
- <a href="https://web.archive.org/web/20160222203418/http://www.mta.info/" target="_blank"><img name="mtahome" id="mtahome" src="./stationview_files/mta_home.png" style="cursor:pointer; position:absolute; top:62px; left:870px;" border="0" alt="MTA Homepage" title="MTA Homepage" onmouseover="menuImageOver(&#39;mtahome&#39;)" onmouseout="menuImageOut(&#39;mtahome&#39;)"> </a>
+ <img name="status" id="status" src="images/status.png" style="cursor:pointer; position:absolute; top:11px; left:15px; height:17px;" border="0" alt="Service Status" title="Service Status" onmouseover="menuImageOver(&#39;status&#39;)" onmouseout="menuImageOut(&#39;status&#39;)" onclick="window.location.href = &#39;servicestatus.html&#39;;">
+ <img name="line" id="line" src="images/line.png" style="cursor:pointer; position:absolute; top:45px; left:15px; width:101px; height:17px;" border="0" alt="Service by Line" title="Service by Line" onmouseover="menuImageOver(&#39;line&#39;)" onmouseout="menuImageOut(&#39;line&#39;)" onclick="window.location.href = &#39;lineview.html&#39;;">
+ <img name="borough" id="borough" src="images/borough.png" style="cursor:pointer; position:absolute; top:62px; left:15px; height:17px;" border="0" alt="Service by Borough" title="Service by Borough" onmouseover="menuImageOver(&#39;borough&#39;)" onmouseout="menuImageOut(&#39;borough&#39;)" onclick="window.location.href = &#39;boroughview.html&#39;;">
+ <a href="https://web.archive.org/web/20160222203418/http://tripplanner.mta.info/" target="_blank"><img name="planner" id="planner" src="images/planner.png" style="cursor:pointer; position:absolute; top:11px; left:165px; height:17px;" border="0" alt="Trip Planner+" title="Trip Planner+" onmouseover="menuImageOver(&#39;planner&#39;)" onmouseout="menuImageOut(&#39;planner&#39;)"></a>
+ <a href="https://web.archive.org/web/20160222203418/http://mta.info/mnr/" target="_blank"><img name="metronorth" id="metronorth" src="images/metro_north.png" style="cursor:pointer; position:absolute; top:28px; left:210px; height:17px;" border="0" alt="Metro-North" title="Metro-North" onmouseover="menuImageOver(&#39;metronorth&#39;)" onmouseout="menuImageOut(&#39;metronorth&#39;)"></a>
+ <a href="https://web.archive.org/web/20160222203418/http://mta.info/lirr" target="_blank"><img name="lirr" id="lirr" src="images/lirr.png" style="cursor:pointer; position:absolute; top:28px; left:165px; height:17px;" border="0" alt="LIRR" title="LIRR" onmouseover="menuImageOver(&#39;lirr&#39;)" onmouseout="menuImageOut(&#39;lirr&#39;)"></a><img src="./stationview_files/slash.gif" width="10" height="17" style="cursor:pointer; position:absolute; top:28px; left:200px; height:17px;">
+ <a href="https://web.archive.org/web/20160222203418/http://mta.info/nyct/" target="_blank"><img name="buses" id="buses" src="images/buses.png" style="cursor:pointer; position:absolute; top:45px; left:165px; height:17px;" border="0" alt="Buses" title="Buses" onmouseover="menuImageOver(&#39;buses&#39;)" onmouseout="menuImageOut(&#39;buses&#39;)"></a>
+ <a href="https://web.archive.org/web/20160222203418/http://mta.info/bandt/" target="_blank"><img name="bridges" id="bridges" src="images/bridges.png" style="cursor:pointer; position:absolute; top:62px; left:165px; height:17px;" border="0" alt="Bridges &amp; Tunnels" title="Bridges &amp; Tunnels" onmouseover="menuImageOver(&#39;bridges&#39;)" onmouseout="menuImageOut(&#39;bridges&#39;)"></a>
+ <img name="diagram" id="diagram" src="images/diagram.png" style="cursor:pointer; position:absolute; top:62px; left:330px;" border="0" alt="Subway Diagram" title="Subway Diagram" onmouseover="menuImageOver(&#39;diagram&#39;)" onclick="window.location.href = &#39;subwaydiagram.html&#39;;">
+ <img name="zoom_out" id="zoom_out" src="images/zoom_out.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:450px;" border="0" alt="" onmouseover="menuImageOver(&#39;zoom_out&#39;)" onmouseout="menuImageOut(&#39;zoom_out&#39;)" onclick="zoomOut();">
+ <img name="zoom_in" id="zoom_in" src="images/zoom_in.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:470px;" border="0" alt="" onmouseover="menuImageOver(&#39;zoom_in&#39;)" onmouseout="menuImageOut(&#39;zoom_in&#39;)" onclick="zoomIn();">
+ <a href="https://web.archive.org/web/20160222203418/http://www.mta.info/" target="_blank"><img name="mtainfo" id="mtainfo" src="images/mta_logo.png" style="cursor:pointer; position:absolute; top:11px; left:910px;" border="0" alt="MTA Homepage" title="MTA Homepage" onmouseover="menuImageOver(&#39;mtainfo&#39;)" onmouseout="menuImageOut(&#39;mtainfo&#39;)"> </a>
+ <a href="https://web.archive.org/web/20160222203418/http://www.mta.info/" target="_blank"><img name="mtahome" id="mtahome" src="images/mta_home.png" style="cursor:pointer; position:absolute; top:62px; left:870px;" border="0" alt="MTA Homepage" title="MTA Homepage" onmouseover="menuImageOver(&#39;mtahome&#39;)" onmouseout="menuImageOut(&#39;mtahome&#39;)"> </a>
 </div>
 </div>
 <!-- Top Banner Menu Div (end) -->
@@ -314,7 +314,7 @@ var masterList = "1 Av:10339:L::2 Av:10189:F::3 Av:10340:L::3 Av - 138 St:18086:
 
 <!-- Footer (start) -->
 <div style="position:absolute; top:714px; width:960px; height:20px; background-color:black;">
-  <img name="legend" id="legend" style="position:absolute;cursor:pointer;left:15px;top:0px;margin:0px;" src="./stationview_files/legend.png" onclick="EnableLegend();" onmouseover="menuImageOver(&#39;legend&#39;)" onmouseout="menuImageOut(&#39;legend&#39;)" border="0" alt="Legend" title="Legend">
+  <img name="legend" id="legend" style="position:absolute;cursor:pointer;left:15px;top:0px;margin:0px;" src="images/legend.png" onclick="EnableLegend();" onmouseover="menuImageOver(&#39;legend&#39;)" onmouseout="menuImageOut(&#39;legend&#39;)" border="0" alt="Legend" title="Legend">
   <div id="FooterCenterSection" style="position:absolute;left:330px;">
 	<span id="dateSpan" class="footerDateText"><script language="javascript" type="text/javascript">document.write(getWeekendDates());</script>26 February-29 February 2016</span>
   </div>
@@ -326,22 +326,22 @@ var masterList = "1 Av:10339:L::2 Av:10189:F::3 Av:10340:L::3 Av - 138 St:18086:
 <!-- Footer (end) -->
   <!-- Hidden Div to load all hover-images -->
 <div id="divHiddenImages" style="display:none;">
- <img id="Img1" src="./stationview_files/status_over.png" alt="">
- <img id="Img2" src="./stationview_files/station_over.png" alt="">
- <img id="Img3" src="./stationview_files/line_over.png" alt="">
- <img id="Img4" src="./stationview_files/borough_over.png" alt="">
- <img id="Img5" src="./stationview_files/planner_over.png" alt="">
- <img id="Img6" src="./stationview_files/metro_north_over.png" alt="">
- <img id="Img7" src="./stationview_files/lirr_over.png" alt="">
- <img id="Img8" src="./stationview_files/buses_over.png" alt="">
- <img id="Img9" src="./stationview_files/bridges_over.png" alt="">
- <img id="Img11" src="./stationview_files/diagram_over.png" alt="">
- <img id="Img12" src="./stationview_files/zoom_out_over.png" alt="">
- <img id="Img13" src="./stationview_files/zoom_in_over.png" alt="">
  <img id="Img14" src="./stationview_files/drawer_over.png" alt="">
- <img id="Img15" src="./stationview_files/mta_logo_over.png" alt="">
- <img id="Img16" src="./stationview_files/mta_home_over.png" alt="">
- <img id="Img17" src="./stationview_files/legend_over.png" alt="">
+ <img id="Img1" src="images/status_over.png" alt="">
+ <img id="Img2" src="images/station_over.png" alt="">
+ <img id="Img3" src="images/line_over.png" alt="">
+ <img id="Img4" src="images/borough_over.png" alt="">
+ <img id="Img5" src="images/planner_over.png" alt="">
+ <img id="Img6" src="images/metro_north_over.png" alt="">
+ <img id="Img7" src="images/lirr_over.png" alt="">
+ <img id="Img8" src="images/buses_over.png" alt="">
+ <img id="Img9" src="images/bridges_over.png" alt="">
+ <img id="Img11" src="images/diagram_over.png" alt="">
+ <img id="Img12" src="images/zoom_out_over.png" alt="">
+ <img id="Img13" src="images/zoom_in_over.png" alt="">
+ <img id="Img15" src="images/mta_logo_over.png" alt="">
+ <img id="Img16" src="images/mta_home_over.png" alt="">
+ <img id="Img17" src="images/legend_over.png" alt="">
  <img id="Img18" src="./stationview_files/tutorial_over.gif" alt="">
 </div>
 
