@@ -34,9 +34,6 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y tileMap.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-../docs/tileMap.js : tileMap.js
-	uglifyjs -c -m toplevel -m eval --keep-fnames tileMap.js -o ../docs/tileMap.js
-
 ../docs/mapTileBackground.gif : mapTileBackground.gif
 	copy /y mapTileBackground.gif "$@"
 
@@ -103,5 +100,5 @@ mini:
 all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm ../docs/gstp.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
-all: ../docs/tileMap.htm ../docs/tileMap.js ../docs/mapTileBackground.gif
+all: ../docs/tileMap.htm ../docs/mapTileBackground.gif
 all: ../docs/transparentTile.gif
