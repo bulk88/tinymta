@@ -1,4 +1,4 @@
-var stationLoc = new Array()
+window.stationLoc = new Array()
 stationLoc["10339"] = "Manhattan,3450,13620"  //1 Av
 stationLoc["10189"] = "Manhattan,3250,14485"  //2 Av
 stationLoc["10340"] = "Manhattan,3100,13620"  //3 Av
@@ -484,7 +484,7 @@ stationLoc["10171"] = "Q12,806,375" //Rockaway Park Beach 116 St
 stationLoc["31271"] = "Manhattan,1165,12425"  //34-St Hudson Yards
 
 // Neighborhood Map Dimensions
-var mapImgDimensions = new Array()
+window.mapImgDimensions = new Array()
 mapImgDimensions["LESTilesOSM"] = "2586,2709"
 mapImgDimensions["M11_Midtown"] = "1500,1500"
 mapImgDimensions["upperWestSide"] = "1500,1500"

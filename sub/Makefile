@@ -37,6 +37,12 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 ../docs/tileMap.js : tileMap.js
 	uglifyjs -c -m toplevel -m eval --keep-fnames tileMap.js -o ../docs/tileMap.js
 
+../docs/mapTileBackground.gif : mapTileBackground.gif
+	copy /y mapTileBackground.gif "$@"
+
+../docs/transparentTile.gif : transparentTile.gif
+	copy /y transparentTile.gif "$@"
+
 stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
 	perl gr3.pl 1
 
@@ -97,4 +103,5 @@ mini:
 all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm ../docs/gstp.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
-all: ../docs/tileMap.htm ../docs/tileMap.js
+all: ../docs/tileMap.htm ../docs/tileMap.js ../docs/mapTileBackground.gif
+all: ../docs/transparentTile.gif

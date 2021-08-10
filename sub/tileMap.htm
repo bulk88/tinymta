@@ -2,7 +2,7 @@
 <head>
 <title>The Weekender</title>
 </head>
-<script language="javascript" type="text/javascript" src="Scripts/tileMap.js"></script>
+<script language="javascript" type="text/javascript" src="tileMap.js"></script>
 <script language="javascript" type="text/javascript">
 var panX
 var panY
@@ -16,7 +16,7 @@ var initialY
 function setTilePath(d)
 {
     //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
-    tilePath = "/neighborhoodMaps/" + d + "/"
+    tilePath = "http://web.mta.info/neighborhoodMaps/" + d + "/"
     //tilePath = "http://10.8.86.78/WeekenderVer2/neighborhoodMaps/" + d + "/"
 }
 
@@ -95,14 +95,15 @@ scaleFactor[15] = 1
 scaleFactor[16] = 2
 
 function querySt(ji) {
-hu = window.location.search.substring(1);
-gy = hu.split("&");
-for (i=0;i<gy.length;i++) {
-ft = gy[i].split("=");
+var gy = window.location.search.substring(1).split("&");
+for (var i=0;i<gy.length;i++) {
+var ft = gy[i].split("=");
 if (ft[0] == ji) {
 return ft[1];
 }
 }
+// browser cache friendly argument
+return window.location.hash.substring(1);
 }
 
 function loadFromQueryString() {   
@@ -121,7 +122,7 @@ function loadNewMap()
 {
 hideMapCover()
 hideImageTiles() 
-zoomLevel = 15
+zoomLevel = 16
 centerPixX = initialX
 centerPixY = initialY
 var xTopPoint, yLeftPoint = 0;
@@ -187,7 +188,7 @@ var x44Start
 var y44Start
 
 //set the initial map settings
-var zoomLevel = 15
+var zoomLevel = 16
 var defaultCenterX
 var defaultCenterY
 var maxZoom
@@ -956,43 +957,43 @@ document.getElementById("customAlert").style.display = "none"
 <body onload="initializeDocumentObjects(); loadFromQueryString()" onmousedown="hideCustomAlert()" style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 <div id="mapApplication"  style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
- <div id="mapContainer" style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapImages/mapTileBackground.gif); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
- <img id="a00" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a01" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a02" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a03" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a04" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <div id="mapContainer" style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.gif); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+ <img id="a00" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a01" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a02" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a03" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a04" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
- <img id="a10" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a11" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a12" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a13" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a14" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a10" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a11" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a12" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a13" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a14" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
- <img id="a20" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a21" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a22" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a23" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a24" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a20" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a21" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a22" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a23" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a24" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
- <img id="a30" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a31" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a32" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a33" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a34" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-
-
- <img id="a40" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a41" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a42" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a43" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a44" class="x" onload="showImage(this)" src="images/mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a30" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a31" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a32" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a33" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a34" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
+ <img id="a40" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a41" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a42" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a43" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img id="a44" class="x" onload="showImage(this)" src="mapTileBackground.gif" style="z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; background-color:silver; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
- <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(images/transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()"></div>
+
+
+ <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()"><div></div></div>
  <div id="mapCover" style="position:absolute; top:0px; left:0px; width:630px; height:630px; background-color:black; color:white; font-weight:bold; font-size:24px; text-align:center;"><br /><br /><br /><br /></div>
 
  <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
