@@ -538,7 +538,7 @@ mapImgDimensions["Q10"] = "1500,1500"
 mapImgDimensions["Q11"] = "1500,1500"
 mapImgDimensions["Q12"] = "1500,1500"
 mapImgDimensions["S1"] = "1500,1500"
-
+;
 var panX
 var panY
 
@@ -563,7 +563,9 @@ function centerOnStation(staID) {
     //debugger;
     if (!stationLoc[staID])
     {
-        showMapCover()
+        //old function showMapCover()
+        document.getElementById("mapCover").style.display = "inline"
+        showingMap = false
     }
     else
     {
@@ -609,10 +611,15 @@ function centerOnStation(staID) {
         mapWidth = parseInt(mapArgs[0])
         mapHeight = parseInt(mapArgs[1])
         setTilePath(tileDirectory)
-        recenterMap(xCoor,yCoor)
+//old function recenterMap(x,y)
+        initialX = xCoor
+        initialY = yCoor
+        totalPanX = 0
+        totalPanY = 0
+        loadNewMap()
     }
 }
-
+/* 2021 factor out
 function recenterMap(x,y)
 {
     initialX = x
@@ -621,6 +628,7 @@ function recenterMap(x,y)
     totalPanY = 0
     loadNewMap() 
 }
+*/
 
 var mapArea
 var scaleFactor = new Array()
@@ -919,6 +927,7 @@ function mapTouchEnd()
 
 }
 
+/* 2021 factor out
 function showImageTiles()
 {
  for(k=0; k<24; k++)
@@ -926,6 +935,7 @@ function showImageTiles()
  aStyle[k].visibility = "visible"
  }
 }
+*/
 
 function hideImageTiles()
 {
@@ -956,7 +966,9 @@ function getCurrentCenter()
 
 function zoom(i)
 {
+/* unused 2021 factor out
  hideCustomAlert()
+*/
  if(!showingMap)
  {
  return false;
@@ -1013,7 +1025,7 @@ function zoom(i)
 
 }
 
-
+/* unused 2021 factor out
 function getCenterRow()
 {
  var row
@@ -1052,7 +1064,9 @@ function getCenterRow()
 
 return row
 }
+*/
 
+/* unused 2021 factor out
 function getCenterCol()
 {
  var col
@@ -1093,7 +1107,7 @@ function getCenterCol()
 
  return col
 }
-
+*/
 
 
 function getRemainderPix(totalPix)
@@ -1279,14 +1293,20 @@ function resetTileCells(topShift,leftShift)
  newCenterTileSrc = document.getElementById("a22").src
  if(oldCenterTileSrc.toLowerCase() == newCenterTileSrc.toLowerCase())
  {
- showImageTiles()
- } 
+//old function showImageTiles()
+    for(k=0; k<24; k++)
+    {
+      aStyle[k].visibility = "visible"
+    }
+ }
 }
 
+/* unused 2021 factor out
 function initLoad()
 {
   loadMap(0)
 }
+*/
 
 function showImage(e)
 {
@@ -1471,13 +1491,7 @@ document.getElementById("mapCover").style.display = "none"
 showingMap = true
 }
 
-function showMapCover()
-{
-document.getElementById("mapCover").style.display = "inline"
-showingMap = false
-}
-
-
+/* unused 2021 factor out
 var alertTimer
 function showCustomAlert(text)
 {
@@ -1492,8 +1506,16 @@ function hideCustomAlert()
 {
 document.getElementById("customAlert").style.display = "none"
 }
+
+*/
 </script>
-<body onload="initializeDocumentObjects(); loadFromQueryString()" onmousedown="hideCustomAlert()" style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
+
+<!--
+unused 2021 factor out body tag attr
+onmousedown="hideCustomAlert()"
+ -->
+<body onload="initializeDocumentObjects(); loadFromQueryString()"
+style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 <div id="mapApplication"  style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
  <div id="mapContainer" style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.gif); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
@@ -1535,9 +1557,9 @@ document.getElementById("customAlert").style.display = "none"
  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()"><div></div></div>
  <div id="mapCover" style="position:absolute; top:0px; left:0px; width:630px; height:630px; background-color:black; color:white; font-weight:bold; font-size:24px; text-align:center;"><br /><br /><br /><br /></div>
 
- <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+<!--  <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
  This is the highest zoom level
- </div>
+ </div> -->
 </div>
 
 
