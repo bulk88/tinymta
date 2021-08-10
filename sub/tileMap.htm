@@ -950,20 +950,10 @@ return false;
 
 function getCurrentCenter()
 {
-  var xOffset
-  var yOffset
-  var xPix
-  var yPix
-  var currentCenterX
-  var currentCenterY
-
-  xPix = document.getElementById("a22").className.split("_")[0]*256
-  yPix = document.getElementById("a22").className.split("_")[1]*256
-  xOffset = 315-parseInt(document.getElementById("a22").style.left)
-  yOffset = 315-parseInt(document.getElementById("a22").style.top)
-  currentCenterX = xPix+xOffset
-  currentCenterY = yPix+yOffset
-  return(currentCenterX.toString() + "," + currentCenterY.toString())
+  var e = document.getElementById("a22");
+  var arr  = e.className.split("_");
+  var style = e.style;
+  return ((arr[0]*256)+(315-parseInt(style.left)))+ "," + ((arr[1]*256)+(315-parseInt(style.top)))
 }
 
 function zoom(i)
@@ -975,8 +965,6 @@ function zoom(i)
  {
  return false;
  }
- vScroll = 0
- hScroll = 0
   var currentCenter = getCurrentCenter().split(",");
   var currentCenterX = parseInt(currentCenter[0])
   var currentCenterY = parseInt(currentCenter[1])
