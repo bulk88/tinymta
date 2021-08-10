@@ -605,9 +605,9 @@ function centerOnStation(staID) {
                     yCoor = 34501;
             }
         }
-        
-        mapWidth = parseInt(mapImgDimensions[tileDirectory].split(",")[0])
-        mapHeight = parseInt(mapImgDimensions[tileDirectory].split(",")[1])
+        var mapArgs = mapImgDimensions[tileDirectory].split(",")
+        mapWidth = parseInt(mapArgs[0])
+        mapHeight = parseInt(mapArgs[1])
         setTilePath(tileDirectory)
         recenterMap(xCoor,yCoor)
     }
@@ -641,14 +641,15 @@ return ft[1];
 return window.location.hash.substring(1);
 }
 
-function loadFromQueryString() {   
-if(querySt("staID") == "" || querySt("staID") == undefined)
+function loadFromQueryString() {
+var urlArg = querySt("staID");
+if(urlArg == "" || urlArg == undefined)
 {
 return false;
 }
 else
 {
-centerOnStation(querySt("staID"))
+centerOnStation(urlArg)
 }
 }
 
@@ -856,8 +857,9 @@ function mapTouchEnd()
 {
 
 
-  centerPixX= parseInt(getCurrentCenter().split(",")[0])
-  centerPixY = parseInt(getCurrentCenter().split(",")[1])
+  var currentCenter = getCurrentCenter().split(",");
+  centerPixX= parseInt(currentCenter[0])
+  centerPixY = parseInt(currentCenter[1])
 
 
  var routeMapXMove = 0
@@ -961,8 +963,9 @@ function zoom(i)
  }
  vScroll = 0
  hScroll = 0
-  var currentCenterX = parseInt(getCurrentCenter().split(",")[0])
-  var currentCenterY = parseInt(getCurrentCenter().split(",")[1])
+  var currentCenter = getCurrentCenter().split(",");
+  var currentCenterX = parseInt(currentCenter[0])
+  var currentCenterY = parseInt(currentCenter[1])
   var newCenterX
   var newCenterY
  if(i == -1)
@@ -1478,8 +1481,9 @@ showingMap = false
 var alertTimer
 function showCustomAlert(text)
 {
-document.getElementById("customAlert").innerHTML = text
-document.getElementById("customAlert").style.display = "inline"
+var element = document.getElementById("customAlert");
+element.innerHTML = text
+element.style.display = "inline"
 clearTimeout(alertTimer)
 alertTimer = setTimeout("hideCustomAlert()",3000)
 }
