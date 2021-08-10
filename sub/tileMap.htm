@@ -666,12 +666,14 @@ function loadNewMap()
 {
 hideMapCover()
 hideImageTiles() 
-zoomLevel = 16
+zoomLevel = 15
 centerPixX = initialX
 centerPixY = initialY
 var xTopPoint, yLeftPoint = 0;
 var statusIcon = '';
 loadMap(0)
+/* 2021 improvement zoom +1 */
+zoom(1)
 }
 
 var initialX
