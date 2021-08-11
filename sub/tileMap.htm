@@ -350,7 +350,6 @@ stationLoc["10142"] = "B1,862,952"  //Hoyt Schermerhorn
 stationLoc["10143"] = "B1,1373,840"  //Lafayette Av
 stationLoc["10144"] = "B20a,140,1210"  //Clinton-Washington Avs
 stationLoc["10145"] = "B20a,595,1335"  //Franklin Av
-stationLoc["10146"] = "B20,870,1385"  //Nostrand Av
 stationLoc["10146"] = "B20a,870,1385"  //Nostrand Av
 stationLoc["10147"] = "B20a,1305,1415"  //Kingston-Throop Avs
 stationLoc["10148"] = "B4,1375,120"  //Utica Av
@@ -490,11 +489,6 @@ stationLoc["31271"] = "Manhattan,1165,12425"  //34-St Hudson Yards
 
 // Neighborhood Map Dimensions
 var mapImgDimensions = new Array()
-mapImgDimensions["LESTilesOSM"] = "2586,2709"
-mapImgDimensions["M11_Midtown"] = "1500,1500"
-mapImgDimensions["upperWestSide"] = "1500,1500"
-mapImgDimensions["LowerManhattan"] = "1500,1500"
-mapImgDimensions["MidtownUptown"] = "2756,4043"
 mapImgDimensions["Manhattan"] = "5000,17408"
 mapImgDimensions["B1"] = "1500,1500"
 mapImgDimensions["B2"] = "1500,1500"
@@ -550,6 +544,12 @@ var mapHeight
 var tileDirectory
 var mapDrag = false
 
+var scaleFactor = new Array()
+scaleFactor[13] = 0.25
+scaleFactor[14] = .5
+scaleFactor[15] = 1
+scaleFactor[16] = 2
+
 function setTilePath(d)
 {
     //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
@@ -558,7 +558,6 @@ function setTilePath(d)
 }
 
 function centerOnStation(staID) {
-    //debugger;
     if (!stationLoc[staID])
     {
         //old function showMapCover()
@@ -624,23 +623,19 @@ function recenterMap(x,y)
 }
 */
 
-var mapArea
-var scaleFactor = new Array()
-scaleFactor[13] = 0.25
-scaleFactor[14] = .5
-scaleFactor[15] = 1
-scaleFactor[16] = 2
-
 function querySt(ji) {
-var gy = window.location.search.substring(1).split("&");
-for (var i=0;i<gy.length;i++) {
-var ft = gy[i].split("=");
-if (ft[0] == ji) {
-return ft[1];
-}
-}
-// browser cache friendly argument
-return window.location.hash.substring(1);
+  var gy = window.location.search;
+  if (gy) {
+    gy = gy.substring(1).split("&");
+    for (var i = 0; i < gy.length; i++) {
+      var ft = gy[i].split("=");
+      if (ft[0] == ji) {
+        return ft[1];
+      }
+    }
+  }
+  // browser cache friendly argument
+  return window.location.hash.substring(1);
 }
 
 function loadFromQueryString() {
@@ -746,8 +741,11 @@ var OSMx4
 var OSMy4
 var OSMx0
 var OSMy0
-
+var aStyle = new Array()
+var aElement = new Array()
 var zoomOutTopAdjustment = new Array()
+var zoomOutLeftAdjustment = new Array()
+
 zoomOutTopAdjustment[10] = 0
 zoomOutTopAdjustment[11] = 0
 zoomOutTopAdjustment[12] = 0
@@ -757,7 +755,6 @@ zoomOutTopAdjustment[15] = 0
 zoomOutTopAdjustment[16] = 0
 zoomOutTopAdjustment[17] = 0
 
-var zoomOutLeftAdjustment = new Array()
 zoomOutLeftAdjustment[10] = 0
 zoomOutLeftAdjustment[11] = 0
 zoomOutLeftAdjustment[12] = 0
@@ -767,37 +764,8 @@ zoomOutLeftAdjustment[15] = 0
 zoomOutLeftAdjustment[16] = 0
 zoomOutLeftAdjustment[17] = 0
 
-var aStyle = new Array()
-var aElement = new Array()
-
 function initializeDocumentObjects()
 {
-
- aStyle[0] = document.getElementById("a00").style
- aStyle[1] = document.getElementById("a01").style
- aStyle[2] = document.getElementById("a02").style
- aStyle[3] = document.getElementById("a03").style
- aStyle[4] = document.getElementById("a04").style
- aStyle[5] = document.getElementById("a10").style
- aStyle[6] = document.getElementById("a11").style
- aStyle[7] = document.getElementById("a12").style
- aStyle[8] = document.getElementById("a13").style
- aStyle[9] = document.getElementById("a14").style
- aStyle[10] = document.getElementById("a20").style
- aStyle[11] = document.getElementById("a21").style
- aStyle[12] = document.getElementById("a22").style
- aStyle[13] = document.getElementById("a23").style
- aStyle[14] = document.getElementById("a24").style
- aStyle[15] = document.getElementById("a30").style
- aStyle[16] = document.getElementById("a31").style
- aStyle[17] = document.getElementById("a32").style
- aStyle[18] = document.getElementById("a33").style
- aStyle[19] = document.getElementById("a34").style
- aStyle[20] = document.getElementById("a40").style
- aStyle[21] = document.getElementById("a41").style
- aStyle[22] = document.getElementById("a42").style
- aStyle[23] = document.getElementById("a43").style
- aStyle[24] = document.getElementById("a44").style
  aElement[0] = document.getElementById("a00")
  aElement[1] = document.getElementById("a01")
  aElement[2] = document.getElementById("a02")
@@ -823,6 +791,10 @@ function initializeDocumentObjects()
  aElement[22] = document.getElementById("a42")
  aElement[23] = document.getElementById("a43")
  aElement[24] = document.getElementById("a44")
+ for(var k=0; k<25; k++)
+ {
+ aStyle[k] = aElement[k].style;
+ }
  /* 2021 factor out
  centerPixX = defaultCenterX
  centerPixY = defaultCenterY
@@ -913,9 +885,9 @@ function hideImageTiles()
 
 function getCurrentCenter()
 {
-  var e = document.getElementById("a22");
-  var arr  = e.className.split("_");
-  var style = e.style;
+  //formerly 12 == document.getElementById("a22");
+  var arr  = aElement[12].className.split("_");
+  var style = aStyle[12];
   return [(arr[0]*256)+(315-parseInt(style.left)), (arr[1]*256)+(315-parseInt(style.top))];
 }
 
@@ -1074,12 +1046,10 @@ function getNumberOfTiles(totalPix)
 
 function getCenterTile(pY,pX)
 {
- var numberOfRows
- numberOfRows = getNumberOfTiles(pY) 
- OSMy = numberOfRows
- var numberOfColumns
- numberOfColumns = getNumberOfTiles(pX) 
- OSMx = numberOfColumns
+ // old name numberOfRow
+ OSMy = getNumberOfTiles(pY)
+ //old name numberOfColumns
+ OSMx = getNumberOfTiles(pX)
 }
 
 
@@ -1102,20 +1072,16 @@ function loadMap(i)
 
 function resetTileCells(topShift,leftShift)
 {
- var x
- var y
 
  var i
  var j
  var k
 
  var TileNameOSM = new Array()
- var TileNameBusOSM = new Array()
- var TileNameVE = new Array()
  var oldCenterTileSrc
  var newCenterTileSrc
- x = OSMx2*1
- y = OSMy2*1
+ var x = OSMx2*1
+ var y = OSMy2*1
  var nameX = new Array()
  var nameY = new Array()
  
@@ -1195,7 +1161,8 @@ function resetTileCells(topShift,leftShift)
  TileNameOSM[23] = getTileName(nameX[3],nameY[4])
  TileNameOSM[24] = getTileName(nameX[4],nameY[4])
 
- oldCenterTileSrc = document.getElementById("a22").src
+ //old 12 == document.getElementById("a22")
+ oldCenterTileSrc = aElement[12].src
 
  for(k=0; k<25; k++)
  {
@@ -1222,7 +1189,8 @@ function resetTileCells(topShift,leftShift)
    s0.left = (parseInt(s0.left) + leftShift) + "px"
  }
  
- newCenterTileSrc = document.getElementById("a22").src
+ //old 12 == document.getElementById("a22")
+ newCenterTileSrc = aElement[12].src
  if(oldCenterTileSrc.toLowerCase() == newCenterTileSrc.toLowerCase())
  {
 //old function showImageTiles()
@@ -1337,8 +1305,8 @@ function mapmousemove(e) {
     }
 
     e = getPosition(e)
-    curX = e.x - startX
-    curY = e.y - startY
+    var curX = e.x - startX
+    var curY = e.y - startY
 
     var curCenterX = centerPixX  - curX
     var curCenterY = centerPixY  - curY
