@@ -2,13 +2,13 @@
 <head>
 <title>The Weekender</title>
 <link rel="shortcut icon" href="/siteimages/favicon.ico" />
-<script language="javascript" type="text/javascript" src="../status/weekendstatus.js"></script>
-<script language="javascript" type="text/javascript" src="Data/LinesStaticData.js"></script>
-<script language="javascript" type="text/javascript" src="Data/stationGeo.js"></script>
-<script language="javascript" type="text/javascript" src="Scripts/neighborhoodScript.js"></script>
-<script language="javascript" type="text/javascript" src="Scripts/WeekenderMain.js"></script>
-<script language="javascript" type="text/javascript" src="Scripts/SystemWideMapScriptTiles.js"></script>
-<link rel="stylesheet" type="text/css" media="all" href="weekender.css" />
+<script language="javascript" type="text/javascript" src="stationview_files/weekendstatus.js.download"></script>
+<script language="javascript" type="text/javascript" src="stationview_files/LinesStaticData.js.download"></script>
+<script language="javascript" type="text/javascript" src="stationview_files/stationGeo.js.download"></script>
+<script language="javascript" type="text/javascript" src="stationview_files/neighborhoodScript.js.download"></script>
+<script language="javascript" type="text/javascript" src="stationview_files/WeekenderMain.js.download"></script>
+<script language="javascript" type="text/javascript" src="stationview_files/SystemWideMapScriptTiles.js.download"></script>
+<link rel="stylesheet" type="text/css" media="all" href="stationview_files/weekender.css" />
 <script language="javascript" type="text/javascript">
 function onSystemDiagramClickXY(x,y)
 {
@@ -65,8 +65,8 @@ function loadFromQueryString() {
  <a href="http://mta.info/bandt/" target="_blank"><img name="bridges" id="bridges" src="images/bridges.png" style="cursor:pointer; position:absolute; top:62px; left:165px; height:17px;" border="0" alt="Bridges &amp; Tunnels" title="Bridges &amp; Tunnels" onmouseover="menuImageOver('bridges')" onmouseout="menuImageOut('bridges')"/></a>
  <img name="home" id="home" src="images/home.png" style="cursor:pointer; position:absolute; top:11px; left:330px;" border="0" alt="The Weekender" title="The Weekender" onclick="window.location.href = 'index.html';"/>
  <img name="diagram" id="diagram" src="images/diagram.png" style="cursor:pointer; position:absolute; top:62px; left:330px;" border="0" alt="Subway Diagram" title="Subway Diagram" onmouseover="menuImageOver('diagram')" onclick="window.location.href = 'subwaydiagram.html';"/>
- <img name="zoom_out" id="zoom_out" src="images/zoom_out.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:450px;" border="0" alt="" onmouseover="menuImageOver('zoom_out')" onmouseout="menuImageOut('zoom_out')" onclick="zoomOut();"/>
- <img name="zoom_in" id="zoom_in" src="images/zoom_in.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:470px;" border="0" alt="" onmouseover="menuImageOver('zoom_in')" onmouseout="menuImageOut('zoom_in')" onclick="zoomIn();"/>
+ <img name="zoom_out" id="zoom_out" src="zoom_out.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:450px;" border="0" alt="" onmouseover="menuImageOver('zoom_out')" onmouseout="menuImageOut('zoom_out')" onclick="zoomOut();"/>
+ <img name="zoom_in" id="zoom_in" src="zoom_in.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:470px;" border="0" alt="" onmouseover="menuImageOver('zoom_in')" onmouseout="menuImageOut('zoom_in')" onclick="zoomIn();"/>
  <img name="drawer" id="drawer" src="images/drawer.png" style="display:none;cursor:pointer; position:absolute; top:62px; left:490px;" border="0" alt="" onmouseover="menuImageOver('drawer')" onmouseout="menuImageOut('drawer')" onclick="ShowHide('weekenderleftPanel');"/>
 
   	<a href="/default.html" target="_blank"><img name="mtainfo" id="mtainfo" src="/weekender/images/mta_logo.png" style="cursor:pointer; position:absolute; top:11px; left:910px;" border="0" alt="MTA Homepage" title="MTA Homepage" onmouseover="menuImageOver('mtainfo')" onmouseout="menuImageOut('mtainfo')"/> </a>
@@ -214,8 +214,8 @@ function loadFromQueryString() {
  <img id="Img8" src="images/buses_over.png" alt="" />
  <img id="Img9" src="images/bridges_over.png" alt="" />
  <img id="Img11" src="images/diagram_over.png" alt="" />
- <img id="Img12" src="images/zoom_out_over.png" alt="" />
- <img id="Img13" src="images/zoom_in_over.png" alt="" />
+ <img id="Img12" src="zoom_out_over.png" alt="" />
+ <img id="Img13" src="zoom_in_over.png" alt="" />
  <img id="Img14" src="images/drawer_over.png" alt="" />
  <img id="Img15" src="images/mta_logo_over.png" alt="" />
  <img id="Img16" src="images/mta_home_over.png" alt="" />

@@ -34,11 +34,23 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y tileMap.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-../docs/mapTileBackground.gif : mapTileBackground.gif
-	copy /y mapTileBackground.gif "$@"
+../docs/mapTileBackground.gif : $(@F)
+	copy /y $(@F) "$@"
 
-../docs/transparentTile.gif : transparentTile.gif
-	copy /y transparentTile.gif "$@"
+../docs/transparentTile.gif : $(@F)
+	copy /y $(@F) "$@"
+
+../docs/zoom_in.png : $(@F)
+	copy /y $(@F) "$@"
+
+../docs/zoom_in_over.png : $(@F)
+	copy /y $(@F) "$@"
+
+../docs/zoom_out.png : $(@F)
+	copy /y $(@F) "$@"
+
+../docs/zoom_out_over.png : $(@F)
+	copy /y $(@F) "$@"
 
 stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
 	perl gr3.pl 1
@@ -101,4 +113,5 @@ all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm ../docs/gstp.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
 all: ../docs/tileMap.htm ../docs/mapTileBackground.gif
-all: ../docs/transparentTile.gif
+all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
+all: ../docs/zoom_out.png ../docs/zoom_out_over.png

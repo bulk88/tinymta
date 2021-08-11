@@ -146,17 +146,17 @@ function menuImageOver(imgId) {
     if (imgId == 'planner') document.getElementById(imgId).src = 'images/planner_over.png';
     if (imgId == 'subway') document.getElementById(imgId).src = 'images/diagram_over.png';
     
-    //if (imgId == 'zoom_out') document.getElementById(imgId).src = 'images/zoom_out_over.png';
-    //if (imgId == 'zoom_in') document.getElementById(imgId).src = 'images/zoom_in_over.png';
+    //if (imgId == 'zoom_out') document.getElementById(imgId).src = 'zoom_out_over.png';
+    //if (imgId == 'zoom_in') document.getElementById(imgId).src = 'zoom_in_over.png';
 
     if (imgId == 'zoom_out') {
         if (document.getElementById(imgId).src.indexOf("gray_zoom_out.png") <= 0)
-            document.getElementById(imgId).src = 'images/zoom_out_over.png';
+            document.getElementById(imgId).src = 'zoom_out_over.png';
     }
 
     if (imgId == 'zoom_in') {
         if (document.getElementById(imgId).src.indexOf("gray_zoom_in.png") <= 0)
-            document.getElementById(imgId).src = 'images/zoom_in_over.png';
+            document.getElementById(imgId).src = 'zoom_in_over.png';
     }
     
     if (imgId == 'drawer') document.getElementById(imgId).src = 'images/drawer_over.png';
@@ -181,18 +181,18 @@ function menuImageOut(imgId) {
     if (imgId == 'subway' && currentPagename != 'subway') document.getElementById(imgId).src = 'images/diagram.png';
     
     
-    //if (imgId == 'zoom_out' && currentPagename != 'zoom_out') document.getElementById(imgId).src = 'images/zoom_out.png';
-    //if (imgId == 'zoom_in' && currentPagename != 'zoom_in') document.getElementById(imgId).src = 'images/zoom_in.png';
+    //if (imgId == 'zoom_out' && currentPagename != 'zoom_out') document.getElementById(imgId).src = 'zoom_out.png';
+    //if (imgId == 'zoom_in' && currentPagename != 'zoom_in') document.getElementById(imgId).src = 'zoom_in.png';
 
     if (imgId == 'zoom_out' && currentPagename != 'zoom_out') 
     {
         if (document.getElementById(imgId).src.indexOf("gray_zoom_out.png") <= 0)
-            document.getElementById(imgId).src = 'images/zoom_out.png';
+            document.getElementById(imgId).src = 'zoom_out.png';
     }
 
     if (imgId == 'zoom_in' && currentPagename != 'zoom_in') {
         if (document.getElementById(imgId).src.indexOf("gray_zoom_in.png") <= 0)
-            document.getElementById(imgId).src = 'images/zoom_in.png';
+            document.getElementById(imgId).src = 'zoom_in.png';
     }
     
     if (imgId == 'drawer' && currentPagename != 'drawer') document.getElementById(imgId).src = 'images/drawer.png';
@@ -256,8 +256,8 @@ function setPageMenuSelection(imgId) {
     if (imgId == 'borough') document.getElementById(imgId).src = 'images/borough_over.png';
     if (imgId == 'planner') document.getElementById(imgId).src = 'images/planner_over.png';
     if (imgId == 'subway') document.getElementById(imgId).src = 'images/diagram_over.png';
-    if (imgId == 'zoom_out') document.getElementById(imgId).src = 'images/zoom_out_over.png';
-    if (imgId == 'zoom_in') document.getElementById(imgId).src = 'images/zoom_in_over.png';
+    if (imgId == 'zoom_out') document.getElementById(imgId).src = 'zoom_out_over.png';
+    if (imgId == 'zoom_in') document.getElementById(imgId).src = 'zoom_in_over.png';
     if (imgId == 'drawer') document.getElementById(imgId).src = 'images/drawer_over.png';
     if (imgId == 'metronorth') document.getElementById(imgId).src = 'images/metro_north_over.png';
     if (imgId == 'lirr') document.getElementById(imgId).src = 'images/lirr_over.png';

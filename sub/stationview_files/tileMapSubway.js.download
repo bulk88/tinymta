@@ -680,7 +680,7 @@ function zoom(i) {
             //parent.document.getElementById('drawer').style.display = 'none';
             parent.document.getElementById('weekenderleftPanel').style.display = 'inline';
             parent.document.getElementById("zoom_out").src = 'images/gray_zoom_out.png';
-            parent.document.getElementById("zoom_in").src = 'images/zoom_in_over.png';
+            parent.document.getElementById("zoom_in").src = 'zoom_in_over.png';
             return false;
         }
     }
@@ -704,8 +704,8 @@ function zoom(i) {
 
     parent.document.getElementById('staticmap').style.display = 'none';
     parent.document.getElementById('drawer').style.display = 'inline';
-    parent.document.getElementById("zoom_out").src = 'images/zoom_out.png';
-    parent.document.getElementById("zoom_in").src = 'images/zoom_in_over.png';
+    parent.document.getElementById("zoom_out").src = 'zoom_out.png';
+    parent.document.getElementById("zoom_in").src = 'zoom_in_over.png';
 
 
     if (i == -1) {
@@ -724,7 +724,7 @@ function zoom(i) {
 
             //if (zoomLevel == minZoom) {
             //   parent.document.getElementById("zoom_out").src = 'images/gray_zoom_out.png';
-            // parent.document.getElementById("zoom_in").src = 'images/zoom_in_over.png';
+            // parent.document.getElementById("zoom_in").src = 'zoom_in_over.png';
             //}
 
         }
@@ -748,7 +748,7 @@ function zoom(i) {
 
             if (zoomLevel == maxZoom) {
                 parent.document.getElementById("zoom_in").src = 'images/gray_zoom_in.png';
-                parent.document.getElementById("zoom_out").src = 'images/zoom_out_over.png';
+                parent.document.getElementById("zoom_out").src = 'zoom_out_over.png';
             }
         }
         else {

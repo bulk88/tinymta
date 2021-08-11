@@ -19,7 +19,7 @@ function recenterNeighborhoodMap(staID)
 	}
 	else
 	{
-		window.frames["neighborhoodMap"].location.href = "web.mta.info_weekender_tileMap.html?staID=" + staID
+		window.frames["neighborhoodMap"].location.href = "tileMap.htm?staID=" + staID
 	}		
 }
 
