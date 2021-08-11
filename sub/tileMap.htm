@@ -838,49 +838,53 @@ function mapTouchEnd()
 
  var x
  var y
-  for(i=0; i < aStyle.length; i++)
+ var styleObj
+ var elem
+  for(var i=0; i < aStyle.length; i++)
  {
-  if(parseInt(aStyle[i].left) > 630)
+  styleObj = aStyle[i]
+  elem = aElement[i]
+  if(parseInt(styleObj.left) > 630)
   {
-  x = (aElement[i].className.split("_")[0]*1)-5
-  y = aElement[i].className.split("_")[1]
-  aElement[i].className = x.toString() + "_" + y.toString()
-  aStyle[i].left = (parseInt(aStyle[i].left)-1280) + "px"
-  aStyle[i].visibility = "hidden"
+  x = (elem.className.split("_")[0]*1)-5
+  y = elem.className.split("_")[1]
+  elem.className = x + "_" + y
+  styleObj.left = (parseInt(styleObj.left)-1280) + "px"
+  styleObj.visibility = "hidden"
   }
 
-  else if(parseInt(aStyle[i].left)*(-1) > 256)
+  else if(parseInt(styleObj.left)*(-1) > 256)
   {
-  x = (aElement[i].className.split("_")[0]*1)+5
-  y = aElement[i].className.split("_")[1]
-  aElement[i].className = x.toString() + "_" + y.toString()
-  aStyle[i].left = (parseInt(aStyle[i].left)+1280) + "px"
-  aStyle[i].visibility = "hidden"
+  x = (elem.className.split("_")[0]*1)+5
+  y = elem.className.split("_")[1]
+  elem.className = x + "_" + y
+  styleObj.left = (parseInt(styleObj.left)+1280) + "px"
+  styleObj.visibility = "hidden"
   }
 
-  if(parseInt(aStyle[i].top) > 630)
+  if(parseInt(styleObj.top) > 630)
   {
-  x = aElement[i].className.split("_")[0]
-  y = (aElement[i].className.split("_")[1]*1)-5
-  aElement[i].className = x.toString() + "_" + y.toString()
-  aStyle[i].top = (parseInt(aStyle[i].top)-1280) + "px"
-  aStyle[i].visibility = "hidden"
+  x = elem.className.split("_")[0]
+  y = (elem.className.split("_")[1]*1)-5
+  elem.className = x + "_" + y
+  styleObj.top = (parseInt(styleObj.top)-1280) + "px"
+  styleObj.visibility = "hidden"
   }
 
-  else if(parseInt(aStyle[i].top)*(-1) > 256)
+  else if(parseInt(styleObj.top)*(-1) > 256)
   {
-  x = aElement[i].className.split("_")[0]
-  y = (aElement[i].className.split("_")[1]*1)+5
-  aElement[i].className = x.toString() + "_" + y.toString()
-  aStyle[i].top = (parseInt(aStyle[i].top)+1280) + "px"
-  aStyle[i].visibility = "hidden"
+  x = elem.className.split("_")[0]
+  y = (elem.className.split("_")[1]*1)+5
+  elem.className = x + "_" + y
+  styleObj.top = (parseInt(styleObj.top)+1280) + "px"
+  styleObj.visibility = "hidden"
   }
-  if(aStyle[i].visibility == "hidden")
+  if(styleObj.visibility == "hidden")
   {
-   x = aElement[i].className.split("_")[0]
-   y = aElement[i].className.split("_")[1]
+   x = elem.className.split("_")[0]
+   y = elem.className.split("_")[1]
 
-    aElement[i].src = tilePath + zoomLevel + "_" + x + "_" + y + ".png"
+    elem.src = tilePath + zoomLevel + "_" + x + "_" + y + ".png"
   }
  }
 
@@ -889,7 +893,7 @@ function mapTouchEnd()
 /* 2021 factor out
 function showImageTiles()
 {
- for(k=0; k<24; k++)
+ for(var k=0; k<25; k++)
  {
  aStyle[k].visibility = "visible"
  }
@@ -898,7 +902,7 @@ function showImageTiles()
 
 function hideImageTiles()
 {
- for(var k=0; k<24; k++)
+ for(var k=0; k<25; k++)
  {
  aStyle[k].visibility = "hidden"
  }
@@ -1098,6 +1102,10 @@ function resetTileCells(topShift,leftShift)
  var x
  var y
 
+ var i
+ var j
+ var k
+
  var TileNameOSM = new Array()
  var TileNameBusOSM = new Array()
  var TileNameVE = new Array()
@@ -1183,18 +1191,14 @@ function resetTileCells(topShift,leftShift)
  TileNameOSM[22] = getTileName(nameX[2],nameY[4])
  TileNameOSM[23] = getTileName(nameX[3],nameY[4])
  TileNameOSM[24] = getTileName(nameX[4],nameY[4])
- var k
- k = 0
+
  oldCenterTileSrc = document.getElementById("a22").src
 
- for(j=0; j<5; j++)
+ for(k=0; k<25; k++)
  {
-  for(i=0; i<5; i++)
-  {
-    document.getElementById("a" + j + i.toString()).src = tilePath + TileNameOSM[k] + ".png"
-   k = k + 1
-  }
+  aElement[k].src = tilePath + TileNameOSM[k] + ".png"
  }
+
  aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px"
  aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = "-69px"
  aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = "187px"
@@ -1206,24 +1210,20 @@ function resetTileCells(topShift,leftShift)
  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = "443px"
  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = "699px"
 
- var e0
+ var s0
 
-  for(j=0; j<5; j++)
-  {
-   for(i=0; i<5; i++)
-   {
-
-    e0 = document.getElementById("a" + j + i.toString())
-    e0.style.top = (parseInt(e0.style.top) + topShift) + "px"
-    e0.style.left = (parseInt(e0.style.left) + leftShift) + "px"
-
-   }
-  }
+ for(k=0; k<25; k++)
+ {
+   s0 = aStyle[k]
+   s0.top = (parseInt(s0.top) + topShift) + "px"
+   s0.left = (parseInt(s0.left) + leftShift) + "px"
+ }
+ 
  newCenterTileSrc = document.getElementById("a22").src
  if(oldCenterTileSrc.toLowerCase() == newCenterTileSrc.toLowerCase())
  {
 //old function showImageTiles()
-    for(k=0; k<24; k++)
+    for(k=0; k<25; k++)
     {
       aStyle[k].visibility = "visible"
     }
@@ -1273,56 +1273,56 @@ function mapmousedown(e) {
   e = getPosition(e)
   startX = e.x
   startY = e.y
-  x00Start = parseInt(document.getElementById("a00").style.left)
-  y00Start = parseInt(document.getElementById("a00").style.top)
-  x01Start = parseInt(document.getElementById("a01").style.left)
-  y01Start = parseInt(document.getElementById("a01").style.top)
-  x02Start = parseInt(document.getElementById("a02").style.left)
-  y02Start = parseInt(document.getElementById("a02").style.top)
-  x03Start = parseInt(document.getElementById("a03").style.left)
-  y03Start = parseInt(document.getElementById("a03").style.top)
-  x04Start = parseInt(document.getElementById("a04").style.left)
-  y04Start = parseInt(document.getElementById("a04").style.top)
-  x10Start = parseInt(document.getElementById("a10").style.left)
-  y10Start = parseInt(document.getElementById("a10").style.top)
-  x11Start = parseInt(document.getElementById("a11").style.left)
-  y11Start = parseInt(document.getElementById("a11").style.top)
-  x12Start = parseInt(document.getElementById("a12").style.left)
-  y12Start = parseInt(document.getElementById("a12").style.top)
-  x13Start = parseInt(document.getElementById("a13").style.left)
-  y13Start = parseInt(document.getElementById("a13").style.top)
-  x14Start = parseInt(document.getElementById("a14").style.left)
-  y14Start = parseInt(document.getElementById("a14").style.top)
-  x20Start = parseInt(document.getElementById("a20").style.left)
-  y20Start = parseInt(document.getElementById("a20").style.top)
-  x21Start = parseInt(document.getElementById("a21").style.left)
-  y21Start = parseInt(document.getElementById("a21").style.top)
-  x22Start = parseInt(document.getElementById("a22").style.left)
-  y22Start = parseInt(document.getElementById("a22").style.top)
-  x23Start = parseInt(document.getElementById("a23").style.left)
-  y23Start = parseInt(document.getElementById("a23").style.top)
-  x24Start = parseInt(document.getElementById("a24").style.left)
-  y24Start = parseInt(document.getElementById("a24").style.top)
-  x30Start = parseInt(document.getElementById("a30").style.left)
-  y30Start = parseInt(document.getElementById("a30").style.top)
-  x31Start = parseInt(document.getElementById("a31").style.left)
-  y31Start = parseInt(document.getElementById("a31").style.top)
-  x32Start = parseInt(document.getElementById("a32").style.left)
-  y32Start = parseInt(document.getElementById("a32").style.top)
-  x33Start = parseInt(document.getElementById("a33").style.left)
-  y33Start = parseInt(document.getElementById("a33").style.top)
-  x34Start = parseInt(document.getElementById("a34").style.left)
-  y34Start = parseInt(document.getElementById("a34").style.top)
-  x40Start = parseInt(document.getElementById("a40").style.left)
-  y40Start = parseInt(document.getElementById("a40").style.top)
-  x41Start = parseInt(document.getElementById("a41").style.left)
-  y41Start = parseInt(document.getElementById("a41").style.top)
-  x42Start = parseInt(document.getElementById("a42").style.left)
-  y42Start = parseInt(document.getElementById("a42").style.top)
-  x43Start = parseInt(document.getElementById("a43").style.left)
-  y43Start = parseInt(document.getElementById("a43").style.top)
-  x44Start = parseInt(document.getElementById("a44").style.left)
-  y44Start = parseInt(document.getElementById("a44").style.top)
+  x00Start = parseInt(aStyle[0].left)
+  y00Start = parseInt(aStyle[0].top)
+  x01Start = parseInt(aStyle[1].left)
+  y01Start = parseInt(aStyle[1].top)
+  x02Start = parseInt(aStyle[2].left)
+  y02Start = parseInt(aStyle[2].top)
+  x03Start = parseInt(aStyle[3].left)
+  y03Start = parseInt(aStyle[3].top)
+  x04Start = parseInt(aStyle[4].left)
+  y04Start = parseInt(aStyle[4].top)
+  x10Start = parseInt(aStyle[5].left)
+  y10Start = parseInt(aStyle[5].top)
+  x11Start = parseInt(aStyle[6].left)
+  y11Start = parseInt(aStyle[6].top)
+  x12Start = parseInt(aStyle[7].left)
+  y12Start = parseInt(aStyle[7].top)
+  x13Start = parseInt(aStyle[8].left)
+  y13Start = parseInt(aStyle[8].top)
+  x14Start = parseInt(aStyle[9].left)
+  y14Start = parseInt(aStyle[9].top)
+  x20Start = parseInt(aStyle[10].left)
+  y20Start = parseInt(aStyle[10].top)
+  x21Start = parseInt(aStyle[11].left)
+  y21Start = parseInt(aStyle[11].top)
+  x22Start = parseInt(aStyle[12].left)
+  y22Start = parseInt(aStyle[12].top)
+  x23Start = parseInt(aStyle[13].left)
+  y23Start = parseInt(aStyle[13].top)
+  x24Start = parseInt(aStyle[14].left)
+  y24Start = parseInt(aStyle[14].top)
+  x30Start = parseInt(aStyle[15].left)
+  y30Start = parseInt(aStyle[15].top)
+  x31Start = parseInt(aStyle[16].left)
+  y31Start = parseInt(aStyle[16].top)
+  x32Start = parseInt(aStyle[17].left)
+  y32Start = parseInt(aStyle[17].top)
+  x33Start = parseInt(aStyle[18].left)
+  y33Start = parseInt(aStyle[18].top)
+  x34Start = parseInt(aStyle[19].left)
+  y34Start = parseInt(aStyle[19].top)
+  x40Start = parseInt(aStyle[20].left)
+  y40Start = parseInt(aStyle[20].top)
+  x41Start = parseInt(aStyle[21].left)
+  y41Start = parseInt(aStyle[21].top)
+  x42Start = parseInt(aStyle[22].left)
+  y42Start = parseInt(aStyle[22].top)
+  x43Start = parseInt(aStyle[23].left)
+  y43Start = parseInt(aStyle[23].top)
+  x44Start = parseInt(aStyle[24].left)
+  y44Start = parseInt(aStyle[24].top)
 } 
 
 
@@ -1333,76 +1333,74 @@ function mapmousemove(e) {
     return false;
     }
 
-    
+    e = getPosition(e)
+    curX = e.x - startX
+    curY = e.y - startY
 
-    var s
-    curX = getPosition(e).x - startX
-    curY = getPosition(e).y - startY
-
-    var curCenterX = parseInt(centerPixX)  - curX
-    var curCenterY = parseInt(centerPixY)  - curY
+    var curCenterX = centerPixX  - curX
+    var curCenterY = centerPixY  - curY
     var maxX = (mapWidth*scaleFactor[zoomLevel])-315
     var maxY = (mapHeight*scaleFactor[zoomLevel])-315
 
     if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
     {
-    aStyle[0].left = parseInt(x00Start + curX) + "px"
-    aStyle[1].left = parseInt(x01Start + curX) + "px"
-    aStyle[2].left = parseInt(x02Start + curX) + "px"
-    aStyle[3].left = parseInt(x03Start + curX) + "px"
-    aStyle[4].left = parseInt(x04Start + curX) + "px"
-    aStyle[5].left = parseInt(x10Start + curX) + "px"
-    aStyle[6].left = parseInt(x11Start + curX) + "px"
-    aStyle[7].left = parseInt(x12Start + curX) + "px"
-    aStyle[8].left = parseInt(x13Start + curX) + "px"
-    aStyle[9].left = parseInt(x14Start + curX) + "px"
-    aStyle[10].left = parseInt(x20Start + curX) + "px"
-    aStyle[11].left = parseInt(x21Start + curX) + "px"
-    aStyle[12].left = parseInt(x22Start + curX) + "px"
+    aStyle[0].left = (x00Start + curX) + "px"
+    aStyle[1].left = (x01Start + curX) + "px"
+    aStyle[2].left = (x02Start + curX) + "px"
+    aStyle[3].left = (x03Start + curX) + "px"
+    aStyle[4].left = (x04Start + curX) + "px"
+    aStyle[5].left = (x10Start + curX) + "px"
+    aStyle[6].left = (x11Start + curX) + "px"
+    aStyle[7].left = (x12Start + curX) + "px"
+    aStyle[8].left = (x13Start + curX) + "px"
+    aStyle[9].left = (x14Start + curX) + "px"
+    aStyle[10].left = (x20Start + curX) + "px"
+    aStyle[11].left = (x21Start + curX) + "px"
+    aStyle[12].left = (x22Start + curX) + "px"
 
-    aStyle[13].left = parseInt(x23Start + curX) + "px"
-    aStyle[14].left = parseInt(x24Start + curX) + "px"
-    aStyle[15].left = parseInt(x30Start + curX) + "px"
-    aStyle[16].left = parseInt(x31Start + curX) + "px"
-    aStyle[17].left = parseInt(x32Start + curX) + "px"
-    aStyle[18].left = parseInt(x33Start + curX) + "px"
-    aStyle[19].left = parseInt(x34Start + curX) + "px"
-    aStyle[20].left = parseInt(x40Start + curX) + "px"
-    aStyle[21].left = parseInt(x41Start + curX) + "px"
-    aStyle[22].left = parseInt(x42Start + curX) + "px"
-    aStyle[23].left = parseInt(x43Start + curX) + "px"
-    aStyle[24].left = parseInt(x44Start + curX) + "px"
+    aStyle[13].left = (x23Start + curX) + "px"
+    aStyle[14].left = (x24Start + curX) + "px"
+    aStyle[15].left = (x30Start + curX) + "px"
+    aStyle[16].left = (x31Start + curX) + "px"
+    aStyle[17].left = (x32Start + curX) + "px"
+    aStyle[18].left = (x33Start + curX) + "px"
+    aStyle[19].left = (x34Start + curX) + "px"
+    aStyle[20].left = (x40Start + curX) + "px"
+    aStyle[21].left = (x41Start + curX) + "px"
+    aStyle[22].left = (x42Start + curX) + "px"
+    aStyle[23].left = (x43Start + curX) + "px"
+    aStyle[24].left = (x44Start + curX) + "px"
     }
 
 
 
     if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
     {
-    aStyle[0].top = parseInt(y00Start + curY) + "px"
-    aStyle[1].top = parseInt(y01Start + curY) + "px"
-    aStyle[2].top = parseInt(y02Start + curY) + "px"
-    aStyle[3].top = parseInt(y03Start + curY) + "px"
-    aStyle[4].top = parseInt(y04Start + curY) + "px"
-    aStyle[5].top = parseInt(y10Start + curY) + "px"
-    aStyle[6].top = parseInt(y11Start + curY) + "px"
-    aStyle[7].top = parseInt(y12Start + curY) + "px"
-    aStyle[8].top = parseInt(y13Start + curY) + "px"
-    aStyle[9].top = parseInt(y14Start + curY) + "px"
-    aStyle[10].top = parseInt(y20Start + curY) + "px"
-    aStyle[11].top = parseInt(y21Start + curY) + "px"
-    aStyle[12].top = parseInt(y22Start + curY) + "px"
-    aStyle[13].top = parseInt(y23Start + curY) + "px"
-    aStyle[14].top = parseInt(y24Start + curY) + "px"
-    aStyle[15].top = parseInt(y30Start + curY) + "px"
-    aStyle[16].top = parseInt(y31Start + curY) + "px"
-    aStyle[17].top = parseInt(y32Start + curY) + "px"
-    aStyle[18].top = parseInt(y33Start + curY) + "px"
-    aStyle[19].top = parseInt(y34Start + curY) + "px"
-    aStyle[20].top = parseInt(y40Start + curY) + "px"
-    aStyle[21].top = parseInt(y41Start + curY) + "px"
-    aStyle[22].top = parseInt(y42Start + curY) + "px"
-    aStyle[23].top = parseInt(y43Start + curY) + "px"
-    aStyle[24].top = parseInt(y44Start + curY) + "px"
+    aStyle[0].top = (y00Start + curY) + "px"
+    aStyle[1].top = (y01Start + curY) + "px"
+    aStyle[2].top = (y02Start + curY) + "px"
+    aStyle[3].top = (y03Start + curY) + "px"
+    aStyle[4].top = (y04Start + curY) + "px"
+    aStyle[5].top = (y10Start + curY) + "px"
+    aStyle[6].top = (y11Start + curY) + "px"
+    aStyle[7].top = (y12Start + curY) + "px"
+    aStyle[8].top = (y13Start + curY) + "px"
+    aStyle[9].top = (y14Start + curY) + "px"
+    aStyle[10].top = (y20Start + curY) + "px"
+    aStyle[11].top = (y21Start + curY) + "px"
+    aStyle[12].top = (y22Start + curY) + "px"
+    aStyle[13].top = (y23Start + curY) + "px"
+    aStyle[14].top = (y24Start + curY) + "px"
+    aStyle[15].top = (y30Start + curY) + "px"
+    aStyle[16].top = (y31Start + curY) + "px"
+    aStyle[17].top = (y32Start + curY) + "px"
+    aStyle[18].top = (y33Start + curY) + "px"
+    aStyle[19].top = (y34Start + curY) + "px"
+    aStyle[20].top = (y40Start + curY) + "px"
+    aStyle[21].top = (y41Start + curY) + "px"
+    aStyle[22].top = (y42Start + curY) + "px"
+    aStyle[23].top = (y43Start + curY) + "px"
+    aStyle[24].top = (y44Start + curY) + "px"
     }
 
 
