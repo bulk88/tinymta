@@ -832,9 +832,9 @@ function initializeDocumentObjects()
 function mapTouchEnd()
 {
 
-  var currentCenter = getCurrentCenter();
-  centerPixX= currentCenter[0]
-  centerPixY = currentCenter[1]
+  var arr = getCurrentCenter();
+  centerPixX= arr[0]
+  centerPixY = arr[1]
 
  var x
  var y
@@ -844,10 +844,13 @@ function mapTouchEnd()
  {
   styleObj = aStyle[i]
   elem = aElement[i]
+  arr = elem.className.split("_");
+  x = arr[0]*1
+  y = arr[1]*1
   if(parseInt(styleObj.left) > 630)
   {
-  x = (elem.className.split("_")[0]*1)-5
-  y = elem.className.split("_")[1]
+  x = x-5
+  y = y
   elem.className = x + "_" + y
   styleObj.left = (parseInt(styleObj.left)-1280) + "px"
   styleObj.visibility = "hidden"
@@ -855,8 +858,8 @@ function mapTouchEnd()
 
   else if(parseInt(styleObj.left)*(-1) > 256)
   {
-  x = (elem.className.split("_")[0]*1)+5
-  y = elem.className.split("_")[1]
+  x = x+5
+  y = y
   elem.className = x + "_" + y
   styleObj.left = (parseInt(styleObj.left)+1280) + "px"
   styleObj.visibility = "hidden"
@@ -864,8 +867,8 @@ function mapTouchEnd()
 
   if(parseInt(styleObj.top) > 630)
   {
-  x = elem.className.split("_")[0]
-  y = (elem.className.split("_")[1]*1)-5
+  x = x
+  y = y-5
   elem.className = x + "_" + y
   styleObj.top = (parseInt(styleObj.top)-1280) + "px"
   styleObj.visibility = "hidden"
@@ -873,16 +876,16 @@ function mapTouchEnd()
 
   else if(parseInt(styleObj.top)*(-1) > 256)
   {
-  x = elem.className.split("_")[0]
-  y = (elem.className.split("_")[1]*1)+5
+  x = x
+  y = y+5
   elem.className = x + "_" + y
   styleObj.top = (parseInt(styleObj.top)+1280) + "px"
   styleObj.visibility = "hidden"
   }
   if(styleObj.visibility == "hidden")
   {
-   x = elem.className.split("_")[0]
-   y = elem.className.split("_")[1]
+   x = x
+   y = y
 
     elem.src = tilePath + zoomLevel + "_" + x + "_" + y + ".png"
   }
@@ -1441,7 +1444,7 @@ document.getElementById("customAlert").style.display = "none"
 unused 2021 factor out body tag attr
 onmousedown="hideCustomAlert()"
  -->
-<body onload="initializeDocumentObjects(); loadFromQueryString()"
+<body
 style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 <div id="mapApplication"  style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
@@ -1492,6 +1495,8 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 </body>
 <script language="javascript" type="text/javascript">
+initializeDocumentObjects();
+loadFromQueryString();
 parent.neighborhoodMapLoaded = true;
 </script>
 </html>
