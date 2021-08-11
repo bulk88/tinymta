@@ -539,14 +539,16 @@ mapImgDimensions["Q11"] = "1500,1500"
 mapImgDimensions["Q12"] = "1500,1500"
 mapImgDimensions["S1"] = "1500,1500"
 ;
-var panX
-var panY
 
 var showingMap = false
 
 var tilePath
 var initialX
 var initialY
+var mapWidth
+var mapHeight
+var tileDirectory
+var mapDrag = false
 
 function setTilePath(d)
 {
@@ -554,10 +556,6 @@ function setTilePath(d)
     tilePath = "http://web.mta.info/neighborhoodMaps/" + d + "/"
     //tilePath = "http://10.8.86.78/WeekenderVer2/neighborhoodMaps/" + d + "/"
 }
-
-var mapWidth
-var mapHeight
-var tileDirectory
 
 function centerOnStation(staID) {
     //debugger;
@@ -570,9 +568,9 @@ function centerOnStation(staID) {
     else
     {
         var stationLocInfo = stationLoc[staID].split(",")
+        var xCoor = parseInt(stationLocInfo[1])
+        var yCoor = parseInt(stationLocInfo[2])
         tileDirectory = stationLocInfo[0]
-        var xCoor = stationLocInfo[1]
-        var yCoor = stationLocInfo[2]
         
         if (xCoor < 315)
             xCoor = 315;
@@ -614,8 +612,6 @@ function centerOnStation(staID) {
 //old function recenterMap(x,y)
         initialX = xCoor
         initialY = yCoor
-        totalPanX = 0
-        totalPanY = 0
         loadNewMap()
     }
 }
@@ -624,8 +620,6 @@ function recenterMap(x,y)
 {
     initialX = x
     initialY = y
-    totalPanX = 0
-    totalPanY = 0
     loadNewMap() 
 }
 */
@@ -669,15 +663,11 @@ hideImageTiles()
 zoomLevel = 15
 centerPixX = initialX
 centerPixY = initialY
-var xTopPoint, yLeftPoint = 0;
-var statusIcon = '';
 loadMap(0)
 /* 2021 improvement zoom +1 */
 zoom(1)
 }
 
-var initialX
-var initialY
 var centerPixX
 var centerPixY
 var startX
@@ -735,8 +725,10 @@ var y44Start
 
 //set the initial map settings
 var zoomLevel = 16
+/* 2021 factor out
 var defaultCenterX
 var defaultCenterY
+*/
 var maxZoom
 var minZoom
 maxZoom = 16
@@ -775,31 +767,6 @@ zoomOutLeftAdjustment[15] = 0
 zoomOutLeftAdjustment[16] = 0
 zoomOutLeftAdjustment[17] = 0
 
-var a00Style
-var a01Style
-var a02Style
-var a03Style
-var a04Style
-var a10Style
-var a11Style
-var a12Style
-var a13Style
-var a14Style
-var a20Style
-var a21Style
-var a22Style
-var a23Style
-var a24Style
-var a30Style
-var a31Style
-var a32Style
-var a33Style
-var a34Style
-var a40Style
-var a41Style
-var a42Style
-var a43Style
-var a44Style
 var aStyle = new Array()
 var aElement = new Array()
 
@@ -856,24 +823,18 @@ function initializeDocumentObjects()
  aElement[22] = document.getElementById("a42")
  aElement[23] = document.getElementById("a43")
  aElement[24] = document.getElementById("a44")
+ /* 2021 factor out
  centerPixX = defaultCenterX
  centerPixY = defaultCenterY
+ */
 }
 
-
-var totalPanX
-var totalPanY
 function mapTouchEnd()
 {
 
-
-  var currentCenter = getCurrentCenter().split(",");
-  centerPixX= parseInt(currentCenter[0])
-  centerPixY = parseInt(currentCenter[1])
-
-
- var routeMapXMove = 0
- var routeMapYMove = 0
+  var currentCenter = getCurrentCenter();
+  centerPixX= currentCenter[0]
+  centerPixY = currentCenter[1]
 
  var x
  var y
@@ -886,7 +847,6 @@ function mapTouchEnd()
   aElement[i].className = x.toString() + "_" + y.toString()
   aStyle[i].left = (parseInt(aStyle[i].left)-1280) + "px"
   aStyle[i].visibility = "hidden"
-  routeMapXMove = 1
   }
 
   else if(parseInt(aStyle[i].left)*(-1) > 256)
@@ -896,7 +856,6 @@ function mapTouchEnd()
   aElement[i].className = x.toString() + "_" + y.toString()
   aStyle[i].left = (parseInt(aStyle[i].left)+1280) + "px"
   aStyle[i].visibility = "hidden"
-  routeMapXMove = -1
   }
 
   if(parseInt(aStyle[i].top) > 630)
@@ -906,7 +865,6 @@ function mapTouchEnd()
   aElement[i].className = x.toString() + "_" + y.toString()
   aStyle[i].top = (parseInt(aStyle[i].top)-1280) + "px"
   aStyle[i].visibility = "hidden"
-  routeMapYMove = 1
   }
 
   else if(parseInt(aStyle[i].top)*(-1) > 256)
@@ -916,7 +874,6 @@ function mapTouchEnd()
   aElement[i].className = x.toString() + "_" + y.toString()
   aStyle[i].top = (parseInt(aStyle[i].top)+1280) + "px"
   aStyle[i].visibility = "hidden"
-  routeMapYMove = -1
   }
   if(aStyle[i].visibility == "hidden")
   {
@@ -941,11 +898,10 @@ function showImageTiles()
 
 function hideImageTiles()
 {
- for(k=0; k<24; k++)
+ for(var k=0; k<24; k++)
  {
  aStyle[k].visibility = "hidden"
  }
-return false;
 }
 
 function getCurrentCenter()
@@ -953,7 +909,7 @@ function getCurrentCenter()
   var e = document.getElementById("a22");
   var arr  = e.className.split("_");
   var style = e.style;
-  return ((arr[0]*256)+(315-parseInt(style.left)))+ "," + ((arr[1]*256)+(315-parseInt(style.top)))
+  return [(arr[0]*256)+(315-parseInt(style.left)), (arr[1]*256)+(315-parseInt(style.top))];
 }
 
 function zoom(i)
@@ -965,9 +921,9 @@ function zoom(i)
  {
  return false;
  }
-  var currentCenter = getCurrentCenter().split(",");
-  var currentCenterX = parseInt(currentCenter[0])
-  var currentCenterY = parseInt(currentCenter[1])
+  var currentCenter = getCurrentCenter();
+  var currentCenterX = currentCenter[0]
+  var currentCenterY = currentCenter[1]
   var newCenterX
   var newCenterY
  if(i == -1)
@@ -1006,11 +962,7 @@ function zoom(i)
  }
  centerPixX = newCenterX
  centerPixY = newCenterY
- totalPanX = 0
- totalPanY = 0
  loadMap(0)
-    var xTopPoint, yLeftPoint = 0;
-    var statusIcon = '';
 
 
 }
@@ -1127,18 +1079,6 @@ function getCenterTile(pY,pX)
 function loadMap(i)
 {
  hideImageTiles()
- vScroll = 0
- hScroll = 0
- var totalPixelsLat
- var totalPixelsLon
- var offsetLeft
- offsetLeft = getRemainderPix(centerPixX)
- var offsetTop
- offsetTop = getRemainderPix(centerPixY)
- var topShift
- topShift = 128 - offsetTop
- var leftShift
- leftShift = 128 - offsetLeft
  getCenterTile(centerPixY, centerPixX)
  OSMx0 = OSMx - 2
  OSMx1 = OSMx - 1
@@ -1150,7 +1090,7 @@ function loadMap(i)
  OSMy2 = OSMy
  OSMy3 = OSMy + 1
  OSMy4 = OSMy + 2
- resetTileCells(topShift,leftShift)
+ resetTileCells(128 - getRemainderPix(centerPixY), 128 - getRemainderPix(centerPixX))
 }
 
 function resetTileCells(topShift,leftShift)
@@ -1191,31 +1131,31 @@ function resetTileCells(topShift,leftShift)
      nameY[4] = y + 3
  }*/
  
- aElement[0].className = nameX[0].toString() + "_" + nameY[0].toString()
- aElement[1].className = nameX[1].toString() + "_" + nameY[0].toString() 
- aElement[2].className = nameX[2].toString() + "_" + nameY[0].toString()
- aElement[3].className = nameX[3].toString() + "_" + nameY[0].toString() 
- aElement[4].className = nameX[4].toString() + "_" + nameY[0].toString()
- aElement[5].className = nameX[0].toString() + "_" + nameY[1].toString() 
- aElement[6].className = nameX[1].toString() + "_" + nameY[1].toString() 
- aElement[7].className = nameX[2].toString() + "_" + nameY[1].toString()
- aElement[8].className = nameX[3].toString() + "_" + nameY[1].toString() 
- aElement[9].className = nameX[4].toString() + "_" + nameY[1].toString()
- aElement[10].className = nameX[0].toString() + "_" + nameY[2].toString()  
- aElement[11].className = nameX[1].toString() + "_" + nameY[2].toString() 
- aElement[12].className = nameX[2].toString() + "_" + nameY[2].toString()
- aElement[13].className = nameX[3].toString() + "_" + nameY[2].toString() 
- aElement[14].className = nameX[4].toString() + "_" + nameY[2].toString() 
- aElement[15].className = nameX[0].toString() + "_" + nameY[3].toString()  
- aElement[16].className = nameX[1].toString() + "_" + nameY[3].toString() 
- aElement[17].className = nameX[2].toString() + "_" + nameY[3].toString()
- aElement[18].className = nameX[3].toString() + "_" + nameY[3].toString() 
- aElement[19].className = nameX[4].toString() + "_" + nameY[3].toString() 
- aElement[20].className = nameX[0].toString() + "_" + nameY[4].toString()  
- aElement[21].className = nameX[1].toString() + "_" + nameY[4].toString() 
- aElement[22].className = nameX[2].toString() + "_" + nameY[4].toString()
- aElement[23].className = nameX[3].toString() + "_" + nameY[4].toString()
- aElement[24].className = nameX[4].toString() + "_" + nameY[4].toString()
+ aElement[0].className = nameX[0] + "_" + nameY[0]
+ aElement[1].className = nameX[1] + "_" + nameY[0]
+ aElement[2].className = nameX[2] + "_" + nameY[0]
+ aElement[3].className = nameX[3] + "_" + nameY[0]
+ aElement[4].className = nameX[4] + "_" + nameY[0]
+ aElement[5].className = nameX[0] + "_" + nameY[1]
+ aElement[6].className = nameX[1] + "_" + nameY[1]
+ aElement[7].className = nameX[2] + "_" + nameY[1]
+ aElement[8].className = nameX[3] + "_" + nameY[1]
+ aElement[9].className = nameX[4] + "_" + nameY[1]
+ aElement[10].className = nameX[0] + "_" + nameY[2]
+ aElement[11].className = nameX[1] + "_" + nameY[2]
+ aElement[12].className = nameX[2] + "_" + nameY[2]
+ aElement[13].className = nameX[3] + "_" + nameY[2]
+ aElement[14].className = nameX[4] + "_" + nameY[2]
+ aElement[15].className = nameX[0] + "_" + nameY[3]
+ aElement[16].className = nameX[1] + "_" + nameY[3]
+ aElement[17].className = nameX[2] + "_" + nameY[3]
+ aElement[18].className = nameX[3] + "_" + nameY[3]
+ aElement[19].className = nameX[4] + "_" + nameY[3]
+ aElement[20].className = nameX[0] + "_" + nameY[4]
+ aElement[21].className = nameX[1] + "_" + nameY[4]
+ aElement[22].className = nameX[2] + "_" + nameY[4]
+ aElement[23].className = nameX[3] + "_" + nameY[4]
+ aElement[24].className = nameX[4] + "_" + nameY[4]
 // alert(nameX[0]);
 // alert(getTileName(nameX[0], nameY[0]));
  TileNameOSM[0] = getTileName(nameX[0],nameY[0])
@@ -1265,10 +1205,9 @@ function resetTileCells(topShift,leftShift)
  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = "187px"
  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = "443px"
  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = "699px"
- var cell
+
  var e0
- var e1
- var e2
+
   for(j=0; j<5; j++)
   {
    for(i=0; i<5; i++)
@@ -1329,11 +1268,11 @@ function getPosition(e) {
     return cursor;
 }
 
-var mapDrag = false
 function mapmousedown(e) {
   mapDrag = true
-  startX = getPosition(e).x
-  startY = getPosition(e).y
+  e = getPosition(e)
+  startX = e.x
+  startY = e.y
   x00Start = parseInt(document.getElementById("a00").style.left)
   y00Start = parseInt(document.getElementById("a00").style.top)
   x01Start = parseInt(document.getElementById("a01").style.left)
