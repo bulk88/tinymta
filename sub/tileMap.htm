@@ -743,6 +743,8 @@ var OSMx0
 var OSMy0
 var aStyle = new Array()
 var aElement = new Array()
+var zoom_in
+var zoom_out
 var zoomOutTopAdjustment = new Array()
 var zoomOutLeftAdjustment = new Array()
 
@@ -795,6 +797,8 @@ function initializeDocumentObjects()
  {
  aStyle[k] = aElement[k].style;
  }
+ zoom_out = document.getElementById("zoom_out")
+ zoom_in = document.getElementById("zoom_in")
  /* 2021 factor out
  centerPixX = defaultCenterX
  centerPixY = defaultCenterY
@@ -893,9 +897,7 @@ function getCurrentCenter()
 
 function zoom(i)
 {
-/* unused 2021 factor out
  hideCustomAlert()
-*/
  if(!showingMap)
  {
  return false;
@@ -919,7 +921,7 @@ function zoom(i)
   else
   {
      //alert("This is the lowest zoom level")
-     //showCustomAlert("This is the lowest zoom level")
+     showCustomAlert("This is the lowest zoom level")
      return false;
   }
  }
@@ -935,7 +937,7 @@ function zoom(i)
  else
  {
   //alert("This is the highest zoom level")
-  //showCustomAlert("This is the highest zoom level")
+  showCustomAlert("This is the highest zoom level")
   return false;
  }
  }
@@ -1224,7 +1226,12 @@ return timeName
 function getPosition(e) {
     e = e || window.event;
     var cursor = {x:0, y:0};
-    if (e.pageX || e.pageY) {
+    if (e.targetTouches) {
+        cursor.x = Math.round(e.targetTouches[0].pageX)
+        cursor.y = Math.round(e.targetTouches[0].pageY)
+        e.preventDefault()
+    }
+    else if (e.pageX || e.pageY) {
         cursor.x = e.pageX;
         cursor.y = e.pageY;
     } 
@@ -1240,6 +1247,8 @@ function getPosition(e) {
 }
 
 function mapmousedown(e) {
+
+  hideCustomAlert()
   mapDrag = true
   e = getPosition(e)
   startX = e.x
@@ -1389,7 +1398,6 @@ document.getElementById("mapCover").style.display = "none"
 showingMap = true
 }
 
-/* unused 2021 factor out
 var alertTimer
 function showCustomAlert(text)
 {
@@ -1397,41 +1405,41 @@ var element = document.getElementById("customAlert");
 element.innerHTML = text
 element.style.display = "inline"
 clearTimeout(alertTimer)
-alertTimer = setTimeout("hideCustomAlert()",3000)
+alertTimer = setTimeout(hideCustomAlert,3000)
 }
 
 function hideCustomAlert()
 {
+clearTimeout(alertTimer)
 document.getElementById("customAlert").style.display = "none"
 }
 
-*/
 function menuImageOver(imgId) {
     if (imgId == 'zoom_out') {
-            document.getElementById(imgId).src = 'zoom_out_over.png';
+            zoom_out.src = 'zoom_out_over.png';
     }
 
     if (imgId == 'zoom_in') {
-            document.getElementById(imgId).src = 'zoom_in_over.png';
+            zoom_in.src = 'zoom_in_over.png';
     }
 }
 function menuImageOut(imgId) {
     if (imgId == 'zoom_out')
     {
-            document.getElementById(imgId).src = 'zoom_out.png';
+            zoom_out.src = 'zoom_out.png';
     }
 
     if (imgId == 'zoom_in') {
-            document.getElementById(imgId).src = 'zoom_in.png';
+            zoom_in.src = 'zoom_in.png';
     }
 }
 </script>
 
 <!--
 unused 2021 factor out body tag attr
-onmousedown="hideCustomAlert()"
+
  -->
-<body
+<body onmousedown="hideCustomAlert()"
 style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 <div id="mapApplication"  style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
@@ -1471,14 +1479,14 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 
 
- <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()"><div></div></div>
+ <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()" ontouchstart="mapmousedown(event)" ontouchmove="mapmousemove(event)" ontouchend="mapmouseup()" ontouchcancel="mapmouseup()"><div></div></div>
  <div id="mapCover" style="position:absolute; top:0px; left:0px; width:630px; height:630px; background-color:black; color:white; font-weight:bold; font-size:24px; text-align:center;"><br /><br /><br /><br /></div>
  <img name="zoom_out" id="zoom_out" src="zoom_out.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; width:4%" border="0" alt="" onmouseover="menuImageOver(&#39;zoom_out&#39;)" onmouseout="menuImageOut(&#39;zoom_out&#39;)" onclick="zoom(-1)">
  <img name="zoom_in" id="zoom_in" src="zoom_in.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; width:4%" border="0" alt="" onmouseover="menuImageOver(&#39;zoom_in&#39;)" onmouseout="menuImageOut(&#39;zoom_in&#39;)" onclick="zoom(1)">
 
-<!--  <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+<div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
  This is the highest zoom level
- </div> -->
+ </div>
 </div>
 
 
