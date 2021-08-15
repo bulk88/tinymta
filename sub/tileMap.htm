@@ -489,51 +489,51 @@ var stationLoc = [
 ];
 
 // Neighborhood Map Dimensions
-var mapImgDimensions = new Array()
-mapImgDimensions["Manhattan"] = "5000,17408"
-mapImgDimensions["B1"] = "1500,1500"
-mapImgDimensions["B2"] = "1500,1500"
-mapImgDimensions["B3"] = "1500,1500"
-mapImgDimensions["B4"] = "1500,1500"
-mapImgDimensions["B5"] = "1500,1500"
-mapImgDimensions["B6"] = "1500,1500"
-mapImgDimensions["B7"] = "1500,1500"
-mapImgDimensions["B8"] = "1500,1500"
-mapImgDimensions["B9"] = "1500,1500"
-mapImgDimensions["B10"] = "1500,1500"
-mapImgDimensions["B11"] = "1500,1500"
-mapImgDimensions["B12"] = "1500,1500"
-mapImgDimensions["B14"] = "1500,1500"
-mapImgDimensions["B15"] = "1500,1500"
-mapImgDimensions["B16"] = "1500,1500"
-mapImgDimensions["B17"] = "1500,1500"
-mapImgDimensions["B18"] = "1500,1500"
-mapImgDimensions["B19"] = "1500,1500"
-mapImgDimensions["B20a"] = "1500,1500"
-mapImgDimensions["BX1"] = "1500,1500"
-mapImgDimensions["BX2"] = "1500,1500"
-mapImgDimensions["BX3"] = "1500,1500"
-mapImgDimensions["BX4"] = "1500,1500"
-mapImgDimensions["BX5"] = "1500,1500"
-mapImgDimensions["BX6"] = "1500,1500"
-mapImgDimensions["BX7"] = "1500,1500"
-mapImgDimensions["BX8"] = "1500,1500"
-mapImgDimensions["BX9"] = "1500,1500"
-mapImgDimensions["BX10"] = "1500,1500"
-mapImgDimensions["Q1"] = "1500,1500"
-mapImgDimensions["Q2"] = "1500,1500"
-mapImgDimensions["Q3"] = "1500,1500"
-mapImgDimensions["Q4"] = "1500,1500"
-mapImgDimensions["Q5"] = "1500,1500"
-mapImgDimensions["Q6"] = "1500,1500"
-mapImgDimensions["Q7"] = "1500,1500"
-mapImgDimensions["Q8"] = "1500,1500"
-mapImgDimensions["Q9"] = "1500,1500"
-mapImgDimensions["Q10"] = "1500,1500"
-mapImgDimensions["Q11"] = "1500,1500"
-mapImgDimensions["Q12"] = "1500,1500"
-mapImgDimensions["S1"] = "1500,1500"
-;
+var mapImgDimensions = {
+Manhattan: "5000,17408",
+B1: "1500,1500",
+B2: "1500,1500",
+B3: "1500,1500",
+B4: "1500,1500",
+B5: "1500,1500",
+B6: "1500,1500",
+B7: "1500,1500",
+B8: "1500,1500",
+B9: "1500,1500",
+B10: "1500,1500",
+B11: "1500,1500",
+B12: "1500,1500",
+B14: "1500,1500",
+B15: "1500,1500",
+B16: "1500,1500",
+B17: "1500,1500",
+B18: "1500,1500",
+B19: "1500,1500",
+B20a: "1500,1500",
+BX1: "1500,1500",
+BX2: "1500,1500",
+BX3: "1500,1500",
+BX4: "1500,1500",
+BX5: "1500,1500",
+BX6: "1500,1500",
+BX7: "1500,1500",
+BX8: "1500,1500",
+BX9: "1500,1500",
+BX10: "1500,1500",
+Q1: "1500,1500",
+Q2: "1500,1500",
+Q3: "1500,1500",
+Q4: "1500,1500",
+Q5: "1500,1500",
+Q6: "1500,1500",
+Q7: "1500,1500",
+Q8: "1500,1500",
+Q9: "1500,1500",
+Q10: "1500,1500",
+Q11: "1500,1500",
+Q12: "1500,1500",
+S1: "1500,1500"
+};
 
 var showingMap = false
 
@@ -637,18 +637,6 @@ function querySt(ji) {
   }
   // browser cache friendly argument
   return window.location.hash.substring(1);
-}
-
-function loadFromQueryString() {
-var urlArg = querySt("staID");
-if(urlArg == "" || urlArg == undefined)
-{
-return false;
-}
-else
-{
-centerOnStation(urlArg)
-}
 }
 
 
@@ -766,45 +754,6 @@ zoomOutLeftAdjustment[14] = 0
 zoomOutLeftAdjustment[15] = 0
 zoomOutLeftAdjustment[16] = 0
 zoomOutLeftAdjustment[17] = 0
-
-function initializeDocumentObjects()
-{
- aElement[0] = document.getElementById("a00")
- aElement[1] = document.getElementById("a01")
- aElement[2] = document.getElementById("a02")
- aElement[3] = document.getElementById("a03")
- aElement[4] = document.getElementById("a04")
- aElement[5] = document.getElementById("a10")
- aElement[6] = document.getElementById("a11")
- aElement[7] = document.getElementById("a12")
- aElement[8] = document.getElementById("a13")
- aElement[9] = document.getElementById("a14")
- aElement[10] = document.getElementById("a20")
- aElement[11] = document.getElementById("a21")
- aElement[12] = document.getElementById("a22")
- aElement[13] = document.getElementById("a23")
- aElement[14] = document.getElementById("a24")
- aElement[15] = document.getElementById("a30")
- aElement[16] = document.getElementById("a31")
- aElement[17] = document.getElementById("a32")
- aElement[18] = document.getElementById("a33")
- aElement[19] = document.getElementById("a34")
- aElement[20] = document.getElementById("a40")
- aElement[21] = document.getElementById("a41")
- aElement[22] = document.getElementById("a42")
- aElement[23] = document.getElementById("a43")
- aElement[24] = document.getElementById("a44")
- for(var k=0; k<25; k++)
- {
- aStyle[k] = aElement[k].style;
- }
- zoom_out = document.getElementById("zoom_out")
- zoom_in = document.getElementById("zoom_in")
- /* 2021 factor out
- centerPixX = defaultCenterX
- centerPixY = defaultCenterY
- */
-}
 
 function mapTouchEnd()
 {
@@ -1493,8 +1442,49 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 </body>
 <script language="javascript" type="text/javascript">
-initializeDocumentObjects();
-loadFromQueryString();
+//OLD function initializeDocumentObjects() {
+ aElement[0] = document.getElementById("a00")
+ aElement[1] = document.getElementById("a01")
+ aElement[2] = document.getElementById("a02")
+ aElement[3] = document.getElementById("a03")
+ aElement[4] = document.getElementById("a04")
+ aElement[5] = document.getElementById("a10")
+ aElement[6] = document.getElementById("a11")
+ aElement[7] = document.getElementById("a12")
+ aElement[8] = document.getElementById("a13")
+ aElement[9] = document.getElementById("a14")
+ aElement[10] = document.getElementById("a20")
+ aElement[11] = document.getElementById("a21")
+ aElement[12] = document.getElementById("a22")
+ aElement[13] = document.getElementById("a23")
+ aElement[14] = document.getElementById("a24")
+ aElement[15] = document.getElementById("a30")
+ aElement[16] = document.getElementById("a31")
+ aElement[17] = document.getElementById("a32")
+ aElement[18] = document.getElementById("a33")
+ aElement[19] = document.getElementById("a34")
+ aElement[20] = document.getElementById("a40")
+ aElement[21] = document.getElementById("a41")
+ aElement[22] = document.getElementById("a42")
+ aElement[23] = document.getElementById("a43")
+ aElement[24] = document.getElementById("a44")
+ for(var k=0; k<25; k++)
+ {
+ aStyle[k] = aElement[k].style;
+ }
+ zoom_out = document.getElementById("zoom_out")
+ zoom_in = document.getElementById("zoom_in")
+ /* 2021 factor out
+ centerPixX = defaultCenterX
+ centerPixY = defaultCenterY
+ */
+//END initializeDocumentObjects
+
+//OLD function loadFromQueryString() {
+var urlArg = querySt("staID");
+if(!(urlArg == "" || urlArg == undefined))
+centerOnStation(urlArg);
+
 parent.neighborhoodMapLoaded = true;
 </script>
 </html>
