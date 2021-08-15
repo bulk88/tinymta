@@ -1034,23 +1034,18 @@ function resetTileCells(topShift,leftShift)
  var newCenterTileSrc
  var x = OSMx2*1
  var y = OSMy2*1
- var nameX = new Array()
- var nameY = new Array()
+ var nameX = [x-2, x-1, x, x+1, x+2]
+ var nameY = [y-2, y-1, y, y+1, y+2]
  
- nameX[0] = x-2
- nameX[1] = x-1
- nameX[2] = x
- nameX[3] = x+1
- nameX[4] = x + 2
 
  //if (tileDirectory != "Manhattan") {
- 
+ /*
  nameY[0] = y - 2
  nameY[1] = y - 1
  nameY[2] = y
  nameY[3] = y + 1
  nameY[4] = y + 2
- 
+ */
  //}
  /*else {
      nameY[0] = y - 1

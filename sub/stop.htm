@@ -93,12 +93,13 @@ function minsAway(t) {
 
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h,i,route,trip,o = {};
+    var h,i,route,trip,alerts,o = {};
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     r = eval('0,'+r);
 if (r.length) {
     //initial array I think is for non subway modes (walking), query blocked out server side
     r = r[0];
+    alerts = r.alerts;
     //server returns sorted by route, we want sort by dir
     for (i in r.groups) {
         route = r.groups[i];
@@ -174,11 +175,19 @@ if (r.length) {
 OTP overflow bug on "service day", scheduledDeparture is seconds
 since midnight of yesterday, realtimeDeparture is seconds since
 midnight of today, happens right after 1200AM */
-                + ((r=((((r = trip.departureDelay) < -43200
- ? r +86400 : r )/60)|0)) ? (r > 0 ? '-L' : '-E')+Math.abs(r): '') +"<br>";
+                + ((trip=((((trip = trip.departureDelay) < -43200
+ ? trip +86400 : trip )/60)|0)) ? (trip > 0 ? '-L' : '-E')+Math.abs(trip): '') +"<br>";
         }
     }
-    h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)';
+    h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)<br><br>';
+    r = r.alerts;
+    for (i in r) {
+    trip = r[i];
+    if(trip.alertType) { //skip elevators, elevators are missing alertType field
+      h += trip.alertType+"<br>"+trip.alertDescriptionText+"<br>";
+    }
+    }
+    //debugger;
 } else
     h = "station not found";
 
