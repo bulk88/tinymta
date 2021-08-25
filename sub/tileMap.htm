@@ -553,13 +553,6 @@ scaleFactor[14] = .5
 scaleFactor[15] = 1
 scaleFactor[16] = 2
 
-function setTilePath(d)
-{
-    //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
-    tilePath = "http://web.mta.info/neighborhoodMaps/" + d + "/"
-    //tilePath = "http://10.8.86.78/WeekenderVer2/neighborhoodMaps/" + d + "/"
-}
-
 function centerOnStation(staID) {
     if (!stationLoc[staID])
     {
@@ -610,7 +603,12 @@ function centerOnStation(staID) {
 // prev var mapArgs = mapImgDimensions[tileDirectory].split(",")
         mapWidth = tileDirectory == "Manhattan" ? 5000 : 1500
         mapHeight = tileDirectory == "Manhattan" ? 17408 : 1500
-        setTilePath(tileDirectory)
+//function setTilePath(d)
+//{
+    //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
+    tilePath = "http://web.mta.info/neighborhoodMaps/" + tileDirectory + "/"
+    //tilePath = "http://10.8.86.78/WeekenderVer2/neighborhoodMaps/" + d + "/"
+//}
 //old function recenterMap(x,y)
         initialX = xCoor
         initialY = yCoor
@@ -649,7 +647,7 @@ hideImageTiles()
 zoomLevel = 15
 centerPixX = initialX
 centerPixY = initialY
-loadMap(0)
+loadMap()
 /* 2021 improvement zoom +1 */
 zoom(1)
 }
@@ -895,7 +893,7 @@ function zoom(i)
  }
  centerPixX = newCenterX
  centerPixY = newCenterY
- loadMap(0)
+ loadMap()
 
 
 }
@@ -1007,7 +1005,7 @@ function getCenterTile(pY,pX)
 }
 
 
-function loadMap(i)
+function loadMap()
 {
  hideImageTiles()
  getCenterTile(centerPixY, centerPixX)
@@ -1026,14 +1024,11 @@ function loadMap(i)
 
 function resetTileCells(topShift,leftShift)
 {
-
- var i
- var j
  var k
 
  var TileNameOSM = new Array()
  var oldCenterTileSrc
- var newCenterTileSrc
+ //var newCenterTileSrc //redundants
  var x = OSMx2*1
  var y = OSMy2*1
  var nameX = [x-2, x-1, x, x+1, x+2]
@@ -1139,8 +1134,8 @@ function resetTileCells(topShift,leftShift)
  }
  
  //old 12 == document.getElementById("a22")
- newCenterTileSrc = aElement[12].src
- if(oldCenterTileSrc.toLowerCase() == newCenterTileSrc.toLowerCase())
+ //newCenterTileSrc = aElement[12].src
+ if(oldCenterTileSrc.toLowerCase() == aElement[12].src.toLowerCase())
  {
 //old function showImageTiles()
     for(k=0; k<25; k++)
