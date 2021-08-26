@@ -32,6 +32,7 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 
 ../docs/tileMap.htm : tileMap.htm ../minify_config.json
 	copy /y tileMap.htm "$@"
+	perl adj_tilepath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
 ../docs/mapTileBackground.gif : $(@F)
