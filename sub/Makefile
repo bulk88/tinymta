@@ -35,7 +35,7 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	perl adj_tilepath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-../docs/mapTileBackground.gif : $(@F)
+../docs/mapTileBackground.png : $(@F)
 	copy /y $(@F) "$@"
 
 ../docs/transparentTile.gif : $(@F)
@@ -113,6 +113,6 @@ mini:
 all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm ../docs/gstp.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
-all: ../docs/tileMap.htm ../docs/mapTileBackground.gif
+all: ../docs/tileMap.htm ../docs/mapTileBackground.png
 all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
 all: ../docs/zoom_out.png ../docs/zoom_out_over.png
