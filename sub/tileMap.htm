@@ -610,8 +610,6 @@ var defaultCenterX
 var defaultCenterY
 */
 
-var OSMx
-var OSMy
 var aStyle = new Array()
 var aElement = new Array()
 var zoomOutTopAdjustment = [0, 0]
@@ -682,22 +680,6 @@ function recenterMap(x,y)
     loadNewMap() 
 }
 */
-
-function querySt(ji) {
-  var gy = window.location.search;
-  if (gy) {
-    gy = gy.substring(1).split("&");
-    for (var i = 0; i < gy.length; i++) {
-      var ft = gy[i].split("=");
-      if (ft[0] == ji) {
-        return ft[1];
-      }
-    }
-  }
-  // browser cache friendly argument
-  return window.location.hash.substring(1);
-}
-
 
 function loadNewMap()
 {
@@ -945,39 +927,23 @@ function loadMap()
 //function getCenterTile(pY,pX)
 //{
  // old name numberOfRow
- OSMy = getNumberOfTiles(centerPixY)
+ var nameX = getNumberOfTiles(centerPixX)
  //old name numberOfColumns
- OSMx = getNumberOfTiles(centerPixX)
+ var nameY = getNumberOfTiles(centerPixY)
 //}
- resetTileCells(128 - getRemainderPix(centerPixY), 128 - getRemainderPix(centerPixX))
-}
+ //resetTileCells(128 - getRemainderPix(centerPixY), 128 - getRemainderPix(centerPixX))
+//}
+  var topShift = 128 - getRemainderPix(centerPixY)
+  var leftShift = 128 - getRemainderPix(centerPixX)
 
-function resetTileCells(topShift,leftShift)
-{
+//function resetTileCells(topShift,leftShift)
+//{
  var k
  var oldCenterTileSrc
  //var newCenterTileSrc //redundants
 
- var nameX = [OSMx-2, OSMx-1, OSMx, OSMx+1, OSMx+2]
- var nameY = [OSMy-2, OSMy-1, OSMy, OSMy+1, OSMy+2]
- 
-
- //if (tileDirectory != "Manhattan") {
- /*
- nameY[0] = y - 2
- nameY[1] = y - 1
- nameY[2] = y
- nameY[3] = y + 1
- nameY[4] = y + 2
- */
- //}
- /*else {
-     nameY[0] = y - 1
-     nameY[1] = y
-     nameY[2] = y + 1
-     nameY[3] = y + 2
-     nameY[4] = y + 3
- }*/
+ nameX = [nameX-2, nameX-1, nameX, nameX+1, nameX+2]
+ nameY = [nameY-2, nameY-1, nameY, nameY+1, nameY+2]
 
  aElement[0].className = nameX[0] + "_" + nameY[0]
  aElement[1].className = nameX[1] + "_" + nameY[0]
@@ -1295,6 +1261,7 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 
 </body>
 <script language="javascript" type="text/javascript">
+(function(){
 //OLD function initializeDocumentObjects() {
  aElement[0] = document.getElementById("a00")
  aElement[1] = document.getElementById("a01")
@@ -1321,9 +1288,10 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
  aElement[22] = document.getElementById("a42")
  aElement[23] = document.getElementById("a43")
  aElement[24] = document.getElementById("a44")
- for(var k_urlArg=0; k_urlArg<25; k_urlArg++)
+ var gy, fy, i, k_urlArg;
+ for(i=0; i<25; i++)
  {
- aStyle[k_urlArg] = aElement[k_urlArg].style;
+ aStyle[i] = aElement[i].style;
  }
 
  /* 2021 factor out
@@ -1333,10 +1301,24 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 //END initializeDocumentObjects
 
 //OLD function loadFromQueryString() {
-k_urlArg = querySt("staID");
+  // browser cache friendly hash argument
+  if(! (k_urlArg = window.location.hash.substring(1))) {
+    if (gy = window.location.search) {
+      gy = gy.substring(1).split("&");
+      for (i = 0; i < gy.length; i++) {
+        ft = gy[i].split("=");
+        if (ft[0] == "staID") {
+          k_urlArg = ft[1];
+          break;
+        }
+      }
+    }
+  }
+
 if(!(k_urlArg == "" || k_urlArg == undefined))
 centerOnStation(k_urlArg);
 
 parent.neighborhoodMapLoaded = true;
+})();
 </script>
 </html>
