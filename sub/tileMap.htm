@@ -609,10 +609,6 @@ var zoomLevel = 1
 var defaultCenterX
 var defaultCenterY
 */
-var maxZoom
-var minZoom
-maxZoom = 1
-minZoom = 0
 
 var OSMx
 var OSMy
@@ -810,7 +806,7 @@ function zoom(i)
   var newCenterY
  if(i == -1)
  {
- if(zoomLevel > minZoom)
+ if(zoomLevel > 0 /* minZoom */)
  {
   hideImageTiles()
   zoomLevel = zoomLevel - 1
@@ -826,7 +822,7 @@ function zoom(i)
  }
  if(i == 1)
  {
- if(zoomLevel < maxZoom)
+ if(zoomLevel < 1 /* maxZoom */)
  {
   hideImageTiles()
   zoomLevel = zoomLevel + 1
