@@ -546,7 +546,7 @@ var mapHeight
 var tileDirectory
 var mapDrag = false
 
-var scaleFactor = {15: 1, 16: 2}
+var scaleFactor = [1, 2]
 
 var centerPixX
 var centerPixY
@@ -604,22 +604,22 @@ var x44Start
 var y44Start
 
 //set the initial map settings
-var zoomLevel = 16
+var zoomLevel = 1
 /* 2021 factor out
 var defaultCenterX
 var defaultCenterY
 */
 var maxZoom
 var minZoom
-maxZoom = 16
-minZoom = 15
+maxZoom = 1
+minZoom = 0
 
 var OSMx
 var OSMy
 var aStyle = new Array()
 var aElement = new Array()
-var zoomOutTopAdjustment = {15: 0, 16: 0}
-var zoomOutLeftAdjustment = {15: 0, 16: 0}
+var zoomOutTopAdjustment = [0, 0]
+var zoomOutLeftAdjustment = [0, 0]
 
 function centerOnStation(stationLocInfo) {
     if(stationLocInfo = stationLoc[stationLocInfo]) {
@@ -632,7 +632,7 @@ function centerOnStation(stationLocInfo) {
         if (yCoor < 315)
             yCoor = 315;
             
-        if (zoomLevel == 15) {
+        if (zoomLevel == 0) {
             if (tileDirectory != "Manhattan") {
                 if (xCoor > 1185)
                     xCoor = 1185;
@@ -646,7 +646,7 @@ function centerOnStation(stationLocInfo) {
                     yCoor = 17093;
             }
         }
-        if (zoomLevel == 16) {
+        if (zoomLevel == 1) {
             if (tileDirectory != "Manhattan") {
                 if (xCoor > 2685)
                     xCoor = 2685;
@@ -768,7 +768,7 @@ function mapmouseup()
   }
   if(styleObj.visibility == "hidden")
   {
-    elem.src = tilePath + zoomLevel + "_" + x + "_" + y + ".png"
+    elem.src = tilePath + (zoomLevel+15) + "_" + x + "_" + y + ".png"
   }
  }
 
@@ -1013,7 +1013,7 @@ function resetTileCells(topShift,leftShift)
  oldCenterTileSrc = aElement[12].src
  for(k=0; k<25; k++)
  {
-  aElement[k].src = tilePath +  zoomLevel + "_" + aElement[k].className + ".png"
+  aElement[k].src = tilePath + (zoomLevel+15) + "_" + aElement[k].className + ".png"
  }
 
  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px"
@@ -1054,14 +1054,6 @@ function showImage(e)
 {
 e.style.visibility = "visible"
 }
-
-function  getTileName(x,y)
-{
-var timeName
-timeName = zoomLevel + "_" + x + "_" + y
-return timeName
-}
-
 
 function getPosition(e) {
     e = e || window.event;
