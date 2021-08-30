@@ -27,6 +27,7 @@ my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;
 my %rtdispname = getRouteDisplayNames('route_id');
+my @chkarr;
 
 open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
         || die "$0: can't open stations.htm for writing: $!";
@@ -88,6 +89,7 @@ $linestopshtml[@linestopshtml - 1] = substr($linestopshtml[@linestopshtml - 1],0
 #and mtasubwaytime.info domains but they are different IPs
 sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+    $chkarr[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]] ] = 1;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
@@ -132,3 +134,10 @@ sub getRouteDisplayNames {
         die "unknown route display name type"
     }
 }
+
+for(my $i=0; $i< $#chkarr; $i++){
+  if($chkarr[$i] != 1) {
+    warn "unused nmap coord $i\n";
+  }
+}
+#warn Dumper(\@chkarr);

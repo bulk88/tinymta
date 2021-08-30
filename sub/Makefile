@@ -78,8 +78,9 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 nmap_stations.json: nmap_gen1.js
 	node nmap_gen1.js
 
-nmapnidsdata.pl: nmap_gen2.pl nmap_stations.json
-	perl nmap_gen2.pl
+#this is hand edited now
+#nmapnidsdata.pl: nmap_gen2.pl nmap_stations.json
+#	perl nmap_gen2.pl
 
 grmp.pl : ../minify_config.json
 

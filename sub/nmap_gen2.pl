@@ -45,6 +45,8 @@ my %exp_sta = (
 '168 St - Washington Hts' => "168 St",
 #new station doesnt exist on old map
 'Arthur Kill' => "Nassau",
+#23 E/M, #7 at 33, #7 at 46 were fixed in nmapnidsdata.pl by hand
+#this file can't be used now
 );
 
 foreach(keys %$VAR1) {
