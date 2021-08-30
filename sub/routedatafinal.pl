@@ -5112,38 +5112,17 @@ $VAR1 = {
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.679498',
-                     'lon' => '-73.904512',
-                     'name' => 'Broadway Jct',
-                     'stop_id' => 'J27'
+                     'lat' => '40.698664',
+                     'lon' => '-73.919711',
+                     'name' => 'Knickerbocker Av',
+                     'stop_id' => 'M09'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.682893',
-                     'lon' => '-73.910456',
-                     'name' => 'Chauncey St',
-                     'stop_id' => 'J28'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.68637',
-                     'lon' => '-73.916559',
-                     'name' => 'Halsey St',
-                     'stop_id' => 'J29'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.68963',
-                     'lon' => '-73.92227',
-                     'name' => 'Gates Av',
-                     'stop_id' => 'J30'
-                   },
-                   {
-                     'borough' => 'Brooklyn',
-                     'lat' => '40.693342',
-                     'lon' => '-73.928814',
-                     'name' => 'Kosciuszko St',
-                     'stop_id' => 'J31'
+                     'lat' => '40.697857',
+                     'lon' => '-73.927397',
+                     'name' => 'Central Av',
+                     'stop_id' => 'M10'
                    },
                    {
                      'borough' => 'Brooklyn',
