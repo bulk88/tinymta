@@ -16,6 +16,7 @@ my $js = $ARGV[0];
 our $VAR1;
 our $phase2nids;
 our $phase3nids;
+our $phase4nids;
 our $nmapIDs;
 do '.\routedatafinal.pl';
 {
@@ -89,12 +90,12 @@ $linestopshtml[@linestopshtml - 1] = substr($linestopshtml[@linestopshtml - 1],0
 #and mtasubwaytime.info domains but they are different IPs
 sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
-    $chkarr[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]] ] = 1;
+    $chkarr[$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]] = 1;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
                 .$stopid
-                .($js?$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]:'')
+                .($js?$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]:'')
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
                 .'">'.$dispname;
 }
