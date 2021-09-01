@@ -872,32 +872,9 @@ function loadMap()
  nameX = [nameX-2, nameX-1, nameX, nameX+1, nameX+2]
  nameY = [nameY-2, nameY-1, nameY, nameY+1, nameY+2]
 
- aElement[0].className = nameX[0] + "_" + nameY[0]
- aElement[1].className = nameX[1] + "_" + nameY[0]
- aElement[2].className = nameX[2] + "_" + nameY[0]
- aElement[3].className = nameX[3] + "_" + nameY[0]
- aElement[4].className = nameX[4] + "_" + nameY[0]
- aElement[5].className = nameX[0] + "_" + nameY[1]
- aElement[6].className = nameX[1] + "_" + nameY[1]
- aElement[7].className = nameX[2] + "_" + nameY[1]
- aElement[8].className = nameX[3] + "_" + nameY[1]
- aElement[9].className = nameX[4] + "_" + nameY[1]
- aElement[10].className = nameX[0] + "_" + nameY[2]
- aElement[11].className = nameX[1] + "_" + nameY[2]
- aElement[12].className = nameX[2] + "_" + nameY[2]
- aElement[13].className = nameX[3] + "_" + nameY[2]
- aElement[14].className = nameX[4] + "_" + nameY[2]
- aElement[15].className = nameX[0] + "_" + nameY[3]
- aElement[16].className = nameX[1] + "_" + nameY[3]
- aElement[17].className = nameX[2] + "_" + nameY[3]
- aElement[18].className = nameX[3] + "_" + nameY[3]
- aElement[19].className = nameX[4] + "_" + nameY[3]
- aElement[20].className = nameX[0] + "_" + nameY[4]
- aElement[21].className = nameX[1] + "_" + nameY[4]
- aElement[22].className = nameX[2] + "_" + nameY[4]
- aElement[23].className = nameX[3] + "_" + nameY[4]
- aElement[24].className = nameX[4] + "_" + nameY[4]
-
+ for(k=0; k<25; k++){
+   aElement[k].className = nameX[k%5] + "_" + nameY[(k/5)|0]
+ }
  //old 12 == document.getElementById("a22")
  oldCenterTileSrc = aElement[12].src
  for(k=0; k<25; k++)
@@ -935,7 +912,7 @@ function loadMap()
 /* unused 2021 factor out
 function initLoad()
 {
-  loadMap(0)
+  loadMap()
 }
 */
 
@@ -972,9 +949,9 @@ function mapmousedown(i /*element really*/) {
   hideCustomAlert()
   mapDrag = true
   startXY = getPosition(i)
-  for(i=0; i < 24; i++)
+  for(i=0; i < 25; i++)
   xDownStart[i] = parseInt(aStyle[i].left);
-  for(i=0; i < 24; i++)
+  for(i=0; i < 25; i++)
   yDownStart[i] = parseInt(aStyle[i].top);
 } 
 
@@ -997,16 +974,15 @@ function mapmousemove(i /*element really*/) {
 
     if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
     {
-      for(i=0; i < 24; i++)
+      for(i=0; i < 25; i++)
         aStyle[i].left = (xDownStart[i] + curX) + "px"
     }
 
     if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
     {
-      for(i=0; i < 24; i++)
+      for(i=0; i < 25; i++)
         aStyle[i].top = (yDownStart[i] + curY) + "px"
     }
-
 
 }
 
@@ -1046,39 +1022,38 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
 <!-- id="mapContainer"  -->
  <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
- <img id="a00" onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a01" onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a02" onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a03" onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a04" onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
- <img id="a10" onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a11" onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a12" onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a13" onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a14" onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
- <img id="a20" onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a21" onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a22" onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a23" onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a24" onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
- <img id="a30" onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a31" onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a32" onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a33" onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a34" onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
- <img id="a40" onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a41" onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a42" onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a43" onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
- <img id="a44" onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 
 
  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()" ontouchstart="mapmousedown(event)" ontouchmove="mapmousemove(event)" ontouchend="mapmouseup()" ontouchcancel="mapmouseup()"><div></div></div>
@@ -1095,35 +1070,12 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 <script language="javascript" type="text/javascript">
 (function(){
 //OLD function initializeDocumentObjects() {
- aElement[0] = document.getElementById("a00")
- aElement[1] = document.getElementById("a01")
- aElement[2] = document.getElementById("a02")
- aElement[3] = document.getElementById("a03")
- aElement[4] = document.getElementById("a04")
- aElement[5] = document.getElementById("a10")
- aElement[6] = document.getElementById("a11")
- aElement[7] = document.getElementById("a12")
- aElement[8] = document.getElementById("a13")
- aElement[9] = document.getElementById("a14")
- aElement[10] = document.getElementById("a20")
- aElement[11] = document.getElementById("a21")
- aElement[12] = document.getElementById("a22")
- aElement[13] = document.getElementById("a23")
- aElement[14] = document.getElementById("a24")
- aElement[15] = document.getElementById("a30")
- aElement[16] = document.getElementById("a31")
- aElement[17] = document.getElementById("a32")
- aElement[18] = document.getElementById("a33")
- aElement[19] = document.getElementById("a34")
- aElement[20] = document.getElementById("a40")
- aElement[21] = document.getElementById("a41")
- aElement[22] = document.getElementById("a42")
- aElement[23] = document.getElementById("a43")
- aElement[24] = document.getElementById("a44")
  var gy, fy, i, k_urlArg;
+ //last 2 image elems in this array are zoom buttons, ignore them
+ k_urlArg = document.getElementsByTagName('img');
  for(i=0; i<25; i++)
  {
- aStyle[i] = aElement[i].style;
+ aStyle[i] = (aElement[i] = k_urlArg[i]).style;
  }
 
  /* 2021 factor out
