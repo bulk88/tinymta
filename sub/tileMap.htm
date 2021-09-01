@@ -526,58 +526,9 @@ var scaleFactor = [1, 2]
 
 var centerPixX
 var centerPixY
-var startX
-var startY
-var x00Start
-var y00Start
-var x01Start
-var y01Start
-var x02Start
-var y02Start
-var x03Start
-var y03Start
-var x04Start
-var y04Start
-var x10Start
-var y10Start
-var x11Start
-var y11Start
-var x12Start
-var y12Start
-var x13Start
-var y13Start
-var x14Start
-var y14Start
-var x20Start
-var y20Start
-var x21Start
-var y21Start
-var x22Start
-var y22Start
-var x23Start
-var y23Start
-var x24Start
-var y24Start
-var x30Start
-var y30Start
-var x31Start
-var y31Start
-var x32Start
-var y32Start
-var x33Start
-var y33Start
-var x34Start
-var y34Start
-var x40Start
-var y40Start
-var x41Start
-var y41Start
-var x42Start
-var y42Start
-var x43Start
-var y43Start
-var x44Start
-var y44Start
+var startXY
+var xDownStart = [];
+var yDownStart = [];
 
 //set the initial map settings
 var zoomLevel = 1
@@ -1016,76 +967,28 @@ function getPosition(e) {
     return cursor;
 }
 
-function mapmousedown(e) {
+function mapmousedown(i /*element really*/) {
 
   hideCustomAlert()
   mapDrag = true
-  e = getPosition(e)
-  startX = e.x
-  startY = e.y
-  x00Start = parseInt(aStyle[0].left)
-  y00Start = parseInt(aStyle[0].top)
-  x01Start = parseInt(aStyle[1].left)
-  y01Start = parseInt(aStyle[1].top)
-  x02Start = parseInt(aStyle[2].left)
-  y02Start = parseInt(aStyle[2].top)
-  x03Start = parseInt(aStyle[3].left)
-  y03Start = parseInt(aStyle[3].top)
-  x04Start = parseInt(aStyle[4].left)
-  y04Start = parseInt(aStyle[4].top)
-  x10Start = parseInt(aStyle[5].left)
-  y10Start = parseInt(aStyle[5].top)
-  x11Start = parseInt(aStyle[6].left)
-  y11Start = parseInt(aStyle[6].top)
-  x12Start = parseInt(aStyle[7].left)
-  y12Start = parseInt(aStyle[7].top)
-  x13Start = parseInt(aStyle[8].left)
-  y13Start = parseInt(aStyle[8].top)
-  x14Start = parseInt(aStyle[9].left)
-  y14Start = parseInt(aStyle[9].top)
-  x20Start = parseInt(aStyle[10].left)
-  y20Start = parseInt(aStyle[10].top)
-  x21Start = parseInt(aStyle[11].left)
-  y21Start = parseInt(aStyle[11].top)
-  x22Start = parseInt(aStyle[12].left)
-  y22Start = parseInt(aStyle[12].top)
-  x23Start = parseInt(aStyle[13].left)
-  y23Start = parseInt(aStyle[13].top)
-  x24Start = parseInt(aStyle[14].left)
-  y24Start = parseInt(aStyle[14].top)
-  x30Start = parseInt(aStyle[15].left)
-  y30Start = parseInt(aStyle[15].top)
-  x31Start = parseInt(aStyle[16].left)
-  y31Start = parseInt(aStyle[16].top)
-  x32Start = parseInt(aStyle[17].left)
-  y32Start = parseInt(aStyle[17].top)
-  x33Start = parseInt(aStyle[18].left)
-  y33Start = parseInt(aStyle[18].top)
-  x34Start = parseInt(aStyle[19].left)
-  y34Start = parseInt(aStyle[19].top)
-  x40Start = parseInt(aStyle[20].left)
-  y40Start = parseInt(aStyle[20].top)
-  x41Start = parseInt(aStyle[21].left)
-  y41Start = parseInt(aStyle[21].top)
-  x42Start = parseInt(aStyle[22].left)
-  y42Start = parseInt(aStyle[22].top)
-  x43Start = parseInt(aStyle[23].left)
-  y43Start = parseInt(aStyle[23].top)
-  x44Start = parseInt(aStyle[24].left)
-  y44Start = parseInt(aStyle[24].top)
+  startXY = getPosition(i)
+  for(i=0; i < 24; i++)
+  xDownStart[i] = parseInt(aStyle[i].left);
+  for(i=0; i < 24; i++)
+  yDownStart[i] = parseInt(aStyle[i].top);
 } 
 
 
 
-function mapmousemove(e) {
+function mapmousemove(i /*element really*/) {
     if(!mapDrag)
     {
     return;
     }
 
-    e = getPosition(e)
-    var curX = e.x - startX
-    var curY = e.y - startY
+    i = getPosition(i)
+    var curX = i.x - startXY.x
+    var curY = i.y - startXY.y
 
     var curCenterX = centerPixX  - curX
     var curCenterY = centerPixY  - curY
@@ -1094,61 +997,14 @@ function mapmousemove(e) {
 
     if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
     {
-    aStyle[0].left = (x00Start + curX) + "px"
-    aStyle[1].left = (x01Start + curX) + "px"
-    aStyle[2].left = (x02Start + curX) + "px"
-    aStyle[3].left = (x03Start + curX) + "px"
-    aStyle[4].left = (x04Start + curX) + "px"
-    aStyle[5].left = (x10Start + curX) + "px"
-    aStyle[6].left = (x11Start + curX) + "px"
-    aStyle[7].left = (x12Start + curX) + "px"
-    aStyle[8].left = (x13Start + curX) + "px"
-    aStyle[9].left = (x14Start + curX) + "px"
-    aStyle[10].left = (x20Start + curX) + "px"
-    aStyle[11].left = (x21Start + curX) + "px"
-    aStyle[12].left = (x22Start + curX) + "px"
-
-    aStyle[13].left = (x23Start + curX) + "px"
-    aStyle[14].left = (x24Start + curX) + "px"
-    aStyle[15].left = (x30Start + curX) + "px"
-    aStyle[16].left = (x31Start + curX) + "px"
-    aStyle[17].left = (x32Start + curX) + "px"
-    aStyle[18].left = (x33Start + curX) + "px"
-    aStyle[19].left = (x34Start + curX) + "px"
-    aStyle[20].left = (x40Start + curX) + "px"
-    aStyle[21].left = (x41Start + curX) + "px"
-    aStyle[22].left = (x42Start + curX) + "px"
-    aStyle[23].left = (x43Start + curX) + "px"
-    aStyle[24].left = (x44Start + curX) + "px"
+      for(i=0; i < 24; i++)
+        aStyle[i].left = (xDownStart[i] + curX) + "px"
     }
 
     if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
     {
-    aStyle[0].top = (y00Start + curY) + "px"
-    aStyle[1].top = (y01Start + curY) + "px"
-    aStyle[2].top = (y02Start + curY) + "px"
-    aStyle[3].top = (y03Start + curY) + "px"
-    aStyle[4].top = (y04Start + curY) + "px"
-    aStyle[5].top = (y10Start + curY) + "px"
-    aStyle[6].top = (y11Start + curY) + "px"
-    aStyle[7].top = (y12Start + curY) + "px"
-    aStyle[8].top = (y13Start + curY) + "px"
-    aStyle[9].top = (y14Start + curY) + "px"
-    aStyle[10].top = (y20Start + curY) + "px"
-    aStyle[11].top = (y21Start + curY) + "px"
-    aStyle[12].top = (y22Start + curY) + "px"
-    aStyle[13].top = (y23Start + curY) + "px"
-    aStyle[14].top = (y24Start + curY) + "px"
-    aStyle[15].top = (y30Start + curY) + "px"
-    aStyle[16].top = (y31Start + curY) + "px"
-    aStyle[17].top = (y32Start + curY) + "px"
-    aStyle[18].top = (y33Start + curY) + "px"
-    aStyle[19].top = (y34Start + curY) + "px"
-    aStyle[20].top = (y40Start + curY) + "px"
-    aStyle[21].top = (y41Start + curY) + "px"
-    aStyle[22].top = (y42Start + curY) + "px"
-    aStyle[23].top = (y43Start + curY) + "px"
-    aStyle[24].top = (y44Start + curY) + "px"
+      for(i=0; i < 24; i++)
+        aStyle[i].top = (yDownStart[i] + curY) + "px"
     }
 
 
