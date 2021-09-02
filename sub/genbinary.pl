@@ -2,6 +2,7 @@
 use File::Slurp 'write_file';
 use POSIX 'ceil';
 use strict;
+use Sort::Naturally;
 my $b34='';
 my $b32='';
 my $dnum=0;
@@ -30,6 +31,11 @@ foreach(@d) {
         $dnum++;
     }
 }
+@jsdirs = nsort(@jsdirs);
+for(my $i=0; $i<@jsdirs; $i++) {
+    $dirtoindex{$jsdirs[$i]} = $i
+}
+
 $shiftx = $minx;
 $shifty = $miny;
 $scaledir = scalar(keys %dirtoindex);
