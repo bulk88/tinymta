@@ -27,7 +27,7 @@ B16: "1500,1500",
 B17: "1500,1500",
 B18: "1500,1500",
 B19: "1500,1500",
-B20a: "1500,1500",
+B13: "1500,1500",
 BX1: "1500,1500",
 BX2: "1500,1500",
 BX3: "1500,1500",
@@ -100,7 +100,7 @@ function centerOnStation(stationLocInfo) {
       0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
     ][ stationLoc.charCodeAt(stationLocInfo+yCoor_i) - 32];
   }
-        tileDirectory = ["B1","B10","B11","B12","B14","B15","B16","B17","B18","B19","B2","B20a","B3","B4","B5","B6","B7","B8","B9","BX1","BX10","BX2","BX3","BX4","BX5","BX6","BX7","BX8","BX9","Manhattan","Q1","Q10","Q11","Q12","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","S1"][xCoor_value % 43 /*scaledir*/]
+        tileDirectory = ["B1","B10","B11","B12","B14","B15","B16","B17","B18","B19","B2","B13","B3","B4","B5","B6","B7","B8","B9","BX1","BX10","BX2","BX3","BX4","BX5","BX6","BX7","BX8","BX9","Manhattan","Q1","Q10","Q11","Q12","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","S1"][xCoor_value % 43 /*scaledir*/]
         yCoor_i = (((xCoor_value/(43 /*scaledir*/ * 3606 /*scalex*/) % 16941 /*scaley*/)|0) + 19) /*shifty*/*zoomLevel
         //VARIABLE REUSE watch X Y order
         xCoor_value = ((xCoor_value/43 /*scaledir*/ % 3606 /*scalex*/) + 69) /*shiftx*/*zoomLevel
