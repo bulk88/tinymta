@@ -100,7 +100,8 @@ function centerOnStation(stationLocInfo) {
       0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
     ][ stationLoc.charCodeAt(stationLocInfo+yCoor_i) - 32];
   }
-        tileDirectory = ["BX1","BX2","BX3","BX4","BX5","BX6","BX7","BX8","BX9","BX10","B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","B11","B12","B13","B14","B15","B16","B17","B18","B19","Manhattan","Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","Q10","Q11","Q12","S1"][xCoor_value % 43 /*scaledir*/]
+        tileDirectory = (xCoor_value % 43 /*scaledir*/) + 1
+        tileDirectory = tileDirectory < 11 ? "BX"+tileDirectory : tileDirectory < 30 ? "B"+(tileDirectory-10) : tileDirectory == 30 ? "Manhattan" : tileDirectory == 43 ? "S1" : "Q"+(tileDirectory-30);
         yCoor_i = (((xCoor_value/(43 /*scaledir*/ * 3606 /*scalex*/) % 16941 /*scaley*/)|0) + 19) /*shifty*/*zoomLevel
         //VARIABLE REUSE watch X Y order
         xCoor_value = ((xCoor_value/43 /*scaledir*/ % 3606 /*scalex*/) + 69) /*shiftx*/*zoomLevel
