@@ -84,62 +84,61 @@ var zoomOutTopAdjustment = [0, 0]
 var zoomOutLeftAdjustment = [0, 0]
 
 function centerOnStation(stationLocInfo) {
-    if((stationLocInfo *= 5) < stationLoc.length) {
-	var value = 0;
-    for (var i = 0; i < 5;i++) {
-		// Accumulate value in base 85
-		value = value * 85 + [
-			0x00, 0x44, 0x00, 0x54, 0x53, 0x52, 0x48, 0x00,
-			0x4B, 0x4C, 0x46, 0x41, 0x00, 0x3F, 0x3E, 0x45,
-			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-			0x08, 0x09, 0x40, 0x00, 0x49, 0x42, 0x4A, 0x47,
-			0x51, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A,
-			0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32,
-			0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A,
-			0x3B, 0x3C, 0x3D, 0x4D, 0x00, 0x4E, 0x43, 0x00,
-			0x00, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10,
-			0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-			0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20,
-			0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
-		][ stationLoc.charCodeAt(stationLocInfo+i) - 32];
-	}
-	var
-     xCoor =   (value/43 /*scaledir*/ % 3606 /*scalex*/) + 69 /*shiftx*/,
-     yCoor =   ((value/(43 /*scaledir*/ * 3606 /*scalex*/) % 16941 /*scaley*/)|0) + 19 /*shifty*/;
-        tileDirectory = ["B1","B10","B11","B12","B14","B15","B16","B17","B18","B19","B2","B20a","B3","B4","B5","B6","B7","B8","B9","BX1","BX10","BX2","BX3","BX4","BX5","BX6","BX7","BX8","BX9","Manhattan","Q1","Q10","Q11","Q12","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","S1"][value % 43 /*scaledir*/]
-        xCoor = xCoor*scaleFactor[zoomLevel]
-        yCoor = yCoor*scaleFactor[zoomLevel]
-        if (xCoor < 315)
-            xCoor = 315;
-        if (yCoor < 315)
-            yCoor = 315;
+  //5 printable bytes holds 1 32 bit station bitfield
+  if((stationLocInfo *= 5) < stationLoc.length) {
+  var xCoor_value = 0;
+    for (var yCoor_i = 0; yCoor_i < 5; yCoor_i++) {
+    // Accumulate value in base 85
+    xCoor_value = xCoor_value * 85 + [
+      0x00, 0x44, 0x00, 0x54, 0x53, 0x52, 0x48, 0x00,
+      0x4B, 0x4C, 0x46, 0x41, 0x00, 0x3F, 0x3E, 0x45,
+      0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+      0x08, 0x09, 0x40, 0x00, 0x49, 0x42, 0x4A, 0x47,
+      0x51, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A,
+      0x2B, 0x2C, 0x2D, 0x2E, 0x2F, 0x30, 0x31, 0x32,
+      0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A,
+      0x3B, 0x3C, 0x3D, 0x4D, 0x00, 0x4E, 0x43, 0x00,
+      0x00, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10,
+      0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+      0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20,
+      0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
+    ][ stationLoc.charCodeAt(stationLocInfo+yCoor_i) - 32];
+  }
+        tileDirectory = ["B1","B10","B11","B12","B14","B15","B16","B17","B18","B19","B2","B20a","B3","B4","B5","B6","B7","B8","B9","BX1","BX10","BX2","BX3","BX4","BX5","BX6","BX7","BX8","BX9","Manhattan","Q1","Q10","Q11","Q12","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","S1"][xCoor_value % 43 /*scaledir*/]
+        yCoor_i = (((xCoor_value/(43 /*scaledir*/ * 3606 /*scalex*/) % 16941 /*scaley*/)|0) + 19) /*shifty*/*scaleFactor[zoomLevel]
+        //VARIABLE REUSE watch X Y order
+        xCoor_value = ((xCoor_value/43 /*scaledir*/ % 3606 /*scalex*/) + 69) /*shiftx*/*scaleFactor[zoomLevel]
+        if (xCoor_value < 315)
+            xCoor_value = 315;
+        if (yCoor_i < 315)
+            yCoor_i = 315;
 
         if (zoomLevel == 0) {
             if (tileDirectory != "Manhattan") {
-                if (xCoor > 1185)
-                    xCoor = 1185;
-                if (yCoor > 1185)
-                    yCoor = 1185;
+                if (xCoor_value > 1185)
+                    xCoor_value = 1185;
+                if (yCoor_i > 1185)
+                    yCoor_i = 1185;
             }
             else {
-                if (xCoor > 4685)
-                    xCoor = 4685;
-                if (yCoor > 17093)
-                    yCoor = 17093;
+                if (xCoor_value > 4685)
+                    xCoor_value = 4685;
+                if (yCoor_i > 17093)
+                    yCoor_i = 17093;
             }
         }
         if (zoomLevel == 1) {
             if (tileDirectory != "Manhattan") {
-                if (xCoor > 2685)
-                    xCoor = 2685;
-                if (yCoor > 2685)
-                    yCoor = 2685;
+                if (xCoor_value > 2685)
+                    xCoor_value = 2685;
+                if (yCoor_i > 2685)
+                    yCoor_i = 2685;
             }
             else {
-                if (xCoor > 9685)
-                    xCoor = 9685;
-                if (yCoor > 34501)
-                    yCoor = 34501;
+                if (xCoor_value > 9685)
+                    xCoor_value = 9685;
+                if (yCoor_i > 34501)
+                    yCoor_i = 34501;
             }
         }
 // prev var mapArgs = mapImgDimensions[tileDirectory].split(",")
@@ -155,8 +154,8 @@ function centerOnStation(stationLocInfo) {
 /*ENDINSERTPATH*/
 //}
 //old function recenterMap(x,y)
-        initialX = xCoor
-        initialY = yCoor
+        initialX = xCoor_value
+        initialY = yCoor_i
         loadNewMap()
     }
 }
