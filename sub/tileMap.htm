@@ -63,8 +63,6 @@ var mapHeight
 var tileDirectory
 var mapDrag = false
 
-var scaleFactor = [1, 2]
-
 var centerPixX
 var centerPixY
 var startXY
@@ -72,7 +70,7 @@ var xDownStart = [];
 var yDownStart = [];
 
 //set the initial map settings
-var zoomLevel = 1
+var zoomLevel = 2
 /* 2021 factor out
 var defaultCenterX
 var defaultCenterY
@@ -80,8 +78,6 @@ var defaultCenterY
 
 var aStyle = new Array()
 var aElement = new Array()
-var zoomOutTopAdjustment = [0, 0]
-var zoomOutLeftAdjustment = [0, 0]
 
 function centerOnStation(stationLocInfo) {
   //5 printable bytes holds 1 32 bit station bitfield
@@ -105,15 +101,15 @@ function centerOnStation(stationLocInfo) {
     ][ stationLoc.charCodeAt(stationLocInfo+yCoor_i) - 32];
   }
         tileDirectory = ["B1","B10","B11","B12","B14","B15","B16","B17","B18","B19","B2","B20a","B3","B4","B5","B6","B7","B8","B9","BX1","BX10","BX2","BX3","BX4","BX5","BX6","BX7","BX8","BX9","Manhattan","Q1","Q10","Q11","Q12","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9","S1"][xCoor_value % 43 /*scaledir*/]
-        yCoor_i = (((xCoor_value/(43 /*scaledir*/ * 3606 /*scalex*/) % 16941 /*scaley*/)|0) + 19) /*shifty*/*scaleFactor[zoomLevel]
+        yCoor_i = (((xCoor_value/(43 /*scaledir*/ * 3606 /*scalex*/) % 16941 /*scaley*/)|0) + 19) /*shifty*/*zoomLevel
         //VARIABLE REUSE watch X Y order
-        xCoor_value = ((xCoor_value/43 /*scaledir*/ % 3606 /*scalex*/) + 69) /*shiftx*/*scaleFactor[zoomLevel]
+        xCoor_value = ((xCoor_value/43 /*scaledir*/ % 3606 /*scalex*/) + 69) /*shiftx*/*zoomLevel
         if (xCoor_value < 315)
             xCoor_value = 315;
         if (yCoor_i < 315)
             yCoor_i = 315;
 
-        if (zoomLevel == 0) {
+        if (zoomLevel == 1) {
             if (tileDirectory != "Manhattan") {
                 if (xCoor_value > 1185)
                     xCoor_value = 1185;
@@ -127,7 +123,7 @@ function centerOnStation(stationLocInfo) {
                     yCoor_i = 17093;
             }
         }
-        if (zoomLevel == 1) {
+        if (zoomLevel == 2) {
             if (tileDirectory != "Manhattan") {
                 if (xCoor_value > 2685)
                     xCoor_value = 2685;
@@ -233,7 +229,7 @@ function mapmouseup()
   }
   if(styleObj.visibility == "hidden")
   {
-    elem.src = tilePath + (zoomLevel+15) + "_" + x + "_" + y + ".png"
+    elem.src = tilePath + (zoomLevel+14) + "_" + x + "_" + y + ".png"
   }
  }
 
@@ -275,14 +271,12 @@ function zoom(i)
   var newCenterY
  if(i == -1)
  {
- if(zoomLevel > 0 /* minZoom */)
+ if(zoomLevel > 1 /* minZoom */)
  {
   hideImageTiles()
   zoomLevel = zoomLevel - 1
   newCenterX = parseInt(currentCenterX/2)
   newCenterY = parseInt(currentCenterY/2)
-  zoomOutLeftAdjustment[zoomLevel+1] = newCenterX - (currentCenterX/2)
-  zoomOutTopAdjustment[zoomLevel+1] = newCenterY - (currentCenterY/2)
   }
   else
   {
@@ -291,12 +285,12 @@ function zoom(i)
  }
  if(i == 1)
  {
- if(zoomLevel < 1 /* maxZoom */)
+ if(zoomLevel < 2 /* maxZoom */)
  {
   hideImageTiles()
   zoomLevel = zoomLevel + 1
-  newCenterX = (currentCenterX-zoomOutLeftAdjustment[zoomLevel])*2
-  newCenterY = (currentCenterY-zoomOutTopAdjustment[zoomLevel])*2
+  newCenterX = currentCenterX*2
+  newCenterY = currentCenterY*2
  }
  else
  {
@@ -439,7 +433,7 @@ function loadMap()
  oldCenterTileSrc = aElement[12].src
  for(k=0; k<25; k++)
  {
-  aElement[k].src = tilePath + (zoomLevel+15) + "_" + aElement[k].className + ".png"
+  aElement[k].src = tilePath + (zoomLevel+14) + "_" + aElement[k].className + ".png"
  }
 
  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px"
@@ -529,8 +523,8 @@ function mapmousemove(i /*element really*/) {
 
     var curCenterX = centerPixX  - curX
     var curCenterY = centerPixY  - curY
-    var maxX = (mapWidth*scaleFactor[zoomLevel])-315
-    var maxY = (mapHeight*scaleFactor[zoomLevel])-315
+    var maxX = (mapWidth*zoomLevel)-315
+    var maxY = (mapHeight*zoomLevel)-315
 
     if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
     {
