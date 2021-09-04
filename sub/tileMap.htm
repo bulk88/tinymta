@@ -427,15 +427,13 @@ function loadMap()
  nameX = [nameX-2, nameX-1, nameX, nameX+1, nameX+2]
  nameY = [nameY-2, nameY-1, nameY, nameY+1, nameY+2]
 
- for(k=0; k<25; k++){
-   aElement[k].className = nameX[k%5] + "_" + nameY[(k/5)|0]
- }
  //old 12 == document.getElementById("a22")
- oldCenterTileSrc = aElement[12].src
- for(k=0; k<25; k++)
- {
-  aElement[k].src = tilePath + (zoomLevel+14) + "_" + aElement[k].className + ".png"
- }
+ oldCenterTileSrc = aElement[12].src;
+
+//prefer loading center tiles over outer or hidden tiles, domain sharding is other idea
+  [6,7,8,11,12,13,16,17,18,0,1,2,3,4,5,9,10,14,15,19,20,21,22,23,24].forEach(function(k){
+   aElement[k].src = tilePath + (zoomLevel+14) + "_" + (aElement[k].className = nameX[k%5] + "_" + nameY[(k/5)|0]) + ".png";
+});
 
  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px"
  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = "-69px"
