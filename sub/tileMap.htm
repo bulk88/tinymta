@@ -102,9 +102,9 @@ function centerOnStation(stationLocInfo) {
   }
         tileDirectory = (xCoor_value % 44 /*scaledir*/) + 1
         tileDirectory = tileDirectory < 11 ? "BX"+tileDirectory : tileDirectory < 30 ? "B"+(tileDirectory-10) : tileDirectory == 30 ? "Manhattan" : tileDirectory == 44 ? "S1" : "Q"+(tileDirectory-30);
-        yCoor_i = (((xCoor_value/(44 /*scaledir*/ * 3607 /*scalex*/) % 16942 /*scaley*/)|0) + 19) /*shifty*/*zoomLevel
+        yCoor_i = ((((xCoor_value/(44 /*scaledir*/ * 3607 /*scalex*/) % 16942 /*scaley*/)) + 19)/*shifty*/*zoomLevel)|0
         //VARIABLE REUSE watch X Y order
-        xCoor_value = ((xCoor_value/44 /*scaledir*/ % 3607 /*scalex*/) + 69) /*shiftx*/*zoomLevel
+        xCoor_value = (((xCoor_value/44 /*scaledir*/ % 3607 /*scalex*/) + 69) /*shiftx*/*zoomLevel)|0
         if (xCoor_value < 315)
             xCoor_value = 315;
         if (yCoor_i < 315)
