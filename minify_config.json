@@ -16,7 +16,7 @@
   "trimCustomFragments": true,
   "useShortDoctype": true,
   "minifyJS": {
-    "mangle": { "toplevel": true, "eval": true },
+    "mangle": { "toplevel": true, "eval": true, "reserved" : ["x", "y"]},
     "nameCache": {},
     "compress": { "unsafe": true, "inline": true}
   },
