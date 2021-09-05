@@ -38,9 +38,9 @@ for(my $i=0; $i<@jsdirs; $i++) {
 
 $shiftx = $minx;
 $shifty = $miny;
-$scaledir = scalar(keys %dirtoindex);
-$scalex = $maxx-$minx;
-$scaley = $maxy-$miny;
+$scaledir = scalar(keys %dirtoindex)+1;
+$scalex = $maxx-$minx+1;
+$scaley = $maxy-$miny+1;
 my ($log2dir, $log2x, $log2y) = (ceil(log($scaledir)/log(2)), ceil(log($scalex)/log(2)), ceil(log($scaley)/log(2)));
 
 foreach(@d) {
@@ -79,17 +79,27 @@ foreach(@d) {
 #z 0x7a  11
 
     $dec32 = ($numdir + ($ppx*$scaledir) +($ppy*$scaledir*$scalex)); #^ 0x60000000;
+    #die "bad ppx ".($dec32/$scaledir % $scalex)." ppx $ppx" if ($dec32/$scaledir % $scalex) != $ppx;
     #test code, reverse the combination
     my $ndec32 = $dec32; # ^ 0x60000000;
     my ($ndir, $nx, $ny)= (
         $ndec32 % $scaledir,
         ($ndec32/$scaledir % $scalex) + $shiftx,
         ($ndec32/($scaledir*$scalex) % $scaley) + $shifty);
-    print "just div ".$ndec32/($scaledir*$scalex)."\n";
-    print "with mod ".($ndec32/($scaledir*$scalex) % $scaley)."\n";
+    #print "just div ".$ndec32/($scaledir*$scalex)."\n";
+    #print "with mod ".($ndec32/($scaledir*$scalex) % $scaley)."\n";
     #31.1 to 31.4 "bits" log(maxed out dir+x+y)/log(2)
     if( $dec32 >((2**32)-1)) {
         die "32 bit, not power of 2, encoding, is over 32 bits"
+    }
+    if($ndir ne $numdir) {
+      die "bad dir";
+    }
+    if($nx ne $x) {
+      die "bad x";
+    }
+    if($ny ne $y) {
+      die "bad y";
     }
     $b34 .= $bdir.$bx.$by;
     $b32 .= pack('N',$dec32);
