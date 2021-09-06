@@ -30,9 +30,9 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y stationsnojs.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-../docs/tileMap.htm : tileMap.htm ../minify_config.json
+../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
-#	perl adj_tilepath.pl "$@"
+	perl adj_tilepath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
 ../docs/mapTileBackground.png : $(@F)

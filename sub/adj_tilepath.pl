@@ -11,6 +11,6 @@ my $endpos = index($file,'
 /*ENDINSERTPATH*/', $pos);
 die "bad endtag match" if $endpos == -1;
 substr($file,$pos, $endpos-$pos, '
-    tilePath = "neighborhoodMaps/" + tileDirectory + "/"
+  ""
 ');
 write_file($ARGV[0], {binmode => ':raw'}, $file);
