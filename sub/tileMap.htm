@@ -475,7 +475,8 @@ e.style.visibility = "visible"
 }
 
 function setImgSrc(elem, x, y) {
-  elem.src = (x % 2 ? "//tiles1.tinymta.us.to/" :
+  var shard = (x*y) % 3;
+  elem.src = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
 /*STARTINSERTPATH*/
   "../docs/"
 /*ENDINSERTPATH*/
