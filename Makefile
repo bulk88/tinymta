@@ -6,6 +6,9 @@ docs/index.htm : index.htm minify_config.json
 	copy /y index.htm "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
+docs/index.html : docs/index.htm
+	copy /y "docs/index.htm" "$@"
+
 docs/more.htm : more.htm minify_config.json
 	copy /y more.htm "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
