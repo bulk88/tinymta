@@ -175,65 +175,6 @@ centerPixY = initialY
 loadMap()
 }
 
-function mapmouseup()
-{
-
-  var arr = getCurrentCenter();
-  var x
-  var y
-  var styleObj
-  var elem
-  var i=0
-  mapDrag = false
-  centerPixX = arr[0]
-  centerPixY = arr[1]
-  for(; i < aStyle.length; i++)
- {
-  styleObj = aStyle[i]
-  elem = aElement[i]
-  arr = elem.className.split("_");
-  //cast to number "5"+"5" goes wrong
-  x = arr[0]*1
-  y = arr[1]*1
-  if(parseInt(styleObj.left) > 630)
-  {
-  x = x-5
-  y = y
-  styleObj.left = (parseInt(styleObj.left)-1280) + "px"
-  styleObj.visibility = "hidden"
-  }
-
-  else if(parseInt(styleObj.left)*(-1) > 256)
-  {
-  x = x+5
-  y = y
-  styleObj.left = (parseInt(styleObj.left)+1280) + "px"
-  styleObj.visibility = "hidden"
-  }
-
-  if(parseInt(styleObj.top) > 630)
-  {
-  x = x
-  y = y-5
-  styleObj.top = (parseInt(styleObj.top)-1280) + "px"
-  styleObj.visibility = "hidden"
-  }
-
-  else if(parseInt(styleObj.top)*(-1) > 256)
-  {
-  x = x
-  y = y+5
-  styleObj.top = (parseInt(styleObj.top)+1280) + "px"
-  styleObj.visibility = "hidden"
-  }
-  if(styleObj.visibility == "hidden")
-  {
-    setImgSrc(elem, x, y);
-  }
- }
-
-}
-
 /* 2021 factor out
 function showImageTiles()
 {
@@ -258,49 +199,6 @@ function getCurrentCenter()
   var arr  = aElement[12].className.split("_");
   var style = aStyle[12];
   return [(arr[0]*256)+(315-parseInt(style.left)), (arr[1]*256)+(315-parseInt(style.top))];
-}
-
-function zoom(i)
-{
-  hideCustomAlert()
-  var currentCenter = getCurrentCenter();
-  var currentCenterX = currentCenter[0]
-  var currentCenterY = currentCenter[1]
-  var newCenterX
-  var newCenterY
- if(i == -1)
- {
- if(zoomLevel > 1 /* minZoom */)
- {
-  hideImageTiles()
-  zoomLevel = zoomLevel - 1
-  newCenterX = parseInt(currentCenterX/2)
-  newCenterY = parseInt(currentCenterY/2)
-  }
-  else
-  {
-     return showCustomAlert("This is the lowest zoom level")
-  }
- }
- if(i == 1)
- {
- if(zoomLevel < 2 /* maxZoom */)
- {
-  hideImageTiles()
-  zoomLevel = zoomLevel + 1
-  newCenterX = currentCenterX*2
-  newCenterY = currentCenterY*2
- }
- else
- {
-  return showCustomAlert("This is the highest zoom level")
- }
- }
- centerPixX = newCenterX
- centerPixY = newCenterY
- loadMap()
-
-
 }
 
 /* unused 2021 factor out
@@ -469,11 +367,6 @@ function initLoad()
 }
 */
 
-function showImage(e)
-{
-e.style.visibility = "visible"
-}
-
 function setImgSrc(elem, x, y) {
   var shard = (x*y) % 3;
   elem.src = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
@@ -483,94 +376,6 @@ function setImgSrc(elem, x, y) {
   ) + tilePath + (zoomLevel+14) + "_" + (elem.className = x + "_" + y) + ".png"
 }
 
-function getPosition(e) {
-    e = e || window.event;
-    var cursor = {};
-    if (e.targetTouches) {
-        cursor.x = Math.round(e.targetTouches[0].pageX)
-        cursor.y = Math.round(e.targetTouches[0].pageY)
-        e.preventDefault()
-    }
-    else if (e.pageX || e.pageY) {
-        cursor.x = e.pageX;
-        cursor.y = e.pageY;
-    } 
-    else {
-        var de = document.documentElement;
-        var b = document.body;
-        cursor.x = e.clientX + 
-            (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
-        cursor.y = e.clientY + 
-            (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
-    }
-    return cursor;
-}
-
-function mapmousedown(i /*element really*/) {
-
-  hideCustomAlert()
-  mapDrag = true
-  startXY = getPosition(i)
-  for(i=0; i < 25; i++)
-  xDownStart[i] = parseInt(aStyle[i].left);
-  for(i=0; i < 25; i++)
-  yDownStart[i] = parseInt(aStyle[i].top);
-} 
-
-
-
-function mapmousemove(i /*element really*/) {
-    if(!mapDrag)
-    {
-    return;
-    }
-
-    i = getPosition(i)
-    var curX = i.x - startXY.x
-    var curY = i.y - startXY.y
-
-    var curCenterX = centerPixX  - curX
-    var curCenterY = centerPixY  - curY
-    var maxX = (mapWidth*zoomLevel)-315
-    var maxY = (mapHeight*zoomLevel)-315
-
-    if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
-    {
-      for(i=0; i < 25; i++)
-        aStyle[i].left = (xDownStart[i] + curX) + "px"
-    }
-
-    if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
-    {
-      for(i=0; i < 25; i++)
-        aStyle[i].top = (yDownStart[i] + curY) + "px"
-    }
-
-}
-
-
-var alertTimer
-function showCustomAlert(text)
-{
-var element = document.getElementById("customAlert");
-element.innerHTML = text
-element.style.display = "inline"
-clearTimeout(alertTimer)
-alertTimer = setTimeout(hideCustomAlert,3000)
-}
-
-function hideCustomAlert()
-{
-clearTimeout(alertTimer)
-document.getElementById("customAlert").style.display = "none"
-}
-
-function menuImageOver(elem) {
-    elem.src = elem.src.replace('.png','_over.png');
-}
-function menuImageOut(elem) {
-    elem.src = elem.src.replace('_over.png', '.png');
-}
 </script>
 
 <!--
@@ -664,5 +469,199 @@ centerOnStation(k_urlArg);
 
 parent.neighborhoodMapLoaded = true;
 })();
+</script>
+<script>
+var alertTimer
+function showCustomAlert(text)
+{
+var element = document.getElementById("customAlert");
+element.innerHTML = text
+element.style.display = "inline"
+clearTimeout(alertTimer)
+alertTimer = setTimeout(hideCustomAlert,3000)
+}
+
+function hideCustomAlert()
+{
+clearTimeout(alertTimer)
+document.getElementById("customAlert").style.display = "none"
+}
+
+function menuImageOver(elem) {
+    elem.src = elem.src.replace('.png','_over.png');
+}
+function menuImageOut(elem) {
+    elem.src = elem.src.replace('_over.png', '.png');
+}
+
+function zoom(i)
+{
+  hideCustomAlert()
+  var currentCenter = getCurrentCenter();
+  var currentCenterX = currentCenter[0]
+  var currentCenterY = currentCenter[1]
+  var newCenterX
+  var newCenterY
+ if(i == -1)
+ {
+ if(zoomLevel > 1 /* minZoom */)
+ {
+  hideImageTiles()
+  zoomLevel = zoomLevel - 1
+  newCenterX = parseInt(currentCenterX/2)
+  newCenterY = parseInt(currentCenterY/2)
+  }
+  else
+  {
+     return showCustomAlert("This is the lowest zoom level")
+  }
+ }
+ if(i == 1)
+ {
+ if(zoomLevel < 2 /* maxZoom */)
+ {
+  hideImageTiles()
+  zoomLevel = zoomLevel + 1
+  newCenterX = currentCenterX*2
+  newCenterY = currentCenterY*2
+ }
+ else
+ {
+  return showCustomAlert("This is the highest zoom level")
+ }
+ }
+ centerPixX = newCenterX
+ centerPixY = newCenterY
+ loadMap()
+}
+
+function getPosition(e) {
+    e = e || window.event;
+    var cursor = {};
+    if (e.targetTouches) {
+        cursor.x = Math.round(e.targetTouches[0].pageX)
+        cursor.y = Math.round(e.targetTouches[0].pageY)
+        e.preventDefault()
+    }
+    else if (e.pageX || e.pageY) {
+        cursor.x = e.pageX;
+        cursor.y = e.pageY;
+    } 
+    else {
+        var de = document.documentElement;
+        var b = document.body;
+        cursor.x = e.clientX + 
+            (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
+        cursor.y = e.clientY + 
+            (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
+    }
+    return cursor;
+}
+
+function mapmousedown(i /*element really*/) {
+
+  hideCustomAlert()
+  mapDrag = true
+  startXY = getPosition(i)
+  for(i=0; i < 25; i++)
+  xDownStart[i] = parseInt(aStyle[i].left);
+  for(i=0; i < 25; i++)
+  yDownStart[i] = parseInt(aStyle[i].top);
+}
+
+function mapmousemove(i /*element really*/) {
+    if(!mapDrag)
+    {
+    return;
+    }
+
+    i = getPosition(i)
+    var curX = i.x - startXY.x
+    var curY = i.y - startXY.y
+
+    var curCenterX = centerPixX  - curX
+    var curCenterY = centerPixY  - curY
+    var maxX = (mapWidth*zoomLevel)-315
+    var maxY = (mapHeight*zoomLevel)-315
+
+    if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
+    {
+      for(i=0; i < 25; i++)
+        aStyle[i].left = (xDownStart[i] + curX) + "px"
+    }
+
+    if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
+    {
+      for(i=0; i < 25; i++)
+        aStyle[i].top = (yDownStart[i] + curY) + "px"
+    }
+
+}
+
+function mapmouseup()
+{
+
+  var arr = getCurrentCenter();
+  var x
+  var y
+  var styleObj
+  var elem
+  var i=0
+  mapDrag = false
+  centerPixX = arr[0]
+  centerPixY = arr[1]
+  for(; i < aStyle.length; i++)
+ {
+  styleObj = aStyle[i]
+  elem = aElement[i]
+  arr = elem.className.split("_");
+  //cast to number "5"+"5" goes wrong
+  x = arr[0]*1
+  y = arr[1]*1
+  if(parseInt(styleObj.left) > 630)
+  {
+  x = x-5
+  y = y
+  styleObj.left = (parseInt(styleObj.left)-1280) + "px"
+  styleObj.visibility = "hidden"
+  }
+
+  else if(parseInt(styleObj.left)*(-1) > 256)
+  {
+  x = x+5
+  y = y
+  styleObj.left = (parseInt(styleObj.left)+1280) + "px"
+  styleObj.visibility = "hidden"
+  }
+
+  if(parseInt(styleObj.top) > 630)
+  {
+  x = x
+  y = y-5
+  styleObj.top = (parseInt(styleObj.top)-1280) + "px"
+  styleObj.visibility = "hidden"
+  }
+
+  else if(parseInt(styleObj.top)*(-1) > 256)
+  {
+  x = x
+  y = y+5
+  styleObj.top = (parseInt(styleObj.top)+1280) + "px"
+  styleObj.visibility = "hidden"
+  }
+  if(styleObj.visibility == "hidden")
+  {
+    setImgSrc(elem, x, y);
+  }
+ }
+
+}
+
+
+function showImage(e)
+{
+e.style.visibility = "visible"
+}
+
 </script>
 </html>
