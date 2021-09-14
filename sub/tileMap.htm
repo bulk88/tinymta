@@ -2,6 +2,8 @@
 <head>
 <link rel="dns-prefetch" href="//tiles1.tinymta.us.to">
 <link rel="preconnect" href="//tiles1.tinymta.us.to">
+<link rel="dns-prefetch" href="//tiles2.tinymta.us.to">
+<link rel="preconnect" href="//tiles2.tinymta.us.to">
 <title>The Weekender</title>
 </head>
 <script language="javascript" type="text/javascript">
@@ -69,6 +71,7 @@ var centerPixY
 var startXY
 var xDownStart = [];
 var yDownStart = [];
+var alertTimer;
 
 //set the initial map settings
 var zoomLevel = 2
@@ -471,7 +474,6 @@ parent.neighborhoodMapLoaded = true;
 })();
 </script>
 <script>
-var alertTimer
 function showCustomAlert(text)
 {
 var element = document.getElementById("customAlert");
