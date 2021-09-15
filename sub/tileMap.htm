@@ -379,6 +379,14 @@ function setImgSrc(elem, x, y) {
   ) + tilePath + (zoomLevel+14) + "_" + (elem.className = x + "_" + y) + ".png"
 }
 
+//this must be before the img tags before for IE5 or else exception fires
+//IE 5 calls showImage syncronously if tile is disk cached before rest of
+//root doc is parsed
+function showImage(e)
+{
+e.style.visibility = "visible"
+}
+
 </script>
 
 <!--
@@ -657,12 +665,6 @@ function mapmouseup()
   }
  }
 
-}
-
-
-function showImage(e)
-{
-e.style.visibility = "visible"
 }
 
 </script>
