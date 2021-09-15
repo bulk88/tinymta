@@ -115,6 +115,30 @@ sub e {
     return $_;
 }
 use Convert::Z85;
+sub encode_a85 {
+        my ($in) = @_;
+ 
+        my $padding = -length($in) % 4;
+        $in .= "\0" x $padding;
+        my $out = '';
+ 
+        for my $n (unpack 'N*', $in) { 
+                my $tmp = '';
+                for my $i (reverse 0 .. 4) {
+                        my $mod = $n % 85;
+                        $n = int($n / 85);
+                        #dont start at 33 aka "!" but at 35 "#" to skip " char
+                        #92 is \ a toxic char in a JS lit, replace with y 121
+                        vec($tmp, $i, 8) = $mod + 35 == 92 ? 102 : $mod + 35;
+                }
+                $out .= $tmp;
+        }
+ 
+        $padding or return $out;
+ 
+        $out =~ s/z\z/!!!!!/;
+        substr $out, 0, length($out) - $padding
+}
 use Text::Ngrams;
 my $ng3 = Text::Ngrams->new(windowsize => 1,type => 'byte' );
 #$ng3->process_text('aaabbca');
@@ -145,6 +169,8 @@ write_file('b32notjs.htm', {binmode => ':raw'},$html1.$b32.$html2);
 system('gzip -k -f b32notjs.htm');
 write_file('b32z85.htm', {binmode => ':raw'},$html1.encode_z85($b32).$html2);
 system('gzip -k -f b32z85.htm');
+write_file('b32b85.htm', {binmode => ':raw'},$html1.encode_a85($b32).$html2);
+system('gzip -k -f b32b85.htm');
 write_file('b32utf8.htm', {binmode => ':utf8'},$html1.e($b32).$html2);
 system('gzip -k -f b32utf8.htm');
 $b34 = pack('b*', $b34);
