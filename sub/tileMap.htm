@@ -4,6 +4,7 @@
 <link rel="preconnect" href="//tiles1.tinymta.us.to">
 <link rel="dns-prefetch" href="//tiles2.tinymta.us.to">
 <link rel="preconnect" href="//tiles2.tinymta.us.to">
+<meta name="viewport" content="width=device-width">
 <title>The Weekender</title>
 </head>
 <script language="javascript" type="text/javascript">
@@ -543,7 +544,10 @@ function getPosition(e) {
     if (e.targetTouches) {
         cursor.x = Math.round(e.targetTouches[0].pageX)
         cursor.y = Math.round(e.targetTouches[0].pageY)
+        /* disabled from SO sample to allow pinch zoom by browser
+        and DOM drag
         e.preventDefault()
+        */
     }
     else if (e.pageX || e.pageY) {
         cursor.x = e.pageX;
