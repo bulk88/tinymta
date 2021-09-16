@@ -127,9 +127,11 @@ sub encode_a85 {
                 for my $i (reverse 0 .. 4) {
                         my $mod = $n % 85;
                         $n = int($n / 85);
-                        #dont start at 33 aka "!" but at 35 "#" to skip " char
-                        #92 is \ a toxic char in a JS lit, replace with y 121
-                        vec($tmp, $i, 8) = $mod + 35 == 92 ? 102 : $mod + 35;
+                        #dont start at 33 aka "!" but at 37 "%" to skip " char
+                        #'#' and '$' dont exist in htm doc, skip them
+                        #for huffman encoding reasons
+                        #92 is \ a toxic char in a JS lit, replace with { 123
+                        vec($tmp, $i, 8) = $mod + 37 == 92 ? 123 : $mod + 37;
                 }
                 $out .= $tmp;
         }
