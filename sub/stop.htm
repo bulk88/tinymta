@@ -183,12 +183,16 @@ midnight of today, happens right after 1200AM */
     }
     h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)<br><br>';
     r = r.alerts;
+    o = ''; // deferred UI alters
     for (i in r) {
     trip = r[i];
     if(trip.alertType) { //skip elevators, elevators are missing alertType field
-      h += trip.alertType+"<br>"+trip.alertDescriptionText+"<br>";
+      route = trip.alertType+"<br>"+(trip.humanReadableActivePeriod || 'Ongoing')+"<br>"+trip.alertHeaderText+"<br>"+trip.alertDescriptionText+"<br><br>";
+      //delays dont have a time period, put them first in UI
+      trip.humanReadableActivePeriod ? o += route : h += route;
     }
     }
+    h += o;
     //debugger;
 } else
     h = "station not found";
