@@ -13,24 +13,30 @@ my %borotbl = ( 'Queens' => 'Q',
 
 die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
 my $js = $ARGV[0];
+die "1st arg must be generate trip planner stations or unused" if ! defined $ARGV[1];
+my $planner = $ARGV[1];
 our $VAR1;
 our $phase2nids;
 our $phase3nids;
 our $phase4nids;
 our $nmapIDs;
+our $staDB;
 do '.\routedatafinal.pl';
 {
     local $VAR1;
     do '.\nmapnidsdata.pl';
     $nmapIDs = $VAR1;
 }
+do '.\tripsdb.pl';
+
+
 my @lineshtml;
 my @linesboroughhtml;
 my @linestopshtml;
 my %rtdispname = getRouteDisplayNames('route_id');
 my @chkarr;
 
-open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
+open(HTMLFILE, ">", ($planner ? 'plan.htm' : $js ? 'stations.htm' : 'stationsnojs.htm'))
         || die "$0: can't open stations.htm for writing: $!";
 select(HTMLFILE);
 binmode(HTMLFILE);
@@ -68,14 +74,14 @@ foreach my $rtid (nsort keys %$VAR1) {
         } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
             my $name = ${$boroughs{$borough}}[0]->{name};
             my $stopid = ${$boroughs{$borough}}[0]->{stop};#how to inject $rtanchor
-            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor).'</a>';
+            $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor, undef, $routename).'</a>';
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
         $rtanchor = '';
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
             my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
-            push(@linestopshtml, stopid_to_tag($name, $stopid, $name, ''));
+            push(@linestopshtml, stopid_to_tag($name, $stopid, $name, '', undef, $routename));
         }
 #add closing tag only after a list of station names to not have boro/route header be
 #part of a link
@@ -88,18 +94,159 @@ $linestopshtml[@linestopshtml - 1] = substr($linestopshtml[@linestopshtml - 1],0
 
 #psping and apache bench shows no time difference between TrainTimeLB-367443097.us-east-1.elb.amazonaws.com
 #and mtasubwaytime.info domains but they are different IPs
-sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
-    my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey, $routename)
+    my ($name, $stopid, $dispname, $anchorname, $accesskey, $routename) = @_;
     $chkarr[$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]] = 1;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
+                .($planner ? 'href="plan.htm#'.getPlanStr($routename, $name) : 
+                (($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
                 .$stopid
-                .($js?$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]:'')
+                .($js?$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]:'')))
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
                 .'">'.$dispname;
 }
 
+sub getPlanStr {
+    #warn Dumper($staDB);
+    #exit;
+    my $tripLoc;
+    my ($routename, $dispname) = @_;
+    $routename = 7 if $routename eq '7X';
+    $routename = 6 if $routename eq '6X';
+    if($dispname =~ /ern p/) {
+      0;
+    }
+    my $debugsta = 'myrtlez';
+    foreach(@$staDB) {
+        my ($name, $routes) = split(/STATION/i, $_->[1][2]);
+        if($name =~ /\Q$debugsta\E/i && $dispname =~ /\Q$debugsta\E/i) {
+            $DB::single=1;1;
+        }
+        if ($_->[1][2] =~ /myr/i) {
+            0;
+        }
+        if($_->[1][2] =~ /MYRTLE AV/i && $routes eq ' L') {
+            #dont confuse with JMZ sta
+            $_->[1][2] =~ s/MYRTLE AV/Myrtle - Wyckoff Avs/i;    
+        }
+        if($_->[1][2] =~ /WYCKOFF AV/i && $routes eq ' M') {
+            #dont confuse with JMZ sta
+            $_->[1][2] =~ s/WYCKOFF AV/Myrtle - Wyckoff Avs/i;    
+        }
+        $_->[1][2] =~ s|CENTRAL PARK NORTH - 110TH ST STA 2/3|Central Park North (110 St) STATION 2/3|;
+        $_->[1][2] =~ s/STA /STATION /;
+        $_->[1][2] =~ s|42ND ST-GRAND CENTRAL 4/5/6/7/S/METRO-N|42ND ST - GRAND CENTRAL STATION 4/5/6/7/S|;
+        $_->[1][2] =~ s|COLUMBUS CIR STATION|COLUMBUS CIRCLE STATION|;
+        $_->[1][2] =~ s|116TH ST - COLUMBIA UNIV STATION 1|116TH ST - COLUMBIA UNIVERSITY STATION 1|;
+        $_->[1][2] =~ s|DYRE AV - EASTCHESTER STATION 5|Eastchester - Dyre Av STATION 5|;
+        $_->[1][2] =~ s|E 143RD ST - SAINT MARYS ST|E 143 St - St Mary's St|;
+       $_->[1][2]  =~ s|MORRISON AV \x{2013} SOUNDVIEW STATION 6|Morrison Av- Sound View STATION 6|;
+       $_->[1][2]  =~ s|WESTCHESTER SQ - EAST TREMONT AV|Westchester Sq - E Tremont Av|;
+       $_->[1][2]  =~ s|34th St \x{2013} Hudson Yards|34 St - 11 Av|;
+       $_->[1][2]  =~ s|BROADWAY JUNCTION|Broadway Jct|;
+       $_->[1][2]  =~ s|HOYT - SCHERMERHORN|Hoyt - Schermerhorn Sts|;
+       $_->[1][2]  =~ s|WEST 4TH ST|W 4 St|;
+       $_->[1][2]  =~ s|42ND ST - PORT AUTHORITY|42 St - Port Authority Bus Terminal|;
+       $_->[1][2]  =~ s|81ST ST - MUSEUM OF NATURAL HIST|81 St - Museum of Natural History|;
+       $_->[1][2]  =~ s|CATHEDRAL PKWY - 110TH ST|Cathedral Pkwy (110 St)|;
+       $_->[1][2]  =~ s|AQUEDUCT - NORTH CONDUIT AV|Aqueduct - N Conduit Av|;
+       $_->[1][2]  =~ s|174TH - 175TH ST|174-175 Sts|;
+       $_->[1][2]  =~ s|182ND - 183RD STS|182-183 Sts|;
+       $_->[1][2]  =~ s|42ND ST - BRYANT PARK|42 St - Bryant Pk|;
+       $_->[1][2]  =~ s|47-50TH ST - ROCKEFELLER CTR|47-50 Sts - Rockefeller Ctr|i;
+       $_->[1][2]  =~ s|LEXINGTON AV - 53RD ST|Lexington Av/53 St|;
+       $_->[1][2]  =~ s|5TH AV - 53RD ST|5 Av/53 St|;
+       $_->[1][2]  =~ s|UNION TNPK - KEW GARDENS|Kew Gardens - Union Tpke|;
+       $_->[1][2]  =~ s|BRIARWOOD|Briarwood - Van Wyck Blvd|;
+       $_->[1][2]  =~ s|SUTPHIN BLVD - ARCHER AV|Sutphin Blvd - Archer Av - JFK Airport|;
+       $_->[1][2]  =~ s|JAMAICA CTR - PARSONS/ARCHER|Jamaica Center - Parsons/Archer|;
+       $_->[1][2]  =~ s|WEST 8TH ST - NY AQUARIUM|W 8 St - NY Aquarium|;
+       $_->[1][2]  =~ s|63RD ST \x{2013} LEXINGTON AV|Lexington Av/63 St|;
+      $_->[1][2]  =~ s|5TH AV - 59TH ST|5 Av/59 St|;
+      $_->[1][2]  =~ s|59TH ST - LEXINGTON AVE|Lexington Av/59 St|;
+      # $_->[1][2]  =~ s|||;
+      # $_->[1][2]  =~ s|||;
+      # $_->[1][2]  =~ s|||;
+      # $_->[1][2]  =~ s|||;
+        ($name, $routes) = split(/STATION/i, $_->[1][2]);
+        die "while processing station $dispname, no routes extracted from planner DB station $name" if ! $routes;
+
+        $name = 'Van Cortlandt Park - 242 St' if $name =~ /242ND ST - VAN CORTLANDT PK/;
+        $name = '34 St - Penn Station' if $name =~ /34TH ST - PENN/;
+        $name = 'Times Sq - 42 St' if $name =~ /42ND ST - TIMES SQ/;
+        #warn " "+!!($name =~ /\Q$dispname\E/i)." ".!!($routes =~ /\Q$routename\E/i);
+        if( ($name =~ /\Q$dispname\E/i) && ($routes =~ /\Q$routename\E/i)) {
+            #warn "inside assign";
+            $tripLoc = $_->[0];
+            last;
+        }
+    }
+    if(!$tripLoc) {
+
+    foreach(@$staDB) {
+        my ($name, $routes) = split(/STATION/i, $_->[1][2]);
+        if($name =~ /\Q$debugsta\E/i && $dispname =~ /\Q$debugsta\E/i) {
+            $DB::single=1;1;
+        }
+        $name =~ s/(?<=\d)ST//g;
+        $name =~ s/(?<=\d)ND//g;
+        $name =~ s/(?<=\d)RD//g;
+        $name =~ s/(?<=\d)TH//g;
+        $routes =~ s/^\s+|\s+$//g;
+        if($routes eq '6') {$routes = '456'}
+        if($routes eq '1') {$routes = '123'}
+        #2 @ columbus circle
+        if($routes eq '1/A/B/C/D') {$routes = '1/2/A/B/C/D'}
+        if($routes eq '5') {$routes = '25'}
+        if($routes eq '2') {$routes = '25'}
+        if($routes eq '3/4') {$routes = '2345'}
+        if($routes eq '2/3') {$routes = '2345'}
+        if($routes eq '3') {$routes = '2345'}
+        if($routes eq 'C') {$routes = 'AC'}
+        if($routes eq 'C') {$routes = 'AC'}
+        #franklin
+        if($routes eq 'C/S') {$routes = 'ACS'}
+        if($routename eq 'FS') {$routename = 'S'}
+        if($routename eq 'GS') {$routename = 'S'}
+        if($routename eq 'H') {$routename = 'S'}
+        if($routes eq 'B/C') {$routes = 'BCA'}
+        if($routes eq 'C/E') {$routes = 'CEA'}
+        if($routes eq 'R') {$routes = 'DRWN'}
+        if($routes eq 'B/Q/R') {$routes = 'BQRDN'}
+        if($routes eq 'M/R') {$routes = 'EMR'}
+        if($routes eq 'F') {$routes = 'EFM'}
+        if($routes eq 'J/Z') {$routes = 'JZM'}
+        if($routes eq 'R/W') {$routes = 'NRWQ'}
+        if($routes eq 'Q') {$routes = 'NQ'}
+        #63 lex
+        if($routes eq 'F/Q') {$routes = 'FQNR'}
+        if($routes eq 'N') {$routes = 'QN'}
+        if($routes eq 'N/R') {$routes = 'NRQ'}
+        if($routes eq 'D/N/R') {$routes = 'DNRQ'}
+        if($routes eq 'N/R/W') {$routes = 'NRWQ'}
+        #if($routes eq '') {$routes = ''}
+
+        $routes =~ s/METRO-NORTH//i;
+        #241 wakefield / from removed metro north
+        if($routes eq '2/') {$routes = '25'}
+        my $altstaname = join(' - ',reverse(split(/ - /, $dispname)));
+        my $alt2staname = $name;
+        $alt2staname =~ s/ - /-/;
+        if( ($name =~ /\Q$dispname\E/i
+             || $name =~ /\Q$altstaname\E/i
+             || $alt2staname =~ /\Q$dispname\E/i
+             ) && $routes =~ /\Q$routename\E/i) {
+            $tripLoc = $_->[0];
+            last;
+        }
+    }
+    }
+    if(!$tripLoc) {
+      $DB::single=1;1;
+    }
+    return $tripLoc;
+}
 print join(" \n", @lineshtml);
 print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.htm">Use JS</a>')."<br>\n";
 print join("<br>\n", @linesboroughhtml);
