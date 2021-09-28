@@ -41,7 +41,7 @@ open(HTMLFILE, ">", ($planner ? 'plan.htm' : $js ? 'stations.htm' : 'stationsnoj
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
-'<html><head><meta name="mobileoptimized" content="0">'
+'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer">'
 .($js?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//otp-mta-prod.camsys-apps.com">':'')
 .'</head><body><a name="#">
 ';

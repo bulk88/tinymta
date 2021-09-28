@@ -54,10 +54,10 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y $(@F) "$@"
 
 stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
-	perl gr3.pl 1
+	perl gr3.pl 1 0
 
 stationsnojs.htm : gr3.pl routedatafinal.pl
-	perl gr3.pl 0
+	perl gr3.pl 0 0
 
 ../docs/rt.htm : grmp.pl routedatafinal.pl
 	perl grmp.pl 0 0
