@@ -377,6 +377,38 @@ function showImage(e)
 e.style.visibility = "visible"
 }
 
+//IE5 wants this event handler before the element, its fired instantly
+//even if no drag if mouse in viewport, minor exception doesnt dreak
+//anything, drag works, but get rid of the status bar exception log msg
+function mapmousemove(i /*element really*/) {
+    if(!mapDrag)
+    {
+    return;
+    }
+
+    i = getPosition(i)
+    var curX = i.x - startXY.x
+    var curY = i.y - startXY.y
+
+    var curCenterX = centerPixX  - curX
+    var curCenterY = centerPixY  - curY
+    var maxX = (mapWidth*zoomLevel)-315
+    var maxY = (mapHeight*zoomLevel)-315
+
+    if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
+    {
+      for(i=0; i < 25; i++)
+        aStyle[i].left = (xDownStart[i] + curX) + "px"
+    }
+
+    if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
+    {
+      for(i=0; i < 25; i++)
+        aStyle[i].top = (yDownStart[i] + curY) + "px"
+    }
+
+}
+
 </script>
 
 <!--
@@ -599,35 +631,6 @@ function mapmousedown(i /*element really*/) {
   xDownStart[i] = parseInt(aStyle[i].left);
   for(i=0; i < 25; i++)
   yDownStart[i] = parseInt(aStyle[i].top);
-}
-
-function mapmousemove(i /*element really*/) {
-    if(!mapDrag)
-    {
-    return;
-    }
-
-    i = getPosition(i)
-    var curX = i.x - startXY.x
-    var curY = i.y - startXY.y
-
-    var curCenterX = centerPixX  - curX
-    var curCenterY = centerPixY  - curY
-    var maxX = (mapWidth*zoomLevel)-315
-    var maxY = (mapHeight*zoomLevel)-315
-
-    if((curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0))
-    {
-      for(i=0; i < 25; i++)
-        aStyle[i].left = (xDownStart[i] + curX) + "px"
-    }
-
-    if((curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0))
-    {
-      for(i=0; i < 25; i++)
-        aStyle[i].top = (yDownStart[i] + curY) + "px"
-    }
-
 }
 
 function mapmouseup()
