@@ -8,6 +8,7 @@ docs/index.htm : index.htm minify_config.json
 
 docs/index.html : docs/index.htm
 	copy /y "docs/index.htm" "$@"
+	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/more.htm : more.htm minify_config.json
 	copy /y more.htm "$@"
@@ -58,7 +59,7 @@ mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
 docs/ac.appcache : docs/index.htm docs/more.htm docs/404.html docs/favicon.ico
-docs/ac.appcache : docs/CNAME docs/README.md docs/_config.yml
+docs/ac.appcache : docs/CNAME docs/README.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html
 docs/ac.appcache : MNRR LIRRMKF SUBMKF
 	perl -e"use File::Slurp; \
