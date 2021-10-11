@@ -1,1 +1,1 @@
-npx http-server --cors -c15 -p80 .
+npx http-server --cors -c1 -p80 -e htm .

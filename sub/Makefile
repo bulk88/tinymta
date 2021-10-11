@@ -30,6 +30,14 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y stationsnojs.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
+../docs/plan.htm : plan.htm ../minify_config.json
+	copy /y plan.htm "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+
+#todo minify/embed
+../docs/plan.js : plan.js
+	copy /y plan.js "$@"
+
 ../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
 	perl adj_tilepath.pl "$@"
@@ -58,6 +66,9 @@ stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
 
 stationsnojs.htm : gr3.pl routedatafinal.pl
 	perl gr3.pl 0 0
+
+plan.htm :  gr3.pl routedatafinal.pl tripsdb.pl
+	perl gr3.pl 0 1
 
 ../docs/rt.htm : grmp.pl routedatafinal.pl
 	perl grmp.pl 0 0
@@ -117,3 +128,4 @@ all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
 all: ../docs/tileMap.htm ../docs/mapTileBackground.png
 all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
 all: ../docs/zoom_out.png ../docs/zoom_out_over.png
+all: ../docs/plan.htm ../docs/plan.js
