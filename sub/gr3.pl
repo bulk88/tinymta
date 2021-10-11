@@ -99,7 +99,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     $chkarr[$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]] = 1;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($planner ? 'href="plan.htm#'.getPlanStr($routename, $name) : 
+                .($planner ? 'href="plan.htm#'.getPlanStr($routename, $name, $stopid) :
                 (($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
                 .$stopid
                 .($js?$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]:'')))
@@ -111,7 +111,7 @@ sub getPlanStr {
     #warn Dumper($staDB);
     #exit;
     my $tripLoc;
-    my ($routename, $dispname) = @_;
+    my ($routename, $dispname, $stopid) = @_;
     $routename = 7 if $routename eq '7X';
     $routename = 6 if $routename eq '6X';
     if($dispname =~ /ern p/) {
@@ -169,6 +169,9 @@ sub getPlanStr {
       # $_->[1][2]  =~ s|||;
       # $_->[1][2]  =~ s|||;
       # $_->[1][2]  =~ s|||;
+      # $_->[1][2]  =~ s|||;
+      # $_->[1][2]  =~ s|||;
+      # $_->[1][2]  =~ s|||;
         ($name, $routes) = split(/STATION/i, $_->[1][2]);
         die "while processing station $dispname, no routes extracted from planner DB station $name" if ! $routes;
 
@@ -213,17 +216,21 @@ sub getPlanStr {
         if($routes eq 'B/C') {$routes = 'BCA'}
         if($routes eq 'C/E') {$routes = 'CEA'}
         if($routes eq 'R') {$routes = 'DRWN'}
-        if($routes eq 'B/Q/R') {$routes = 'BQRDN'}
+        if($routes eq 'B/Q/R') {$routes = 'BQRDNW'}
         if($routes eq 'M/R') {$routes = 'EMR'}
         if($routes eq 'F') {$routes = 'EFM'}
         if($routes eq 'J/Z') {$routes = 'JZM'}
+        if($routes eq 'J/M') {$routes = 'JZM'}
+        if($routes eq 'J') {$routes = 'JZ'}
         if($routes eq 'R/W') {$routes = 'NRWQ'}
-        if($routes eq 'Q') {$routes = 'NQ'}
+        #86 st brooklyn on R (R44) vs 86 st manhat 2nd ave limited run R
+        if($routes eq 'Q'&& $stopid ne 'R44') {$routes = 'NQR'}
         #63 lex
         if($routes eq 'F/Q') {$routes = 'FQNR'}
-        if($routes eq 'N') {$routes = 'QN'}
+        if($routes eq 'N') {$routes = 'QNW'}
         if($routes eq 'N/R') {$routes = 'NRQ'}
-        if($routes eq 'D/N/R') {$routes = 'DNRQ'}
+        if($routes eq 'D/N/R') {$routes = 'DNRQW'}
+        if($routes eq 'D/N/R/LIRR') {$routes = 'DNRQW'}
         if($routes eq 'N/R/W') {$routes = 'NRWQ'}
         #if($routes eq '') {$routes = ''}
 
