@@ -34,9 +34,19 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y plan.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-#todo minify/embed
+../docs/plan2.htm : ../docs/plan.htm
+	copy /y "../docs/plan.htm" "$@"
+
+plan2.htm : plan.htm
+	copy /y plan.htm "$@"
+
+../docs/planIE.htm : planIE.htm ../minify_config.json
+	copy /y planIE.htm "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+
 ../docs/plan.js : plan.js
 	copy /y plan.js "$@"
+	uglifyjs -c -m toplevel -m eval --keep-fnames "$@" -o "$@"
 
 ../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
@@ -128,4 +138,5 @@ all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
 all: ../docs/tileMap.htm ../docs/mapTileBackground.png
 all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
 all: ../docs/zoom_out.png ../docs/zoom_out_over.png
-all: ../docs/plan.htm ../docs/plan.js
+all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
+all: plan2.htm

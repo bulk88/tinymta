@@ -1,0 +1,13 @@
+<script>
+    //http://tripplanner.mta.info/MyTrip/js/landmarks.js ::: is field separator
+    (function() {
+        var arr = document.location.hash.substring(1).split(":::");
+        var originStation = arr[0];
+        var originArr = originStation.split('$');
+        var destStation = arr[1];
+        var destArr = destStation.split('$');
+        var date = new Date();
+        var newUrl = 'http://tripplanner.mta.info/MyTrip/handler/CustomPlannerHandler.ashx?jsonpacket={"RequestDevicename":"IPHONEAPP","OriginInput":"' + escape(originArr[2]) + '","DestinationInput":"' + escape(destArr[2]) + '","Arrdep":"D","InputTime":"' + ("0" + date.getHours()).slice(-2) + ':' + ("0" + date.getMinutes()).slice(-2) + '","InputDate":"' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '","Minimize":"T","Walkdist":"0.50","Mode":"F12RBC","LineStart":"","LineEnd":"","Accessible":"N","OriginCoordinates":"' + escape(originStation) + '","DestinationCoordinates":"' + escape(destStation) + '","LocationType":"","StartServiceType":"train","StartTrainType":"subway","StartBorough":"MN","EndServiceType":"train","EndTrainType":"subway","EndBorough":"MN","Walkincrease":"","Maxinitialwait":"","Maxtriptime":"","Maxtransfers":""}';
+        location.replace(newUrl);
+    })();
+</script>
