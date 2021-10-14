@@ -87,8 +87,8 @@ plan.htm :  gr3.pl routedatafinal.pl tripsdb.pl
 	-mkdir "../docs/js"
 	perl grmp.pl 1 0
 
-../docs/gwl/rt.htm : grmp.pl routedatafinal.pl
-	-mkdir "../docs/gwl"
+../docs/wap/rt.htm : grmp.pl routedatafinal.pl
+	-mkdir "../docs/wap"
 	perl grmp.pl 1 1
 
 ../docs/raw/rt.htm : grmp.pl routedatafinal.pl
@@ -134,7 +134,7 @@ mini:
 
 all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm ../docs/gstp.htm
-all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/gwl/rt.htm
+all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/wap/rt.htm
 all: ../docs/tileMap.htm ../docs/mapTileBackground.png
 all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
 all: ../docs/zoom_out.png ../docs/zoom_out_over.png

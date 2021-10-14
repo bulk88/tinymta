@@ -26,8 +26,8 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	-mkdir "../docs/li/js"
 	perl grmp.pl 1 0
 
-../docs/li/gwl/rt.htm : grmp.pl routedatafinal.pl
-	-mkdir "../docs/li/gwl"
+../docs/li/wap/rt.htm : grmp.pl routedatafinal.pl
+	-mkdir "../docs/li/wap"
 	perl grmp.pl 1 1
 
 stop.htm : stations.js insertstalist.pl
@@ -92,5 +92,5 @@ gtfs.zip :
 
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/li/stop_.htm ../docs/li/stop.htm ../docs/li/rt.htm
-all: ../docs/li/js/rt.htm ../docs/li/gwl/rt.htm ../docs/li/gstp.htm
+all: ../docs/li/js/rt.htm ../docs/li/wap/rt.htm ../docs/li/gstp.htm
 

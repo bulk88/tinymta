@@ -16,7 +16,7 @@ my %borotbl = ( 'Queens' => 'Q',
 
 die "usage: grmp.pl JS RAW
 JS=1 RAW=0 stop.htm/JS/CORS/JSONP
-JS=1 RAW=1 GWL proxy
+JS=1 RAW=1 WAP/CFW
 JS=0 RAW=0 loband/mlvb.net proxy
 JS=0 RAW=1 unused" if ! defined $ARGV[0] || ! defined $ARGV[1];
 my $js = $ARGV[0];
@@ -63,7 +63,7 @@ foreach my $routename (@routes) {
                 if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/').$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+                write_html(($js?($raw?'../docs/li/wap/':'../docs/li/js/'):'../docs/li/').$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -80,7 +80,7 @@ foreach my $routename (@routes) {
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$rtnum.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
-        write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."$rtnum.htm", $rtfileheader.$rtfile."\n");
+        write_html(($js?($raw?'../docs/li/wap/':'../docs/li/js/'):'../docs/li/')."$rtnum.htm", $rtfileheader.$rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
@@ -112,7 +112,7 @@ sub altRtViewHTML {
             $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
         } else {
             $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-            $html .= ' <a href="../gwl/rt'.$pageidx.'.htm">Use GWL</a>';
+            $html .= ' <a href="../wap/rt'.$pageidx.'.htm">Use WAP</a>';
         }
     } else {
         #if($raw) {
@@ -121,7 +121,7 @@ sub altRtViewHTML {
         #} else {
             #$html .= ' <a href="raw/rt'.$pageidx.'.htm">Use Raw</a>';
             $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
-            $html .= ' <a href="gwl/rt'.$pageidx.'.htm">Use GWL</a>';
+            $html .= ' <a href="wap/rt'.$pageidx.'.htm">Use WAP</a>';
         #}
     }
     return $html;
@@ -134,14 +134,14 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+        write_html(($js?($raw?'../docs/li/wap/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html(($js?($raw?'../docs/li/gwl/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+    write_html(($js?($raw?'../docs/li/wap/':'../docs/li/js/'):'../docs/li/')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 
