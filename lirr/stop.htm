@@ -56,7 +56,7 @@ function genArvBodyObj(r) {
     /*r=resp*/
     r = r.contents || r; //JSONP
     var i, w = "West<br>",
-        t, l, h = (jsonp ? 'via JSONP' : 'via CORS')
+        t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
     for (i = 0; i < r.length; i++) {
         t = r[i];

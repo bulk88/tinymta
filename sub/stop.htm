@@ -136,8 +136,7 @@ if (r.length) {
               })
             }), e
     */
-    /*TODO current add timestamp like old feed*/
-    h = (jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
+    h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
         'Cur Sta: ' + r.stop.name + "<br>";
 
     for (i in o) {
