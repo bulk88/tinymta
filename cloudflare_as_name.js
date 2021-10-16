@@ -32,6 +32,11 @@ const faviconStr = new Int8Array([-119, 80, 78, 71, 13, 10, 26, 10,
     68, -82, 66, 96, -126
   ]);
 
+/*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
+/*STARTINSERT*/
+const s={"":"Meadowlands","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BOL":"Bolands-Employees","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont Park","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Av","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HIL":"Hillside-Employees","HOL":"Hollis","HPA":"Hunterspoint Av","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Av","MAV":"Merillon Avenue","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic Shirley","MSY":"Mastic-Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Av","NBD":"Nassau Blvd","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank"};
+/*ENDINSERT*/
+
 /* ASN/ISP lookup cloudflare worker script */
 function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
@@ -111,7 +116,7 @@ else if (pathname_callback.startsWith('/wap/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
-      var h = 'Refresh[<a accesskey=1 href=' + pathname_callback + '>Fast</a>] <a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
+      var h = 'Refresh[1][<a accesskey=1 href=' + pathname_callback + '>Fast</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
       resp = await resp;
 
       /*h=html*/
@@ -229,6 +234,46 @@ else if (pathname_callback.startsWith('/wap/s/')) {
       return resp
     }
   }}
+else if (pathname_callback.startsWith('/li/wap/s/')) {
+  pathname_callback = pathname_callback.substr(('/li/wap/s/'.length), 3);
+  if (/^\w+$/.test(pathname_callback)) {
+    var url_headsign = "http://backend.mylirr.org/arrivals/" + pathname_callback;
+    var resp = fetch(url_headsign, {
+      headers: {
+        'accept-version' : '1.5'
+      }
+    });
+    resp = await resp;
+    if (resp.status == 200) {
+      var r = resp.json();
+      var h = 'Refresh[1][<a accesskey=1 href=' + pathname_callback + '>Fast</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US')+" via CFW<br>" +
+        'Cur Sta: ' + s[pathname_callback] + "<br>East<br>";
+      r = await r;
+      var i, w = "West<br>",
+        t, l; /*w=west, t=train, l=lineofhtml, h=html*/
+      for (i = 0; i < r.length; i++) {
+        t = r[i];
+        //note to self, ceil is round up, |0 is round down
+        //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
+        l = new Date((l = t.time) * 1000 -(60*60*1000*4)).toLocaleTimeString().replace(':00 ', ' ') +
+          '-Min ' + Math.ceil((l - (new Date().getTime() / 1000)) / 60) +
+          '-Tk' + (t.track || '?') + "-" + s[(l = t.stops)[l.length - 1]] +
+          "<br>";
+        t.direction == 'E' ? h += l : w += l;
+      }
+      h += w;
+
+      return new Response(h, {
+        headers: {
+          'content-type': 'text/html; charset=utf-8',
+          'cache-control': 'no-cache, no-store'
+        }
+      });
+    } else {
+      return resp
+    }
+  }
+}
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
   var cf = request?.cf || {
