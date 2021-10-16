@@ -49,6 +49,18 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
+/* mislabeled now */
+function parseIsoDatetime(dt,i) {
+    dt = dt.split(/[: T-]/);
+    for(i in dt)
+        dt[i] = parseFloat(dt[i]);
+    //return //modified by bulk88 to be mins away instead of parse
+    //minus 4 hours UTC to EST time adjustment
+    return 'Min '+Math.floor(Math.abs((
+        new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
+        - (new Date(Date.now()-(60*60*1000*4)))) / 1e3) / 60);
+}
+
 /**
  * Respond to the request
  * @param {Request} request
@@ -91,6 +103,132 @@ else if (pathname_callback.startsWith('/li/api/')) {
     }
   });
 }
+else if (pathname_callback.startsWith('/wap/s/')) {
+  pathname_callback = pathname_callback.substr(('/wap/s/'.length), 3);
+  if (/^\w+$/.test(pathname_callback)) {
+    var url_headsign = "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:" + pathname_callback;
+    var resp = fetch(url_headsign);
+    resp = await resp;
+    if (resp.status == 200) {
+      resp = resp.json();
+      var h = 'Refresh[<a accesskey=1 href=' + pathname_callback + '>Fast</a>] <a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
+      resp = await resp;
+
+      /*h=html*/
+      var i, route, trip, alerts, o = {}, r = resp;
+      if (r.length) {
+        //initial array is for a geosearch with multiple stations, not exact sta
+        r = r[0];
+        alerts = r.alerts;
+        //server returns sorted by route, we want sort by dir
+        for (i in r.groups) {
+          route = r.groups[i];
+          url_headsign = route.headsign;
+          for (i in route.times) {
+            trip = route.times[i];
+            trip.shortRouteName = route.route.shortName;
+            (o[url_headsign] = o[url_headsign] || []).push(trip);
+          }
+        }
+        for (i in o)
+          //alpha sort ISO 8601 timestamps
+          o[i].sort(function(a, b) {
+            return a.departureFmt < b.departureFmt ? -1 :
+              a.departureFmt > b.departureFmt ? 1 :
+              0;
+          });
+        /* departureFmt becomes UI time eventually
+                return _.each(t.times, function(t) {
+                  e.times.push({
+                    stopId: t.stopId,
+                    realtime: t.realtime,
+                    status: t.realtimeState,
+                    departure: t.departureFmt,
+                    pattern: t.pattern ? t.pattern.id : null,
+                    tripHeadsign: t.tripHeadsign ? t.tripHeadsign.toLowerCase() : "",
+                    tripId: t.tripId,
+                    serviceDay: t.serviceDay,
+                    directionId: t.directionId
+                  })
+                }), e
+        */
+        h += (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US')+" via CFW<br>" +
+          'Cur Sta: ' + r.stop.name + "<br>";
+
+        for (i in o) {
+          h += i + "<br>";
+          //route is dir really
+          route = o[i];
+          for (i in route) {
+            //if departureDelay > 0 
+            //todo (49620-49080)/60 = 9 mins late
+            //MN/LIR algo, NYCT reports also
+            //realtimeDeparture: 49620
+            //scheduledDeparture: 49080
+            trip = route[i];
+            h += parseIsoDatetime(trip.departureFmt) +
+              '-' + trip.shortRouteName +
+              '-' + trip.tripHeadsign +
+              //disable track numbers, nobody cares, this isn't Commuter rail
+              //'-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track ) +
+              (trip.track === undefined ? '-Tk?' : '') +
+              (!trip.realtime ? '-NRT-' : '-') +
+              (function(rts) {
+                switch (rts) {
+                  case "SCHEDULED":
+                    return "SCH";
+                  case "UPDATED":
+                    return "UPD";
+                  case "CANCELED":
+                    return "CNX";
+                  case "ADDED":
+                    return "ADD";
+                  case "MODIFIED":
+                    return "MOD";
+                  default:
+                    return "UNK";
+                }
+              })(trip.realtimeState)
+              /* delay can be neg, chop off fractional,
+              OTP overflow bug on "service day", scheduledDeparture is seconds
+              since midnight of yesterday, realtimeDeparture is seconds since
+              midnight of today, happens right after 1200AM */
+              +
+              ((trip = ((((trip = trip.departureDelay) < -43200 ?
+                trip + 86400 : trip) / 60) | 0)) ? (trip > 0 ? '-L' : '-E') + Math.abs(trip) : '') + "<br>";
+          }
+        }
+        h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)<br><br>';
+        o = ''; // deferred UI alerts (ongoing (unsched) vs planned)
+        r = r.alerts;
+        //time sort alerts in the array
+        r.sort(function(a, b) {
+          return a.effectiveStartDate < b.effectiveStartDate ? -1 :
+            a.effectiveStartDate > b.effectiveStartDate ? 1 :
+            0;
+        });
+        for (i in r) {
+          trip = r[i];
+          if (trip.alertType) { //skip elevators, elevators are missing alertType field
+            route = trip.alertType + "<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText + "<br>" + trip.alertDescriptionText + "<br><br>";
+            //delays dont have a time period, put them first in UI
+            trip.humanReadableActivePeriod ? o += route : h += route;
+          }
+        }
+        h += o;
+      } else
+        h = "station not found";
+
+      return new Response(h, {
+        headers: {
+          'content-type': 'text/html; charset=utf-8',
+          'cache-control': 'no-cache, no-store'
+        }
+      });
+    } else {
+      return resp
+    }
+  }}
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
   var cf = request?.cf || {
