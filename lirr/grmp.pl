@@ -92,10 +92,10 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?
-                    ($raw?'href="http://googleweblight.com/?lite_url=http://tinymta.us.to/li/gstp.htm%23':'href="../stop.htm#')
+                    ($raw?'href="s/':'href="../stop.htm#')
                     :'href="http://www.loband.org/loband/filter/win/allorigins/api/%20/go/?url=https%3A//traintime.lirr.org/api/Departure%3Floc%3D')
                 .$stopid
-                .($js?($raw?'&f=1&lite_refresh=1"':'"'):'&callback=X&_ab_type=JavaScript"')
+                .($js?($raw?'"':'"'):'&callback=X&_ab_type=JavaScript"')
                 .'>'.$dispname."</a>\n";
 }
 
