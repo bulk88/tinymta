@@ -1,3 +1,4 @@
+"use strict";
 const faviconStr = new Int8Array([-119, 80, 78, 71, 13, 10, 26, 10,
     0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 70, 0, 0, 0, 76, 8, 6,
     0, 0, 0, -48, -75, -63, -30, 0, 0, 1, 104, 73, 68, 65, 84,
@@ -116,7 +117,10 @@ else if (pathname_callback.startsWith('/wap/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
-      var h = 'Refresh[1][<a accesskey=1 href=' + pathname_callback + '>Fast</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
+      var h = '[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
+      var hotkeys = [3,4,5,6,7,8,9,0];
+      var sawFirstDir;
+      var hotkey;
       resp = await resp;
 
       /*h=html*/
@@ -128,7 +132,8 @@ else if (pathname_callback.startsWith('/wap/s/')) {
         //server returns sorted by route, we want sort by dir
         for (i in r.groups) {
           route = r.groups[i];
-          url_headsign = route.headsign;
+          //less lines/better UI on phone
+          url_headsign = route.headsign.replace('Downtown & Brooklyn', 'Downtown & Bklyn');
           for (i in route.times) {
             trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
@@ -157,11 +162,12 @@ else if (pathname_callback.startsWith('/wap/s/')) {
                   })
                 }), e
         */
-        h += (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US')+" via CFW<br>" +
-          'Cur Sta: ' + r.stop.name + "<br>";
+        h += (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
+          'CurSta:' + r.stop.name + "<br>";
 
         for (i in o) {
-          h += i + "<br>";
+          h += (sawFirstDir?'<a accesskey='+(hotkey=hotkeys.shift())+' name='+hotkey+' href=#'+hotkey+'>'+i+'</a>':i) + "<br>"
+          sawFirstDir = true;
           //route is dir really
           route = o[i];
           for (i in route) {
@@ -215,7 +221,8 @@ else if (pathname_callback.startsWith('/wap/s/')) {
         for (i in r) {
           trip = r[i];
           if (trip.alertType) { //skip elevators, elevators are missing alertType field
-            route = trip.alertType + "<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText + "<br>" + trip.alertDescriptionText + "<br><br>";
+            hotkey = hotkeys.shift();
+            route = (hotkey === undefined ? trip.alertType : '<a accesskey='+hotkey+' name='+hotkey+' href=#'+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText + "<br>" + trip.alertDescriptionText + "<br><br>";
             //delays dont have a time period, put them first in UI
             trip.humanReadableActivePeriod ? o += route : h += route;
           }
@@ -246,10 +253,10 @@ else if (pathname_callback.startsWith('/li/wap/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       var r = resp.json();
-      var h = 'Refresh[1][<a accesskey=1 href=' + pathname_callback + '>Fast</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US')+" via CFW<br>" +
-        'Cur Sta: ' + s[pathname_callback] + "<br>East<br>";
+      var h = '[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
+        'CurSta:' + s[pathname_callback] + "<br>East<br>";
       r = await r;
-      var i, w = "West<br>",
+      var i, w = "<a accesskey=3 name=3 href=#3>West</a><br>",
         t, l; /*w=west, t=train, l=lineofhtml, h=html*/
       for (i = 0; i < r.length; i++) {
         t = r[i];
