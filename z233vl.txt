@@ -1,0 +1,13 @@
+Z233VL
+"Mozilla/5.0 (Linux; Android 5.1.1; Z233VL Build/LMY47V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/45.0.2454.95 Mobile Safari/537.36"
+
+LSK no event
+
+RSK no event
+
+camera no event
+
+# key, long tap only, OS conflict
+
+* key, long tap only, OS conflict
+
