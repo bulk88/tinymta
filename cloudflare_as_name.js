@@ -241,8 +241,8 @@ else if (pathname_callback.startsWith('/wap/s/')) {
       return resp
     }
   }}
-else if (pathname_callback.startsWith('/li/wap/s/')) {
-  pathname_callback = pathname_callback.substr(('/li/wap/s/'.length), 3);
+else if (pathname_callback.startsWith('/li/s/')) {
+  pathname_callback = pathname_callback.substr(('/li/s/'.length), 3);
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://backend.mylirr.org/arrivals/" + pathname_callback;
     var resp = fetch(url_headsign, {

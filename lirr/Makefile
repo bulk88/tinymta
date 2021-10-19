@@ -26,14 +26,7 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	-mkdir "../docs/li/js"
 	perl grmp.pl 1 0
 
-../docs/li/wap/rt.htm : grmp.pl routedatafinal.pl
-	-mkdir "../docs/li/wap"
-	perl grmp.pl 1 1
-
 stop.htm : stations.js insertstalist.pl
-	perl insertstalist.pl "$@"
-
-gstp.htm : stations.js insertstalist.pl
 	perl insertstalist.pl "$@"
 
 stations.js stations.pl: mkstalist.pl
@@ -53,12 +46,6 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	-mkdir "../docs/li"
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"
-	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
-	perl ../adj_postmini.pl "$@"
-
-../docs/li/gstp.htm : gstp.htm ../minify_config.json ../adj_postmini.pl
-	-mkdir "../docs/li"
-	copy /y gstp.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
@@ -92,5 +79,5 @@ gtfs.zip :
 
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/li/stop_.htm ../docs/li/stop.htm ../docs/li/rt.htm
-all: ../docs/li/js/rt.htm ../docs/li/wap/rt.htm ../docs/li/gstp.htm
+all: ../docs/li/js/rt.htm
 
