@@ -109,7 +109,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
 #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
 #anyone got a better transcoder/proxy sandwich?
                 .($js?($raw?'href="s/':'href="../stop.htm#')
-                        : ($raw?'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A':
+                        : ($raw?'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:':
                                     'href="http://www.loband.org/loband/filter/net/mlvb/%20/TrainTimeLB-367443097.us-east-1.elb.amazonaws.com/getTime/'))
                 .$stopid
                 .($js?($raw?'':''):'?callback=X')
