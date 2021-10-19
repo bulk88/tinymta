@@ -11,3 +11,28 @@ camera no event
 
 * key, long tap only, OS conflict
 
+Z233VL.json IS broken..... CODE 229 IS COMPOSE/UNKNOWN KEY
+
+HTTP URL to JSON
+
+var i = {};  s.replace(/([^\n]+)\n\/keyup\?([^\n]+)/g, function(m, m1, m2){debugger; i[m1]=JSON.parse(atob(m2)); return '1';})
+
+clean out same keys
+
+n = {};
+Object.keys(i).forEach(function(kbdkey) {
+    Object.keys(i[kbdkey]).forEach(function(kprop) {
+        var curval = i[kbdkey][kprop];
+        Object.keys(i).forEach(function(kbdkey2) {
+if(i[kbdkey2][kprop] != curval){(n[kbdkey]=n[kbdkey]||{})[kprop] = curval}
+})
+    })
+})
+
+
+event hook HTML
+
+<script>document.addEventListener('keyup', function(e){var a=[]; var j={}; for (i in e) {
+  a.push(i+"="+e[i]);j[i]=e[i].toString()
+};fetch('/keyup?'+btoa(JSON.stringify(j))); alert(a.sort().join(' '));if(/^\d+$/.test(e.key)){document.querySelector('[accesskey="'+e.key+'"]').click()}})</script>
+
