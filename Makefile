@@ -17,7 +17,6 @@ docs/more.htm : more.htm minify_config.json
 
 docs/jsrdt.htm : jsrdt.htm minify_config.json
 	copy /y jsrdt.htm "$@"
-	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/li/jsrdt.htm : docs/jsrdt.htm
 	copy /y "docs/jsrdt.htm" "$@"
