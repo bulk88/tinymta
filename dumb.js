@@ -62,7 +62,8 @@ function kph(e) {
     case 119: //asci w
       realkey = 9;
       break;
-    case 32: //asci SPACE
+    case 48: //asci 0 KaiOS
+    case 32: //asci SPACE ZTE Chrome
       realkey = 0;
       break;
     case 190: //asci period
