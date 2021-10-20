@@ -117,7 +117,7 @@ else if (pathname_callback.startsWith('/wap/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
-      var h = '[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
+      var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
       var hotkeys = [3,4,5,6,7,8,9,0];
       var sawFirstDir;
       var hotkey;
@@ -253,7 +253,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       var r = resp.json();
-      var h = '[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
+      var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
         'CurSta:' + s[pathname_callback] + "<br>East<br>";
       r = await r;
       var i, w = "<a accesskey=3 name=3 href=#3>West</a><br>",
