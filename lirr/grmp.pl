@@ -133,7 +133,7 @@ if($file){
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'
 .($js?'<link href="//backend.mylirr.org" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//backend.mylirr.org">':'')
-.'</head><body>'.$_[1].'</body></html>');
+.'</head><body>'.$_[1].($js &&!$raw ?'<script src=../../dumb.js></script>':'').'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 

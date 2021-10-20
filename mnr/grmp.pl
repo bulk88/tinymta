@@ -144,7 +144,7 @@ if($file){
 }
 
 sub write_html { #$filename, $string
-    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'.($mob?'':'<link href="http://as0.mta.info" rel="preconnect"><link rel="dns-prefetch" href="http://as0.mta.info">').'</head><body>'.$_[1].'</body></html>');
+    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'.($mob?'':'<link href="http://as0.mta.info" rel="preconnect"><link rel="dns-prefetch" href="http://as0.mta.info">').'</head><body>'.$_[1].'<script src=../dumb.js></script></body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 
