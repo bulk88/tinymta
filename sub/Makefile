@@ -17,11 +17,6 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
-../docs/gstp.htm : gstp.htm ../minify_config.json ../adj_postmini.pl
-	copy /y gstp.htm "$@"
-	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
-	perl ../adj_postmini.pl "$@"
-
 ../docs/stations.htm : stations.htm ../minify_config.json
 	copy /y stations.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
@@ -81,20 +76,11 @@ plan.htm :  gr3.pl routedatafinal.pl tripsdb.pl
 	perl gr3.pl 0 1
 
 ../docs/rt.htm : grmp.pl routedatafinal.pl
-	perl grmp.pl 0 0
+	perl grmp.pl 0
 
 ../docs/js/rt.htm : grmp.pl routedatafinal.pl
 	-mkdir "../docs/js"
-	perl grmp.pl 1 0
-
-../docs/wap/rt.htm : grmp.pl routedatafinal.pl
-	-mkdir "../docs/wap"
-	perl grmp.pl 1 1
-
-../docs/raw/rt.htm : grmp.pl routedatafinal.pl
-	-mkdir "../docs/raw"
-	perl grmp.pl 0 1
-
+	perl grmp.pl 1
 
 nmap_stations.json: nmap_gen1.js
 	node nmap_gen1.js
@@ -133,8 +119,8 @@ mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
 all: ../docs/stationsnojs.htm ../docs/stations.htm
-all: ../docs/stop_.htm ../docs/stop.htm ../docs/gstp.htm
-all: ../docs/rt.htm ../docs/js/rt.htm ../docs/raw/rt.htm ../docs/wap/rt.htm
+all: ../docs/stop_.htm ../docs/stop.htm
+all: ../docs/rt.htm ../docs/js/rt.htm
 all: ../docs/tileMap.htm ../docs/mapTileBackground.png
 all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
 all: ../docs/zoom_out.png ../docs/zoom_out_over.png

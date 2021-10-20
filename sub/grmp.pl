@@ -13,14 +13,12 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Staten Island' => 'S',
             );
 
-die "usage: grmp.pl JS RAW
-JS=1 RAW=0 stop.htm/JS/CORS/JSONP
-JS=1 RAW=1 WAP/CFW
-JS=0 RAW=0 loband/mlvb.net proxy
-JS=0 RAW=1 RAW urls" if ! defined $ARGV[0] || ! defined $ARGV[1];
+die "usage: grmp.pl JS
+JS=1 stop.htm/JS/CORS/JSONP
+JS=0 WAP/CFW
+" if ! defined $ARGV[0];
 
 my $js = $ARGV[0];
-my $raw = $ARGV[1];
 #VERY VERY VERY slow, set to 0 during development, TODO research having 1
 #nodejs processes instead of a million system() calls
 my $minifyhtml = !$ENV{DISABLEMINI};
@@ -70,7 +68,7 @@ foreach my $routename (@routes) {
                 if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('../docs/'.($js?($raw?'wap/':'js/'):($raw?'raw/':'')).$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
+                write_html('../docs/'.($js?'js/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -88,7 +86,7 @@ foreach my $routename (@routes) {
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$rtnum.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
-        write_html('../docs/'.($js?($raw?'wap/':'js/'):($raw?'raw/':''))."$rtnum.htm", $rtfile."\n");
+        write_html('../docs/'.($js?'js/':'')."$rtnum.htm", $rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
@@ -108,11 +106,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
 #but mobileleap has neither and openwave ignores the header, so mobileleap errors out
 #so use mobileleap to convert MIME to something normal, then loband.org to fix cookie issue
 #anyone got a better transcoder/proxy sandwich?
-                .($js?($raw?'href="s/':'href="../stop.htm#')
-                        : ($raw?'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:':
-                                    'href="http://www.loband.org/loband/filter/net/mlvb/%20/TrainTimeLB-367443097.us-east-1.elb.amazonaws.com/getTime/'))
+                .($js?'href="../stop.htm#':'href="s/')
                 .$stopid
-                .($js?($raw?'':''):'?callback=X')
                 .'">'.$dispname."</a>\n";
 }
 
@@ -124,25 +119,9 @@ sub altRtViewHTML {
     my $html;
     my $pageidx = $_[0];
     if($js) {
-        if($raw) {
-            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-            $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
-            $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
-        } else {
-            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-            $html .= ' <a href="../raw/rt'.$pageidx.'.htm">Use Raw</a>';
-            $html .= ' <a href="../wap/rt'.$pageidx.'.htm">Use WAP</a>';
-        }
+      $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
     } else {
-        if($raw) {
-            $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
-            $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
-            $html .= ' <a href="../WAP/rt'.$pageidx.'.htm">Use WAP</a>';
-        } else {
-            $html .= ' <a href="raw/rt'.$pageidx.'.htm">Use Raw</a>';
-            $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
-            $html .= ' <a href="wap/rt'.$pageidx.'.htm">Use WAP</a>';
-        }
+      $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
     }
     return $html;
 }
@@ -154,20 +133,20 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html('../docs/'.($js?($raw?'wap/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+        write_html('../docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('../docs/'.($js?($raw?'wap/':'js/'):($raw?'raw/':''))."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+    write_html('../docs/'.($js?'js/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'
-    .($js &&!$raw?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//otp-mta-prod.camsys-apps.com">':'')
-    .'</head><body>'.$_[1].($js &&!$raw ?'<script src=../dumb.js></script>':'').'</body></html>');
+    .($js?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//otp-mta-prod.camsys-apps.com">':'')
+    .'</head><body>'.$_[1].($js?'<script src=../dumb.js></script>':'').'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 

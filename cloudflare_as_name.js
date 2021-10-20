@@ -109,8 +109,8 @@ else if (pathname_callback.startsWith('/li/api/')) {
     }
   });
 }
-else if (pathname_callback.startsWith('/wap/s/')) {
-  pathname_callback = pathname_callback.substr(('/wap/s/'.length), 3);
+else if (pathname_callback.startsWith('/s/')) {
+  pathname_callback = pathname_callback.substr(('/s/'.length), 3);
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:" + pathname_callback;
     var resp = fetch(url_headsign);
