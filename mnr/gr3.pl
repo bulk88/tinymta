@@ -107,7 +107,7 @@ print "\n<br>\n".($mob?'<a href="stations.htm">MTA No Mobile</a>'."<br>\n<div>\n
 print join("<br>\n", @linesboroughhtml);
 print $mob?"\n<br>\n</div>\n<br>\n":"\n<br><br>\n";
 print join($mob?"\n":"<br>\n", @linestopshtml);
-print "\n".'</body></html>';
+print "\n".'<script src=../1p.js></script>'.'</body></html>';
 $Data::Dumper::Sortkeys = 1;
 
 #return a hash that translates route_id to a friendly display name

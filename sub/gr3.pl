@@ -259,7 +259,7 @@ print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.
 print join("<br>\n", @linesboroughhtml);
 print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
-print "\n".'</body></html>';
+print "\n".($js||$planner?'<script src=1p.js></script>':'').'</body></html>';
 $Data::Dumper::Sortkeys = 1;
 
 #return a hash that translates route_id to a friendly display name

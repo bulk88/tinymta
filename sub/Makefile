@@ -43,6 +43,9 @@ plan2.htm : plan.htm
 	copy /y plan.js "$@"
 	uglifyjs -c -m toplevel -m eval --keep-fnames "$@" -o "$@"
 
+1p.js : ../1p.js
+	copy /y "..\1p.js" "$@"
+
 ../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
 	perl adj_tilepath.pl "$@"
@@ -66,7 +69,7 @@ plan2.htm : plan.htm
 ../docs/zoom_out_over.png : $(@F)
 	copy /y $(@F) "$@"
 
-stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
+stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl 1p.js
 	perl gr3.pl 1 0
 
 stationsnojs.htm : gr3.pl routedatafinal.pl

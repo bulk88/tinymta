@@ -25,6 +25,10 @@ docs/dumb.js : dumb.js
 	copy /y dumb.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
+docs/1p.js : 1p.js
+	copy /y 1p.js "$@"
+	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
+
 docs/404.html : 404.html
 	copy /y 404.html "$@"
 
@@ -72,7 +76,7 @@ mini:
 docs/ac.appcache : docs/index.htm docs/more.htm docs/404.html docs/favicon.ico
 docs/ac.appcache : docs/CNAME docs/README.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
-docs/ac.appcache : docs/li/jsrdt.htm
+docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js
 docs/ac.appcache : MNRR LIRRMKF SUBMKF
 	perl -e"use File::Slurp; \
 	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \
