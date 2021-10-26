@@ -3,7 +3,7 @@
 
   ver = ver ? parseInt(ver[2], 10) : false;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
-  if (ver > 86) {
+  if ((ver > 70 && ver < 84) || ver > 86) {
     window.onpageshow = function(event) {
       if (!event.persisted) {
         var cord = sessionStorage.getItem('sub1p');
