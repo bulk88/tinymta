@@ -35,10 +35,10 @@ onhashchange =
         if (e.hash.length > 4) {
           if (isDest2) {
             //http://tripplanner.mta.info/MyTrip/js/landmarks.js ::: is field separator
-            e.pathname = e.pathname.replace('/plan.htm', '/planIE.htm');
+            e.pathname = e.pathname.replace('plan.htm', 'planIE.htm');
             e.hash = originSta + ":::" + e.hash.substring(1);
           } else {
-            e.pathname = e.pathname.replace('/plan.htm', '/plan2.htm');
+            e.pathname = e.pathname.replace('plan.htm', 'plan2.htm');
           }
         }
       }
