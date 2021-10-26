@@ -3,7 +3,6 @@
 if (document.addEventListener) {
   function kph(e) {
     var realkey;
-    alert(e);
     switch (e.keyCode) {
       case 38: //up arrow
         realkey = 'Up';
