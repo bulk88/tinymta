@@ -198,13 +198,21 @@ sub getPlanStr {
         $name =~ s/(?<=\d)TH//g;
         $routes =~ s/^\s+|\s+$//g;
         if($routes eq '6') {$routes = '456'}
-        if($routes eq '1') {$routes = '123'}
+        #116 and 125 street lenox vs broadway separate
+        if($routes eq '1' && $stopid ne '225' && $stopid ne '226') {
+            $routes = '123'
+        }
         #2 @ columbus circle
         if($routes eq '1/A/B/C/D') {$routes = '1/2/A/B/C/D'}
-        if($routes eq '5') {$routes = '25'}
+        #125/lex 456 not 125/lenox 2/3
+        if($routes eq '5' && $stopid ne '621') {$routes = '25'}
         if($routes eq '2') {$routes = '25'}
         if($routes eq '3/4') {$routes = '2345'}
-        if($routes eq '2/3') {$routes = '2345'}
+        if($routes eq '2/3'
+           #exclude lenox ave line from lexington ave name conflict
+           && $stopid ne '621'
+           && $stopid ne '622'
+           && $stopid ne '623') {$routes = '2345'}
         if($routes eq '3') {$routes = '2345'}
         if($routes eq 'C') {$routes = 'AC'}
         if($routes eq 'C') {$routes = 'AC'}
@@ -227,7 +235,8 @@ sub getPlanStr {
         if($routes eq 'Q'&& $stopid ne 'R44') {$routes = 'NQR'}
         #63 lex
         if($routes eq 'F/Q') {$routes = 'FQNR'}
-        if($routes eq 'N') {$routes = 'QNW'}
+        #86 st brooklyn on R (R44) vs 86 st manhat 2nd ave
+        if($routes eq 'N' && $stopid ne 'Q04') {$routes = 'QNW'}
         if($routes eq 'N/R') {$routes = 'NRQ'}
         if($routes eq 'D/N/R') {$routes = 'DNRQW'}
         if($routes eq 'D/N/R/LIRR') {$routes = 'DNRQW'}
