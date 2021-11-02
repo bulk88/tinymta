@@ -30,7 +30,7 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
 ../docs/plan2.htm : ../docs/plan.htm
-	copy /y "../docs/plan.htm" "$@"
+	copy /y "..\docs\plan.htm" "$@"
 
 plan2.htm : plan.htm
 	copy /y plan.htm "$@"
