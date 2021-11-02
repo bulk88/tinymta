@@ -7,7 +7,7 @@ docs/index.htm : index.htm minify_config.json
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/index.html : docs/index.htm
-	copy /y "docs/index.htm" "$@"
+	copy /y "docs\index.htm" "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/more.htm : more.htm minify_config.json
@@ -19,7 +19,7 @@ docs/jsrdt.htm : jsrdt.htm minify_config.json
 	copy /y jsrdt.htm "$@"
 
 docs/li/jsrdt.htm : docs/jsrdt.htm
-	copy /y "docs/jsrdt.htm" "$@"
+	copy /y "docs\jsrdt.htm" "$@"
 
 docs/dumb.js : dumb.js
 	copy /y dumb.js "$@"

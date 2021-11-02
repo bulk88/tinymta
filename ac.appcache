@@ -1,12 +1,27 @@
 CACHE MANIFEST
-# v Tue Nov  2 01:24:50 2021
+# v Tue Nov  2 04:18:16 2021
 
 CACHE:
+1p.js
+dumb.js
 favicon.ico
 index.htm
+li/stations.htm
+li/stop.htm
+li/stop_.htm
+mapTileBackground.png
+mn/stations.htm
+plan.htm
+plan.js
 stations.htm
 stop.htm
 stop_.htm
+tileMap.htm
+transparentTile.gif
+zoom_in.png
+zoom_in_over.png
+zoom_out.png
+zoom_out_over.png
 
 NETWORK:
 *
