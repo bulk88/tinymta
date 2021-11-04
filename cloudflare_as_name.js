@@ -114,11 +114,11 @@ else if (pathname_callback.startsWith('/s/')) {
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:" + pathname_callback;
     var resp = fetch(url_headsign);
+    var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
+    var hotkeys = [3,4,5,6,7,8,9,0];
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
-      var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
-      var hotkeys = [3,4,5,6,7,8,9,0];
       var sawFirstDir;
       var hotkey;
       resp = await resp;
@@ -250,14 +250,14 @@ else if (pathname_callback.startsWith('/li/s/')) {
         'accept-version' : '1.5'
       }
     });
+    var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
+        'CurSta:' + s[pathname_callback] + "<br>East<br>";
+    var w = "<a accesskey=3 name=3 href=#3>West</a><br>"; /*w=west*/
     resp = await resp;
     if (resp.status == 200) {
       var r = resp.json();
-      var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
-        'CurSta:' + s[pathname_callback] + "<br>East<br>";
       r = await r;
-      var i, w = "<a accesskey=3 name=3 href=#3>West</a><br>",
-        t, l; /*w=west, t=train, l=lineofhtml, h=html*/
+      var i, t, l; /*t=train, l=lineofhtml, h=html*/
       for (i = 0; i < r.length; i++) {
         t = r[i];
         //note to self, ceil is round up, |0 is round down

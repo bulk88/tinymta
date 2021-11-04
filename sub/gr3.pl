@@ -261,10 +261,11 @@ sub getPlanStr {
     if(!$tripLoc) {
       $DB::single=1;1;
     }
+    $tripLoc =~ s/\$SUBSTA$//;
     return $tripLoc;
 }
 print join(" \n", @lineshtml);
-print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.htm">Use JS</a>')."<br>\n";
+print "\n<br>\n".($planner?'':$js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.htm">Use JS</a>')."<br>\n";
 print join("<br>\n", @linesboroughhtml);
 print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
