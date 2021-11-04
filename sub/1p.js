@@ -4,25 +4,25 @@
   ver = ver ? parseInt(ver[2], 10) : false;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
   if ((ver > 70 && ver < 84) || ver > 86) {
-    window.onpageshow = function(event) {
+    onpageshow = function(event) {
       if (!event.persisted) {
-        var cord = sessionStorage.getItem('sub1p');
+        var cord = sessionStorage.getItem('1p'+location.pathname);
         if (cord) {
           cord = JSON.parse(cord);
           if (cord.hasOwnProperty('scrollX') && cord.hasOwnProperty('scrollX')) {
-            window.requestAnimationFrame(function() {
-              window.scroll(cord.scrollX, cord.scrollY);
+            requestAnimationFrame(function() {
+              scroll(cord.scrollX, cord.scrollY);
             });
           }
         }
       }
     };
 
-    window.onpagehide = function(event) {
+    onpagehide = function(event) {
       if (!event.persisted) {
-        sessionStorage.setItem('sub1p', JSON.stringify({
-          scrollY: window.scrollY,
-          scrollX: window.scrollX
+        sessionStorage.setItem('1p'+location.pathname, JSON.stringify({
+          scrollY: scrollY,
+          scrollX: scrollX
         }));
       }
     };
