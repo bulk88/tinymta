@@ -2,7 +2,7 @@ var originStation;
 onhashchange =
   // browser cache friendly hash argument
   function(evt) {
-    var destStation = window.location.hash.substring(1);
+    var destStation = location.hash.substring(1);
     //not a "category" click but a final location click
     if (destStation.indexOf('$') != -1) {
       if (!originStation) {
@@ -16,15 +16,15 @@ onhashchange =
 //onload event/back navigate
 (function() {
   //debugger;
-  var stationHash = window.location.hash.substring(1);
+  var stationHash = location.hash.substring(1);
   //if back from MTA domain, return to 1st station mode
   if (stationHash.indexOf('$') != -1) {
     originStation = stationHash;
   }
 
   //this is a .js file in a head element, rest of doc not parsed yet
-  window.onload = function() {
-    if (window.navigator.userAgent.indexOf('MSIE ') > 0) {
+  onload = function() {
+    if (!('onhashchange' in window && (docmode === undefined || docmode > 7 ))) {
       var i = document.location;
       var isDest2 = i.pathname.indexOf('plan2.htm') >= 0;
       var originSta = i.hash.substring(1);
