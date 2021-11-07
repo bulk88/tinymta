@@ -75,7 +75,7 @@ function parseIsoDatetime(dt,i) {
     //minus 4 hours UTC to EST time adjustment
     return 'Min '+Math.floor(Math.abs((
         new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
-        - (new Date(Date.now()-(60*60*1000*4)))) / 1e3) / 60);
+        - (new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })))) / 1e3) / 60);
 }
 
 /**
@@ -173,8 +173,9 @@ else if (pathname_callback.startsWith('/s/')) {
                   })
                 }), e
         */
-        h += (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
-          'CurSta:' + r.stop.name + "<br>";
+        h += new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
+          + " via CFW<br>"
+          + 'CurSta:' + r.stop.name + "<br>";
 
         for (i in o) {
           h += (sawFirstDir?'<a accesskey='+(hotkey=hotkeys.shift())+' name='+hotkey+' href=#'+hotkey+'>'+i+'</a>':i) + "<br>"
@@ -261,8 +262,10 @@ else if (pathname_callback.startsWith('/li/s/')) {
         'accept-version' : '1.5'
       }
     });
-    var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>' + (new Date(Date.now()-(60*60*1000*4))).toLocaleTimeString('en-US').replace(' ','')+" via CFW<br>" +
-        'CurSta:' + s[pathname_callback] + "<br>East<br>";
+    var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] <a href=' + url_headsign + '>Raw</a><br>'
+      + new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
+      +" via CFW<br>"
+      +'CurSta:' + s[pathname_callback] + "<br><a accesskey=2 name=2 href=#2>East</a><br>";
     var w = "<a accesskey=3 name=3 href=#3>West</a><br>"; /*w=west*/
     resp = await resp;
     if (resp.status == 200) {
@@ -273,8 +276,8 @@ else if (pathname_callback.startsWith('/li/s/')) {
         t = r[i];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
-        l = new Date((l = t.time) * 1000 -(60*60*1000*4)).toLocaleTimeString().replace(':00 ', ' ') +
-          '-Min ' + Math.ceil((l - (new Date().getTime() / 1000)) / 60) +
+        l = new Date((l = t.time) * 1000).toLocaleTimeString('en-US', { timeZone: 'America/New_York' }).replace(':00 ', ' ') +
+          '-Min ' + Math.ceil((l - (new Date(new Date().toLocaleString()) / 1000)) / 60) +
           '-Tk' + (t.track || '?')
         + "-<font color=" + (
 /*STARTCOLOR*/
