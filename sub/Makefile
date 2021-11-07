@@ -2,6 +2,9 @@ first: all
 
 .PHONY: all package
 
+stop.htm : routes.txt ../insertcolors.pl
+	perl ../insertcolors.pl "$@"
+
 stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"

@@ -47,6 +47,10 @@ docs/README.md : README.md
 docs/google71e8cfa7440e51ce.html : google71e8cfa7440e51ce.html
 	copy /y google71e8cfa7440e51ce.html "$@"
 
+cloudflare_as_name.min.js : cloudflare_as_name.js
+	copy /y cloudflare_as_name.js "$@"
+	terser -c -m toplevel -m eval "$@" -o "$@"
+
 MNRR :
 	cd mnr && $(MAKE) all
 
@@ -86,4 +90,4 @@ docs/ac.appcache : MNRR LIRRMKF SUBMKF
 	git add docs/ac.appcache
 	git add ac.appcache
 
-all: docs/ac.appcache
+all: docs/ac.appcache cloudflare_as_name.min.js

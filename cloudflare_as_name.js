@@ -55,6 +55,17 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 
+
+//text includes [] chars usually, if route blank, text is route
+function mkSubFontTag(text, route) {
+  var c =
+/*STARTCOLOR*/
+{"1":"EE352E","2":"EE352E","3":"EE352E","4":"00933C","5":"00933C","5X":"00933C","6":"00933C","6X":"00A65C","7":"B933AD","7X":"B933AD","A":"2850AD","B":"FF6319","C":"2850AD","D":"FF6319","E":"2850AD","F":"FF6319","FX":"FF6319","G":"6CBE45","GS":"6D6E71","J":"996633","L":"A7A9AC","M":"FF6319","N":"FCCC0A","Q":"FCCC0A","R":"FCCC0A","W":"FCCC0A","Z":"996633"}
+/*ENDCOLOR*/
+  [route||text];
+  return c ?'<font color='+c+'>'+text+'</font>':text;
+}
+
 /* mislabeled now */
 function parseIsoDatetime(dt,i) {
     dt = dt.split(/[: T-]/);
@@ -178,7 +189,7 @@ else if (pathname_callback.startsWith('/s/')) {
             //scheduledDeparture: 49080
             trip = route[i];
             h += parseIsoDatetime(trip.departureFmt) +
-              '-' + trip.shortRouteName +
+              '-' + mkSubFontTag(trip.shortRouteName) +
               '-' + trip.tripHeadsign +
               //disable track numbers, nobody cares, this isn't Commuter rail
               //'-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track ) +
@@ -222,7 +233,7 @@ else if (pathname_callback.startsWith('/s/')) {
           trip = r[i];
           if (trip.alertType) { //skip elevators, elevators are missing alertType field
             hotkey = hotkeys.shift();
-            route = (hotkey === undefined ? trip.alertType : '<a accesskey='+hotkey+' name='+hotkey+' href=#'+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText + "<br>" + trip.alertDescriptionText + "<br><br>";
+            route = (hotkey === undefined ? trip.alertType : '<a accesskey='+hotkey+' href=#'+hotkey+' name='+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + "<br>" + trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag) + "<br><br>";
             //delays dont have a time period, put them first in UI
             trip.humanReadableActivePeriod ? o += route : h += route;
           }
