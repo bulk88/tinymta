@@ -26,8 +26,9 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	-mkdir "../docs/li/js"
 	perl grmp.pl 1 0
 
-stop.htm : stations.js insertstalist.pl
+stop.htm : stations.js insertstalist.pl ../insertcolors.pl routesmodded.txt
 	perl insertstalist.pl "$@"
+	perl ../insertcolors.pl "$@" routesmodded.txt
 
 stations.js stations.pl: mkstalist.pl
 	perl mkstalist.pl

@@ -125,8 +125,8 @@ else if (pathname_callback.startsWith('/s/')) {
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:" + pathname_callback;
     var resp = fetch(url_headsign);
-    var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] [2]<a accesskey=2 href=' + url_headsign + '>Raw</a><br>';
-    var hotkeys = [3,4,5,6,7,8,9,0];
+    var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] <a href=' + url_headsign + '>Raw</a><br>';
+    var hotkeys = [2,3,4,5,6,7,8,9,0];
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
@@ -275,8 +275,13 @@ else if (pathname_callback.startsWith('/li/s/')) {
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = new Date((l = t.time) * 1000 -(60*60*1000*4)).toLocaleTimeString().replace(':00 ', ' ') +
           '-Min ' + Math.ceil((l - (new Date().getTime() / 1000)) / 60) +
-          '-Tk' + (t.track || '?') + "-" + s[(l = t.stops)[l.length - 1]] +
-          "<br>";
+          '-Tk' + (t.track || '?')
+        + "-<font color=" + (
+/*STARTCOLOR*/
+{"11":"60269E","12":"4D5357","BY":"00985F","FR":"6E3219","HM":"CE8E00","LB":"FF6319","MK":"00B2A9","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WH":"00A1DE"}
+/*ENDCOLOR*/
+        )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
+        + "</font><br>";
         t.direction == 'E' ? h += l : w += l;
       }
       h += w;

@@ -1,9 +1,10 @@
+# usage: mand-foo.htm optional-routes.txt
 use strict;
 use File::Slurp;
 use Text::CSV::Hashify;
 use Cpanel::JSON::XS;
 my $obj = Text::CSV::Hashify->new( {
-    file        => 'routes.txt',
+    file        => $ARGV[1] ? $ARGV[1] : 'routes.txt',
     format      => 'hoh',
     key         => "route_id",
     quote_char          => '"',
