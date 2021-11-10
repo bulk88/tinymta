@@ -105,22 +105,20 @@ function minsAway(t) {
 
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h,i,route,trip,alerts,o = {};
+    var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0];
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     r = eval('0,'+r);
 if (r.length) {
     //initial array is for a geosearch with multiple stations, not exact sta
     r = r[0];
-    alerts = r.alerts;
     //server returns sorted by route, we want sort by dir
     for (i in r.groups) {
         route = r.groups[i];
-        /*h=headsign*/
-        h = route.headsign;
+        alerts_headsign = route.headsign;
         for (i in route.times) {
             trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
-            (o[h] = o[h] || []).push(trip);
+            (o[alerts_headsign] = o[alerts_headsign] || []).push(trip);
         }
     }
     for (i in o)

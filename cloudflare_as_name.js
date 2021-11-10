@@ -65,6 +65,16 @@ function mkSubFontTag(text, route) {
   [route||text];
   return c ?'<font color='+c+'>'+text+'</font>':text;
 }
+//t = "2021-05-11T18:58:08-04:00" getFormattedTime
+/* unused since switch from abs time to Mins
+function getFormattedTime(t) {
+    var e = parseIsoDatetime(t),
+        h = e.getHours(),
+        m = e.getMinutes(),
+        a = h > 12 ? h - 12 : h;
+    return (0 === a ? "12" : a)+ ":"+(m < 10 ? "0" + m : m)+" "+(h > 11 ? "PM" : "AM");
+}
+*/
 
 /* mislabeled now */
 function parseIsoDatetime(dt,i) {
@@ -72,7 +82,6 @@ function parseIsoDatetime(dt,i) {
     for(i in dt)
         dt[i] = parseFloat(dt[i]);
     //return //modified by bulk88 to be mins away instead of parse
-    //minus 4 hours UTC to EST time adjustment
     return 'Min '+Math.floor(Math.abs((
         new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
         - (new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })))) / 1e3) / 60);
@@ -130,7 +139,6 @@ else if (pathname_callback.startsWith('/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
-      var sawFirstDir;
       var hotkey;
       resp = await resp;
 
@@ -143,12 +151,13 @@ else if (pathname_callback.startsWith('/s/')) {
         //server returns sorted by route, we want sort by dir
         for (i in r.groups) {
           route = r.groups[i];
+          /*h=headsign*/
           //less lines/better UI on phone
-          url_headsign = route.headsign.replace('Downtown & Brooklyn', 'Downtown & Bklyn');
+          h = route.headsign.replace('Downtown & Brooklyn', 'Downtown & Bklyn');
           for (i in route.times) {
             trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
-            (o[url_headsign] = o[url_headsign] || []).push(trip);
+            (o[h] = o[h] || []).push(trip);
           }
         }
         for (i in o)
@@ -178,8 +187,7 @@ else if (pathname_callback.startsWith('/s/')) {
           + 'CurSta:' + r.stop.name + "<br>";
 
         for (i in o) {
-          h += (sawFirstDir?'<a accesskey='+(hotkey=hotkeys.shift())+' name='+hotkey+' href=#'+hotkey+'>'+i+'</a>':i) + "<br>"
-          sawFirstDir = true;
+          h += '<a accesskey='+(hotkey=hotkeys.shift())+' name='+hotkey+' href=#'+hotkey+'>'+i+"</a><br>";
           //route is dir really
           route = o[i];
           for (i in route) {
