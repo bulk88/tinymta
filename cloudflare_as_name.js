@@ -153,11 +153,11 @@ else if (pathname_callback.startsWith('/s/')) {
           route = r.groups[i];
           /*h=headsign*/
           //less lines/better UI on phone
-          h = route.headsign.replace('Downtown & Brooklyn', 'Downtown & Bklyn');
+          url_headsign = route.headsign.replace('Downtown & Brooklyn', 'Downtown & Bklyn');
           for (i in route.times) {
             trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
-            (o[h] = o[h] || []).push(trip);
+            (o[url_headsign] = o[url_headsign] || []).push(trip);
           }
         }
         for (i in o)
