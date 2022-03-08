@@ -200,7 +200,7 @@ midnight of today, happens right after 1200AM */
     for (i in r) {
     trip = r[i];
     if(trip.alertType) { //skip elevators, elevators are missing alertType field
-      route = trip.alertType+"<br>"+(trip.humanReadableActivePeriod || 'Ongoing')+"<br>"+trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag)+"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag)+"<br><br>";
+      route = trip.alertType+"<br>"+(trip.humanReadableActivePeriod || 'Ongoing')+"<br>"+trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag)+(trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'')+"<br><br>";
       //delays dont have a time period, put them first in UI
       trip.humanReadableActivePeriod ? o += route : h += route;
     }

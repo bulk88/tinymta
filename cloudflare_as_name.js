@@ -242,7 +242,7 @@ else if (pathname_callback.startsWith('/s/')) {
           trip = r[i];
           if (trip.alertType) { //skip elevators, elevators are missing alertType field
             hotkey = hotkeys.shift();
-            route = (hotkey === undefined ? trip.alertType : '<a accesskey='+hotkey+' href=#'+hotkey+' name='+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + "<br>" + trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag) + "<br><br>";
+            route = (hotkey === undefined ? trip.alertType : '<a accesskey='+hotkey+' href=#'+hotkey+' name='+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + (trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'') + "<br><br>";
             //delays dont have a time period, put them first in UI
             trip.humanReadableActivePeriod ? o += route : h += route;
           }
