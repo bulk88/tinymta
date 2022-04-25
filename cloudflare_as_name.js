@@ -313,7 +313,8 @@ else if (pathname_callback.startsWith('/li/s/')) {
   var cf = request?.cf || {
     asn: 676
   };
-  var etag = 'W/"'+cf.asn+'"';
+  var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
+  var etag = 'W/"'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }
@@ -390,7 +391,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
           if (bufdv.getUint16(i_ptr) + (i_ptr += 2) == bufdv.byteLength) {
             /* check 8b <character-string> node for sanity*/
             if (bufdv.getUint8(i_ptr) + (i_ptr += 1) == bufdv.byteLength) {
-              return mkJSResp("Your ISP: AS"+new TextDecoder().decode(new Uint8Array(bufdv
+              return mkJSResp("Your ISP: "+ip+" | AS"+new TextDecoder().decode(new Uint8Array(bufdv
                 .buffer, i_ptr)),{etag: etag});
             }
           }
