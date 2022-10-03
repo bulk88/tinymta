@@ -231,7 +231,8 @@ else if (pathname_callback.startsWith('/s/')) {
         }
         h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)<br><br>';
         o = ''; // deferred UI alerts (ongoing (unsched) vs planned)
-        r = r.alerts;
+        //alerts array sometimes missing
+        r = r.alerts || [];
         //time sort alerts in the array
         r.sort(function(a, b) {
           return a.effectiveStartDate < b.effectiveStartDate ? -1 :
