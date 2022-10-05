@@ -24,7 +24,7 @@ onhashchange =
 
   //this is a .js file in a head element, rest of doc not parsed yet
   onload = function() {
-    if (!('onhashchange' in window && (docmode === undefined || docmode > 7 ))) {
+    if (!('onhashchange' in window && (docmode === void 0 || docmode > 7 ))) {
       var i = document.location;
       var isDest2 = i.pathname.indexOf('plan2.htm') >= 0;
       var originSta = i.hash.substring(1);

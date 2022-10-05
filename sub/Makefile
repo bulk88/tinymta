@@ -44,7 +44,7 @@ plan2.htm : plan.htm
 
 ../docs/plan.js : plan.js
 	copy /y plan.js "$@"
-	uglifyjs -c -m toplevel -m eval --keep-fnames "$@" -o "$@"
+	uglifyjs -c -m toplevel -m eval --keep-fnames --ie "$@" -o "$@"
 
 1p.js : ../1p.js
 	copy /y "..\1p.js" "$@"

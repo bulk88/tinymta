@@ -162,8 +162,8 @@ if (r.length) {
                 '-' + mkSubFontTag(trip.shortRouteName) +
                 '-' + trip.tripHeadsign +
                 //disable track numbers, nobody cares, this isn't Commuter rail
-                //'-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track ) +
-                (trip.track === undefined ? '-Tk?' : '') +
+                //'-Tk' + (trip.track === void 0 ? '?' : ' ' + trip.track ) +
+                (trip.track === void 0 ? '-Tk?' : '') +
                 (!trip.realtime ? '-NRT-' : '-') +
                 (function(rts) {
                     switch (rts) {

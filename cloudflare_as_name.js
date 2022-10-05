@@ -201,8 +201,8 @@ else if (pathname_callback.startsWith('/s/')) {
               '-' + mkSubFontTag(trip.shortRouteName) +
               '-' + trip.tripHeadsign +
               //disable track numbers, nobody cares, this isn't Commuter rail
-              //'-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track ) +
-              (trip.track === undefined ? '-Tk?' : '') +
+              //'-Tk' + (trip.track === void 0 ? '?' : ' ' + trip.track ) +
+              (trip.track === void 0 ? '-Tk?' : '') +
               (!trip.realtime ? '-NRT-' : '-') +
               (function(rts) {
                 switch (rts) {
@@ -243,7 +243,7 @@ else if (pathname_callback.startsWith('/s/')) {
           trip = r[i];
           if (trip.alertType) { //skip elevators, elevators are missing alertType field
             hotkey = hotkeys.shift();
-            route = (hotkey === undefined ? trip.alertType : '<a accesskey='+hotkey+' href=#'+hotkey+' name='+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + (trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'') + "<br><br>";
+            route = (hotkey === void 0 ? trip.alertType : '<a accesskey='+hotkey+' href=#'+hotkey+' name='+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + (trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'') + "<br><br>";
             //delays dont have a time period, put them first in UI
             trip.humanReadableActivePeriod ? o += route : h += route;
           }
