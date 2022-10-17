@@ -8,6 +8,7 @@
 <link rel=prefetch href=tileMap.htm>
 </head>
 <body>No javascript</body>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script>
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
@@ -29,7 +30,7 @@ var t = location.hash;
    for latency reasons on 2G networks, 200 always if .reload(1),
    304 typ if .reload(0)
 */
-if(t != '' && t != '#') {
+if(1) {
 /*
 unusable long IMO and doesn't have N/S combo, I didnt research if parent
 station searchable (N/S combo)
@@ -45,8 +46,7 @@ http://collector-otp-prod.camsys-apps.com/realtime/MTASBWY/stopTimes?apikey=qeqy
 use MTA UI official backend
 http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF01&timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
 */
-    url = '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
-    +t.substring(1, 4);
+    url = '//otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE';
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
@@ -104,113 +104,685 @@ function minsAway(t) {
     return a = Math.trunc(n / 60), s = n % 60, " ".concat(a < 10 ? 0 : "").concat(a, ":").concat(s < 10 ? 0 : "").concat(Math.floor(s), " mins away")
 }*/
 
+const BANNED_XBUS_ROUTE_TYPE = 702;
+const NEW_HAVEN_BRANCHES = ['MNR:4', 'MNR:5', 'MNR:6'];
+const HARLEM_BRANCHES = ['Wassaic'];
+const WEIRD_RAIL_LINES = [{
+  id: "MNR:Wassaic",
+  agency: "MNR",
+  color: "0039A6",
+  inService: true,
+  mode: "RAIL",
+  longName: "Wassaic",
+  routeId: "MNR_Wassaic",
+  routeType: 2
+}]
+
+//_ = {};
+//_.findIndex = function (array,f) {return array.findIndex(f)}
+//_.find = function (array,f) {return array.find(f)}
+mapper = {};
+const buildSubwayRoute = (data) => {
+  let subwayLines = data
+    .filter(subway => subway.mode.toUpperCase() === 'SUBWAY')
+    .filter(subway => subway.id.includes('MTA'))
+
+  let routeDetails = [];
+
+  // start by sorting the subwayLines returned (by name)
+  subwayLines.sort((l1, l2) => {
+    return l1.shortName - l2.shortName;
+  });
+
+  subwayLines.forEach((subwayLine) => {
+    let route;
+    let name = subwayLine.shortName;
+
+    // check to see if a previous, associated, non-express line is found given the current express line
+    if (name.substr(name.length - 1, name.length) === 'X') {
+      // if so, set the route given the previously set non-express route
+      route = _.find(routeDetails, {
+        name: name.substr(0, name.indexOf('X'))
+      });
+    }
+
+    // check to see if a route was found...
+    if (!route) {
+      // if not, initialize one and add it to the routeDetails array
+      routeDetails.push(route = {
+        agency: subwayLine.id.split(":")[0],
+        agencyId: subwayLine.id.split(":")[0],
+        name: subwayLine.id.split(":")[1],
+        mode: 'SUBWAY',
+        color: subwayLine.color,
+        sortOrder: subwayLine.sortOrder,
+        id: subwayLine.id.split(":")[1]
+      });
+    } else {
+      // otherwise, first set the containsExpress variable / flag
+      route.containsExpress = true;
+    }
+  });
+
+  // Finish up by sorting by sort order
+  routeDetails.sort((l1, l2) => {
+    return l1.sortOrder - l2.sortOrder;
+  });
+
+  return routeDetails;
+}
+
+const buildBusRoute = stopData => {
+  const mapRoutes = stopData
+    .filter(busRoute => busRoute.mode.toUpperCase() === 'BUS')
+    .filter(busRoute => busRoute.id.includes('MTA'))
+    .map((stop) => {
+      let agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
+      let routeId = `${agency}_${stop.id.split(':')[1]}`;
+
+      return {
+        ...stop,
+        agency: agency,
+        inService: true,
+        isExpressBus: (stop.routeType === BANNED_XBUS_ROUTE_TYPE),
+        routeId: routeId,
+        route: stop.shortName
+      }
+    })
+  return mapRoutes
+}
+
+const buildRailRoute = (data) => {
+  let railLines = data
+    .filter(railLine => railLine.mode.toUpperCase() === 'RAIL')
+    .filter(railLine => railLine.id.includes('LI') || railLine.id.includes('MNR'))
+    .concat(WEIRD_RAIL_LINES)
+    .map((railLine) => {
+      let agency = railLine.id.includes('LI') ? 'LI' : 'MNR';
+      railLine.inService = true;
+      railLine.agency = agency;
+      railLine.agencyId = agency;
+      railLine.route = railLine.longName;
+      railLine.routeId = railLine.routeId ? railLine.routeId : railLine.id.replace(":", "_");
+      railLine.mode = "RAIL";
+      railLine.shortName = railLine.longName;
+      return railLine;
+    });
+
+  // start by sorting all rail lines alphabetically
+  railLines.sort((line1, line2) => {
+    if (line1.longName < line2.longName) {  //sort string alphabetically
+      return -1;
+    } else /*if (line1.route > line2.route)*/ {
+      return 1;
+    }
+  });
+
+  // remove all kubes from the railLines array that are contained within the NEW_HAVEN_BRANCHES constant (array)
+  let newHavenBranches = []
+  if (Array.isArray(NEW_HAVEN_BRANCHES) && Array.isArray(railLines) && railLines.length) {
+    for (let i = 0; i < railLines.length; i++) {
+      if (NEW_HAVEN_BRANCHES.includes(railLines[i].id)) {
+        newHavenBranches.push(railLines[i])
+        railLines.splice(i, 1)
+        i--
+      }
+    }
+  }
+
+  // get the index of the 'New Haven' line
+  let newHavenLineIndex = _.findIndex(railLines, (railLine) => {
+    return railLine.id === 'MNR:3';
+  });
+
+  // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
+  let harlemBranches = []
+  if (Array.isArray(HARLEM_BRANCHES) && Array.isArray(railLines) && railLines.length) {
+    for (let i = 0; i < railLines.length; i++) {
+      if (HARLEM_BRANCHES.includes(railLines[i].longName)) {
+        harlemBranches.push(railLines[i])
+        railLines.splice(i, 1)
+        i--
+      }
+    }
+  }
+  // get the index of the 'Harlem' line
+  let harlemLineIndex = _.findIndex(railLines, (railLine) => {
+    return railLine.id === 'MNR:2';
+  });
+
+  // place the (sorted) newHavenBranches into the railLines array directly AFTER the newHavenLineIndex and return
+  let railLinesSorted = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
+  return railLinesSorted.slice(0, harlemLineIndex + 1).concat(harlemBranches).concat(railLinesSorted.slice(harlemLineIndex + 1));
+}
+
+
+mapper.buildServiceRoutes = (response) => {
+  let routes = {
+    busRoutes: buildBusRoute(response),
+    railLines: buildRailRoute(response),
+    subwayLines: buildSubwayRoute(response),
+    lastUpdated: new Date()
+  };
+
+  return routes;
+}
+
+const mergeStatii = (routes, statii) => {
+  let routesWithStatus = [];
+
+  const getSummary = (status) => {
+    let alert = "No Status Summary";
+
+    if (status.alert['transit_realtime.mercury_alert']) {
+      alert = status.alert['transit_realtime.mercury_alert'].alert_type;
+    }
+
+    return alert;
+  }
+
+  const getDates = (status) => {
+    let startDate = null;
+    let endDate = null;
+    let creationDate = null;
+
+    if (status.alert.active_period) {
+      let currentTime = Math.round(Date.now() / 1000);
+      let activePeriod = false;
+
+      status.alert.active_period.forEach((period) => {
+        if (period.start) {
+          if (currentTime > period.start) {
+            activePeriod = period;
+          }
+
+          if (period.end && currentTime > period.end) {
+            activePeriod = false;
+          }
+
+          if (activePeriod) {
+            return;
+          }
+        }
+      });
+
+      startDate = activePeriod.start ? new Date(activePeriod.start * 1000).toISOString() : null;
+      endDate = activePeriod.end ? new Date(activePeriod.end * 1000).toISOString() : null;
+    }
+
+    if (status.alert['transit_realtime.mercury_alert']) {
+      creationDate = new Date(status.alert['transit_realtime.mercury_alert'].created_at * 1000).toISOString();
+    }
+
+    return {
+      startDate,
+      endDate,
+      creationDate
+    }
+  }
+
+  const getDescription = (status) => {
+    let description = false;
+
+    if (status.alert.description_text) {
+      status.alert.description_text.translation.forEach((translation) => {
+        if (translation.language === 'en-html') {
+          description = translation.text;
+        }
+      })
+
+      if (description) {
+        return description;
+      }
+
+      if (!description) {
+        status.alert.description_text.translation.forEach((translation) => {
+          if (translation.language === 'en') {
+            description = translation.text;
+          }
+        })
+      }
+
+      if (description) {
+        return description;
+      }
+
+      if (!description) {
+        status.alert.description_text.translation.forEach((translation) => {
+          if (translation.language === '') {
+            description = translation.text;
+          }
+        })
+      }
+
+      if (description) {
+        return description;
+      }
+    }
+
+    return description;
+  };
+
+  const getHeader = (status) => {
+    let header = false;
+
+    if (status.alert.header_text) {
+      status.alert.header_text.translation.forEach((translation) => {
+        if (translation.language === 'en-html') {
+          header = translation.text;
+        }
+      })
+
+      if (header) {
+        return header;
+      }
+
+      status.alert.header_text.translation.forEach((translation) => {
+        if (translation.language === 'en') {
+          header = translation.text;
+        }
+      })
+
+      if (header) {
+        return header;
+      }
+
+      status.alert.header_text.translation.forEach((translation) => {
+        if (translation.language === '') {
+          header = translation.text;
+        }
+      })
+
+      if (header) {
+        return header;
+      }
+    }
+
+    return header;
+  };
+
+  const getPriority = (entity) => {
+    let priority = -10;
+
+    if (entity['transit_realtime.mercury_entity_selector']) {
+      if (entity['transit_realtime.mercury_entity_selector'].sort_order) {
+        priority = entity['transit_realtime.mercury_entity_selector'].sort_order.split(':');
+        priority = priority[2] ? priority[2] * 1 : 100;
+      }
+    }
+
+    return priority;
+  };
+
+  // Reduce the number of statii to only those that are current
+  let currentStatii = statii.filter((status) => {
+    let isCurrent = false;
+
+    try {
+      if (status.alert.active_period && status.alert['transit_realtime.mercury_alert'] && status.alert['transit_realtime.mercury_alert'].alert_type) {
+        const hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
+
+        let currentTime = Math.round(Date.now() / 1000);
+        let isPlannedWork = status.id.includes('planned_work');
+
+        if (isPlannedWork && !hasBeforeActive) {
+          isCurrent = false;
+        } else {
+          status.alert.active_period.forEach((period) => {
+            if (period.start && !isCurrent) {
+              let startTime = period.start;
+
+              if (hasBeforeActive) {
+                startTime = startTime - status.alert['transit_realtime.mercury_alert'].display_before_active;
+              }
+
+              if (currentTime > startTime) {
+                isCurrent = true;
+              }
+
+              if (period.end && currentTime > period.end) {
+                isCurrent = false;
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    return isCurrent;
+  });
+
+  routes.forEach((route) => {
+    let key = route.mode === 'SUBWAY' ? route.name : route.shortName;
+    let searchKeys = [];
+    let statii = [];
+    let confirmAgency = true;
+    let postedIds = [];
+
+    if (route.mode === 'RAIL') {
+      if (route.routeId.includes('NJT')) {
+        key = route.routeId.replace('_', ':');
+      } else {
+        key = route.routeId.split('_')[1];
+      }
+    }
+
+    if (route.mode === 'BUS') {
+      key = route.id.split(':')[1];
+    }
+
+    key = key.toLowerCase();
+
+    searchKeys.push(key);
+
+    if (route.mode === 'BUS') {
+      searchKeys.push(`${key}-ltd`);
+      confirmAgency = false;
+    }
+
+    currentStatii.forEach((status) => {
+      if (status.alert) {
+        if (status.alert.informed_entity) {
+          status.alert.informed_entity.forEach((entity) => {
+
+            let route_id = null;
+            let agency_id = null;
+            let direction_id = 1;
+            let correctAgency = true;
+
+            if (entity.route_id) {
+              route_id = entity.route_id;
+            }
+
+            if (entity.agency_id) {
+              agency_id = entity.agency_id;
+            }
+
+            if (entity.trip) {
+              if (entity.trip.route_id) {
+                route_id = entity.trip.route_id;
+                direction_id = entity.trip.direction_id;
+              }
+            }
+
+            if (confirmAgency) {
+              correctAgency = agency_id == route.agency;
+            }
+
+            route_id = route_id ? route_id.toLowerCase() : '';
+
+            if (searchKeys.includes(route_id) && correctAgency && !postedIds.includes(status.id)) {
+              // See MNR alerts in the console as they come in.
+              // if (route.agency === "MNR") {
+              //   console.log('line-list-js status.alert.informed_entity MNR ', route_id, status)
+              // }
+              try {
+                let summary = getSummary(status);
+                let description = getDescription(status);
+                let header = getHeader(status);
+                let priority = getPriority(entity);
+                let dates = getDates(status);
+
+                let statusItem = {
+                  id: status.id,
+                  statusSummary: summary,
+                  statusDescription: description,
+                  statusTitle: header,
+                  priority: priority,
+                  direction: direction_id,
+                  originalStatus: status,
+                  ...dates
+                }
+
+                statii.push(statusItem);
+                postedIds.push(status.id);
+              } catch (e) {
+                console.log(status.id, e);
+              }
+            }
+          });
+        }
+      }
+    });
+
+    if (statii.length > 0) {
+      route.statusDetails = statii;
+    }
+
+    routesWithStatus.push(route);
+  });
+
+  return routesWithStatus;
+};
+
+function groupedLines (){
+  let statii = []
+  let prioritizedLines = []
+
+  for (let i = 0; i < this.lines.length; i++){
+    // Sort statii by priority
+    this.lines[i].statusDetails.sort((a,b) => {
+      return b.priority - a.priority
+    });
+
+    let status = this.toDashedCase(this.lines[i].statusDetails[0].statusSummary)
+
+    if (!statii[status]) {
+      statii[status] = {
+        status: this.lines[i].statusDetails[0].statusSummary,
+        priority: this.lines[i].statusDetails[0].priority
+      }
+    }
+
+    if (!statii[status].lines){
+      statii[status].lines = []
+    }
+
+    statii[status].lines.push(this.lines[i])
+  }
+  let stat =''
+  for(stat in statii) {
+    prioritizedLines.push(statii[stat])
+  }
+
+  if (prioritizedLines.length > 0) {
+    prioritizedLines.sort((a,b) => {
+      return b.priority - a.priority
+    })
+  }
+
+  return prioritizedLines
+}
+
+const sortSubwayLines = (routes) => {
+  routes.sort((rd1, rd2) => {
+    return rd1.sortOrder - rd2.sortOrder
+  })
+}
+
+function SET_SUBWAY_LINES (state, res) {
+    let lines = res.subwayLines
+    state.lastUpdated = res.lastUpdated
+
+    if (state.subwayLines.length || state.goodServiceLines.length) {
+      _.each(lines, (route) => {
+        // find if the line is part of good service or delays / service change / planned work
+        let previousGoodServiceRouteIndex = _.findIndex(state.goodServiceLines, { id: route.id })
+        let previousServiceDetailsRouteIndex = _.findIndex(state.subwayLines, { id: route.id })
+        // remove the line from previous list
+        if (previousGoodServiceRouteIndex > -1) {
+          state.goodServiceLines.splice(previousGoodServiceRouteIndex, 1)
+        } else if (previousServiceDetailsRouteIndex > -1) {
+          state.subwayLines.splice(previousServiceDetailsRouteIndex, 1)
+        }
+        // add the line to new list based on status
+        if (route.statusDetails) {
+          state.subwayLines.push(route)
+        } else {
+          state.goodServiceLines.push(route)
+        }
+      })
+    } else {
+      // add lines for the first time
+      _.each(lines, (route) => {
+        if (route.statusDetails) {
+          state.subwayLines.push(route)
+        } else {
+          state.goodServiceLines.push(route)
+        }
+      })
+
+      if (res.subwayLines.length) {
+        state.allSubwayLines = res.subwayLines
+      }
+    }
+
+    sortSubwayLines(state.subwayLines)
+    sortSubwayLines(state.goodServiceLines)
+  }
+function SET_BUS_ROUTES(state, res) {
+    let busRoutes = res.busRoutes;
+
+    let alertedBuses = []
+
+    busRoutes.forEach((route) => {
+      if (route.statusDetails) {
+        route.statusDetails.sort((a, b) => {
+          return b.priority - a.priority
+        })
+        alertedBuses.push(route)
+      }
+
+    })
+    state.alertedBuses = alertedBuses
+
+
+    if (state.busRoutes.length) {
+      _.each(busRoutes, (route) => {
+        let busRoute = _.find(state.busRoutes, { routeId: route.routeId })
+        if (busRoute) {
+          busRoute.statusDetails = route.statusDetails
+
+        }
+      })
+      // console.log('line-list state.busRoutes ', state.busRoutes)
+    } else {
+      // console.log('line-list no state yet busRoutes ', busRoutes)
+      state.busRoutes = busRoutes
+    }
+  }
+function SET_RAIL_LINES(state, res) {
+    let lines = res.railLines;
+    /* jQuery(document).trigger('trigCheck'); bulk88 removed */
+
+    lines.forEach((line) => {
+      if (line.statusDetails) {
+        line.statusDetails.sort((a, b) => {
+          return b.priority - a.priority
+        })
+      }
+    })
+
+    if (state.mnrLines.length && state.longIslandLines.length) {
+      _.each(lines, (line) => {
+        if (line.agency === 'LI') {
+          let liLine = _.find(state.longIslandLines, { routeId: line.routeId })
+          if (liLine) {
+            liLine.statusDetails = line.statusDetails
+          }
+        } else if (line.agency === 'MNR' || line.agency === 'NJT') {
+          let mnrLine = _.find(state.mnrLines, { routeId: line.routeId })
+          if (mnrLine) {
+            mnrLine.statusDetails = line.statusDetails
+          }
+        }
+      })
+    } else {
+      state.longIslandLines = _.filter(lines, { agency: 'LI' })
+      state.mnrLines = _.filter(lines, line => { return line.agency === 'MNR' || line.agency === 'NJT' })
+    }
+  }
+    function toDashedCase(str){
+      return str.toLowerCase().replace(/\s/g, '-')
+    }
+function noPTag(str) {
+  if(typeof str == 'string' && str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
+  return str.substring(3, str.length-4);
+  } else
+  return str;
+}
+var get1 = 0;
+var allRoutes;
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0];
+    var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0],n;
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     r = eval('0,'+r);
-if (r.length) {
-    //initial array is for a geosearch with multiple stations, not exact sta
-    r = r[0];
-    //server returns sorted by route, we want sort by dir
-    for (i in r.groups) {
-        route = r.groups[i];
-        alerts_headsign = route.headsign;
-        for (i in route.times) {
-            trip = route.times[i];
-            trip.shortRouteName = route.route.shortName;
-            (o[alerts_headsign] = o[alerts_headsign] || []).push(trip);
-        }
-    }
-    for (i in o)
-        //alpha sort ISO 8601 timestamps
-        o[i].sort(function(a, b) {
-            return a.departureFmt < b.departureFmt ? -1 :
-                a.departureFmt > b.departureFmt ? 1 :
-                0;
-        });
-    /* departureFmt becomes UI time eventually
-            return _.each(t.times, function(t) {
-              e.times.push({
-                stopId: t.stopId,
-                realtime: t.realtime,
-                status: t.realtimeState,
-                departure: t.departureFmt,
-                pattern: t.pattern ? t.pattern.id : null,
-                tripHeadsign: t.tripHeadsign ? t.tripHeadsign.toLowerCase() : "",
-                tripId: t.tripId,
-                serviceDay: t.serviceDay,
-                directionId: t.directionId
-              })
-            }), e
-    */
-    h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
-        'Cur Sta: ' + r.stop.name + "<br>";
+    if (!get1) {
+      r = mapper.buildServiceRoutes(r);
+      allRoutes = r;
+      url = "//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP";
+      get1 = 1;
+      getStop();
+    } else {
+      var statii = r.entity;
+      const allStatii = {
+        busRoutes: mergeStatii(allRoutes.busRoutes, statii),
+        railLines: mergeStatii(allRoutes.railLines, statii),
+        subwayLines: mergeStatii(allRoutes.subwayLines, statii)
+      };
+      var state = {
+        mnrLines: [],
+        busRoutes: [],
+        subwayLines: [],
+        componentRoutes: [],
+        longIslandLines: [],
+        goodServiceLines: [],
+        favorites: null,
+        lastUpdated: null,
+        lineListError: null,
+        allSubwayLines: null,
+        subwayLineGroups: null,
+        serviceStatusLoading: false,
+        alertedBuses: [],
+      }
 
-    for (i in o) {
-        h += i + "<br>";
-        //route is dir really
-        route = o[i];
-        for (i in route) {
-            //if departureDelay > 0 
-            //todo (49620-49080)/60 = 9 mins late
-            //MN/LIR algo, NYCT reports also
-            //realtimeDeparture: 49620
-            //scheduledDeparture: 49080
-            trip = route[i];
-            h += parseIsoDatetime(trip.departureFmt) +
-                '-' + mkSubFontTag(trip.shortRouteName) +
-                '-' + trip.tripHeadsign +
-                //disable track numbers, nobody cares, this isn't Commuter rail
-                //'-Tk' + (trip.track === undefined ? '?' : ' ' + trip.track ) +
-                (trip.track === undefined ? '-Tk?' : '') +
-                (!trip.realtime ? '-NRT-' : '-') +
-                (function(rts) {
-                    switch (rts) {
-                        case "SCHEDULED":
-                            return "SCH";
-                        case "UPDATED":
-                            return "UPD";
-                        case "CANCELED":
-                            return "CNX";
-                        case "ADDED":
-                            return "ADD";
-                        case "MODIFIED":
-                            return "MOD";
-                        default:
-                            return "UNK";
-                    }
-                })(trip.realtimeState)
-/* delay can be neg, chop off fractional,
-OTP overflow bug on "service day", scheduledDeparture is seconds
-since midnight of yesterday, realtimeDeparture is seconds since
-midnight of today, happens right after 1200AM */
-                + ((trip=((((trip = trip.departureDelay) < -43200
- ? trip +86400 : trip )/60)|0)) ? (trip > 0 ? '-L' : '-E')+Math.abs(trip): '') +"<br>";
-        }
-    }
-    h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)<br><br>';
-    o = ''; // deferred UI alerts (ongoing (unsched) vs planned)
-    //alerts array sometimes missing
-    r = r.alerts || [];
-    //time sort alerts in the array
-    r.sort(function(a, b) {
-        return a.effectiveStartDate < b.effectiveStartDate ? -1 :
-            a.effectiveStartDate > b.effectiveStartDate ? 1 :
-            0;
-    });
-    for (i in r) {
-    trip = r[i];
-    if(trip.alertType) { //skip elevators, elevators are missing alertType field
-      route = trip.alertType+"<br>"+(trip.humanReadableActivePeriod || 'Ongoing')+"<br>"+trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag)+(trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'')+"<br><br>";
-      //delays dont have a time period, put them first in UI
-      trip.humanReadableActivePeriod ? o += route : h += route;
-    }
-    }
-    h += o;
-} else
-    h = "station not found";
+      SET_SUBWAY_LINES(state, allStatii);
+      SET_RAIL_LINES(state, allStatii);
+      SET_BUS_ROUTES(state, allStatii);
+      var groupedByStatusLines = groupedLines.call({
+        lines: state.subwayLines,
+        toDashedCase: toDashedCase
+      });
 
+      for (i in groupedByStatusLines) {
+        var linearr = groupedByStatusLines[i];
+        h += '<hr>' + linearr.status + '<br>';
+        linearr = linearr.lines;
+        for (o in linearr) {
+          route = linearr[o];
+          //if(route.name=='SI') {debugger;}
+          h+='<details><summary>'+mkSubFontTag('['+route.name+']', route.name)+'</summary>';
+          h += route.statusDetails.map(function (statusDetail) {
+            return statusDetail.statusSummary
+            + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
+            + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription).replace(/\[(\w+)\]/g, mkSubFontTag):'')
+          }).join('<br><br>');
+          h+='</details>';
+        }
+      }
+
+      groupedByStatusLines = state.goodServiceLines;
+      if(groupedByStatusLines.length) {
+        h += '<hr>No Active Alerts<br>';
+        for (o in groupedByStatusLines) {
+          route = groupedByStatusLines[o].name;
+          h+=mkSubFontTag('['+route+']', route)+' ';
+        }
+      }
+    }
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {

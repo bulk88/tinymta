@@ -14,6 +14,9 @@ docs/more.htm : more.htm minify_config.json
 	copy /y more.htm "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
+docs/status.htm : status.htm minify_config.json
+	copy /y status.htm "$@"
+	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
 docs/jsrdt.htm : jsrdt.htm minify_config.json
 	copy /y jsrdt.htm "$@"
@@ -80,7 +83,7 @@ mini:
 docs/ac.appcache : docs/index.htm docs/more.htm docs/404.html docs/favicon.ico
 docs/ac.appcache : docs/CNAME docs/README.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
-docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js
+docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm
 docs/ac.appcache : MNRR LIRRMKF SUBMKF
 	perl -e"use File::Slurp; \
 	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \
