@@ -10,5 +10,5 @@ $pos += length('/*STARTINSERTPATH*/
 my $endpos = index($file,'
 /*ENDINSERTPATH*/', $pos);
 die "bad endtag match" if $endpos == -1;
-substr($file,$pos, $endpos-$pos, index($ARGV[0],'_') == -1 ? '"stop_.htm"' : '"stop.htm"');
+substr($file,$pos, $endpos-$pos, index($ARGV[0],'_') == -1 ? ($ARGV[1] ? '"status_.htm"' : '"stop_.htm"') : ($ARGV[1] ? '"status.htm"' : '"stop.htm"'));
 write_file($ARGV[0], {binmode => ':raw'}, $file);
