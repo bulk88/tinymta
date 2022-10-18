@@ -7,7 +7,7 @@
 <link rel="preconnect" href="//collector-otp-prod.camsys-apps.com">
 </head>
 <body>No javascript</body>
-<script src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script>
+<script defer src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script>
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
@@ -707,16 +707,53 @@ function SET_RAIL_LINES(state, res) {
       return str.toLowerCase().replace(/\s/g, '-')
     }
 function noPTag(str) {
-  if(typeof str == 'string' && str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
-  return str.substring(3, str.length-4);
-  } else
+  if(typeof str == 'string') {
+    //some notices include these at the end, after the global P tag we are trying to remove
+    str = str.replace(/(<p style="min-height:10px"><\/p>|<p><\/p>)+$/g,'');
+    if (str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
+      return str.substring(3, str.length-4);
+    }
+  }
   return str;
 }
+function hasDuration(alert) {
+  return alert.originalStatus.alert["transit_realtime.mercury_alert"]
+  .human_readable_active_period;
+}
+function getDurations(alert) {
+  /* originally picks en-html, then en, then nothing
+  return [
+  this.getText(
+  alert.alert["transit_realtime.mercury_alert"]
+  .human_readable_active_period.translation
+  ),
+  ];
+   */
+  return alert.originalStatus.alert["transit_realtime.mercury_alert"].human_readable_active_period.translation[0].text;
+}
+
+function getStatus(obj) {
+  if (obj.inService) {
+    if (obj.statusDetails && obj.statusDetails.length) {
+      // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
+      return obj.statusDetails[0].statusSummary;
+    }
+    return "On or Close";
+  } else {
+    // if an alert shows up for out of service line - currently will not happen
+    if (obj.statusDetails && obj.statusDetails.length) {
+      return obj.statusDetails[0].statusSummary;
+    } else {
+      return "No Scheduled Service";
+    }
+  }
+}
+
 var get1 = 0;
 var allRoutes;
 function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
-    var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0],n;
+    var h='',i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0],n;
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     r = eval('0,'+r);
     if (!get1) {
@@ -765,10 +802,11 @@ function genArvBodyObj(r){/*r=resp*/
           //if(route.name=='SI') {debugger;}
           h+='<details><summary>'+mkSubFontTag('['+route.name+']', route.name)+'</summary>';
           h += route.statusDetails.map(function (statusDetail) {
-            return statusDetail.statusSummary
+            return '<b>'+statusDetail.statusSummary+'</b>'
             + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
+            + (hasDuration(statusDetail)?'<br>'+getDurations(statusDetail):'')
             + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription).replace(/\[(\w+)\]/g, mkSubFontTag):'')
-          }).join('<br><br>');
+          }).join('<hr>');
           h+='</details>';
         }
       }
@@ -781,6 +819,18 @@ function genArvBodyObj(r){/*r=resp*/
           h+=mkSubFontTag('['+route+']', route)+' ';
         }
       }
+      if(state.mnrLines.length) {
+        h += '<hr>Metro-North Railroad<br>';
+        h += state.mnrLines.map(function(route){
+        var has_alert = route.statusDetails && route.statusDetails.length;
+        return '<hr>'+(has_alert?'<details><summary>':'')+'<font color='+route.color+'>'+route.route+'</font>'+' '+getStatus(route)+(has_alert?'</summary>'+route.statusDetails.map(function (statusDetail) {
+            return '<b>'+statusDetail.statusSummary+'</b>'
+            + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
+            + (hasDuration(statusDetail)?'<br>'+getDurations(statusDetail):'')
+            + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription).replace(/\[(\w+)\]/g, mkSubFontTag):'')
+          }).join('<hr>')+'</details>':'')}).join('');
+      }
+      debugger;
     }
     document.body.innerHTML += h;
 }
