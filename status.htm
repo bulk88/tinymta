@@ -11,16 +11,12 @@
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
-onJSP.name = 'onJSP';
-/*Firefox, Opera, IE7, and other browsers will use the native object*/
-/*IE 5 and 6 will use the ActiveX control*/
-var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+onJSPR.name = 'onJSPR';
+onJSPA.name = 'onJSPA';
 var jsonp;
 
-var url;
-
-/* var t is "top" as in top of body (header) */
-var t = location.hash;
+var url_routes = '//otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE';
+var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP';
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
    related to stop.htm because stop.htm is fetched from browser cache, sadly there
@@ -29,36 +25,22 @@ var t = location.hash;
    for latency reasons on 2G networks, 200 always if .reload(1),
    304 typ if .reload(0)
 */
-if(1) {
-/*
-unusable long IMO and doesn't have N/S combo, I didnt research if parent
-station searchable (N/S combo)
-
-http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/stops/MTASBWY:621N/stoptimes?timeRange=600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE 
-
-not enough info, no dest info
-https://api.wheresthefuckingtrain.com/by-id/82bd
-
-fails, unknown why
-http://collector-otp-prod.camsys-apps.com/realtime/MTASBWY/stopTimes?apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP
-
-use MTA UI official backend
-http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF01&timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
-*/
-    url = '//otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE';
-    /* generate body top string once, its later used for fast refresh */
-    t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
+/* generate body top string once, its later used for fast refresh */
+/* var t is "top" as in top of body (header) */
+var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/status\.htm$/.test(location.pathname) ? "status_.htm" : "status.htm")
 /*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href='+url+'>Raw</a><br>';
-}
+          +'\')">Slow</a>] <a href='+url_routes+'>RawR</a> <a href='+url_alerts+'>RawA</a><br>';
 
-if(url)
-    getStop();
-else
-    document.body.innerHTML = 'No station specified in url anchor.';
+getStop();
+
+function getStop() {
+document.body.innerHTML = t; /*t=top*/
+getJSON(url_routes);
+getJSON(url_alerts,1);
+}
 
 //text includes [] chars usually, if route blank, text is route
 function mkSubFontTag(text, route) {
@@ -69,40 +51,6 @@ function mkSubFontTag(text, route) {
   [route||text];
   return c ?'<font color='+c+'>'+text+'</font>':text;
 }
-//t = "2021-05-11T18:58:08-04:00" getFormattedTime
-/* unused since switch from abs time to Mins
-function getFormattedTime(t) {
-    var e = parseIsoDatetime(t),
-        h = e.getHours(),
-        m = e.getMinutes(),
-        a = h > 12 ? h - 12 : h;
-    return (0 === a ? "12" : a)+ ":"+(m < 10 ? "0" + m : m)+" "+(h > 11 ? "PM" : "AM");
-}
-*/
-
-/* mislabeled now */
-function parseIsoDatetime(dt,i) {
-    dt = dt.split(/[: T-]/);
-    for(i in dt)
-        dt[i] = parseFloat(dt[i]);
-    //return //modified by bulk88 to be mins away instead of parse
-    return 'Min '+Math.floor(Math.abs((
-        new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
-        - (new Date)) / 1e3) / 60);
-}
-
-/* MTA orig algo
-function minsAway(t) {
-    var e = Number((new Date).getTime());
-    t = Number(t.getTime());
-    var n = Math.floor(Math.abs((t - e) / 1e3) / 60);
-    if (0 === n) return "Arriving";
-    if (n < 60) return " ".concat(n < 10 ? 0 : "").concat(n, " mins away ");
-    var a = null,
-      s = null;
-    return a = Math.trunc(n / 60), s = n % 60, " ".concat(a < 10 ? 0 : "").concat(a, ":").concat(s < 10 ? 0 : "").concat(Math.floor(s), " mins away")
-}*/
-
 
 if (typeof Object.assign != 'function') {
 // Must be writable: true, enumerable: false, configurable: true
@@ -759,9 +707,9 @@ function SET_RAIL_LINES(state, res) {
       state.mnrLines = _.filter(lines, function (line) { return line.agency === 'MNR' || line.agency === 'NJT' })
     }
   }
-    function toDashedCase(str){
-      return str.toLowerCase().replace(/\s/g, '-')
-    }
+function toDashedCase(str){
+  return str.toLowerCase().replace(/\s/g, '-')
+}
 function noPTag(str) {
   if(typeof str == 'string') {
     //some notices include these at the end, after the global P tag we are trying to remove
@@ -823,19 +771,26 @@ function emitRRStatus(name, lines) {
 }
 var get1 = 0;
 var allRoutes;
-function genArvBodyObj(r){/*r=resp*/
-    /*h=html*/
-    var h='',i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0],n;
+var alertsResp;
+function parseRoutes(r) { /*r=resp*/
+  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+  r = eval('0,' + r);
+  r = mapper.buildServiceRoutes(r);
+  allRoutes = r;
+  if (alertsResp)
+    drawHTML();
+}
+
+function parseAlerts(r){/*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     r = eval('0,'+r);
-    if (!get1) {
-      r = mapper.buildServiceRoutes(r);
-      allRoutes = r;
-      url = "//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP";
-      get1 = 1;
-      getStop();
-    } else {
-      var statii = r.entity;
+    alertsResp = r.entity;
+    if(allRoutes)
+      drawHTML();
+}
+function drawHTML() {
+      var h='',i,route,o;
+      var statii = alertsResp;
       const allStatii = {
         busRoutes: mergeStatii(allRoutes.busRoutes, statii),
         railLines: mergeStatii(allRoutes.railLines, statii),
@@ -894,11 +849,15 @@ function genArvBodyObj(r){/*r=resp*/
 
       h += emitRRStatus('Metro-North Railroad',state.mnrLines);
       h += emitRRStatus('Long Island Rail Road',state.longIslandLines);
-    }
+
     document.body.innerHTML += h;
+    alertsResp = void 0;
+    allRoutes = void 0;
 }
-function getStop(addIMS) {
-    document.body.innerHTML = t; /*t=top*/
+function getJSON(url, alertFlag, addIMS) {
+/*Firefox, Opera, IE7, and other browsers will use the native object*/
+/*IE 5 and 6 will use the ActiveX control*/
+    var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
     try {
         /*throw(0);*/
         x.open('get', url, 1);
@@ -920,8 +879,8 @@ function getStop(addIMS) {
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? genArvBodyObj(x.responseText)
-                    : getStop(1);
+                    ? (alertFlag?parseAlerts:parseRoutes)(x.responseText)
+                    : getJSON(url, alert, 1);
             }
             else
                 alert("error HTTP status "+x.status);
@@ -941,7 +900,7 @@ function getStop(addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback=onJSP';
+        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback='+(alertFlag?'onJSPA':'onJSPR');
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -952,8 +911,11 @@ function getStop(addIMS) {
     }
 }
 
-function onJSP(a) {
-    genArvBodyObj(a.contents)
+function onJSPR(a) {
+    parseRoutes(a.contents)
+}
+function onJSPA(a) {
+    parseAlerts(a.contents)
 }
 </script></html>
 <!--
