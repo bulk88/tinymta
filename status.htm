@@ -7,7 +7,7 @@
 <link rel="preconnect" href="//collector-otp-prod.camsys-apps.com">
 </head>
 <body>No javascript</body>
-<script defer src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script>
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
@@ -103,6 +103,64 @@ function minsAway(t) {
     return a = Math.trunc(n / 60), s = n % 60, " ".concat(a < 10 ? 0 : "").concat(a, ":").concat(s < 10 ? 0 : "").concat(Math.floor(s), " mins away")
 }*/
 
+
+if (typeof Object.assign != 'function') {
+// Must be writable: true, enumerable: false, configurable: true
+ Object.defineProperty(Object, "assign", {
+ value: function assign(target, varArgs) { // .length of function is 2
+  'use strict';
+  if (target == null) { // TypeError if undefined or null
+    throw new TypeError('Cannot convert undefined or null to object');
+  }
+
+  var to = Object(target);
+
+  for (var index = 1; index < arguments.length; index++) {
+    var nextSource = arguments[index];
+
+    if (nextSource != null) { // Skip over if undefined or null
+      for (var nextKey in nextSource) {
+        // Avoid bugs when hasOwnProperty is shadowed
+        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+          to[nextKey] = nextSource[nextKey];
+        }
+      }
+    }
+  }
+  return to;
+},
+writable: true,
+configurable: true
+});
+}
+
+if (!String.prototype.includes) {
+  String.prototype.includes = function(search, start) {
+    'use strict';
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search, start) !== -1;
+    }
+  };
+}
+
+if (!Array.prototype.includes) {
+  Object.defineProperty(Array.prototype, "includes", {
+    enumerable: false,
+    value: function(obj) {
+        var newArr = this.filter(function(el) {
+          return el == obj;
+        });
+        return newArr.length > 0;
+      }
+  });
+}
+
 const BANNED_XBUS_ROUTE_TYPE = 702;
 const NEW_HAVEN_BRANCHES = ['MNR:4', 'MNR:5', 'MNR:6'];
 const HARLEM_BRANCHES = ['Wassaic'];
@@ -121,19 +179,19 @@ const WEIRD_RAIL_LINES = [{
 //_.findIndex = function (array,f) {return array.findIndex(f)}
 //_.find = function (array,f) {return array.find(f)}
 mapper = {};
-const buildSubwayRoute = (data) => {
+const buildSubwayRoute = function (data) {
   let subwayLines = data
-    .filter(subway => subway.mode.toUpperCase() === 'SUBWAY')
-    .filter(subway => subway.id.includes('MTA'))
+    .filter(function (subway) {return subway.mode.toUpperCase() === 'SUBWAY'})
+    .filter(function (subway) {return subway.id.includes('MTA')})
 
   let routeDetails = [];
 
   // start by sorting the subwayLines returned (by name)
-  subwayLines.sort((l1, l2) => {
+  subwayLines.sort(function (l1, l2) {
     return l1.shortName - l2.shortName;
   });
 
-  subwayLines.forEach((subwayLine) => {
+  subwayLines.forEach(function (subwayLine) {
     let route;
     let name = subwayLine.shortName;
 
@@ -164,39 +222,38 @@ const buildSubwayRoute = (data) => {
   });
 
   // Finish up by sorting by sort order
-  routeDetails.sort((l1, l2) => {
+  routeDetails.sort(function (l1, l2) {
     return l1.sortOrder - l2.sortOrder;
   });
 
   return routeDetails;
 }
 
-const buildBusRoute = stopData => {
+const buildBusRoute = function (stopData) {
   const mapRoutes = stopData
-    .filter(busRoute => busRoute.mode.toUpperCase() === 'BUS')
-    .filter(busRoute => busRoute.id.includes('MTA'))
-    .map((stop) => {
+    .filter(function (busRoute) {return busRoute.mode.toUpperCase() === 'BUS'})
+    .filter(function (busRoute) {return !!~busRoute.id.indexOf('MTA')})
+    .map(function (stop) {
       let agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
-      let routeId = `${agency}_${stop.id.split(':')[1]}`;
+      let routeId = agency+"_"+stop.id.split(':')[1];
 
-      return {
-        ...stop,
+      return Object.assign({
         agency: agency,
         inService: true,
         isExpressBus: (stop.routeType === BANNED_XBUS_ROUTE_TYPE),
         routeId: routeId,
         route: stop.shortName
-      }
+      }, stop)
     })
   return mapRoutes
 }
 
-const buildRailRoute = (data) => {
+const buildRailRoute = function (data) {
   let railLines = data
-    .filter(railLine => railLine.mode.toUpperCase() === 'RAIL')
-    .filter(railLine => railLine.id.includes('LI') || railLine.id.includes('MNR'))
+    .filter(function (railLine) {return railLine.mode.toUpperCase() === 'RAIL'})
+    .filter(function (railLine) {return railLine.id.includes('LI') || railLine.id.includes('MNR')})
     .concat(WEIRD_RAIL_LINES)
-    .map((railLine) => {
+    .map(function (railLine) {
       let agency = railLine.id.includes('LI') ? 'LI' : 'MNR';
       railLine.inService = true;
       railLine.agency = agency;
@@ -209,7 +266,7 @@ const buildRailRoute = (data) => {
     });
 
   // start by sorting all rail lines alphabetically
-  railLines.sort((line1, line2) => {
+  railLines.sort(function (line1, line2) {
     if (line1.longName < line2.longName) {  //sort string alphabetically
       return -1;
     } else /*if (line1.route > line2.route)*/ {
@@ -230,7 +287,7 @@ const buildRailRoute = (data) => {
   }
 
   // get the index of the 'New Haven' line
-  let newHavenLineIndex = _.findIndex(railLines, (railLine) => {
+  let newHavenLineIndex = _.findIndex(railLines, function (railLine) {
     return railLine.id === 'MNR:3';
   });
 
@@ -246,7 +303,7 @@ const buildRailRoute = (data) => {
     }
   }
   // get the index of the 'Harlem' line
-  let harlemLineIndex = _.findIndex(railLines, (railLine) => {
+  let harlemLineIndex = _.findIndex(railLines, function (railLine) {
     return railLine.id === 'MNR:2';
   });
 
@@ -256,7 +313,7 @@ const buildRailRoute = (data) => {
 }
 
 
-mapper.buildServiceRoutes = (response) => {
+mapper.buildServiceRoutes = function (response) {
   let routes = {
     busRoutes: buildBusRoute(response),
     railLines: buildRailRoute(response),
@@ -267,10 +324,10 @@ mapper.buildServiceRoutes = (response) => {
   return routes;
 }
 
-const mergeStatii = (routes, statii) => {
+const mergeStatii = function (routes, statii) {
   let routesWithStatus = [];
 
-  const getSummary = (status) => {
+  const getSummary = function (status) {
     let alert = "No Status Summary";
 
     if (status.alert['transit_realtime.mercury_alert']) {
@@ -280,7 +337,7 @@ const mergeStatii = (routes, statii) => {
     return alert;
   }
 
-  const getDates = (status) => {
+  const getDates = function (status) {
     let startDate = null;
     let endDate = null;
     let creationDate = null;
@@ -289,7 +346,7 @@ const mergeStatii = (routes, statii) => {
       let currentTime = Math.round(Date.now() / 1000);
       let activePeriod = false;
 
-      status.alert.active_period.forEach((period) => {
+      status.alert.active_period.forEach(function (period) {
         if (period.start) {
           if (currentTime > period.start) {
             activePeriod = period;
@@ -314,17 +371,17 @@ const mergeStatii = (routes, statii) => {
     }
 
     return {
-      startDate,
-      endDate,
-      creationDate
+      startDate: startDate,
+      endDate: endDate,
+      creationDate: creationDate
     }
   }
 
-  const getDescription = (status) => {
+  const getDescription = function (status) {
     let description = false;
 
     if (status.alert.description_text) {
-      status.alert.description_text.translation.forEach((translation) => {
+      status.alert.description_text.translation.forEach(function (translation) {
         if (translation.language === 'en-html') {
           description = translation.text;
         }
@@ -335,7 +392,7 @@ const mergeStatii = (routes, statii) => {
       }
 
       if (!description) {
-        status.alert.description_text.translation.forEach((translation) => {
+        status.alert.description_text.translation.forEach(function (translation) {
           if (translation.language === 'en') {
             description = translation.text;
           }
@@ -347,7 +404,7 @@ const mergeStatii = (routes, statii) => {
       }
 
       if (!description) {
-        status.alert.description_text.translation.forEach((translation) => {
+        status.alert.description_text.translation.forEach(function (translation) {
           if (translation.language === '') {
             description = translation.text;
           }
@@ -362,11 +419,11 @@ const mergeStatii = (routes, statii) => {
     return description;
   };
 
-  const getHeader = (status) => {
+  const getHeader = function (status) {
     let header = false;
 
     if (status.alert.header_text) {
-      status.alert.header_text.translation.forEach((translation) => {
+      status.alert.header_text.translation.forEach(function (translation) {
         if (translation.language === 'en-html') {
           header = translation.text;
         }
@@ -376,7 +433,7 @@ const mergeStatii = (routes, statii) => {
         return header;
       }
 
-      status.alert.header_text.translation.forEach((translation) => {
+      status.alert.header_text.translation.forEach(function (translation) {
         if (translation.language === 'en') {
           header = translation.text;
         }
@@ -386,7 +443,7 @@ const mergeStatii = (routes, statii) => {
         return header;
       }
 
-      status.alert.header_text.translation.forEach((translation) => {
+      status.alert.header_text.translation.forEach(function (translation) {
         if (translation.language === '') {
           header = translation.text;
         }
@@ -400,7 +457,7 @@ const mergeStatii = (routes, statii) => {
     return header;
   };
 
-  const getPriority = (entity) => {
+  const getPriority = function (entity) {
     let priority = -10;
 
     if (entity['transit_realtime.mercury_entity_selector']) {
@@ -414,7 +471,7 @@ const mergeStatii = (routes, statii) => {
   };
 
   // Reduce the number of statii to only those that are current
-  let currentStatii = statii.filter((status) => {
+  let currentStatii = statii.filter(function (status) {
     let isCurrent = false;
 
     try {
@@ -427,7 +484,7 @@ const mergeStatii = (routes, statii) => {
         if (isPlannedWork && !hasBeforeActive) {
           isCurrent = false;
         } else {
-          status.alert.active_period.forEach((period) => {
+          status.alert.active_period.forEach(function (period) {
             if (period.start && !isCurrent) {
               let startTime = period.start;
 
@@ -453,7 +510,7 @@ const mergeStatii = (routes, statii) => {
     return isCurrent;
   });
 
-  routes.forEach((route) => {
+  routes.forEach(function (route) {
     let key = route.mode === 'SUBWAY' ? route.name : route.shortName;
     let searchKeys = [];
     let statii = [];
@@ -477,14 +534,14 @@ const mergeStatii = (routes, statii) => {
     searchKeys.push(key);
 
     if (route.mode === 'BUS') {
-      searchKeys.push(`${key}-ltd`);
+      searchKeys.push(key+'-ltd');
       confirmAgency = false;
     }
 
-    currentStatii.forEach((status) => {
+    currentStatii.forEach(function (status) {
       if (status.alert) {
         if (status.alert.informed_entity) {
-          status.alert.informed_entity.forEach((entity) => {
+          status.alert.informed_entity.forEach(function (entity) {
 
             let route_id = null;
             let agency_id = null;
@@ -524,16 +581,15 @@ const mergeStatii = (routes, statii) => {
                 let priority = getPriority(entity);
                 let dates = getDates(status);
 
-                let statusItem = {
+                let statusItem = Object.assign({
                   id: status.id,
                   statusSummary: summary,
                   statusDescription: description,
                   statusTitle: header,
                   priority: priority,
                   direction: direction_id,
-                  originalStatus: status,
-                  ...dates
-                }
+                  originalStatus: status
+                  },dates);
 
                 statii.push(statusItem);
                 postedIds.push(status.id);
@@ -562,7 +618,7 @@ function groupedLines (){
 
   for (let i = 0; i < this.lines.length; i++){
     // Sort statii by priority
-    this.lines[i].statusDetails.sort((a,b) => {
+    this.lines[i].statusDetails.sort(function (a,b) {
       return b.priority - a.priority
     });
 
@@ -587,7 +643,7 @@ function groupedLines (){
   }
 
   if (prioritizedLines.length > 0) {
-    prioritizedLines.sort((a,b) => {
+    prioritizedLines.sort(function (a,b) {
       return b.priority - a.priority
     })
   }
@@ -595,8 +651,8 @@ function groupedLines (){
   return prioritizedLines
 }
 
-const sortSubwayLines = (routes) => {
-  routes.sort((rd1, rd2) => {
+const sortSubwayLines = function (routes) {
+  routes.sort(function (rd1, rd2) {
     return rd1.sortOrder - rd2.sortOrder
   })
 }
@@ -606,7 +662,7 @@ function SET_SUBWAY_LINES (state, res) {
     state.lastUpdated = res.lastUpdated
 
     if (state.subwayLines.length || state.goodServiceLines.length) {
-      _.each(lines, (route) => {
+      _.each(lines, function (route) {
         // find if the line is part of good service or delays / service change / planned work
         let previousGoodServiceRouteIndex = _.findIndex(state.goodServiceLines, { id: route.id })
         let previousServiceDetailsRouteIndex = _.findIndex(state.subwayLines, { id: route.id })
@@ -625,7 +681,7 @@ function SET_SUBWAY_LINES (state, res) {
       })
     } else {
       // add lines for the first time
-      _.each(lines, (route) => {
+      _.each(lines, function (route) {
         if (route.statusDetails) {
           state.subwayLines.push(route)
         } else {
@@ -646,9 +702,9 @@ function SET_BUS_ROUTES(state, res) {
 
     let alertedBuses = []
 
-    busRoutes.forEach((route) => {
+    busRoutes.forEach(function (route) {
       if (route.statusDetails) {
-        route.statusDetails.sort((a, b) => {
+        route.statusDetails.sort(function (a, b) {
           return b.priority - a.priority
         })
         alertedBuses.push(route)
@@ -659,7 +715,7 @@ function SET_BUS_ROUTES(state, res) {
 
 
     if (state.busRoutes.length) {
-      _.each(busRoutes, (route) => {
+      _.each(busRoutes, function (route) {
         let busRoute = _.find(state.busRoutes, { routeId: route.routeId })
         if (busRoute) {
           busRoute.statusDetails = route.statusDetails
@@ -676,16 +732,16 @@ function SET_RAIL_LINES(state, res) {
     let lines = res.railLines;
     /* jQuery(document).trigger('trigCheck'); bulk88 removed */
 
-    lines.forEach((line) => {
+    lines.forEach(function (line) {
       if (line.statusDetails) {
-        line.statusDetails.sort((a, b) => {
+        line.statusDetails.sort(function (a, b) {
           return b.priority - a.priority
         })
       }
     })
 
     if (state.mnrLines.length && state.longIslandLines.length) {
-      _.each(lines, (line) => {
+      _.each(lines, function (line) {
         if (line.agency === 'LI') {
           let liLine = _.find(state.longIslandLines, { routeId: line.routeId })
           if (liLine) {
@@ -700,7 +756,7 @@ function SET_RAIL_LINES(state, res) {
       })
     } else {
       state.longIslandLines = _.filter(lines, { agency: 'LI' })
-      state.mnrLines = _.filter(lines, line => { return line.agency === 'MNR' || line.agency === 'NJT' })
+      state.mnrLines = _.filter(lines, function (line) { return line.agency === 'MNR' || line.agency === 'NJT' })
     }
   }
     function toDashedCase(str){
