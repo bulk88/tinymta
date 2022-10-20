@@ -749,6 +749,22 @@ function getStatus(obj) {
   }
 }
 
+function emitRRStatus(name, lines) {
+  var h = '';
+  if (lines.length) {
+    h += '<hr>' + name + '<br>';
+    h += lines.map(function (route) {
+      var has_alert = route.statusDetails && route.statusDetails.length;
+      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route.color + '>' + route.route + '</font>' + ' ' + getStatus(route) + (has_alert ? '</summary>' + route.statusDetails.map(function (statusDetail) {
+          return '<b>' + statusDetail.statusSummary + '</b>'
+           + '<br>' + noPTag(statusDetail.statusTitle)
+           + (hasDuration(statusDetail) ? '<br>' + getDurations(statusDetail) : '')
+           + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription) : '')
+        }).join('<hr>') + '</details>' : '')
+    }).join('');
+  }
+  return h;
+}
 var get1 = 0;
 var allRoutes;
 function genArvBodyObj(r){/*r=resp*/
@@ -819,18 +835,9 @@ function genArvBodyObj(r){/*r=resp*/
           h+=mkSubFontTag('['+route+']', route)+' ';
         }
       }
-      if(state.mnrLines.length) {
-        h += '<hr>Metro-North Railroad<br>';
-        h += state.mnrLines.map(function(route){
-        var has_alert = route.statusDetails && route.statusDetails.length;
-        return '<hr>'+(has_alert?'<details><summary>':'')+'<font color='+route.color+'>'+route.route+'</font>'+' '+getStatus(route)+(has_alert?'</summary>'+route.statusDetails.map(function (statusDetail) {
-            return '<b>'+statusDetail.statusSummary+'</b>'
-            + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
-            + (hasDuration(statusDetail)?'<br>'+getDurations(statusDetail):'')
-            + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription).replace(/\[(\w+)\]/g, mkSubFontTag):'')
-          }).join('<hr>')+'</details>':'')}).join('');
-      }
-      debugger;
+
+      h += emitRRStatus('Metro-North Railroad',state.mnrLines);
+      h += emitRRStatus('Long Island Rail Road',state.longIslandLines);
     }
     document.body.innerHTML += h;
 }
