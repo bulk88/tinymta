@@ -14,11 +14,13 @@ docs/more.htm : more.htm minify_config.json
 	copy /y more.htm "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
-docs/status.htm : status.htm minify_config.json
+docs/status.htm : status.htm minify_config.json adj_stoppath.pl adj_postmini.pl
 	copy /y status.htm "$@"
-	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
+	perl adj_stoppath.pl "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+	perl adj_postmini.pl "$@"
 
-status_.htm : status.htm minify_config.json adj_postmini.pl
+status_.htm : status.htm minify_config.json adj_stoppath.pl adj_postmini.pl
 	copy /y status.htm "$@"
 	perl adj_stoppath.pl "$@" 1
 	html-minifier.cmd --no-include-auto-generated-tags -c minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)

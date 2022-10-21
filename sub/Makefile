@@ -5,7 +5,7 @@ first: all
 stop.htm : routes.txt ../insertcolors.pl
 	perl ../insertcolors.pl "$@"
 
-stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
+stop_.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
@@ -14,7 +14,7 @@ stop_.htm : stop.htm ../minify_config.json ../adj_postmini.pl
 ../docs/stop_.htm : stop_.htm
 	copy /y stop_.htm "$@"
 
-../docs/stop.htm : stop.htm ../minify_config.json ../adj_postmini.pl
+../docs/stop.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	copy /y stop.htm "$@"
 	perl ../adj_stoppath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)

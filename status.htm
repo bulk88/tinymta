@@ -880,7 +880,7 @@ function getJSON(url, alertFlag, addIMS) {
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
                     ? (alertFlag?parseAlerts:parseRoutes)(x.responseText)
-                    : getJSON(url, alert, 1);
+                    : getJSON(url, alertFlag, 1);
             }
             else
                 alert("error HTTP status "+x.status);
