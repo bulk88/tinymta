@@ -157,7 +157,9 @@ sub getRouteDisplayNames {
         } );
         my $routes= $obj->all;
         while (my ($key,$value) = each %$routes) {
-            $$routes{$key} = $value->{$_[0]};
+            my $name = $value->{$_[0]};
+            $name =~ s/ Branch$//;
+            $$routes{$key} = $name
         }
         return %$routes;
     } else {
