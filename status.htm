@@ -8,7 +8,7 @@
 <meta name="referrer" content="no-referrer">
 </head>
 <body>No javascript</body>
-<script src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script>
+<!-- <script src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script> -->
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
@@ -38,9 +38,9 @@ var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:g
 getStop();
 
 function getStop() {
-document.body.innerHTML = t; /*t=top*/
 getJSON(url_routes);
 getJSON(url_alerts,1);
+document.body.innerHTML = t; /*t=top*/
 }
 
 //text includes [] chars usually, if route blank, text is route
@@ -110,6 +110,140 @@ if (!Array.prototype.includes) {
   });
 }
 
+if (!Object.keys) Object.keys = function(o) {
+  if (o !== Object(o))
+    throw new TypeError('Object.keys called on a non-object');
+  var k=[],p;
+  for (p in o) if (Object.prototype.hasOwnProperty.call(o,p)) k.push(p);
+  return k;
+}
+
+if (!Array.prototype.findIndex) {
+  Object.defineProperty(Array.prototype, "findIndex", {
+    enumerable: false,
+    value: function (callback) {
+      if (this === null) {
+        throw new TypeError('Array.prototype.findIndex called on null or undefined');
+      } else if (typeof callback !== 'function') {
+        throw new TypeError('callback must be a function');
+      }
+      var list = Object(this);
+      // Makes sures is always has an positive integer as length.
+      var length = list.length >>> 0;
+      var thisArg = arguments[1];
+      for (var i = 0; i < length; i++) {
+        if (callback.call(thisArg, list[i], i, list)) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  })
+}
+
+if (!Array.prototype.find) {
+  Object.defineProperty(Array.prototype, "find", {
+    enumerable: false,
+    value: function(callback) {
+  if (this === null) {
+    throw new TypeError('Array.prototype.find called on null or undefined');
+  } else if (typeof callback !== 'function') {
+    throw new TypeError('callback must be a function');
+  }
+  var list = Object(this);
+  // Makes sures is always has an positive integer as length.
+  var length = list.length >>> 0;
+  var thisArg = arguments[1];
+  for (var i = 0; i < length; i++) {
+    var element = list[i];
+    if ( callback.call(thisArg, element, i, list) ) {
+      return element;
+    }
+  }
+}
+}
+)}
+
+// Production steps of ECMA-262, Edition 5, 15.4.4.19
+// Reference: http://es5.github.com/#x15.4.4.19
+if (!Array.prototype.map) {
+  Object.defineProperty(Array.prototype, "map", {
+    enumerable: false,
+    value: function (callback, thisArg) {
+
+      var T,
+      A,
+      k;
+
+      if (this == null) {
+        throw new TypeError(" this is null or not defined");
+      }
+
+      // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
+      var O = Object(this);
+
+      // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
+      // 3. Let len be ToUint32(lenValue).
+      var len = O.length >>> 0;
+
+      // 4. If IsCallable(callback) is false, throw a TypeError exception.
+      // See: http://es5.github.com/#x9.11
+      if (typeof callback !== "function") {
+        throw new TypeError(callback + " is not a function");
+      }
+
+      // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      if (thisArg) {
+        T = thisArg;
+      }
+
+      // 6. Let A be a new array created as if by the expression new Array(len) where Array is
+      // the standard built-in constructor with that name and len is the value of len.
+      A = new Array(len);
+
+      // 7. Let k be 0
+      k = 0;
+
+      // 8. Repeat, while k < len
+      while (k < len) {
+
+        var kValue,
+        mappedValue;
+
+        // a. Let Pk be ToString(k).
+        //   This is implicit for LHS operands of the in operator
+        // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
+        //   This step can be combined with c
+        // c. If kPresent is true, then
+        if (k in O) {
+
+          // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
+          kValue = O[k];
+
+          // ii. Let mappedValue be the result of calling the Call internal method of callback
+          // with T as the this value and argument list containing kValue, k, and O.
+          mappedValue = callback.call(T, kValue, k, O);
+
+          // iii. Call the DefineOwnProperty internal method of A with arguments
+          // Pk, Property Descriptor {Value: mappedValue, : true, Enumerable: true, Configurable: true},
+          // and false.
+
+          // In browsers that support Object.defineProperty, use the following:
+          // Object.defineProperty(A, Pk, { value: mappedValue, writable: true, enumerable: true, configurable: true });
+
+          // For best browser support, use the following:
+          A[k] = mappedValue;
+        }
+        // d. Increase k by 1.
+        k++;
+      }
+
+      // 9. return A
+      return A;
+    }
+  })
+}
+
 const BANNED_XBUS_ROUTE_TYPE = 702;
 const NEW_HAVEN_BRANCHES = ['MNR:4', 'MNR:5', 'MNR:6'];
 const HARLEM_BRANCHES = ['Wassaic'];
@@ -124,9 +258,30 @@ const WEIRD_RAIL_LINES = [{
   routeType: 2
 }]
 
-//_ = {};
-//_.findIndex = function (array,f) {return array.findIndex(f)}
-//_.find = function (array,f) {return array.find(f)}
+/*lodash shims are MINIMALLY compliant to get this work*/
+_ = {};
+_.findIndex = function (array,f) {return array.findIndex(f)}
+_.find = function (array, f) {
+  var key = Object.keys(f)[0],
+  value = f[key];
+  return array.find(function (element) {
+    return typeof element === 'object' && element[key] == value ? 1 : 0
+  })
+}
+_.each = function (array, f) {
+  array.forEach(f)
+}
+_.filter = function (array, f) {
+  if(typeof f === 'function')
+    return array.filter(f);
+  else {
+    var key = Object.keys(f)[0],
+    value = f[key];
+    return array.filter(function (element) {
+      return typeof element === 'object' && element[key] == value ? 1 : 0
+    })
+  }
+}
 mapper = {};
 const buildSubwayRoute = function (data) {
   let subwayLines = data
@@ -770,27 +925,24 @@ function emitRRStatus(name, lines) {
   }
   return h;
 }
-var get1 = 0;
+
 var allRoutes;
 var alertsResp;
 function parseRoutes(r) { /*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  r = eval('0,' + r);
-  r = mapper.buildServiceRoutes(r);
-  allRoutes = r;
+  allRoutes = mapper.buildServiceRoutes(eval('0,' + r))
   if (alertsResp)
     drawHTML();
 }
 
 function parseAlerts(r){/*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    r = eval('0,'+r);
-    alertsResp = r.entity;
+    alertsResp = eval('0,'+r).entity;
     if(allRoutes)
       drawHTML();
 }
 function drawHTML() {
-      var h='',i,route,o;
+      var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
       var statii = alertsResp;
       const allStatii = {
         busRoutes: mergeStatii(allRoutes.busRoutes, statii),
@@ -829,6 +981,7 @@ function drawHTML() {
           route = linearr[o];
           //if(route.name=='SI') {debugger;}
           h+='<details><summary>'+mkSubFontTag('['+route.name+']', route.name)+'</summary>';
+          //debugger;
           h += route.statusDetails.map(function (statusDetail) {
             return '<b>'+statusDetail.statusSummary+'</b>'
             + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
