@@ -54,9 +54,7 @@ function mkSubFontTag(text, route) {
 }
 
 if (typeof Object.assign != 'function') {
-// Must be writable: true, enumerable: false, configurable: true
- Object.defineProperty(Object, "assign", {
- value: function assign(target, varArgs) { // .length of function is 2
+  Object.assign = function (target, varArgs) { // .length of function is 2
   'use strict';
   if (target == null) { // TypeError if undefined or null
     throw new TypeError('Cannot convert undefined or null to object');
@@ -77,10 +75,7 @@ if (typeof Object.assign != 'function') {
     }
   }
   return to;
-},
-writable: true,
-configurable: true
-});
+}
 }
 
 if (!String.prototype.includes) {
@@ -99,15 +94,12 @@ if (!String.prototype.includes) {
 }
 
 if (!Array.prototype.includes) {
-  Object.defineProperty(Array.prototype, "includes", {
-    enumerable: false,
-    value: function(obj) {
-        var newArr = this.filter(function(el) {
-          return el == obj;
-        });
-        return newArr.length > 0;
-      }
-  });
+  Array.prototype.includes = function (obj) {
+    var newArr = this.filter(function (el) {
+      return el == obj;
+    });
+    return newArr.length > 0;
+  }
 }
 
 if (!Object.keys) Object.keys = function(o) {
@@ -119,9 +111,7 @@ if (!Object.keys) Object.keys = function(o) {
 }
 
 if (!Array.prototype.findIndex) {
-  Object.defineProperty(Array.prototype, "findIndex", {
-    enumerable: false,
-    value: function (callback) {
+  Array.prototype.findIndex = function (callback) {
       if (this === null) {
         throw new TypeError('Array.prototype.findIndex called on null or undefined');
       } else if (typeof callback !== 'function') {
@@ -138,13 +128,10 @@ if (!Array.prototype.findIndex) {
       }
       return -1;
     }
-  })
 }
 
 if (!Array.prototype.find) {
-  Object.defineProperty(Array.prototype, "find", {
-    enumerable: false,
-    value: function(callback) {
+  Array.prototype.find = function(callback) {
   if (this === null) {
     throw new TypeError('Array.prototype.find called on null or undefined');
   } else if (typeof callback !== 'function') {
@@ -162,14 +149,41 @@ if (!Array.prototype.find) {
   }
 }
 }
-)}
+
+if (!Array.prototype.filter) {
+  Array.prototype.filter = function(fun /*, thisp*/) {
+    'use strict';
+
+    if (this == null) {
+      throw new TypeError();
+    }
+
+    var t = Object(this),
+        len = t.length >>> 0,
+        res, thisp, i, val;
+    if (typeof fun !== 'function') {
+      throw new TypeError();
+    }
+
+    res = [];
+    thisp = arguments[1];
+    for (i = 0; i < len; i++) {
+      if (i in t) {
+        val = t[i]; // in case fun mutates this
+        if (fun.call(thisp, val, i, t)) {
+          res.push(val);
+        }
+      }
+    }
+
+    return res;
+  };
+}
 
 // Production steps of ECMA-262, Edition 5, 15.4.4.19
 // Reference: http://es5.github.com/#x15.4.4.19
 if (!Array.prototype.map) {
-  Object.defineProperty(Array.prototype, "map", {
-    enumerable: false,
-    value: function (callback, thisArg) {
+  Array.prototype.map = function (callback, thisArg) {
 
       var T,
       A,
@@ -241,9 +255,36 @@ if (!Array.prototype.map) {
       // 9. return A
       return A;
     }
-  })
 }
 
+if (!Array.prototype.forEach) {
+  Array.prototype.forEach = function (fn, scope) {
+    'use strict';
+    var i,
+    len;
+    for (i = 0, len = this.length; i < len; ++i) {
+      if (i in this) {
+        fn.call(scope, this[i], i, this);
+      }
+    }
+  };
+}
+
+if (!Date.now) {
+  Date.now = function now() {
+    return new Date().getTime();
+  };
+}
+
+if (!Date.prototype.toISOString) {
+  Date.prototype.toISOString = function () {
+    var m = 1 + this.getMonth()
+      var d = this.getDay()
+      return this.getFullYear() + "-" + (m < 10 ? '0' + m : m) + "-" + (d < 10 ? '0' + d : d)
+  }
+}
+
+/* inlined
 const BANNED_XBUS_ROUTE_TYPE = 702;
 const NEW_HAVEN_BRANCHES = ['MNR:4', 'MNR:5', 'MNR:6'];
 const HARLEM_BRANCHES = ['Wassaic'];
@@ -257,6 +298,7 @@ const WEIRD_RAIL_LINES = [{
   routeId: "MNR_Wassaic",
   routeType: 2
 }]
+*/
 
 /*lodash shims are MINIMALLY compliant to get this work*/
 _ = {};
@@ -283,21 +325,24 @@ _.filter = function (array, f) {
   }
 }
 mapper = {};
-const buildSubwayRoute = function (data) {
-  let subwayLines = data
+function buildSubwayRoute (data) {
+  var subwayLines = data
     .filter(function (subway) {return subway.mode.toUpperCase() === 'SUBWAY'})
     .filter(function (subway) {return subway.id.includes('MTA')})
 
-  let routeDetails = [];
+  var routeDetails = [];
 
   // start by sorting the subwayLines returned (by name)
   subwayLines.sort(function (l1, l2) {
-    return l1.shortName - l2.shortName;
+  //IE 6 and below don't allow - op on strings, throws error
+  //- op is MTA orig logic
+    return isNaN(l1.shortName) || isNaN(l2.shortName)
+      ? 0 : l1.shortName - l2.shortName;
   });
 
   subwayLines.forEach(function (subwayLine) {
-    let route;
-    let name = subwayLine.shortName;
+    var route;
+    var name = subwayLine.shortName;
 
     // check to see if a previous, associated, non-express line is found given the current express line
     if (name.substr(name.length - 1, name.length) === 'X') {
@@ -333,18 +378,19 @@ const buildSubwayRoute = function (data) {
   return routeDetails;
 }
 
-const buildBusRoute = function (stopData) {
-  const mapRoutes = stopData
+function buildBusRoute (stopData) {
+  var mapRoutes = stopData
     .filter(function (busRoute) {return busRoute.mode.toUpperCase() === 'BUS'})
     .filter(function (busRoute) {return !!~busRoute.id.indexOf('MTA')})
     .map(function (stop) {
-      let agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
-      let routeId = agency+"_"+stop.id.split(':')[1];
+      var agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
+      var routeId = agency+"_"+stop.id.split(':')[1];
 
       return Object.assign({
         agency: agency,
         inService: true,
-        isExpressBus: (stop.routeType === BANNED_XBUS_ROUTE_TYPE),
+/* const BANNED_XBUS_ROUTE_TYPE = 702; */
+        isExpressBus: (stop.routeType === 702),
         routeId: routeId,
         route: stop.shortName
       }, stop)
@@ -352,13 +398,24 @@ const buildBusRoute = function (stopData) {
   return mapRoutes
 }
 
-const buildRailRoute = function (data) {
-  let railLines = data
+function buildRailRoute (data) {
+  var railLines = data
     .filter(function (railLine) {return railLine.mode.toUpperCase() === 'RAIL'})
     .filter(function (railLine) {return railLine.id.includes('LI') || railLine.id.includes('MNR')})
-    .concat(WEIRD_RAIL_LINES)
+    .concat(/* WEIRD_RAIL_LINES */
+    [{
+  id: "MNR:Wassaic",
+  agency: "MNR",
+  color: "0039A6",
+  inService: true,
+  mode: "RAIL",
+  longName: "Wassaic",
+  routeId: "MNR_Wassaic",
+  routeType: 2
+}]
+    )
     .map(function (railLine) {
-      let agency = railLine.id.includes('LI') ? 'LI' : 'MNR';
+      var agency = railLine.id.includes('LI') ? 'LI' : 'MNR';
       railLine.inService = true;
       railLine.agency = agency;
       railLine.agencyId = agency;
@@ -379,10 +436,12 @@ const buildRailRoute = function (data) {
   });
 
   // remove all kubes from the railLines array that are contained within the NEW_HAVEN_BRANCHES constant (array)
-  let newHavenBranches = []
-  if (Array.isArray(NEW_HAVEN_BRANCHES) && Array.isArray(railLines) && railLines.length) {
-    for (let i = 0; i < railLines.length; i++) {
-      if (NEW_HAVEN_BRANCHES.includes(railLines[i].id)) {
+  var newHavenBranches = []
+  if (
+  /* Array.isArray(NEW_HAVEN_BRANCHES) && */
+  railLines instanceof Array && railLines.length) {
+    for (var i = 0; i < railLines.length; i++) {
+      if (/*NEW_HAVEN_BRANCHES.*/ ['MNR:4', 'MNR:5', 'MNR:6'].includes(railLines[i].id)) {
         newHavenBranches.push(railLines[i])
         railLines.splice(i, 1)
         i--
@@ -391,15 +450,16 @@ const buildRailRoute = function (data) {
   }
 
   // get the index of the 'New Haven' line
-  let newHavenLineIndex = _.findIndex(railLines, function (railLine) {
+  var newHavenLineIndex = _.findIndex(railLines, function (railLine) {
     return railLine.id === 'MNR:3';
   });
 
   // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
-  let harlemBranches = []
-  if (Array.isArray(HARLEM_BRANCHES) && Array.isArray(railLines) && railLines.length) {
-    for (let i = 0; i < railLines.length; i++) {
-      if (HARLEM_BRANCHES.includes(railLines[i].longName)) {
+  var harlemBranches = []
+  if ( /* Array.isArray(HARLEM_BRANCHES) && */
+    railLines instanceof Array && railLines.length) {
+    for (var i = 0; i < railLines.length; i++) {
+      if (/*HARLEM_BRANCHES.*/['Wassaic'].includes(railLines[i].longName)) {
         harlemBranches.push(railLines[i])
         railLines.splice(i, 1)
         i--
@@ -407,18 +467,18 @@ const buildRailRoute = function (data) {
     }
   }
   // get the index of the 'Harlem' line
-  let harlemLineIndex = _.findIndex(railLines, function (railLine) {
+  var harlemLineIndex = _.findIndex(railLines, function (railLine) {
     return railLine.id === 'MNR:2';
   });
 
   // place the (sorted) newHavenBranches into the railLines array directly AFTER the newHavenLineIndex and return
-  let railLinesSorted = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
+  var railLinesSorted = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
   return railLinesSorted.slice(0, harlemLineIndex + 1).concat(harlemBranches).concat(railLinesSorted.slice(harlemLineIndex + 1));
 }
 
 
 mapper.buildServiceRoutes = function (response) {
-  let routes = {
+  var routes = {
     busRoutes: buildBusRoute(response),
     railLines: buildRailRoute(response),
     subwayLines: buildSubwayRoute(response),
@@ -428,11 +488,11 @@ mapper.buildServiceRoutes = function (response) {
   return routes;
 }
 
-const mergeStatii = function (routes, statii) {
-  let routesWithStatus = [];
+function mergeStatii (routes, statii) {
+  var routesWithStatus = [];
 
-  const getSummary = function (status) {
-    let alert = "No Status Summary";
+  function getSummary (status) {
+    var alert = "No Status Summary";
 
     if (status.alert['transit_realtime.mercury_alert']) {
       alert = status.alert['transit_realtime.mercury_alert'].alert_type;
@@ -441,14 +501,14 @@ const mergeStatii = function (routes, statii) {
     return alert;
   }
 
-  const getDates = function (status) {
-    let startDate = null;
-    let endDate = null;
-    let creationDate = null;
+  function getDates (status) {
+    var startDate = null;
+    var endDate = null;
+    var creationDate = null;
 
     if (status.alert.active_period) {
-      let currentTime = Math.round(Date.now() / 1000);
-      let activePeriod = false;
+      var currentTime = Math.round(Date.now() / 1000);
+      var activePeriod = false;
 
       status.alert.active_period.forEach(function (period) {
         if (period.start) {
@@ -481,8 +541,8 @@ const mergeStatii = function (routes, statii) {
     }
   }
 
-  const getDescription = function (status) {
-    let description = false;
+  function getDescription (status) {
+    var description = false;
 
     if (status.alert.description_text) {
       status.alert.description_text.translation.forEach(function (translation) {
@@ -523,8 +583,8 @@ const mergeStatii = function (routes, statii) {
     return description;
   };
 
-  const getHeader = function (status) {
-    let header = false;
+  function getHeader (status) {
+    var header = false;
 
     if (status.alert.header_text) {
       status.alert.header_text.translation.forEach(function (translation) {
@@ -561,8 +621,8 @@ const mergeStatii = function (routes, statii) {
     return header;
   };
 
-  const getPriority = function (entity) {
-    let priority = -10;
+  function getPriority (entity) {
+    var priority = -10;
 
     if (entity['transit_realtime.mercury_entity_selector']) {
       if (entity['transit_realtime.mercury_entity_selector'].sort_order) {
@@ -575,22 +635,22 @@ const mergeStatii = function (routes, statii) {
   };
 
   // Reduce the number of statii to only those that are current
-  let currentStatii = statii.filter(function (status) {
-    let isCurrent = false;
+  var currentStatii = statii.filter(function (status) {
+    var isCurrent = false;
 
     try {
       if (status.alert.active_period && status.alert['transit_realtime.mercury_alert'] && status.alert['transit_realtime.mercury_alert'].alert_type) {
-        const hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
+        var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
 
-        let currentTime = Math.round(Date.now() / 1000);
-        let isPlannedWork = status.id.includes('planned_work');
+        var currentTime = Math.round(Date.now() / 1000);
+        var isPlannedWork = status.id.includes('planned_work');
 
         if (isPlannedWork && !hasBeforeActive) {
           isCurrent = false;
         } else {
           status.alert.active_period.forEach(function (period) {
             if (period.start && !isCurrent) {
-              let startTime = period.start;
+              var startTime = period.start;
 
               if (hasBeforeActive) {
                 startTime = startTime - status.alert['transit_realtime.mercury_alert'].display_before_active;
@@ -615,11 +675,11 @@ const mergeStatii = function (routes, statii) {
   });
 
   routes.forEach(function (route) {
-    let key = route.mode === 'SUBWAY' ? route.name : route.shortName;
-    let searchKeys = [];
-    let statii = [];
-    let confirmAgency = true;
-    let postedIds = [];
+    var key = route.mode === 'SUBWAY' ? route.name : route.shortName;
+    var searchKeys = [];
+    var statii = [];
+    var confirmAgency = true;
+    var postedIds = [];
 
     if (route.mode === 'RAIL') {
       if (route.routeId.includes('NJT')) {
@@ -647,10 +707,10 @@ const mergeStatii = function (routes, statii) {
         if (status.alert.informed_entity) {
           status.alert.informed_entity.forEach(function (entity) {
 
-            let route_id = null;
-            let agency_id = null;
-            let direction_id = 1;
-            let correctAgency = true;
+            var route_id = null;
+            var agency_id = null;
+            var direction_id = 1;
+            var correctAgency = true;
 
             if (entity.route_id) {
               route_id = entity.route_id;
@@ -679,13 +739,13 @@ const mergeStatii = function (routes, statii) {
               //   console.log('line-list-js status.alert.informed_entity MNR ', route_id, status)
               // }
               try {
-                let summary = getSummary(status);
-                let description = getDescription(status);
-                let header = getHeader(status);
-                let priority = getPriority(entity);
-                let dates = getDates(status);
+                var summary = getSummary(status);
+                var description = getDescription(status);
+                var header = getHeader(status);
+                var priority = getPriority(entity);
+                var dates = getDates(status);
 
-                let statusItem = Object.assign({
+                var statusItem = Object.assign({
                   id: status.id,
                   statusSummary: summary,
                   statusDescription: description,
@@ -717,16 +777,16 @@ const mergeStatii = function (routes, statii) {
 };
 
 function groupedLines (){
-  let statii = []
-  let prioritizedLines = []
+  var statii = {}
+  var prioritizedLines = []
 
-  for (let i = 0; i < this.lines.length; i++){
+  for (var i = 0; i < this.lines.length; i++){
     // Sort statii by priority
     this.lines[i].statusDetails.sort(function (a,b) {
       return b.priority - a.priority
     });
 
-    let status = this.toDashedCase(this.lines[i].statusDetails[0].statusSummary)
+    var status = this.toDashedCase(this.lines[i].statusDetails[0].statusSummary)
 
     if (!statii[status]) {
       statii[status] = {
@@ -741,7 +801,7 @@ function groupedLines (){
 
     statii[status].lines.push(this.lines[i])
   }
-  let stat =''
+  var stat =''
   for(stat in statii) {
     prioritizedLines.push(statii[stat])
   }
@@ -755,21 +815,21 @@ function groupedLines (){
   return prioritizedLines
 }
 
-const sortSubwayLines = function (routes) {
+function sortSubwayLines (routes) {
   routes.sort(function (rd1, rd2) {
     return rd1.sortOrder - rd2.sortOrder
   })
 }
 
 function SET_SUBWAY_LINES (state, res) {
-    let lines = res.subwayLines
+    var lines = res.subwayLines
     state.lastUpdated = res.lastUpdated
 
     if (state.subwayLines.length || state.goodServiceLines.length) {
       _.each(lines, function (route) {
         // find if the line is part of good service or delays / service change / planned work
-        let previousGoodServiceRouteIndex = _.findIndex(state.goodServiceLines, { id: route.id })
-        let previousServiceDetailsRouteIndex = _.findIndex(state.subwayLines, { id: route.id })
+        var previousGoodServiceRouteIndex = _.findIndex(state.goodServiceLines, { id: route.id })
+        var previousServiceDetailsRouteIndex = _.findIndex(state.subwayLines, { id: route.id })
         // remove the line from previous list
         if (previousGoodServiceRouteIndex > -1) {
           state.goodServiceLines.splice(previousGoodServiceRouteIndex, 1)
@@ -802,9 +862,9 @@ function SET_SUBWAY_LINES (state, res) {
     sortSubwayLines(state.goodServiceLines)
   }
 function SET_BUS_ROUTES(state, res) {
-    let busRoutes = res.busRoutes;
+    var busRoutes = res.busRoutes;
 
-    let alertedBuses = []
+    var alertedBuses = []
 
     busRoutes.forEach(function (route) {
       if (route.statusDetails) {
@@ -820,7 +880,7 @@ function SET_BUS_ROUTES(state, res) {
 
     if (state.busRoutes.length) {
       _.each(busRoutes, function (route) {
-        let busRoute = _.find(state.busRoutes, { routeId: route.routeId })
+        var busRoute = _.find(state.busRoutes, { routeId: route.routeId })
         if (busRoute) {
           busRoute.statusDetails = route.statusDetails
 
@@ -833,7 +893,7 @@ function SET_BUS_ROUTES(state, res) {
     }
   }
 function SET_RAIL_LINES(state, res) {
-    let lines = res.railLines;
+    var lines = res.railLines;
     /* jQuery(document).trigger('trigCheck'); bulk88 removed */
 
     lines.forEach(function (line) {
@@ -847,12 +907,12 @@ function SET_RAIL_LINES(state, res) {
     if (state.mnrLines.length && state.longIslandLines.length) {
       _.each(lines, function (line) {
         if (line.agency === 'LI') {
-          let liLine = _.find(state.longIslandLines, { routeId: line.routeId })
+          var liLine = _.find(state.longIslandLines, { routeId: line.routeId })
           if (liLine) {
             liLine.statusDetails = line.statusDetails
           }
         } else if (line.agency === 'MNR' || line.agency === 'NJT') {
-          let mnrLine = _.find(state.mnrLines, { routeId: line.routeId })
+          var mnrLine = _.find(state.mnrLines, { routeId: line.routeId })
           if (mnrLine) {
             mnrLine.statusDetails = line.statusDetails
           }
@@ -944,7 +1004,7 @@ function parseAlerts(r){/*r=resp*/
 function drawHTML() {
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
       var statii = alertsResp;
-      const allStatii = {
+      var allStatii = {
         busRoutes: mergeStatii(allRoutes.busRoutes, statii),
         railLines: mergeStatii(allRoutes.railLines, statii),
         subwayLines: mergeStatii(allRoutes.subwayLines, statii)
@@ -962,7 +1022,7 @@ function drawHTML() {
         allSubwayLines: null,
         subwayLineGroups: null,
         serviceStatusLoading: false,
-        alertedBuses: [],
+        alertedBuses: []
       }
 
       SET_SUBWAY_LINES(state, allStatii);
@@ -973,15 +1033,14 @@ function drawHTML() {
         toDashedCase: toDashedCase
       });
 
-      for (i in groupedByStatusLines) {
+      for (i=0; i < groupedByStatusLines.length; i++) {
         var linearr = groupedByStatusLines[i];
         h += '<hr>' + linearr.status + '<br>';
         linearr = linearr.lines;
-        for (o in linearr) {
+        for (o=0; o < linearr.length; o++) {
           route = linearr[o];
           //if(route.name=='SI') {debugger;}
           h+='<details><summary>'+mkSubFontTag('['+route.name+']', route.name)+'</summary>';
-          //debugger;
           h += route.statusDetails.map(function (statusDetail) {
             return '<b>'+statusDetail.statusSummary+'</b>'
             + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
@@ -995,8 +1054,8 @@ function drawHTML() {
       groupedByStatusLines = state.goodServiceLines;
       if(groupedByStatusLines.length) {
         h += '<hr>No Active Alerts<br>';
-        for (o in groupedByStatusLines) {
-          route = groupedByStatusLines[o].name;
+        for (i=0; i < groupedByStatusLines.length; i++) {
+          route = groupedByStatusLines[i].name;
           h+=mkSubFontTag('['+route+']', route)+' ';
         }
       }
