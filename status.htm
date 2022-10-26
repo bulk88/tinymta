@@ -990,14 +990,14 @@ var allRoutes;
 var alertsResp;
 function parseRoutes(r) { /*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  allRoutes = mapper.buildServiceRoutes(eval('0,' + r))
+  allRoutes = mapper.buildServiceRoutes(typeof r === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r))
   if (alertsResp)
     drawHTML();
 }
 
 function parseAlerts(r){/*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    alertsResp = eval('0,'+r).entity;
+    alertsResp = (typeof r === 'object'? r : this.JSON?JSON.parse(r):eval('0,'+r)).entity;
     if(allRoutes)
       drawHTML();
 }
@@ -1074,6 +1074,7 @@ function getJSON(url, alertFlag, addIMS) {
     try {
         /*throw(0);*/
         x.open('get', url, 1);
+        x.responseType = 'json';
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -1092,7 +1093,7 @@ function getJSON(url, alertFlag, addIMS) {
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? (alertFlag?parseAlerts:parseRoutes)(x.responseText)
+                    ? (alertFlag?parseAlerts:parseRoutes)(x.response)
                     : getJSON(url, alertFlag, 1);
             }
             else
