@@ -1,4 +1,7 @@
 "use strict";
+
+let v8start;
+let routes;
 const faviconStr = new Int8Array([-119, 80, 78, 71, 13, 10, 26, 10,
     0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 70, 0, 0, 0, 76, 8, 6,
     0, 0, 0, -48, -75, -63, -30, 0, 0, 1, 104, 73, 68, 65, 84,
@@ -52,7 +55,8 @@ function mkJSResp(str,etag) {
 }
 
 addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
+  if(!v8start) {v8start = Date.now()};
+  event.respondWith(handleRequest(event.request, event))
 })
 
 
@@ -91,9 +95,10 @@ function parseIsoDatetime(dt,i) {
  * Respond to the request
  * @param {Request} request
  */
-async function handleRequest(request) {
+async function handleRequest(request, event) {
   var url = new URL(request.url)
     ,pathname_callback = url.pathname;
+    console.log(pathname_callback)
   if (pathname_callback === '/favicon.ico') {
     return new Response(faviconStr, {
       headers: {
@@ -239,7 +244,7 @@ else if (pathname_callback.startsWith('/s/')) {
             a.effectiveStartDate > b.effectiveStartDate ? 1 :
             0;
         });
-        for (i in r) {
+        for (i=0; i < r.length && i < 10; i++) {
           trip = r[i];
           if (trip.alertType) { //skip elevators, elevators are missing alertType field
             hotkey = hotkeys.shift();
@@ -308,6 +313,40 @@ else if (pathname_callback.startsWith('/li/s/')) {
       return resp
     }
   }
+}
+else if (pathname_callback==="/routes.json") {
+  console.log('inr');
+  return new Promise(async function(resolveCB) {
+    if(routes,0) {
+      resolveCB(new Response(routes, {
+        headers: {
+          'content-type': 'application/json',
+          'cache-control': 'no-cache, no-store',
+          "x-HSCAPI": 'true',
+          'x-v8st': v8start
+        }
+      }));
+      updateRoutes(event);
+      return;
+    } else {
+      let response = await caches.default.match('http://tinymta.us.to/routes_int.json');
+      if (response) {
+        routes = await response.clone().text();
+        response = new Response(routes, response);
+        //response.headers.set('x-i', runI++);
+        response.headers.set('x-CAPI', 'true');
+        //response.headers.set('x-hsdbg', JSON.stringify(carrierCache));
+        response.headers.set('x-v8st', v8start);
+        //promote Cache API entry to HS cache
+        updateRoutes(event);
+        resolveCB(response);
+        return;
+      }
+      else {
+        updateRoutes(event, resolveCB);
+      }
+    }
+  });
 }
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
@@ -405,3 +444,53 @@ else if (pathname_callback.startsWith('/li/s/')) {
 /* throws in CF, prints JS in browser dev console */
 //try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
 //catch(e){}
+
+async function updateRoutes(event, resolveCB) {
+  var resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
+  resp = await resp;
+  var date = resp.headers.get('date');
+  if (resp.status == 200) {
+    resp = resp.text();
+    //resp = resp.json();
+    resp = await resp;
+    resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false}');
+    routes = resp;
+    //event.waitUntil(
+   //     caches.default.delete('http://tinymta.us.to/routes_int.json')
+
+    //.then(function(){
+        console.log(await caches.default.delete('http://tinymta.us.to/routes_int.json', {ignoreMethod: true}))
+event.waitUntil(
+
+        caches.default.put('http://tinymta.us.to/routes_int.json',
+        
+        new Response(resp,
+            {
+            headers: {
+                'content-type': 'application/json',
+                //'cache-control': 'max-age=31536000',
+                "x-CAPI2": 'true',
+                'last-modified': date
+            }
+        
+            }))
+        );
+
+//      }));
+    
+    if (resolveCB) {
+      resolveCB(new Response(resp, {
+          headers: {
+            'content-type': 'application/json',
+            'cache-control': 'no-cache, no-store',
+            "x-FRM-ORIGIN": 'true',
+            'x-v8st': v8start
+          }
+        }))
+    }
+  } else {
+    if (resolveCB)
+      resolveCB(resp);
+  }
+  return;
+}
