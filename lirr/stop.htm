@@ -54,6 +54,7 @@ else
 
 function genArvBodyObj(r) {
     /*r=resp*/
+    r = typeof r === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)
     r = r.contents || r; //JSONP
     var i, w = "West<br>",
         t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
@@ -76,7 +77,6 @@ function genArvBodyObj(r) {
     document.body.innerHTML += h+w;
 }
 function getStop(addIMS) {
-    document.body.innerHTML = t; /*t=top*/
     try {
         /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
           will happen over network, once browser sees no Access Control header
@@ -90,6 +90,11 @@ function getStop(addIMS) {
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
         x.open('GET', url, 1);
+        try {
+          x.responseType = 'json';
+        } catch (e) {
+          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
+        }
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -101,11 +106,12 @@ function getStop(addIMS) {
         //allow wildcard, so never turn this on, just accept forever these
         //cookies will come
         //x.withCredentials = !0;
-        if(addIMS) x.setRequestHeader("If-Modified-Since", new Date(0));
+        if(addIMS) x.setRequestHeader("if-modified-since", new Date(0));
         x.send();
     } catch (e) {
         getJSONP();
     }
+    document.body.innerHTML = t; /*t=top*/
 }
 
 function getJSONP() {
@@ -139,7 +145,7 @@ function onRSC()
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-                    ? genArvBodyObj(eval('0,'+x.responseText))
+                    ? genArvBodyObj(x.response)
                     : getStop(1);
             }
             else /*failed XHR BC CORS on FF doesn't throw an exeception like Opera 10,

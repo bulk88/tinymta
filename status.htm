@@ -1073,8 +1073,23 @@ function getJSON(url, alertFlag, addIMS) {
     var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
     try {
         /*throw(0);*/
+        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
+          will happen over network, once browser sees no Access Control header
+          it will "fail" the req to the page, then the page does the JSONP network
+          request, stop this double request thing to save network traffic after CORS
+          fails the 1st time, the server wont magically get the header one minute.
+          Once CORS fails once, it will never succeed on that particular client, so
+          never try a CORS request again.
+          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
+          side, without network traffic.*/
+        if(jsonp) throw(0);
+        /*open() can fire errors events or throw exceptions*/
         x.open('get', url, 1);
-        x.responseType = 'json';
+        try {
+          x.responseType = 'json';
+        } catch (e) {
+          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
+        }
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -1102,7 +1117,7 @@ function getJSON(url, alertFlag, addIMS) {
     /*else
         alert("currently the application is at" + invocation.readyState); */
 };
-        if(addIMS) x.setRequestHeader("if-MODIFIED-since", new Date(0));
+        if(addIMS) x.setRequestHeader("if-modified-since", new Date(0));
         //old Firefoxes send on XHR, new FF and new Chrome send */*
         //Java EE server, if it sees "application/xml" it sends XML instead of JSON
         //"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"

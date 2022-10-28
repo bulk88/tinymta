@@ -109,7 +109,7 @@ function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
     var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0];
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    r = eval('0,'+r);
+    r = typeof r === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
 if (r.length) {
     //initial array is for a geosearch with multiple stations, not exact sta
     r = r[0];
@@ -215,10 +215,25 @@ midnight of today, happens right after 1200AM */
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
-    document.body.innerHTML = t; /*t=top*/
     try {
         /*throw(0);*/
+        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
+          will happen over network, once browser sees no Access Control header
+          it will "fail" the req to the page, then the page does the JSONP network
+          request, stop this double request thing to save network traffic after CORS
+          fails the 1st time, the server wont magically get the header one minute.
+          Once CORS fails once, it will never succeed on that particular client, so
+          never try a CORS request again.
+          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
+          side, without network traffic.*/
+        if(jsonp) throw(0);
+        /*open() can fire errors events or throw exceptions*/
         x.open('get', url, 1);
+        try {
+          x.responseType = 'json';
+        } catch (e) {
+          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
+        }
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -237,7 +252,7 @@ function getStop(addIMS) {
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? genArvBodyObj(x.responseText)
+                    ? genArvBodyObj(x.response)
                     : getStop(1);
             }
             else
@@ -267,6 +282,7 @@ function getStop(addIMS) {
         jsonp.appendChild(scriptElem);
         /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
     }
+    document.body.innerHTML = t; /*t=top*/
 }
 
 function onJSP(a) {
