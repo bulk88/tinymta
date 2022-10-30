@@ -1,5 +1,8 @@
 <html>
-<head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"></head>
+<head>
+<meta name="mobileoptimized" content="0">
+<meta name="referrer" content="no-referrer">
+</head>
 <body>No javascript</body>
 <script type="text/javascript">
 
@@ -8,7 +11,7 @@ getStop.name = 'getStop';
 genArvBodyObj.name = 'genArvBodyObj';
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
-var x = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 var jsonp;
 
 var url;
@@ -89,7 +92,7 @@ function getStop(addIMS) {
           side, without network traffic.*/
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('GET', url, 1);
+        x.open('get', url, 1);
         try {
           x.responseType = 'json';
         } catch (e) {
@@ -144,14 +147,11 @@ function onRSC()
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
                     ? genArvBodyObj(x.response)
                     : getStop(1);
             }
-            else /*failed XHR BC CORS on FF doesn't throw an exeception like Opera 10,
-                  supposedly you can't tell from CORS fail from timeout according to spec,
-                  so just do the JSONP blindly*/
-                x.status ? alert("error HTTP status "+x.status) : getJSONP();
+            else
+                alert("error HTTP status "+x.status);
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
