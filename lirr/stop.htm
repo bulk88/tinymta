@@ -81,6 +81,7 @@ function genArvBodyObj(r) {
 }
 function getStop(addIMS) {
     try {
+        /*throw(0);*/
         /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
           will happen over network, once browser sees no Access Control header
           it will "fail" the req to the page, then the page does the JSONP network
@@ -140,9 +141,9 @@ function onRSC()
             if (x.status == 200)
             {   /* IE 6 cache hit, no IP traffic happened, thats bad,
                   this detects it and resends it, on Chrome with CORS
-                  XMLHttpRequest cannot load http://54.90.113.57/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
+                  XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
                   so include IMS header ONLY if IE with cache bug by feature test and no CORS support
-
+                  
                   asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
