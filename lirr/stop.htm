@@ -57,8 +57,9 @@ else
 
 function genArvBodyObj(r) {
     /*r=resp*/
-    r = typeof r === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)
-    r = r.contents || r; //JSONP
+    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+    /* r.contents is JSONP */
+    r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
     var i, w = "West<br>",
         t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
@@ -125,7 +126,11 @@ function getJSONP() {
         raw button (forced download) doesnt work in updating cache */
     var scriptElem = document.createElement("script");
     //note this WILL NOT RUN FROM 127.0.0.1 or file://
-    scriptElem.src = '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj';
+    scriptElem.src =
+/*STARTDELETE*/
+    '//tinymta.us.to' +
+/*ENDDELETE*/
+    '/li/api/'+location.hash.substring(1)+'?callback=genArvBodyObj';
     jsonp = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

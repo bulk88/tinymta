@@ -12,8 +12,8 @@
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
-onJSPR.name = 'onJSPR';
-onJSPA.name = 'onJSPA';
+parseRoutes.name = 'parseRoutes';
+parseAlerts.name = 'parseAlerts';
 var jsonp;
 
 var url_routes = '//otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE';
@@ -990,16 +990,18 @@ var allRoutes;
 var alertsResp;
 function parseRoutes(r) { /*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  allRoutes = mapper.buildServiceRoutes(typeof r === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r))
+  /* r.contents is JSONP */
+  allRoutes = mapper.buildServiceRoutes(typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r))
   if (alertsResp)
     drawHTML();
 }
 
 function parseAlerts(r){/*r=resp*/
-    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    alertsResp = (typeof r === 'object'? r : this.JSON?JSON.parse(r):eval('0,'+r)).entity;
-    if(allRoutes)
-      drawHTML();
+  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+  /* r.contents is JSONP */
+  alertsResp = (typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).entity;
+  if(allRoutes)
+    drawHTML();
 }
 function drawHTML() {
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
@@ -1129,7 +1131,7 @@ function getJSON(url, alertFlag, addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback='+(alertFlag?'onJSPA':'onJSPR');
+        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback='+(alertFlag?'parseAlerts':'parseRoutes');
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -1140,12 +1142,6 @@ function getJSON(url, alertFlag, addIMS) {
     }
 }
 
-function onJSPR(a) {
-    parseRoutes(a.contents)
-}
-function onJSPA(a) {
-    parseAlerts(a.contents)
-}
 </script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash

@@ -12,7 +12,7 @@
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
-onJSP.name = 'onJSP';
+genArvBodyObj.name = 'genArvBodyObj';
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
 var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -109,7 +109,8 @@ function genArvBodyObj(r){/*r=resp*/
     /*h=html*/
     var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0];
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    r = typeof r === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
+    /* r.contents is JSONP */
+    r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
 if (r.length) {
     //initial array is for a geosearch with multiple stations, not exact sta
     r = r[0];
@@ -273,7 +274,7 @@ function getStop(addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback=onJSP';
+        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback=genArvBodyObj';
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
@@ -285,9 +286,6 @@ function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
 }
 
-function onJSP(a) {
-    genArvBodyObj(a.contents)
-}
 </script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
