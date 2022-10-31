@@ -144,7 +144,7 @@ else if (pathname_callback.startsWith('/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       resp = resp.json();
-      var hotkey;
+      var hotkey_timestamp = 0;
       resp = await resp;
 
       /*h=html*/
@@ -162,6 +162,7 @@ else if (pathname_callback.startsWith('/s/')) {
           for (i in route.times) {
             trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
+            trip.timestamp > hotkey_timestamp && (hotkey_timestamp = trip.timestamp);
             (o[url_headsign] = o[url_headsign] || []).push(trip);
           }
         }
@@ -187,12 +188,12 @@ else if (pathname_callback.startsWith('/s/')) {
                   })
                 }), e
         */
-        h += new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
+        h += new Date(hotkey_timestamp*1000).toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
           + " via CFW<br>"
           + 'CurSta:' + r.stop.name + "<br>";
 
         for (i in o) {
-          h += '<a accesskey='+(hotkey=hotkeys.shift())+' name='+hotkey+' href=#'+hotkey+'>'+i+"</a><br>";
+          h += '<a accesskey='+(hotkey_timestamp=hotkeys.shift())+' name='+hotkey_timestamp+' href=#'+hotkey_timestamp+'>'+i+"</a><br>";
           //route is dir really
           route = o[i];
           for (i in route) {
@@ -247,8 +248,8 @@ else if (pathname_callback.startsWith('/s/')) {
         for (i=0; i < r.length && i < 10; i++) {
           trip = r[i];
           if (trip.alertType) { //skip elevators, elevators are missing alertType field
-            hotkey = hotkeys.shift();
-            route = (hotkey === void 0 ? trip.alertType : '<a accesskey='+hotkey+' href=#'+hotkey+' name='+hotkey+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + (trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'') + "<br><br>";
+            hotkey_timestamp = hotkeys.shift();
+            route = (hotkey_timestamp === void 0 ? trip.alertType : '<a accesskey='+hotkey_timestamp+' href=#'+hotkey_timestamp+' name='+hotkey_timestamp+'>'+trip.alertType+"</a>")+"<br>" + (trip.humanReadableActivePeriod || 'Ongoing') + "<br>" + trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag) + (trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'') + "<br><br>";
             //delays dont have a time period, put them first in UI
             trip.humanReadableActivePeriod ? o += route : h += route;
           }

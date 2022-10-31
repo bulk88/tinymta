@@ -106,8 +106,8 @@ function minsAway(t) {
 }*/
 
 function genArvBodyObj(r){/*r=resp*/
-    /*h=html*/
-    var h,i,route,trip,alerts_headsign,o = {},hotkey, hotkeys = [2,3,4,5,6,7,8,9,0];
+    /*h=html and timestamp*/
+    var h = 0,i,route,trip,alerts_headsign,o = {} /*,hotkey, hotkeys = [2,3,4,5,6,7,8,9,0] */;
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     /* r.contents is JSONP */
     r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
@@ -121,6 +121,7 @@ if (r.length) {
         for (i in route.times) {
             trip = route.times[i];
             trip.shortRouteName = route.route.shortName;
+            trip.timestamp > h && (h = trip.timestamp);
             (o[alerts_headsign] = o[alerts_headsign] || []).push(trip);
         }
     }
@@ -146,7 +147,8 @@ if (r.length) {
               })
             }), e
     */
-    h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
+
+    h = (new Date(h*1000)).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
         'Cur Sta: ' + r.stop.name + "<br>";
 
     for (i in o) {
