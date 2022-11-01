@@ -8,7 +8,6 @@
 <meta name="referrer" content="no-referrer">
 </head>
 <body>No javascript</body>
-<!-- <script src=https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js></script> -->
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
@@ -300,51 +299,12 @@ const WEIRD_RAIL_LINES = [{
 }]
 */
 
-/*lodash shims are MINIMALLY compliant to get this work*/
-_ = {};
-//_.findIndex = function (array,f) {return array.findIndex(f)}
-_.find = function (array, f) {
-  var key = Object.keys(f)[0],
-  value = f[key];
-  return array.find(function (element) {
-    return typeof element === 'object' && element[key] == value ? 1 : 0
-  })
-}
-/*
-_.each = function (array, f) {
-  array.forEach(f)
-}
-_.filter = function (array, f) {
-  if(typeof f === 'function')
-    return array.filter(f);
-  else {
-    var key = Object.keys(f)[0],
-    value = f[key];
-    return array.filter(function (element) {
-      return typeof element === 'object' && element[key] == value ? 1 : 0
-    })
-  }
-}
-*/
 mapper = {};
+
 function buildSubwayRoute (data) {
   var routeDetails = [];
   var i = 0, subwayLine, route, name;
 
-  //var subwayLines = data.filter(function (subway) {
-  /* b88 removed mode.toUpperCase */
-  //  return subway.mode === 'SUBWAY'
-  //    && !subway.id.indexOf('MTA')
-  //})
-/*  b88 disabled, doesn't affect UI I think
-  // start by sorting the subwayLines returned (by name)
-  .sort(function (l1, l2) {
-  //IE 6 and below don't allow - op on strings, throws error
-  //- op is MTA orig logic
-    return isNaN(l1.shortName) || isNaN(l2.shortName)
-      ? 0 : l1.shortName - l2.shortName;
-  });
-*/
   for(; i < data.length; i++) {
   subwayLine = data[i];
   /*b88 pass array only once */
@@ -357,8 +317,9 @@ function buildSubwayRoute (data) {
     // check to see if a previous, associated, non-express line is found given the current express line
     if (name.substr(name.length - 1, name.length) === 'X') {
       // if so, set the route given the previously set non-express route
-      route = _.find(routeDetails, {
-        name: name.substr(0, name.indexOf('X'))
+      var baseName = name.substr(0, name.indexOf('X'));
+      route = routeDetails.find(function (element) {
+        return typeof element === 'object' && element.name === baseName ? 1 : 0
       });
     }
 
@@ -383,13 +344,6 @@ function buildSubwayRoute (data) {
     }
   }
   }
-
-  // Finish up by sorting by sort order
-  /* b88 disabled, doesn't affect UI I think
-  routeDetails.sort(function (l1, l2) {
-    return l1.sortOrder - l2.sortOrder;
-  });
-  */
 
   return routeDetails;
 }
@@ -833,116 +787,51 @@ function sortSubwayLines (routes) {
   })
 }
 
-function SET_SUBWAY_LINES (state, res) {
-    var lines = res.subwayLines
-    state.lastUpdated = res.lastUpdated
-/* b88 dead code, no incremental updates
-    if (state.subwayLines.length || state.goodServiceLines.length) {
-      _.each(lines, function (route) {
-        // find if the line is part of good service or delays / service change / planned work
-        var previousGoodServiceRouteIndex = _.findIndex(state.goodServiceLines, { id: route.id })
-        var previousServiceDetailsRouteIndex = _.findIndex(state.subwayLines, { id: route.id })
-        // remove the line from previous list
-        if (previousGoodServiceRouteIndex > -1) {
-          state.goodServiceLines.splice(previousGoodServiceRouteIndex, 1)
-        } else if (previousServiceDetailsRouteIndex > -1) {
-          state.subwayLines.splice(previousServiceDetailsRouteIndex, 1)
-        }
-        // add the line to new list based on status
-        if (route.statusDetails) {
-          state.subwayLines.push(route)
-        } else {
-          state.goodServiceLines.push(route)
-        }
-      })
+function SET_SUBWAY_LINES(state, res) {
+  var subwayLines = state.subwayLines;
+  var goodServiceLines = state.goodServiceLines;
+  state.lastUpdated = res.lastUpdated;
+
+  (state.allSubwayLines = res.subwayLines)
+  .forEach(function (route) {
+    if (route.statusDetails) {
+      subwayLines.push(route)
     } else {
-b88 dead code, no incremental updates */
-      // add lines for the first time
-      lines.forEach(function (route) {
-        if (route.statusDetails) {
-          state.subwayLines.push(route)
-        } else {
-          state.goodServiceLines.push(route)
-        }
-      })
+      goodServiceLines.push(route)
+    }
+  })
 
-      if (res.subwayLines.length) {
-        state.allSubwayLines = res.subwayLines
-      }
-//    }
-
-    sortSubwayLines(state.subwayLines)
-    sortSubwayLines(state.goodServiceLines)
-  }
+  sortSubwayLines(subwayLines)
+  sortSubwayLines(goodServiceLines)
+}
 function SET_BUS_ROUTES(state, res) {
-    var busRoutes = res.busRoutes;
-
-    var alertedBuses = []
-
-    busRoutes.forEach(function (route) {
-      if (route.statusDetails) {
-        route.statusDetails.sort(function (a, b) {
-          return b.priority - a.priority
-        })
-        alertedBuses.push(route)
-      }
-
-    })
-    state.alertedBuses = alertedBuses
-
-/* b88 dead code, no incremental updates
-    if (state.busRoutes.length) {
-      _.each(busRoutes, function (route) {
-        var busRoute = _.find(state.busRoutes, { routeId: route.routeId })
-        if (busRoute) {
-          busRoute.statusDetails = route.statusDetails
-
-        }
+  var alertedBuses = state.alertedBuses;
+  (state.busRoutes = res.busRoutes).forEach(function (route) {
+    if (route.statusDetails) {
+      route.statusDetails.sort(function (a, b) {
+        return b.priority - a.priority
       })
-      // console.log('line-list state.busRoutes ', state.busRoutes)
-    } else {
-      // console.log('line-list no state yet busRoutes ', busRoutes)
-b88 dead code, no incremental updates */
-      state.busRoutes = busRoutes
-//    }
-  }
+      alertedBuses.push(route)
+    }
+  })
+}
 function SET_RAIL_LINES(state, res) {
-    var lines = res.railLines;
-    /* jQuery(document).trigger('trigCheck'); bulk88 removed */
+  var longIslandLines = state.longIslandLines;
+  var mnrLines = state.mnrLines;
 
-    lines.forEach(function (line) {
-      var agency = line.agency;
-      if(agency === 'LI')
-        state.longIslandLines.push(line);
-      if(agency === 'MNR' || agency === 'NJT')
-        state.mnrLines.push(line);
-      if (line.statusDetails) {
-        line.statusDetails.sort(function (a, b) {
-          return b.priority - a.priority
-        })
-      }
-    })
-/* b88 dead code, no incremental updates
-    if (state.mnrLines.length && state.longIslandLines.length) {
-      _.each(lines, function (line) {
-        if (line.agency === 'LI') {
-          var liLine = _.find(state.longIslandLines, { routeId: line.routeId })
-          if (liLine) {
-            liLine.statusDetails = line.statusDetails
-          }
-        } else if (line.agency === 'MNR' || line.agency === 'NJT') {
-          var mnrLine = _.find(state.mnrLines, { routeId: line.routeId })
-          if (mnrLine) {
-            mnrLine.statusDetails = line.statusDetails
-          }
-        }
+  res.railLines.forEach(function (line) {
+    var agency = line.agency;
+    if (agency === 'LI')
+      longIslandLines.push(line);
+    else if (agency === 'MNR' || agency === 'NJT')
+      mnrLines.push(line);
+    if (line.statusDetails) {
+      line.statusDetails.sort(function (a, b) {
+        return b.priority - a.priority
       })
-    } else {
-b88 dead code, no incremental updates */
-      //state.longIslandLines = _.filter(lines, { agency: 'LI' })
-      //state.mnrLines = _.filter(lines, function (line) { return line.agency === 'MNR' || line.agency === 'NJT' })
-//    }
-  }
+    }
+  })
+}
 
 function noPTag(str) {
   if(typeof str == 'string') {
