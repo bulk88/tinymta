@@ -455,42 +455,37 @@ function buildRailRoute (data_line) {
 
   // remove all kubes from the railLines array that are contained within the NEW_HAVEN_BRANCHES constant (array)
   var newHavenBranches = []
+  var newHavenLineIndex
+  var harlemBranches = []
+  var harlemLineIndex
 
   for (var i = 0; i < railLines.length; i++) {
     data_line = railLines[i];
-    if (/*NEW_HAVEN_BRANCHES.*/ ['MNR:4', 'MNR:5', 'MNR:6'].includes(data_line.id)) {
+// get the index of the 'New Haven' line
+    if(data_line.id === 'MNR:3') {
+      newHavenLineIndex = i
+    }
+// get the index of the 'Harlem' line
+    if(data_line.id === 'MNR:2') {
+      harlemLineIndex = i
+    }
+    if (/*NEW_HAVEN_BRANCHES.*//^(MNR:4|MNR:5|MNR:6)$/.test(data_line.id)) {
       newHavenBranches.push(data_line)
       railLines.splice(i, 1)
       i--
     }
-  }
-
-  // get the index of the 'New Haven' line
-  var newHavenLineIndex = _.findIndex(railLines, function (railLine) {
-    return railLine.id === 'MNR:3';
-  });
-
   // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
-  var harlemBranches = []
-  for (var i = 0; i < railLines.length; i++) {
-    data_line = railLines[i];
-    if (/*HARLEM_BRANCHES.*/['Wassaic'].includes(data_line.longName)) {
+    if (/*HARLEM_BRANCHES.*/~data_line.longName.indexOf('Wassaic')) {
       harlemBranches.push(data_line)
       railLines.splice(i, 1)
       i--
     }
   }
 
-  // get the index of the 'Harlem' line
-  var harlemLineIndex = _.findIndex(railLines, function (railLine) {
-    return railLine.id === 'MNR:2';
-  });
-
   // place the (sorted) newHavenBranches into the railLines array directly AFTER the newHavenLineIndex and return
-  var railLinesSorted = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
-  return railLinesSorted.slice(0, harlemLineIndex + 1).concat(harlemBranches).concat(railLinesSorted.slice(harlemLineIndex + 1));
+  railLines = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
+  return railLines.slice(0, harlemLineIndex + 1).concat(harlemBranches).concat(railLines.slice(harlemLineIndex + 1));
 }
-
 
 mapper.buildServiceRoutes = function (response) {
   var routes = {
@@ -794,38 +789,32 @@ function mergeStatii (routes, statii) {
 function groupedLines (){
   var statii = {}
   var prioritizedLines = []
+  var line;
 
   for (var i = 0; i < this.lines.length; i++){
+    line = this.lines[i];
     // Sort statii by priority
-    this.lines[i].statusDetails.sort(function (a,b) {
+    line.statusDetails.sort(function (a,b) {
       return b.priority - a.priority
     });
 
-    var status = this.toDashedCase(this.lines[i].statusDetails[0].statusSummary)
+    var status = this.toDashedCase(line.statusDetails[0].statusSummary)
 
-    if (!statii[status]) {
-      statii[status] = {
-        status: this.lines[i].statusDetails[0].statusSummary,
-        priority: this.lines[i].statusDetails[0].priority
-      }
-    }
+    status = statii[status] = statii[status] || {
+        status: line.statusDetails[0].statusSummary,
+        priority: line.statusDetails[0].priority
+    };
 
-    if (!statii[status].lines){
-      statii[status].lines = []
-    }
-
-    statii[status].lines.push(this.lines[i])
-  }
-  var stat =''
-  for(stat in statii) {
-    prioritizedLines.push(statii[stat])
+    (status.lines = status.lines || []).push(line)
   }
 
-  if (prioritizedLines.length > 0) {
-    prioritizedLines.sort(function (a,b) {
-      return b.priority - a.priority
-    })
+  for(status in statii) {
+    prioritizedLines.push(statii[status])
   }
+
+  prioritizedLines.sort(function (a,b) {
+    return b.priority - a.priority
+  })
 
   return prioritizedLines
 }
@@ -914,6 +903,11 @@ function SET_RAIL_LINES(state, res) {
     /* jQuery(document).trigger('trigCheck'); bulk88 removed */
 
     lines.forEach(function (line) {
+      var agency = line.agency;
+      if(agency === 'LI')
+        state.longIslandLines.push(line);
+      if(agency === 'MNR' || agency === 'NJT')
+        state.mnrLines.push(line);
       if (line.statusDetails) {
         line.statusDetails.sort(function (a, b) {
           return b.priority - a.priority
@@ -937,8 +931,8 @@ function SET_RAIL_LINES(state, res) {
       })
     } else {
 b88 dead code, no incremental updates */
-      state.longIslandLines = _.filter(lines, { agency: 'LI' })
-      state.mnrLines = _.filter(lines, function (line) { return line.agency === 'MNR' || line.agency === 'NJT' })
+      //state.longIslandLines = _.filter(lines, { agency: 'LI' })
+      //state.mnrLines = _.filter(lines, function (line) { return line.agency === 'MNR' || line.agency === 'NJT' })
 //    }
   }
 function toDashedCase(str){
