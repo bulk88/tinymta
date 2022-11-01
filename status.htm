@@ -302,7 +302,7 @@ const WEIRD_RAIL_LINES = [{
 
 /*lodash shims are MINIMALLY compliant to get this work*/
 _ = {};
-_.findIndex = function (array,f) {return array.findIndex(f)}
+//_.findIndex = function (array,f) {return array.findIndex(f)}
 _.find = function (array, f) {
   var key = Object.keys(f)[0],
   value = f[key];
@@ -310,6 +310,7 @@ _.find = function (array, f) {
     return typeof element === 'object' && element[key] == value ? 1 : 0
   })
 }
+/*
 _.each = function (array, f) {
   array.forEach(f)
 }
@@ -324,6 +325,7 @@ _.filter = function (array, f) {
     })
   }
 }
+*/
 mapper = {};
 function buildSubwayRoute (data) {
   var routeDetails = [];
@@ -394,7 +396,7 @@ function buildSubwayRoute (data) {
 
 function buildBusRoute (stopData) {
   var mapRoutes = stopData
-    .filter(function (busRoute) {return busRoute.mode.toUpperCase() === 'BUS'
+    .filter(function (busRoute) {return busRoute.mode === 'BUS'
       && !!~busRoute.id.indexOf('MTA')})
     .map(function (stop) {
       var agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
@@ -498,7 +500,49 @@ mapper.buildServiceRoutes = function (response) {
   return routes;
 }
 
-function mergeStatii (routes, statii) {
+function filterCurrentStatii (statii) {
+  // Reduce the number of statii to only those that are current
+  return statii.filter(function (status) {
+    var isCurrent = false;
+
+    try {
+      if (status.alert.active_period && status.alert['transit_realtime.mercury_alert'] && status.alert['transit_realtime.mercury_alert'].alert_type) {
+        var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
+
+        var currentTime = Math.round(Date.now() / 1000);
+        var isPlannedWork = status.id.includes('planned_work');
+
+        if (isPlannedWork && !hasBeforeActive) {
+          isCurrent = false;
+        } else {
+          status.alert.active_period.forEach(function (period) {
+            if (period.start && !isCurrent) {
+              var startTime = period.start;
+
+              if (hasBeforeActive) {
+                startTime = startTime - status.alert['transit_realtime.mercury_alert'].display_before_active;
+              }
+
+              if (currentTime > startTime) {
+                isCurrent = true;
+              }
+
+              if (period.end && currentTime > period.end) {
+                isCurrent = false;
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    return isCurrent;
+  });
+}
+
+function mergeStatii (routes, currentStatii) {
   var routesWithStatus = [];
 
   function getSummary (status) {
@@ -644,46 +688,6 @@ function mergeStatii (routes, statii) {
     return priority;
   };
 
-  // Reduce the number of statii to only those that are current
-  var currentStatii = statii.filter(function (status) {
-    var isCurrent = false;
-
-    try {
-      if (status.alert.active_period && status.alert['transit_realtime.mercury_alert'] && status.alert['transit_realtime.mercury_alert'].alert_type) {
-        var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
-
-        var currentTime = Math.round(Date.now() / 1000);
-        var isPlannedWork = status.id.includes('planned_work');
-
-        if (isPlannedWork && !hasBeforeActive) {
-          isCurrent = false;
-        } else {
-          status.alert.active_period.forEach(function (period) {
-            if (period.start && !isCurrent) {
-              var startTime = period.start;
-
-              if (hasBeforeActive) {
-                startTime = startTime - status.alert['transit_realtime.mercury_alert'].display_before_active;
-              }
-
-              if (currentTime > startTime) {
-                isCurrent = true;
-              }
-
-              if (period.end && currentTime > period.end) {
-                isCurrent = false;
-              }
-            }
-          });
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-
-    return isCurrent;
-  });
-
   routes.forEach(function (route) {
     var key = route.mode === 'SUBWAY' ? route.name : route.shortName;
     var searchKeys = [];
@@ -786,23 +790,27 @@ function mergeStatii (routes, statii) {
   return routesWithStatus;
 };
 
-function groupedLines (){
+/*returns an array of status objs, each which has an array of lines */
+function groupedLines (lines){
   var statii = {}
   var prioritizedLines = []
   var line;
+  var status;
+  var statusDetails;
 
-  for (var i = 0; i < this.lines.length; i++){
-    line = this.lines[i];
+  for (var i = 0; i < lines.length; i++){
+    line = lines[i];
     // Sort statii by priority
     line.statusDetails.sort(function (a,b) {
       return b.priority - a.priority
     });
-
-    var status = this.toDashedCase(line.statusDetails[0].statusSummary)
+    statusDetails = line.statusDetails[0];
+//function toDashedCase(str){
+    status = statusDetails.statusSummary.toLowerCase().replace(/\s/g, '-');
 
     status = statii[status] = statii[status] || {
-        status: line.statusDetails[0].statusSummary,
-        priority: line.statusDetails[0].priority
+        status: statusDetails.statusSummary,
+        priority: statusDetails.priority
     };
 
     (status.lines = status.lines || []).push(line)
@@ -850,7 +858,7 @@ function SET_SUBWAY_LINES (state, res) {
     } else {
 b88 dead code, no incremental updates */
       // add lines for the first time
-      _.each(lines, function (route) {
+      lines.forEach(function (route) {
         if (route.statusDetails) {
           state.subwayLines.push(route)
         } else {
@@ -935,9 +943,7 @@ b88 dead code, no incremental updates */
       //state.mnrLines = _.filter(lines, function (line) { return line.agency === 'MNR' || line.agency === 'NJT' })
 //    }
   }
-function toDashedCase(str){
-  return str.toLowerCase().replace(/\s/g, '-')
-}
+
 function noPTag(str) {
   if(typeof str == 'string') {
     //some notices include these at the end, after the global P tag we are trying to remove
@@ -1011,7 +1017,8 @@ function parseRoutes(r) { /*r=resp*/
 function parseAlerts(r){/*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
   /* r.contents is JSONP */
-  alertsResp = (typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).entity;
+  /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
+  alertsResp = filterCurrentStatii((typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).entity);
   if(allRoutes)
     drawHTML();
 }
@@ -1042,10 +1049,7 @@ function drawHTML() {
       SET_SUBWAY_LINES(state, allStatii);
       SET_RAIL_LINES(state, allStatii);
       SET_BUS_ROUTES(state, allStatii);
-      var groupedByStatusLines = groupedLines.call({
-        lines: state.subwayLines,
-        toDashedCase: toDashedCase
-      });
+      var groupedByStatusLines = groupedLines(state.subwayLines);
 
       for (i=0; i < groupedByStatusLines.length; i++) {
         var linearr = groupedByStatusLines[i];
