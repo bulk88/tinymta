@@ -502,11 +502,19 @@ mapper.buildServiceRoutes = function (response) {
 
 function filterCurrentStatii (statii) {
   // Reduce the number of statii to only those that are current
-  return statii.filter(function (status) {
+  var filteredStatti = statii.filter(function (status) {
     var isCurrent = false;
 
     try {
-      if (status.alert.active_period && status.alert['transit_realtime.mercury_alert'] && status.alert['transit_realtime.mercury_alert'].alert_type) {
+    //MNR elevators do not have .active_period member, NYCT elevators do, both no mercury alert
+    //no active_period 31 records, no mercury_alert 126 records, put mercury_alert test first
+      if (status.alert['transit_realtime.mercury_alert'] && status.alert.active_period
+      /* b88 removed because GTFS spec says required field
+        && status.alert['transit_realtime.mercury_alert'].alert_type */
+        ) {
+        /* <p>Exit/Entry for 3 Av will only be available from 2 PM to 10 PM on weekdays.
+         at 53/lex DOES NOT HAVE A display_before_active field, this is opposite of MTA GTFS spec
+         it has an alert_type of "Station Notice" */
         var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
 
         var currentTime = Math.round(Date.now() / 1000);
@@ -540,6 +548,7 @@ function filterCurrentStatii (statii) {
 
     return isCurrent;
   });
+  return filteredStatti;
 }
 
 function mergeStatii (routes, currentStatii) {
@@ -689,30 +698,21 @@ function mergeStatii (routes, currentStatii) {
   };
 
   routes.forEach(function (route) {
-    var key = route.mode === 'SUBWAY' ? route.name : route.shortName;
-    var searchKeys = [];
+    var mode = route.mode;
+    var searchKeys = {};
     var statii = [];
     var confirmAgency = true;
-    var postedIds = [];
+    var postedIds = {};
+    var key = (mode === 'SUBWAY' ? route.name
+    : mode === 'RAIL' ? ( route.routeId.includes('NJT') ? route.routeId.replace('_', ':') : route.routeId.split('_')[1])
+    : mode === 'BUS' ? route.id.split(':')[1]
+    // b88 unknown mode original MTA case
+    : route.shortName).toLowerCase();
 
-    if (route.mode === 'RAIL') {
-      if (route.routeId.includes('NJT')) {
-        key = route.routeId.replace('_', ':');
-      } else {
-        key = route.routeId.split('_')[1];
-      }
-    }
+    searchKeys[key] = true;
 
-    if (route.mode === 'BUS') {
-      key = route.id.split(':')[1];
-    }
-
-    key = key.toLowerCase();
-
-    searchKeys.push(key);
-
-    if (route.mode === 'BUS') {
-      searchKeys.push(key+'-ltd');
+    if (mode === 'BUS') {
+      searchKeys[key+'-ltd'] = true;
       confirmAgency = false;
     }
 
@@ -747,7 +747,7 @@ function mergeStatii (routes, currentStatii) {
 
             route_id = route_id ? route_id.toLowerCase() : '';
 
-            if (searchKeys.includes(route_id) && correctAgency && !postedIds.includes(status.id)) {
+            if (searchKeys[route_id] && correctAgency && !postedIds[status.id]) {
               // See MNR alerts in the console as they come in.
               // if (route.agency === "MNR") {
               //   console.log('line-list-js status.alert.informed_entity MNR ', route_id, status)
@@ -770,7 +770,7 @@ function mergeStatii (routes, currentStatii) {
                   },dates);
 
                 statii.push(statusItem);
-                postedIds.push(status.id);
+                postedIds[status.id] = true;
               } catch (e) {
                 console.log(status.id, e);
               }
