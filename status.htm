@@ -77,58 +77,6 @@ if (typeof Object.assign != 'function') {
 }
 }
 
-if (!String.prototype.includes) {
-  String.prototype.includes = function(search, start) {
-    'use strict';
-    if (typeof start !== 'number') {
-      start = 0;
-    }
-
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search, start) !== -1;
-    }
-  };
-}
-
-if (!Array.prototype.includes) {
-  Array.prototype.includes = function (obj) {
-    var newArr = this.filter(function (el) {
-      return el == obj;
-    });
-    return newArr.length > 0;
-  }
-}
-
-if (!Object.keys) Object.keys = function(o) {
-  if (o !== Object(o))
-    throw new TypeError('Object.keys called on a non-object');
-  var k=[],p;
-  for (p in o) if (Object.prototype.hasOwnProperty.call(o,p)) k.push(p);
-  return k;
-}
-
-if (!Array.prototype.findIndex) {
-  Array.prototype.findIndex = function (callback) {
-      if (this === null) {
-        throw new TypeError('Array.prototype.findIndex called on null or undefined');
-      } else if (typeof callback !== 'function') {
-        throw new TypeError('callback must be a function');
-      }
-      var list = Object(this);
-      // Makes sures is always has an positive integer as length.
-      var length = list.length >>> 0;
-      var thisArg = arguments[1];
-      for (var i = 0; i < length; i++) {
-        if (callback.call(thisArg, list[i], i, list)) {
-          return i;
-        }
-      }
-      return -1;
-    }
-}
-
 if (!Array.prototype.find) {
   Array.prototype.find = function(callback) {
   if (this === null) {
@@ -474,7 +422,7 @@ function filterCurrentStatii (statii) {
          it has an alert_type of "Station Notice" */
         var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
 
-        var isPlannedWork = status.id.includes('planned_work');
+        var isPlannedWork = ~status.id.indexOf('planned_work');
 
         if (isPlannedWork && !hasBeforeActive) {
           isCurrent = false;
@@ -619,7 +567,7 @@ function mergeStatii (routes, alertsByRoute) {
   routes.forEach(function (route) {
     var mode = route.mode;
     var key = (mode === 'SUBWAY' ? route.name
-       : mode === 'RAIL' ? (route.routeId.includes('NJT') ? route.routeId.replace('_', ':') : route.routeId.split('_')[1])
+       : mode === 'RAIL' ? (~route.routeId.indexOf('NJT') ? route.routeId.replace('_', ':') : route.routeId.split('_')[1])
        : mode === 'BUS' ? route.id.split(':')[1]
       // b88 unknown mode original MTA conditional case
        : route.shortName).toLowerCase();
