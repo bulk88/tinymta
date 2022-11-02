@@ -744,7 +744,7 @@ function mergeStatii (routes, currentStatii) {
   return routesWithStatus;
 };
 
-/*returns an array of status objs, each which has an array of lines */
+/*returns an array of status category objs, each which has an array of lines under it*/
 function groupedLines (lines){
   var statii = {}
   var prioritizedLines = []
@@ -820,11 +820,12 @@ function SET_RAIL_LINES(state, res) {
   var mnrLines = state.mnrLines;
 
   res.railLines.forEach(function (line) {
-    var agency = line.agency;
-    if (agency === 'LI')
-      longIslandLines.push(line);
-    else if (agency === 'MNR' || agency === 'NJT')
-      mnrLines.push(line);
+    ( line.agency === 'LI' ? longIslandLines : mnrLines
+    //  : agency === 'MNR' || agency === 'NJT' ? mnrLines
+    // b88 original MTA logic says maybe there are non-MTA rail lines
+    // but I can't find any in real data
+    //  : (function() {debugger})()
+    ).push(line);
     if (line.statusDetails) {
       line.statusDetails.sort(function (a, b) {
         return b.priority - a.priority
@@ -860,20 +861,11 @@ function getDurations(alert) {
 }
 
 function getStatus(obj) {
-  if (obj.inService) {
-    if (obj.statusDetails && obj.statusDetails.length) {
-      // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
-      return obj.statusDetails[0].statusSummary;
-    }
-    return "On or Close";
-  } else {
-    // if an alert shows up for out of service line - currently will not happen
-    if (obj.statusDetails && obj.statusDetails.length) {
-      return obj.statusDetails[0].statusSummary;
-    } else {
-      return "No Scheduled Service";
-    }
+  if (obj.statusDetails && obj.statusDetails.length) {
+    // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
+    return obj.statusDetails[0].statusSummary;
   }
+  return obj.inService ? "On or Close" : "No Scheduled Service";
 }
 
 function emitRRStatus(name, lines) {
