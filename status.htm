@@ -455,9 +455,12 @@ mapper.buildServiceRoutes = function (response) {
 }
 
 function filterCurrentStatii (statii) {
+  var alertsByRoute = {}, status, isCurrent;
+  var currentTime = Math.round(Date.now() / 1000);
   // Reduce the number of statii to only those that are current
-  var filteredStatti = statii.filter(function (status) {
-    var isCurrent = false;
+  for(var i = 0; i < statii.length; i++) {
+    status = statii[i];
+    isCurrent = false;
 
     try {
     //MNR elevators do not have .active_period member, NYCT elevators do, both no mercury alert
@@ -471,7 +474,6 @@ function filterCurrentStatii (statii) {
          it has an alert_type of "Station Notice" */
         var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
 
-        var currentTime = Math.round(Date.now() / 1000);
         var isPlannedWork = status.id.includes('planned_work');
 
         if (isPlannedWork && !hasBeforeActive) {
@@ -500,16 +502,42 @@ function filterCurrentStatii (statii) {
       console.log(e);
     }
 
-    return isCurrent;
-  });
-  return filteredStatti;
+    // add to output byRoutes hash, initial props if needed
+    if (isCurrent) {
+      status.alert.informed_entity.forEach(function (entity) {
+        var route_id;
+        if (route_id = entity.route_id) { // some alerts are "stop_id" only
+          //MNR:wassaic has diff caps between alerts and routes servers
+          route_id = route_id.toLowerCase();
+          var i = alertsByRoute[entity.agency_id] = alertsByRoute[entity.agency_id] || {};
+          i = (i[route_id] = i[route_id] || []);
+          i.push(status);
+        }
+      })
+    }
+  }
+  return alertsByRoute;
 }
 
-function mergeStatii (routes, currentStatii) {
-var currentStatiiNew = JSON.parse(JSON.stringify(currentStatii));
-var routesOldNew = JSON.parse(JSON.stringify(routes));
+function transArrToHTML(translations) {
+  var en = false,
+  none = false,
+  translation;
+  for (var i = 0; i < translations.length; i++) {
+    translation = translations[i];
+    if (translation.language === 'en-html')
+      //note we skip if(text) anti empty string MTA logic
+      return translation.text;
+    else if (translation.language === 'en')
+      en = translation.text;
+    else if (translation.language === '')
+      none = translation.text;
+  }
+  return en ? en : none ? none : false;
+}
+
+function mergeStatii (routes, alertsByRoute) {
   var routesWithStatus = [];
-  var routesWithStatusNew = [];
 
   function getSummary (status) {
     var alert = "No Status Summary";
@@ -561,84 +589,18 @@ var routesOldNew = JSON.parse(JSON.stringify(routes));
     }
   }
 
-  function getDescription (status) {
-    var description = false;
-
-    if (status.alert.description_text) {
-      status.alert.description_text.translation.forEach(function (translation) {
-        if (translation.language === 'en-html') {
-          description = translation.text;
-        }
-      })
-
-      if (description) {
-        return description;
-      }
-
-      if (!description) {
-        status.alert.description_text.translation.forEach(function (translation) {
-          if (translation.language === 'en') {
-            description = translation.text;
-          }
-        })
-      }
-
-      if (description) {
-        return description;
-      }
-
-      if (!description) {
-        status.alert.description_text.translation.forEach(function (translation) {
-          if (translation.language === '') {
-            description = translation.text;
-          }
-        })
-      }
-
-      if (description) {
-        return description;
-      }
+  function getDescription(status) {
+    if (status = status.alert.description_text) {
+      return transArrToHTML(status.translation)
     }
-
-    return description;
+    return false;
   };
 
   function getHeader (status) {
-    var header = false;
-
-    if (status.alert.header_text) {
-      status.alert.header_text.translation.forEach(function (translation) {
-        if (translation.language === 'en-html') {
-          header = translation.text;
-        }
-      })
-
-      if (header) {
-        return header;
-      }
-
-      status.alert.header_text.translation.forEach(function (translation) {
-        if (translation.language === 'en') {
-          header = translation.text;
-        }
-      })
-
-      if (header) {
-        return header;
-      }
-
-      status.alert.header_text.translation.forEach(function (translation) {
-        if (translation.language === '') {
-          header = translation.text;
-        }
-      })
-
-      if (header) {
-        return header;
-      }
+    if (status = status.alert.header_text) {
+      return transArrToHTML(status.translation)
     }
-
-    return header;
+    return false;
   };
 
   function getPriority (entity) {
@@ -656,133 +618,18 @@ var routesOldNew = JSON.parse(JSON.stringify(routes));
 
   routes.forEach(function (route) {
     var mode = route.mode;
-    var searchKeys = {};
-    var statii = [];
-    var confirmAgency = true;
-    var postedIds = {};
-    //debugger;
-    //bus can not use shortName bc alerts uses 'q06', but routes shortName is Q6
-    var key = (mode === 'SUBWAY' ? route.name
-    : mode === 'RAIL' ? ( route.routeId.includes('NJT') ? route.routeId.replace('_', ':') : route.routeId.split('_')[1])
-    : mode === 'BUS' ? route.id.split(':')[1]
-    // b88 unknown mode original MTA case
-    : route.shortName).toLowerCase();
-    if(mode === 'RAIL' || mode === 'SUBWAY' ) {
-    //debugger;
-    }
-    searchKeys[key] = true;
-
-    if (mode === 'BUS') {
-      searchKeys[key+'-ltd'] = true;
-      confirmAgency = false;
-    }
-
-    currentStatii.forEach(function (status) {
-      if (status.alert) {
-        if (status.alert.informed_entity) {
-          status.alert.informed_entity.forEach(function (entity) {
-
-            var route_id = null;
-            var agency_id = null;
-            var direction_id = 1;
-            var correctAgency = true;
-
-            if (entity.route_id) {
-              route_id = entity.route_id;
-            }
-
-            if (entity.agency_id) {
-              agency_id = entity.agency_id;
-            }
-
-            if (entity.trip) {
-              if (entity.trip.route_id) {
-                route_id = entity.trip.route_id;
-                direction_id = entity.trip.direction_id;
-              }
-            }
-
-            if (confirmAgency) {
-              correctAgency = agency_id == route.agency;
-            }
-
-            route_id = route_id ? route_id.toLowerCase() : '';
-            if(route_id === '') {
-            //debugger
-            }
-
-            if (searchKeys[route_id] && correctAgency && !postedIds[status.id]) {
-              // See MNR alerts in the console as they come in.
-              // if (route.agency === "MNR") {
-              //   console.log('line-list-js status.alert.informed_entity MNR ', route_id, status)
-              // }
-              try {
-                var summary = getSummary(status);
-                var description = getDescription(status);
-                var header = getHeader(status);
-                var priority = getPriority(entity);
-                var dates = getDates(status);
-
-                var statusItem = Object.assign({
-                  id: status.id,
-                  statusSummary: summary,
-                  statusDescription: description,
-                  statusTitle: header,
-                  priority: priority,
-                  direction: direction_id,
-                  originalStatus: status
-                  },dates);
-
-                statii.push(statusItem);
-                postedIds[status.id] = true;
-              } catch (e) {
-                console.log(status.id, e);
-              }
-            }
-          });
-        }
-      }
-    });
-
-    if (statii.length > 0) {
-      route.statusDetails = statii;
-    }
-
-    routesWithStatus.push(route);
-  });
-
-
-  var routesNew = {};
-  currentStatiiNew.forEach(function (status) {
-    status.alert.informed_entity.forEach(function (entity) {
-      if (entity.route_id) { // some alerts are "stop_id" only
-        var route_id = entity.route_id.toLowerCase();
-        var i = routesNew[entity.agency_id] = routesNew[entity.agency_id] || {};
-        i = (i[route_id] = i[route_id] || []);
-        i.push(status);
-      }
-    })
-  });
-  routesOldNew.forEach(function (route) {
-    //debugger;
-    var mode = route.mode;
     var key = (mode === 'SUBWAY' ? route.name
        : mode === 'RAIL' ? (route.routeId.includes('NJT') ? route.routeId.replace('_', ':') : route.routeId.split('_')[1])
        : mode === 'BUS' ? route.id.split(':')[1]
-      // b88 unknown mode original MTA case
+      // b88 unknown mode original MTA conditional case
        : route.shortName).toLowerCase();
-    if (mode === 'RAIL') {
-      //debugger
-    }
-    if (routesNew[route.agency] && routesNew[route.agency][key]) {
+
+    if (alertsByRoute[route.agency] && alertsByRoute[route.agency][key]) {
       var statii =
-        routesNew[route.agency][key].map(function (status) {
+        alertsByRoute[route.agency][key].map(function (status) {
           var direction_id = 1;
           var entity = status.alert.informed_entity.find(function (entity) {
-            //debugger;
-            if (entity.agency_id === route.agency && entity.route_id.toLowerCase() === key)
-              return 1;
-            return 0;
+            return entity.agency_id === route.agency && entity.route_id.toLowerCase() === key ? 1 : 0
           });
           if (entity.trip) {
             direction_id = entity.trip.direction_id;
@@ -804,20 +651,19 @@ var routesOldNew = JSON.parse(JSON.stringify(routes));
           }, dates);
           return statusItem;
         });
-      //debugger;
+
       if (statii.length > 0) {
         route.statusDetails = statii;
       }
     }
-    routesWithStatusNew.push(route);
+    routesWithStatus.push(route);
   });
-  if (JSON.stringify(routesWithStatusNew) !== JSON.stringify(routesWithStatus)) {
-    //alert("bad mergeStatii");
-    debugger;
-  }
-  return routesWithStatusNew;
-};
-/*returns an array of status category objs, each which has an array of lines under it*/
+
+  return routesWithStatus;
+}
+
+/*returns an array of status category objs,
+  each which has an array of lines under it*, SUBWAYS ONLY*/
 function groupedLines (lines){
   var statii = {}
   var prioritizedLines = []
@@ -922,15 +768,7 @@ function hasDuration(alert) {
   .human_readable_active_period;
 }
 function getDurations(alert) {
-  /* originally picks en-html, then en, then nothing
-  return [
-  this.getText(
-  alert.alert["transit_realtime.mercury_alert"]
-  .human_readable_active_period.translation
-  ),
-  ];
-   */
-  return alert.originalStatus.alert["transit_realtime.mercury_alert"].human_readable_active_period.translation[0].text;
+  return transArrToHTML(alert.originalStatus.alert["transit_realtime.mercury_alert"].human_readable_active_period.translation);
 }
 
 function getStatus(obj) {
@@ -968,21 +806,21 @@ function parseRoutes(r) { /*r=resp*/
     drawHTML();
 }
 
-function parseAlerts(r){/*r=resp*/
+function parseAlerts(r) { /*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
   /* r.contents is JSONP */
   /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
-  alertsResp = filterCurrentStatii((typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).entity);
-  if(allRoutes)
+  alertsResp = filterCurrentStatii((typeof(r = r.contents || r) === 'object' ? r : this.JSON ? JSON.parse(r) : eval('0,' + r)).entity);
+  if (allRoutes)
     drawHTML();
 }
 function drawHTML() {
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
-      var statii = alertsResp;
+
       var allStatii = {
-        busRoutes: mergeStatii(allRoutes.busRoutes, statii),
-        railLines: mergeStatii(allRoutes.railLines, statii),
-        subwayLines: mergeStatii(allRoutes.subwayLines, statii)
+        busRoutes: mergeStatii(allRoutes.busRoutes, alertsResp),
+        railLines: mergeStatii(allRoutes.railLines, alertsResp),
+        subwayLines: mergeStatii(allRoutes.subwayLines, alertsResp)
       };
       var state = {
         mnrLines: [],
