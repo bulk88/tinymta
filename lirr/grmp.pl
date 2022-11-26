@@ -93,8 +93,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?'href="../stop.htm#':'href="s/')
                 .$stopid
-                .'"'
-                .'>'.$dispname."</a>\n";
+                .'">'.$dispname."</a>\n";
 }
 
 my $accesskeyidx = 1;
