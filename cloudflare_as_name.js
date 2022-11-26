@@ -108,7 +108,7 @@ async function handleRequest(request, event) {
     });
   }
 else if (pathname_callback.startsWith('/li/api/')) {
-  var resp = fetch("http://backend.mylirr.org/arrivals/" + pathname_callback.substring(8), {
+  var resp = fetch("http://backend-unified.mylirr.org/arrivals/" + pathname_callback.substring(8), {
     headers: { //LIRR server errors otherwise
       'accept-version': '1.5'
     }
@@ -271,7 +271,7 @@ else if (pathname_callback.startsWith('/s/')) {
 else if (pathname_callback.startsWith('/li/s/')) {
   pathname_callback = pathname_callback.substr(('/li/s/'.length), 3);
   if (/^\w+$/.test(pathname_callback)) {
-    var url_headsign = "http://backend.mylirr.org/arrivals/" + pathname_callback;
+    var url_headsign = "http://backend-unified.mylirr.org/arrivals/" + pathname_callback;
     var resp = fetch(url_headsign, {
       headers: {
         'accept-version' : '1.5'
@@ -285,7 +285,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       var r = resp.json();
-      r = await r;
+      r = (await r).arrivals;
       var i, t, l; /*t=train, l=lineofhtml, h=html*/
       for (i = 0; i < r.length; i++) {
         t = r[i];

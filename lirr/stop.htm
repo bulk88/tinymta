@@ -39,8 +39,17 @@ if(t != '' && t != '#') {
     dev: "https://traintimeqa.lirr.org/api",
     staging: "https://traintimeqa.lirr.org/api",
     prod: "https://traintime.lirr.org/api"
+    ^^^dead in 2022
+    new mta OTP planner site (2022) uses
+    https://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=LI%3A31&timeRange=21600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
+    but 2022 https://traintime.mta.info/ (replacing www.mylirr.org) uses
+    https://backend-unified.mylirr.org/arrivals/CLS with
+    with cors accept-version: 1.5 header is mandatory (plus preflight) or server
+    throws an error, cleartext http works, note
+    "This is wrong version of the API. Acceptable versions: [1.5, 1.6, 2.0, 3.0]"
+    I see no JSON diff with 1.5 vs 3.0
     */
-    url = '//backend.mylirr.org/arrivals/'+t.substring(1);
+    url = '//backend-unified.mylirr.org/arrivals/'+t.substring(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
@@ -59,7 +68,8 @@ function genArvBodyObj(r) {
     /*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     /* r.contents is JSONP */
-    r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
+    /* TODO r.alerts is not rendered */
+    r = (typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).arrivals;
     var i, w = "West<br>",
         t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/

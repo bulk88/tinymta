@@ -27,7 +27,7 @@ select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer">'
-.($js?'<link href="//backend.mylirr.org" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//backend.mylirr.org"><link rel=prefetch href=stop.htm>':'')
+.($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//backend-unified.mylirr.org"><link rel=prefetch href=stop.htm>':'')
 .'</head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
@@ -101,6 +101,7 @@ $Data::Dumper::Sortkeys = 1;
 #understandable to public, or must translate to a friendly name but use route_id
 #for short filenames/small HTML
 sub getRouteDisplayNames {
+    my $route_long_name;
     if($_[0] eq 'route_id'){
         return map {$_ => $_} keys %$VAR1;
     } elsif($_[0] eq 'route_short_name' || $_[0] eq 'route_long_name') {
@@ -116,7 +117,12 @@ sub getRouteDisplayNames {
         } );
         my $routes= $obj->all;
         while (my ($key,$value) = each %$routes) {
-            $$routes{$key} = $value->{$_[0]};
+            $route_long_name = $value->{$_[0]};
+            $route_long_name =~ s/ Branch$//;
+            if($route_long_name eq 'City Terminal Zone') {
+             $route_long_name = 'City Zone';
+            }
+            $$routes{$key} = $route_long_name;
         }
         return %$routes;
     } else {

@@ -132,7 +132,7 @@ if($file){
 
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'
-.($js?'<link href="//backend.mylirr.org" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//backend.mylirr.org">':'')
+.($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//backend-unified.mylirr.org">':'')
 .'</head><body>'.$_[1].($js &&!$raw ?'<script src=../../dumb.js></script>':'').'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
@@ -142,6 +142,7 @@ sub write_html { #$filename, $string
 #understandable to public, or must translate to a friendly name but use route_id
 #for short filenames/small HTML
 sub getRouteDisplayNames {
+    my $route_long_name;
     if($_[0] eq 'route_id'){
         return map {$_ => $_} keys %$VAR1;
     } elsif($_[0] eq 'route_short_name' || $_[0] eq 'route_long_name') {
@@ -157,9 +158,12 @@ sub getRouteDisplayNames {
         } );
         my $routes= $obj->all;
         while (my ($key,$value) = each %$routes) {
-            my $name = $value->{$_[0]};
-            $name =~ s/ Branch$//;
-            $$routes{$key} = $name
+            $route_long_name = $value->{$_[0]};
+            $route_long_name =~ s/ Branch$//;
+            if($route_long_name eq 'City Terminal Zone') {
+             $route_long_name = 'City Zone';
+            }
+            $$routes{$key} = $route_long_name;
         }
         return %$routes;
     } else {
