@@ -1,6 +1,7 @@
 # This is a comment
 /*
-  !nel
-  !referrer-policy
-  !report-to
-  !x-content-type-options
+  nel: 0
+  referrer-policy: 0
+  report-to: 0
+  x-content-type-options: 0
+  
