@@ -107,8 +107,10 @@ async function handleRequest(request, event) {
       }
     });
   }
-else if (pathname_callback.startsWith('/li/api/')) {
-  var resp = fetch("http://backend-unified.mylirr.org/arrivals/" + pathname_callback.substring(8), {
+else if (pathname_callback.startsWith('/api/')) {
+  var resp = fetch((pathname_callback.substr(5,3) === 'su/' // 'li/' othr choice
+    ? 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
+    : "http://backend-unified.mylirr.org/arrivals/") + pathname_callback.substring(8), {
     headers: { //LIRR server errors otherwise
       'accept-version': '1.5'
     }

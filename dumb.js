@@ -81,5 +81,4 @@ if (document.addEventListener) {
   //FF3.0 throws exception "not enough arguments" if #3 missing
   document.addEventListener('keyup', kph, 0);
   document.addEventListener('keypress', kph, 0);
-  document.addEventListener('keypress', kph, 0);
 }

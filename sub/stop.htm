@@ -276,7 +276,11 @@ function getStop(addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback=genArvBodyObj';
+        scriptElem.src =
+/*STARTDELETE*/
+    '//tinymta.us.to' +
+/*ENDDELETE*/
+    '/api/su/'+location.hash.substring(1).substr(0,3)+'?callback=genArvBodyObj';
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
