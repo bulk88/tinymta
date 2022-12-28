@@ -27,14 +27,15 @@ var t = location.hash;
    304 typ if .reload(0)
 */
 if(t != '' && t != '#') {
-    /* https://traintime.lirr.org/api/Departure?loc=CPL is one API from old MTA official LIRR Train Time app, no CORS headers, no cleartext
-    https://backend.mylirr.org/arrivals/CPL is from https://www.mylirr.org/main?
-    with cors accept-version: 1.5 header is mandatory (plus preflight) or server
-    throws an error, cleartext http works
-    new mta OTP planner site (2021) uses
-    dev: "https://traintimeqa.lirr.org/api",
-    staging: "https://traintimeqa.lirr.org/api",
-    prod: "https://traintime.lirr.org/api"
+    /*
+    mta.info uses https://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MNR%3A1&timeRange=21600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
+    mnorth.prod.acquia-sites.com API is from
+    https://web.archive.org/web/20220222050141/https://mymnr.org/stationArrivals/65
+    but maybe also mymta or MN traintime APK app but I didn't get it from the APK
+    https://backend-unified.mylirr.org/arrivals/2SM also delivers MNRR nowadays in 2022
+    ab -n100  -H "accept-version: 1.5" http://backend-unified.mylirr.org/arrivals/2SM 93 ms/req
+    ab -n100  http://mnorth.prod.acquia-sites.com/wse/Mymnr/v6/trains/124/66498c0c-b0f3-4a39-0bda-a3effabd50b5/ 59 ms
+    ab -n100 "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MNR%3A124&timeRange=21600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE" 271 ms
     */
     url = '//mnorth.prod.acquia-sites.com/wse/Mymnr/v6/trains/'+t.substring(1)+'/66498c0c-b0f3-4a39-0bda-a3effabd50b5/';
     /* generate body top string once, its later used for fast refresh */
@@ -52,17 +53,17 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 
 function genArvBodyObj(r) {
-debugger;
     if (r.TRAINS || r.status.http_code == 200 && (r = eval('0,'+r.contents))) {
         /* date useless & wastes screen space, rmv it, keep time, date causes
         scn/line overflow on phones*/
+        var i, t, l, loc, w = "South<br>", /*w=west, t=train, l=lineofhtml*/
         h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>"
-            + 'Cur Sta: '+s[r.LOC].substring(1)+"<br>";
+            + 'Cur Sta: '+s[loc = r.LOC].substring(1)+"<br>";
         /*sometimes this comes in the LIRR JSON*/
         r.WARNING && (h += r.WARNING.text+"<br>");
         r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));
         h += "North<br>";
-        var i, t, l, w = "South<br>"; /*w=west, t=train, l=lineofhtml*/
+
         r = r.TRAINS;
         /*I used to have a "No Scheduled trains" message for empty TRAINS array.
           I'm not sure if seasonal stations like Mets or Greenport have empty TRAINS arrays
@@ -75,13 +76,19 @@ debugger;
           */
         for (i = 0; i < r.length; i++){
             t = r[i];
+            //debugger;
             l = t.SCHED.split(' ')[1].split(':').slice(0,2).join(':')
             +'-Min '+(Math.ceil(t.CD/60))
-            +'-Tk'+(t.TRACK || '?')+'-'+s[t.DEST].substring(1)+(t.TRACK ? '-'+s[t.STOPS[1]].substring(1) : '')+(t.PEAK === 'Peak'?'-PK':'')+"<br>";
+            +'-Tk'+(t.TRACK || '?')
+            +'-D:'+s[t.DEST].substring(1)
+            //t.STOPS.indexOf(loc)+(t.DIR == 'O'?1:-1) +1 -1 not needed
+            //stop list is reversed as needed for opposite directions
+            //TODO use official 2 letter codes for MNR stations instead of devowel
+            +'-N:'+s[t.STOPS[Math.min(t.STOPS.indexOf(loc)+1,t.STOPS.length-1)]].substring(1).replace(/[ aeiouy-]/g,'')+(t.PEAK === 'Peak'?'-PK':'')+"<br>";
             t.DIR == 'O'? h += l: w += l;
         }
     }
-    document.body.innerHTML += h+w;
+    document.body.innerHTML += h+w+'<br>Key: D: (destination) N: (next stop) PK (Peak)<br><br>';;
 }
 function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
