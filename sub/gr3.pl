@@ -100,7 +100,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($planner ? 'href="plan.htm#'.getPlanStr($routename, $name, $stopid) :
-                (($js?'href="stop.htm#':'href="http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY%3A')
+                (($js?'href="stop.htm#':'href="s/')
                 .$stopid
                 .($js?$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]:'')))
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
