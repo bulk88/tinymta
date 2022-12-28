@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v Tue Dec 27 22:55:21 2022
+# v Tue Dec 27 23:37:43 2022
 
 CACHE:
 1p.js
@@ -22,6 +22,7 @@ zoom_in.png
 zoom_in_over.png
 zoom_out.png
 zoom_out_over.png
+status.htm
 
 NETWORK:
 *
