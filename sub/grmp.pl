@@ -296,7 +296,7 @@ if($file){
 }
 sub write_html { #$filename, $string
     write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'
-    .($js?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link rel="dns-prefetch" href="//otp-mta-prod.camsys-apps.com">':'')
+    .($js?'<link href="//otp-mta-prod.camsys-apps.com" rel="preconnect" crossorigin><link href="//otp-mta-prod.camsys-apps.com" rel="dns-prefetch">':'')
     .'</head><body>'.$_[1].($js?'<script src=../dumb.js></script>':'').'</body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
