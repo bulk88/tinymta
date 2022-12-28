@@ -1,8 +1,12 @@
 <html>
-<head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"></head>
+<head>
+<link rel="dns-prefetch" href="//mnorth.prod.acquia-sites.com">
+<link rel="preconnect" href="//mnorth.prod.acquia-sites.com">
+<meta name="mobileoptimized" content="0">
+<meta name="referrer" content="no-referrer">
+</head>
 <body>No javascript</body>
 <script type="text/javascript">
-
 mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
 genArvBodyObj.name = 'genArvBodyObj';
@@ -39,12 +43,12 @@ if(t != '' && t != '#') {
     */
     url = '//mnorth.prod.acquia-sites.com/wse/Mymnr/v6/trains/'+t.substring(1)+'/66498c0c-b0f3-4a39-0bda-a3effabd50b5/';
     /* generate body top string once, its later used for fast refresh */
-    t = '<a href=\"javascript:history.back()\">Back</a> Refresh[<a href=\"javascript:getStop()\">Fast</a> <a href=\"javascript:location.replace(\''
+    t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
 /*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href=\"'+url+'\">Raw</a><br>';
+          +t+'\')">Slow</a>] <a href='+url+'>Raw</a><br>';
 }
 
 if(url)
@@ -104,7 +108,7 @@ function getStop(addIMS) {
           side, without network traffic.*/
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('GET', url, 1);
+        x.open('get', url, 1);
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -164,7 +168,8 @@ function onRSC()
     }
     /*else
         alert("currently the application is at" + invocation.readyState); */
-}</script></html>
+}
+</script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
 >   mshtml.dll!CTreePos::SourceIndex()  + 0x3

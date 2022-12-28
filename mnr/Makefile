@@ -26,6 +26,25 @@ stationsmob.htm : gr3.pl routedatafinal.pl
 	-mkdir "../docs/mn/m"
 	perl grmp.pl 1
 
+stop.htm :
+
+stop_.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
+	copy /y stop.htm "$@"
+	perl ../adj_stoppath.pl "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+	perl ../adj_postmini.pl "$@"
+
+../docs/mn/js/stop_.htm : stop_.htm
+	-mkdir "../docs/mn/js"
+	copy /y stop_.htm "$@"
+
+../docs/mn/js/stop.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
+	-mkdir "../docs/mn/js"
+	copy /y stop.htm "$@"
+	perl ../adj_stoppath.pl "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+	perl ../adj_postmini.pl "$@"
+
 grmp.pl : ../minify_config.json
 
 clean :
@@ -49,4 +68,4 @@ gtfs.zip :
 	perl ../getgtfs.pl
 
 all: ../docs/mn/stations.htm ../docs/mn/stationsmob.htm ../docs/mn/rt.htm
-all: ../docs/mn/m/rt.htm
+all: ../docs/mn/js/stop_.htm ../docs/mn/js/stop.htm ../docs/mn/m/rt.htm
