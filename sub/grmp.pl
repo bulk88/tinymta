@@ -272,7 +272,7 @@ sub altRtViewHTML {
     if($js) {
       $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
     } else {
-      $html .= ' <a href="../js/rt'.$pageidx.'.htm">Use JS</a>';
+      $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
     }
     return $html;
 }
