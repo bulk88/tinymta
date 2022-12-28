@@ -20,6 +20,23 @@ var url;
 //https://mymnr.org/allstations // let o = this.filterStationList(); let ab = []; o.forEach(e => {ab[e.Code]=e.Branch_Id+e.Name}); JSON.stringify(ab);
 var s=[,"1Grand Central",,,"1Harlem-125th St.",,,,,"1Morris Heights","1University Heights","1Marble Hill",,,"1Spuyten Duyvil",,"1Riverdale","1Ludlow","1Yonkers","1Glenwood","1Greystone",,"1Hastings-on-Hudson","1Dobbs Ferry","1Ardsley-on-Hudson","1Irvington",,"1Tarrytown",,"1Philipse Manor","1Scarborough","1Ossining",,"1Croton-Harmon",,,,"1Cortlandt",,"1Peekskill","1Manitou",,"1Garrison","1Cold Spring","1Breakneck Ridge",,"1Beacon",,,"1New Hamburg",,"1Poughkeepsie",,,"2Melrose","2Tremont","2Fordham","2Botanical Garden","2Williams Bridge","2Woodlawn",,"2Wakefield","2Mt Vernon West",,"2Fleetwood","2Bronxville","2Tuckahoe",,"2Crestwood",,,"2Scarsdale","2Hartsdale",,"2White Plains",,"2North White Plains",,"2Valhalla","2Mount Pleasant","2Hawthorne","2Pleasantville",,"2Chappaqua","2Mount Kisco","2Bedford Hills","2Katonah",,"2Goldens Bridge","2Purdy's","2Croton Falls","2Brewster",,,"2Southeast",,,"2Patterson","2Pawling","2Appalachian Trail","2Harlem Valley-Wingdale","2Dover Plains",,,,"3Mt Vernon East ","3Pelham",,"3New Rochelle",,"3Larchmont","3Mamaroneck","3Harrison",,"3Rye","3Port Chester","3Greenwich",,"3Cos Cob",,"3Riverside","3Old Greenwich",,,"3Stamford",,,"3Noroton Heights","3Darien","3Rowayton",,"3South Norwalk",,"3East Norwalk","3Westport",,"3Green's Farms","3Southport","3Fairfield",,"3Bridgeport",,,"3Stratford",,"3Milford",,,,"3New Haven",,"3NH-State St.",,"4Glenbrook","4Springdale","4Talmadge Hill",,"4New Canaan","5Merritt 7",,"5Wilton","5Cannondale","5Branchville","5Redding","5Bethel","5Danbury",,"6Derby","6Ansonia","6Seymour","6Beacon Falls","6Naugatuck","6Waterbury",,,,"2Tenmile River","2Wassaic",,,,,,,,,,,"3Fairfield Metro",,"3West Haven",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"1Yankees-E153 St."];
 
+//IE polyfill
+if (!Array.prototype.indexOf)
+{
+  Array.prototype.indexOf = function(elt /*, from*/)
+  {
+    var len = this.length >>> 0;
+
+    var from = 0;
+    for (; from < len; from++)
+    {
+      if (this[from] === elt)
+        return from;
+    }
+    return -1;
+  };
+}
+
 /* var t is "top" as in top of body (header) */
 var t = location.hash;
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
