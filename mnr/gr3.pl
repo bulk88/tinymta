@@ -20,7 +20,7 @@ my %borotbl = ( 'Queens' => 'Q',
             );
 
 die "1st arg must be generate desktop MTA site stations or mobilized MTA site stations " if ! defined $ARGV[0];
-my $mob = $ARGV[0];
+my $js = $ARGV[0];
 our $VAR1;
 do '.\routedatafinal.pl';
 my @lineshtml;
@@ -28,14 +28,13 @@ my @linesboroughhtml;
 my @linestopshtml;
 my %rtdispname = getRouteDisplayNames('route_long_name');
 
-open(HTMLFILE, ">", ($mob ? 'stationsmob.htm' : 'stations.htm'))
+open(HTMLFILE, ">", ($js ? 'stationsjs.htm' : 'stations.htm'))
         || die "$0: can't open stations.htm for writing: $!";
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 #a tiny bit of CSS needed so the buttons dont waste vertical space with 16px margin
-$mob ?
-'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"></head><body><style>form{margin-bottom:0px;margin-top:0px}input{padding-top:0px;padding-bottom:0px}div form{display:inline}</style><a name="#">
+$js ?'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"><link href="//mnorth.prod.acquia-sites.com" rel="preconnect"><link rel="dns-prefetch" href="//mnorth.prod.acquia-sites.com"></head><body><a name="#">
 ':'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"><link href="http://as0.mta.info" rel="preconnect"><link rel="dns-prefetch" href="http://as0.mta.info"></head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
@@ -87,26 +86,20 @@ $linestopshtml[@linestopshtml - 1] = substr($linestopshtml[@linestopshtml - 1],0
 
 sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
-#name attr on input element is an anchor only on IE 6, not Openwave, Chrome, FF, or NN 3
-#id works on IE 6, Openwave, Chrome, FF, but not NN 3 (oh well)
-return ($mob?
-'<form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
-<input value="'.$dispname.'" '.($anchorname?'id="'.$anchorname.'" ':'')
-.($accesskey?'accesskey='.$accesskey.' ':'').'type="submit">
-<input value="'.$stopid.','.$name.'" name="P_AVIS_ID" type="hidden">
-</form>'
-                                  :('<a '.($anchorname?'name="'.$anchorname.'" ':'')
-                                         .($accesskey?'accesskey='.$accesskey.' ':'')
-                .'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
+    return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
+                .($accesskey?'accesskey='.$accesskey.' ':'')
+                .($js?'href="stop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
+                .$stopid
+                .($js?'':','.$name)
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
-                 .$stopid.','.$name.'">'.$dispname));
+                .'">'.$dispname;
 }
 
 print join(" \n", @lineshtml);
-print "\n<br>\n".($mob?'<a href="stations.htm">MTA No Mobile</a>'."<br>\n<div>\n":'<a href="stationsmob.htm">MTA Mobile</a>'."<br>\n");
+print "\n<br>\n".($js?'<a href="stations.htm">MTA No JS</a>'."<br>\n<div>\n":'<a href="stationsjs.htm">MTA JS</a>'."<br>\n");
 print join("<br>\n", @linesboroughhtml);
-print $mob?"\n<br>\n</div>\n<br>\n":"\n<br><br>\n";
-print join($mob?"\n":"<br>\n", @linestopshtml);
+print "\n<br><br>\n";
+print join("<br>\n", @linestopshtml);
 print "\n".'<script src=../1p.js></script>'.'</body></html>';
 $Data::Dumper::Sortkeys = 1;
 
