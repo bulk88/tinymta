@@ -47,14 +47,14 @@ use MTA UI official backend
 http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF01&timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
 */
     url = '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
-    +t.substring(1, 4);
+    +t.slice(1, 4);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
 /*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href='+url+'>Raw</a> <a href=tileMap.htm#'+t.substring(4)+'>Map</a><br>';
+          +t+'\')">Slow</a>] <a href='+url+'>Raw</a> <a href=tileMap.htm#'+t.slice(4)+'>Map</a><br>';
 }
 
 if(url)
@@ -280,7 +280,7 @@ function getStop(addIMS) {
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
-    '/api/su/'+location.hash.substring(1).substr(0,3)+'?callback=genArvBodyObj';
+    '/api/su/'+location.hash.slice(1,4)+'?callback=genArvBodyObj';
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

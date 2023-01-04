@@ -1,7 +1,7 @@
 <script>
     //http://tripplanner.mta.info/MyTrip/js/landmarks.js ::: is field separator
     (function() {
-        var arr = document.location.hash.substring(1).split(":::");
+        var arr = document.location.hash.slice(1).split(":::");
         var originStation = arr[0];
         var destStation = arr[1];
         var date = new Date();

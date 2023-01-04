@@ -2,7 +2,7 @@ var originStation;
 onhashchange =
   // browser cache friendly hash argument
   function(evt) {
-    var destStation = location.hash.substring(1);
+    var destStation = location.hash.slice(1);
     //not a "category" click but a final location click
     if (destStation.indexOf('$') != -1) {
       if (!originStation) {
@@ -16,7 +16,7 @@ onhashchange =
 //onload event/back navigate
 (function() {
   //debugger;
-  var stationHash = location.hash.substring(1);
+  var stationHash = location.hash.slice(1);
   //if back from MTA domain, return to 1st station mode
   if (stationHash.indexOf('$') != -1) {
     originStation = stationHash;
@@ -27,7 +27,7 @@ onhashchange =
     if (!('onhashchange' in window && (docmode === void 0 || docmode > 7 ))) {
       var i = document.location;
       var isDest2 = i.pathname.indexOf('plan2.htm') >= 0;
-      var originSta = i.hash.substring(1);
+      var originSta = i.hash.slice(1);
       var arr = document.getElementsByTagName('a');
       for (i = 0; i < arr.length; i++) {
         var e = arr[i];
@@ -36,7 +36,7 @@ onhashchange =
           if (isDest2) {
             //http://tripplanner.mta.info/MyTrip/js/landmarks.js ::: is field separator
             e.pathname = e.pathname.replace('plan.htm', 'planIE.htm');
-            e.hash = originSta + ":::" + e.hash.substring(1);
+            e.hash = originSta + ":::" + e.hash.slice(1);
           } else {
             e.pathname = e.pathname.replace('plan.htm', 'plan2.htm');
           }

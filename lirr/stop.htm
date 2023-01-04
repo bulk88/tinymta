@@ -51,7 +51,7 @@ if(t != '' && t != '#') {
     "This is wrong version of the API. Acceptable versions: [1.5, 1.6, 2.0, 3.0]"
     I see no JSON diff with 1.5 vs 3.0
     */
-    url = '//backend-unified.mylirr.org/arrivals/'+t.substring(1);
+    url = '//backend-unified.mylirr.org/arrivals/'+t.slice(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
@@ -74,7 +74,7 @@ function genArvBodyObj(r) {
     r = (typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).arrivals;
     var i, w = "West<br>",
         t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
-        +'<br>Cur Sta: ' + s[location.hash.substring(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
+        +'<br>Cur Sta: ' + s[location.hash.slice(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
     for (i = 0; i < r.length; i++) {
         t = r[i];
         //note to self, ceil is round up, |0 is round down
@@ -142,7 +142,7 @@ function getJSONP() {
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
-    '/api/li/'+location.hash.substring(1)+'?callback=genArvBodyObj';
+    '/api/li/'+location.hash.slice(1)+'?callback=genArvBodyObj';
     jsonp = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

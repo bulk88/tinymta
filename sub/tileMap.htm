@@ -512,10 +512,10 @@ style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 //OLD function loadFromQueryString() {
 // browser cache friendly hash argument
 function () {
-  var stationLoc = window.location.hash.substring(1), gy, ft;
+  var stationLoc = window.location.hash.slice(1), gy, ft;
   if(!stationLoc) {
     if (gy = window.location.search) {
-      gy = gy.substring(1).split("&");
+      gy = gy.slice(1).split("&");
       for (i = 0; i < gy.length; i++) {
         ft = gy[i].split("=");
         if (ft[0] == "staID") {
