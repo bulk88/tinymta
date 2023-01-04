@@ -101,7 +101,13 @@ function genArvBodyObj(r) {
             l = t.SCHED.split(' ')[1].split(':').slice(0,2).join(':')
             +'-Min '+(Math.ceil(t.CD/60))
             +'-Tk'+(t.TRACK || '?')
-            +'-D:'+s[t.DEST].substring(1)
+            //https://mnorth.prod.acquia-sites.com/wse/Mymnr/v6/Train/587/76/66498c0c-b0f3-4a39-0bda-a3effabd50b5/
+            //587 train #, 76 dest sta ID, is how branches should be found, but ghetto the branch
+            //to avoid extra JSON calls, southbound trains will get mis-color-IDed at 125/gct
+            //as they approach, b/c STOPS array grows smaller as a train advances to final stop
+            +"-D:<font color=" + (
+{1:"009B3A", 2:"0039A6", 3:"EE0034"}
+        )[s[t.DIR == 'O' ? t.DEST : t.STOPS[0]].charAt(0)] + ">"+s[t.DEST].substring(1)+ "</font>"
             //t.STOPS.indexOf(loc)+(t.DIR == 'O'?1:-1) +1 -1 not needed
             //stop list is reversed as needed for opposite directions
             //TODO use official 2 letter codes for MNR stations instead of devowel
