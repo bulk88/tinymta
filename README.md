@@ -8,7 +8,7 @@ The official SubwayTime website at [http://subwaytime.mta.info/index.html#/app/h
 
 Tinymta uses the thinnest, oldest web standards (ES3/HTML4), so it works on almost every web browser in history. The recommended browser is any browser with Javascript support from 2001 or newer.  In reduced functionality mode (no Javascript mode), it will work on any HTTP 1.1 HTML browser (after about 1995). It works with any dumb phone or flip phone made in last 15 years. It doesn't work with NCSA Mosaic because that only supports HTTP 1.0 and doesn't send a Host header.
 
-Regularly tested with Internet Explorer 5 (1999), Openwave 7 (2004 flip phones), Android 4 pre-Chrome ASOP browser (2012), and a ZTE Z233 4G LTE flip phone (a poorly designed Chrome 45 internally).
+Regularly tested with Internet Explorer 6 (2001), Openwave 7 (2004 flip phones), Android 4 pre-Chrome ASOP browser (2012), and a ZTE Z233 4G LTE flip phone (a poorly designed Chrome 45 internally).
 
 Tinymta gets its arrival information from the same server as [https://new.mta.info/nearby](https://new.mta.info/nearby). If the MTA's server is slow, unresponsive, or down, both Tinymta and the official MTA "Nearby Stations & Stops" website equally do not work.
 
