@@ -218,6 +218,7 @@ midnight of today, happens right after 1200AM */
     document.body.innerHTML += h;
 }
 function getStop(addIMS) {
+    document.body.innerHTML = t; /*t=top*/
     try {
         /*throw(0);*/
         /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
@@ -289,7 +290,6 @@ function getStop(addIMS) {
         jsonp.appendChild(scriptElem);
         /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
     }
-    document.body.innerHTML = t; /*t=top*/
 }
 
 </script></html>

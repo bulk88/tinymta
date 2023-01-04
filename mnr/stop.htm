@@ -12,7 +12,7 @@ getStop.name = 'getStop';
 genArvBodyObj.name = 'genArvBodyObj';
 /*Firefox, Opera, IE7, and other browsers will use the native object*/
 /*IE 5 and 6 will use the ActiveX control*/
-var x = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 var jsonp;
 
 var url;
@@ -57,7 +57,7 @@ if(t != '' && t != '#') {
     ab -n100  http://mnorth.prod.acquia-sites.com/wse/Mymnr/v6/trains/124/66498c0c-b0f3-4a39-0bda-a3effabd50b5/ 59 ms
     ab -n100 "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MNR%3A124&timeRange=21600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE" 271 ms
     */
-    url = '//mnorth.prod.acquia-sites.com/wse/Mymnr/v6/trains/'+t.substring(1)+'/66498c0c-b0f3-4a39-0bda-a3effabd50b5/';
+    url = '//mnorth.prod.acquia-sites.com/wse/Mymnr/v6/trains/'+t.slice(1)+'/66498c0c-b0f3-4a39-0bda-a3effabd50b5/';
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
@@ -73,7 +73,7 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 
 function genArvBodyObj(r) {
-    if (r.TRAINS || r.status.http_code == 200 && (r = eval('0,'+r.contents))) {
+    if (typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)) {
         /* date useless & wastes screen space, rmv it, keep time, date causes
         scn/line overflow on phones*/
         var i, t, l, loc, w = "South<br>", /*w=west, t=train, l=lineofhtml*/
@@ -132,6 +132,11 @@ function getStop(addIMS) {
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
         x.open('get', url, 1);
+        try {
+          x.responseType = 'json';
+        } catch (e) {
+          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
+        }
         /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
           wont drawn train times using "Fast" beyond the 1st/initial page load
           and only "Slow" works
@@ -181,7 +186,7 @@ function onRSC()
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-                    ? genArvBodyObj(eval('0,'+x.responseText))
+                    ? genArvBodyObj(x.response)
                     : getStop(1);
             }
             else /*failed XHR BC CORS on FF doesn't throw an exeception like Opera 10,

@@ -93,6 +93,7 @@ function genArvBodyObj(r) {
     document.body.innerHTML += h+w;
 }
 function getStop(addIMS) {
+    document.body.innerHTML = t; /*t=top*/
     try {
         /*throw(0);*/
         /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
@@ -128,7 +129,6 @@ function getStop(addIMS) {
     } catch (e) {
         getJSONP();
     }
-    document.body.innerHTML = t; /*t=top*/
 }
 
 function getJSONP() {
