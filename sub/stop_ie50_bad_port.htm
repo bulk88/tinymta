@@ -1,0 +1,359 @@
+<html>
+<head>
+<link href="//tiles1.tinymta.us.to" rel="dns-prefetch">
+<link href="//tiles1.tinymta.us.to" rel="preconnect">
+<link href="//tiles2.tinymta.us.to" rel="dns-prefetch">
+<link href="//tiles2.tinymta.us.to" rel="preconnect">
+<link href=tileMap.htm rel=prefetch>
+<meta name="mobileoptimized" content="0">
+<meta name="referrer" content="no-referrer">
+</head>
+<body>No javascript</body>
+<script type="text/javascript">
+mangleIndex={name:"mangleIndex"};
+getStop.name = 'getStop';
+genArvBodyObj.name = 'genArvBodyObj';
+/*Firefox, Opera, IE7, and other browsers will use the native object*/
+/*IE 5 and 6 will use the ActiveX control*/
+var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+var jsonp;
+
+var url;
+
+/* var t is "top" as in top of body (header) */
+var t = location.hash;
+/* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
+   even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
+   related to stop.htm because stop.htm is fetched from browser cache, sadly there
+   seems to be no way to do a refresh or a replace without triggering network traffic
+   so just implement a "Fast" path that does the AJAX call alone, kindda important
+   for latency reasons on 2G networks, 200 always if .reload(1),
+   304 typ if .reload(0)
+*/
+if(t != '' && t != '#') {
+/*
+unusable long IMO and doesn't have N/S combo, I didnt research if parent
+station searchable (N/S combo)
+
+http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/stops/MTASBWY:621N/stoptimes?timeRange=600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE 
+
+not enough info, no dest info
+https://api.wheresthefuckingtrain.com/by-id/82bd
+
+fails, unknown why
+http://collector-otp-prod.camsys-apps.com/realtime/MTASBWY/stopTimes?apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP
+
+use MTA UI official backend
+http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF01&timeRange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
+*/
+    url = '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
+    +t.substring(1, 4);
+    /* generate body top string once, its later used for fast refresh */
+    t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
+          +
+/*STARTINSERTPATH*/
+          (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
+/*ENDINSERTPATH*/
+          +t+'\')">Slow</a>] <a href='+url+'>Raw</a> <a href=tileMap.htm#'+t.substring(4)+'>Map</a><br>';
+}
+
+if(url)
+    getStop();
+else
+    document.body.innerHTML = 'No station specified in url anchor.';
+
+//text includes [] chars usually, if route blank, text is route
+function mkSubFontTag(text, route) {
+  var c =
+/*STARTCOLOR*/
+{"1":"EE352E","2":"EE352E","3":"EE352E","4":"00933C","5":"00933C","5X":"00933C","6":"00933C","6X":"00A65C","7":"B933AD","7X":"B933AD","A":"2850AD","B":"FF6319","C":"2850AD","D":"FF6319","E":"2850AD","F":"FF6319","FX":"FF6319","G":"6CBE45","GS":"6D6E71","J":"996633","L":"A7A9AC","M":"FF6319","N":"FCCC0A","Q":"FCCC0A","R":"FCCC0A","W":"FCCC0A","Z":"996633"}
+/*ENDCOLOR*/
+  [route||text];
+  return c ?'<font color='+c+'>'+text+'</font>':text;
+}
+//t = "2021-05-11T18:58:08-04:00" getFormattedTime
+/* unused since switch from abs time to Mins
+function getFormattedTime(t) {
+    var e = parseIsoDatetime(t),
+        h = e.getHours(),
+        m = e.getMinutes(),
+        a = h > 12 ? h - 12 : h;
+    return (0 === a ? "12" : a)+ ":"+(m < 10 ? "0" + m : m)+" "+(h > 11 ? "PM" : "AM");
+}
+*/
+
+/* mislabeled now */
+function parseIsoDatetime(dt,i) {
+    dt = dt.split(/[: T-]/);
+    for(i in dt)
+        dt[i] = parseFloat(dt[i]);
+    //return //modified by bulk88 to be mins away instead of parse
+    return 'Min '+Math.floor(Math.abs((
+        new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
+        - (new Date)) / 1e3) / 60);
+}
+
+/* MTA orig algo
+function minsAway(t) {
+    var e = Number((new Date).getTime());
+    t = Number(t.getTime());
+    var n = Math.floor(Math.abs((t - e) / 1e3) / 60);
+    if (0 === n) return "Arriving";
+    if (n < 60) return " ".concat(n < 10 ? 0 : "").concat(n, " mins away ");
+    var a = null,
+      s = null;
+    return a = Math.trunc(n / 60), s = n % 60, " ".concat(a < 10 ? 0 : "").concat(a, ":").concat(s < 10 ? 0 : "").concat(Math.floor(s), " mins away")
+}*/
+
+function genArvBodyObj(r){/*r=resp*/
+    /*h=html and timestamp*/
+    var h = 0,i,route,trip,alerts_headsign,o = {} /*,hotkey, hotkeys = [2,3,4,5,6,7,8,9,0] */;
+    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+    /* r.contents is JSONP */
+    r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
+if (r.length) {
+    //initial array is for a geosearch with multiple stations, not exact sta
+    r = r[0];
+    //server returns sorted by route, we want sort by dir
+    for (i in r.groups) {
+        route = r.groups[i];
+        alerts_headsign = route.headsign;
+        for (i in route.times) {
+            trip = route.times[i];
+            trip.shortRouteName = route.route.shortName;
+            trip.timestamp > h && (h = trip.timestamp);
+            (o[alerts_headsign] = o[alerts_headsign] || []).push(trip);
+        }
+    }
+    for (i in o)
+        //alpha sort ISO 8601 timestamps
+        o[i].sort(function(a, b) {
+            return a.departureFmt < b.departureFmt ? -1 :
+                a.departureFmt > b.departureFmt ? 1 :
+                0;
+        });
+    /* departureFmt becomes UI time eventually
+            return _.each(t.times, function(t) {
+              e.times.push({
+                stopId: t.stopId,
+                realtime: t.realtime,
+                status: t.realtimeState,
+                departure: t.departureFmt,
+                pattern: t.pattern ? t.pattern.id : null,
+                tripHeadsign: t.tripHeadsign ? t.tripHeadsign.toLowerCase() : "",
+                tripId: t.tripId,
+                serviceDay: t.serviceDay,
+                directionId: t.directionId
+              })
+            }), e
+    */
+
+    h = (new Date(h*1000)).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
+        'Cur Sta: ' + r.stop.name + "<br>";
+
+    for (i in o) {
+        h += i + "<br>";
+        //route is dir really
+        route = o[i];
+        for (i in route) {
+            //if departureDelay > 0 
+            //todo (49620-49080)/60 = 9 mins late
+            //MN/LIR algo, NYCT reports also
+            //realtimeDeparture: 49620
+            //scheduledDeparture: 49080
+            trip = route[i];
+            h += parseIsoDatetime(trip.departureFmt) +
+                '-' + mkSubFontTag(trip.shortRouteName) +
+                '-' + trip.tripHeadsign +
+                //disable track numbers, nobody cares, this isn't Commuter rail
+                //'-Tk' + (trip.track === void 0 ? '?' : ' ' + trip.track ) +
+                (trip.track === void 0 ? '-Tk?' : '') +
+                (!trip.realtime ? '-NRT-' : '-') +
+                (function(rts) {
+                    switch (rts) {
+                        case "SCHEDULED":
+                            return "SCH";
+                        case "UPDATED":
+                            return "UPD";
+                        case "CANCELED":
+                            return "CNX";
+                        case "ADDED":
+                            return "ADD";
+                        case "MODIFIED":
+                            return "MOD";
+                        default:
+                            return "UNK";
+                    }
+                })(trip.realtimeState)
+/* delay can be neg, chop off fractional,
+OTP overflow bug on "service day", scheduledDeparture is seconds
+since midnight of yesterday, realtimeDeparture is seconds since
+midnight of today, happens right after 1200AM */
+                + ((trip=((((trip = trip.departureDelay) < -43200
+ ? trip +86400 : trip )/60)|0)) ? (trip > 0 ? '-L' : '-E')+Math.abs(trip): '') +"<br>";
+        }
+    }
+    h += '<br>Key: E2 (early 2 min) L3 (late 3 min)<br>NRT (not realtime)<br><br>';
+    o = ''; // deferred UI alerts (ongoing (unsched) vs planned)
+    //alerts array sometimes missing
+    r = r.alerts || [];
+    //time sort alerts in the array
+    r.sort(function(a, b) {
+        return a.effectiveStartDate < b.effectiveStartDate ? -1 :
+            a.effectiveStartDate > b.effectiveStartDate ? 1 :
+            0;
+    });
+    for (i in r) {
+    trip = r[i];
+    if(trip.alertType) { //skip elevators, elevators are missing alertType field
+      route = trip.alertType+"<br>"+(trip.humanReadableActivePeriod || 'Ongoing')+"<br>"+trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag)+(trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'')+"<br><br>";
+      //delays dont have a time period, put them first in UI
+      trip.humanReadableActivePeriod ? o += route : h += route;
+    }
+    }
+    h += o;
+} else
+    h = "station not found";
+
+    document.body.innerHTML += h;
+}
+function getStop(addIMS) {
+    try {
+        /*throw(0);*/
+        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
+          will happen over network, once browser sees no Access Control header
+          it will "fail" the req to the page, then the page does the JSONP network
+          request, stop this double request thing to save network traffic after CORS
+          fails the 1st time, the server wont magically get the header one minute.
+          Once CORS fails once, it will never succeed on that particular client, so
+          never try a CORS request again.
+          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
+          side, without network traffic.*/
+        if(jsonp) throw(0);
+        /*open() can fire errors events or throw exceptions*/
+        x.open('get', url, 1);
+        try {
+          x.responseType = 'json';
+        } catch (e) {
+          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
+        }
+        /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
+          wont drawn train times using "Fast" beyond the 1st/initial page load
+          and only "Slow" works
+          http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
+        x.onreadystatechange = function ()
+{
+    if (x.readyState == 4)
+    {
+            if (x.status == 200)
+            {   /* IE 6 cache hit, no IP traffic happened, thats bad,
+                  this detects it and resends it, on Chrome with CORS
+                  XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
+                  so include IMS header ONLY if IE with cache bug by feature test and no CORS support
+                  
+                  asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
+                  which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
+                */
+                'withCredentials' in x || x.getResponseHeader("Date")
+                    ? genArvBodyObj(x.response)
+                    : getStop(1);
+            }
+            else
+                alert("error HTTP status "+x.status);
+    }
+    /*else
+        alert("currently the application is at" + invocation.readyState); */
+};
+        if(addIMS) x.setRequestHeader("if-MODIFIED-since", new Date(0));
+        //old Firefoxes send on XHR, new FF and new Chrome send */*
+        //Java EE server, if it sees "application/xml" it sends XML instead of JSON
+        //"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        x.setRequestHeader("accept","application/json");
+        x.send();
+    //code byte savings, reuse error var
+    } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
+        /* alert("XHR failed-will try JSONP:\n"+e); */
+        /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
+            raw button (forced download) doesnt work in updating cache */
+        scriptElem = document.createElement("script");
+        scriptElem.src =
+/*STARTDELETE*/
+    '//tinymta.us.to' +
+/*ENDDELETE*/
+    '/api/su/'+location.hash.substring(1).substr(0,3)+'?callback=genArvBodyObj';
+        jsonp = document.getElementsByTagName('head')[0];
+        /*dont leak mem adding infinite JSONP script elements
+        this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
+        if(jsonp.childNodes.length > 1)
+            jsonp.removeChild(jsonp.childNodes[1]);
+        jsonp.appendChild(scriptElem);
+        /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
+    }
+    document.body.innerHTML = t; /*t=top*/
+}
+
+</script></html>
+<!--
+JSONP innerhtml on body element/appendchild script element to body IE6 crash
+>   mshtml.dll!CTreePos::SourceIndex()  + 0x3
+    mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b
+    mshtml.dll!CDoc::InsertElement()  + 0x98
+    mshtml.dll!CDocument::get_implementation()  + 0x135
+    mshtml.dll!CElement::insertBefore()  + 0xd0
+    mshtml.dll!CElement::appendChild()  + 0x33
+    mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60
+    mshtml.dll!CBase::ContextInvokeEx()  + 0x15b
+    mshtml.dll!CElement::ContextInvokeEx()  + 0x49
+    mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e
+    jscript.dll!InvokeDispatchEx()  + 0x78
+    jscript.dll!VAR::InvokeByName()  + 0x9f0
+    jscript.dll!VAR::InvokeDispName()  + 0x40
+    jscript.dll!VAR::InvokeByDispID()  + 0x54
+    jscript.dll!CScriptRuntime::Run()  + 0x2db0
+    jscript.dll!ScrFncObj::Call()  + 0x85
+    jscript.dll!CSession::Execute()  + 0x9c
+    jscript.dll!NameTbl::InvokeDef()  + 0x101
+    jscript.dll!NameTbl::InvokeEx()  + 0xb6
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e
+    jscript.dll!NameTbl::InvokeEx()  - 0x194a0
+    mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f
+    mshtml.dll!CWindow::InvokeEx()  + 0x2c49e
+    mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c
+    mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e
+    jscript.dll!InvokeDispatchEx()  + 0x78
+    jscript.dll!VAR::InvokeByDispID()  - 0x3b65
+    jscript.dll!CScriptRuntime::Run()  + 0x2db0
+    jscript.dll!ScrFncObj::Call()  + 0x85
+    jscript.dll!CSession::Execute()  + 0x9c
+    jscript.dll!NameTbl::InvokeDef()  + 0x101
+    jscript.dll!NameTbl::InvokeEx()  + 0xb6
+    mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce
+    mshtml.dll!CBase::InvokeEvent()  + 0x70e2d
+    mshtml.dll!CBase::FireEvent()  + 0xc5
+    mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed
+    mshtml.dll!CElement::FireEvent()  + 0x10168
+    mshtml.dll!CElement::Fire_onclick()  + 0x1c
+    mshtml.dll!CElement::DoClick()  + 0x67
+    mshtml.dll!CInput::DoClick()  + 0x3a
+    mshtml.dll!CDoc::PumpMessage()  + 0x279b9
+    mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7
+    mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a
+    mshtml.dll!CServer::WndProc()  + 0x76
+    user32.dll!_InternalCallWinProc@20()  + 0x28
+    user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7
+    user32.dll!_DispatchMessageWorker@8()  + 0xdc
+    user32.dll!_DispatchMessageW@4()  + 0xf
+    browseui.dll!TimedDispatchMessage()  + 0x33
+    browseui.dll!BrowserThreadProc()  + 0x336
+    browseui.dll!BrowserProtectedThreadProc()  + 0x50
+    browseui.dll!_SHOpenFolderWindow@4()  + 0x22c
+    shdocvw.dll!_IEWinMain@8()  + 0x133
+    IEXPLORE.EXE!WinMainT()  + 0x2de
+    IEXPLORE.EXE!__ModuleEntry@0()  + 0x99
+    kernel32.dll!_BaseProcessStart@4()  + 0x23
+-->
