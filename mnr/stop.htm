@@ -26,10 +26,8 @@ if (!Array.prototype.indexOf)
 {
   Array.prototype.indexOf = function(elt /*, from*/)
   {
-    var len = this.length >>> 0;
-
     var from = 0;
-    for (; from < len; from++)
+    for (; from < this.length; from++)
     {
       if (this[from] === elt)
         return from;
@@ -112,7 +110,7 @@ function genArvBodyObj(r) {
             //t.STOPS.indexOf(loc)+(t.DIR == 'O'?1:-1) +1 -1 not needed
             //stop list is reversed as needed for opposite directions
             //TODO use official 2 letter codes for MNR stations instead of devowel
-            +'-N:'+s[t.STOPS[Math.min(t.STOPS.indexOf(loc)+1,t.STOPS.length-1)]].substring(1).replace(/[ aeiouy-]/g,'')+(t.PEAK === 'Peak'?'-PK':'')+"<br>";
+            +'-N:'+s[t.STOPS[Math.min(t.STOPS.indexOf(loc)+1,t.STOPS.length-1)]].substring(1).replace(/[ aeiouy-]/g,'')+(t.PEAK == 'Peak'?'-PK':'')+"<br>";
             t.DIR == 'O'? h += l: w += l;
         }
     }
