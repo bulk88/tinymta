@@ -702,7 +702,7 @@ function genArvBodyObj(r) {
         scn/line overflow on phones*/
         var i, t, l, loc, w = "South<br>", /*w=west, t=train, l=lineofhtml*/
         h = r.TIME.split(' ')[1]+' '+(jsonp?'via JSONP':'via CORS')+"<br>"
-            + 'Cur Sta: '+s[loc = r.LOC].substring(1)+"<br>";
+            + 'Cur Sta: '+s[loc = r.LOC]+"<br>";
         /*sometimes this comes in the LIRR JSON*/
         r.WARNING && (h += r.WARNING.text+"<br>");
         r.MESSAGE && (h += r.MESSAGE.replace(/\n/g, "<br>"));
