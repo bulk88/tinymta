@@ -11,4 +11,6 @@
 "PJ","","Port Jefferson","2","006EC7","FFFFFF"
 "11","","Belmont Park","2","60269E","FFFFFF"
 "12","","City Zone","2","4D5357","FFFFFF"
-
+"NH","","New Haven","2","EE0034","FFFFFF"
+"HU","","Hudson","2","009B3A","FFFFFF"
+"HA","","Harlem","2","0039A6","FFFFFF"
