@@ -87,7 +87,7 @@ function genArvBodyObj(r) {
 {"11":"60269E","12":"4D5357","BY":"00985F","FR":"6E3219","HA":"0039A6","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WH":"00A1DE"}
 /*ENDCOLOR*/
         )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
-        + "</font>"+(t.peak_code == 'A'?'-Pk':'')+"<br>";
+        + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
         t.direction == 'E' ? h += l : w += l;
     }
     document.body.innerHTML += h+w;

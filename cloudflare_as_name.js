@@ -1,8 +1,7 @@
 "use strict";
 
 let v8start;
-let routes;
-let routesEtag;
+
 let textEnc = new TextEncoder();
 const faviconStr = new Int8Array([-119, 80, 78, 71, 13, 10, 26, 10,
     0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 70, 0, 0, 0, 76, 8, 6,
@@ -311,7 +310,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
 {"11":"60269E","12":"4D5357","BY":"00985F","FR":"6E3219","HA":"0039A6","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WH":"00A1DE"}
 /*ENDCOLOR*/
         )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
-        + "</font>"+(t.peak_code == 'A'?'-Pk':'')+"<br>";
+        + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
         t.direction == 'E' ? h += l : w += l;
       }
       h += w;
@@ -331,62 +330,299 @@ else if (pathname_callback.startsWith('/li/s/')) {
 else if (pathname_callback === "/routes.json") {
   //console.log('inr');
   var clientEtag = request.headers.get("if-none-match");
-  if (routes && !url.searchParams.get('nhs')) {
-    console.log('call rspwith HSCAPI');
-    event.respondWith(new Response(
-        clientEtag === routesEtag ? '' : routes, {
-        status: clientEtag === routesEtag ? 304 : 200,
-        headers: {
-          'content-type': 'application/json',
-          'etag': routesEtag,
-          //'cache-control': 'no-cache, no-store',
-          "x-HSCAPI": 'true',
-          'x-v8st': v8start,
-          'content-length': routes.length,
-        }
-      }));
-    event.waitUntil(updateRoutes(event, undefined, url));
-    //console.log('hscapi post UR');
-    return null;
-  } else {
-    return new Promise(async function (resolveCB) {
-      let response = await caches.default.match('http://tinymta.us.to/routes_int.json');
-      //console.log('fnd c' + response);
-      console.log('cache resp is '+response);
-      if (response && !url.searchParams.get('nc')) {
-        console.log('cache match');
-        //promote Cache API entry to HS cache
-        //lock/promise/race hazard
-        routes = await response.clone().text();
-        routesEtag = response.headers.get('etag');
-        //or fatal "TypeError: Can't modify immutable headers."
-        //response = new Response(routes, response);
-        //response.headers.set('x-i', runI++);
-        //response.headers.set('x-CAPI', 'true');
-        //response.headers.set('x-v8st', v8start);
-        if (clientEtag !== routesEtag) {
-          resolveCB(response);
-        } else {
-          resolveCB(new Response(
-              '', {
-              status: 304,
-              headers: {
-                'content-type': 'application/json',
-                'etag': routesEtag,
-                "x-CAPI": 'true',
-                'x-v8st': v8start
-              }
-            }));
-        }
-        event.waitUntil(updateRoutes(event, undefined, url));
-        return null;
-      } else {
-        updateRoutes(event, resolveCB, url, clientEtag, 1);
-        return null;
+
+  event.respondWith(new Response(
+      clientEtag === routesEtag ? '' : routes, {
+      status: clientEtag === routesEtag ? 304 : 200,
+      headers: {
+        'content-type': 'application/json',
+        'etag': routesEtag,
+        'cache-control': 'no-cache, no-store',
       }
-    });
-  }
-}
+    }));
+  event.waitUntil(new Promise(async function (resolveCB) {
+      var i = 0,
+      e,
+      etag,
+      resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
+      //console.log('b4 aw f');
+      resp = await resp;
+
+      //console.log('af aw f='+!url.searchParams.get('n200'));
+      if (resp.status === 200) {
+        resp = resp.json();
+        resp = await resp;
+        //MTA origin randomly includes these null fields, must be different
+        //version load balancer serializers, normalize the data so etags
+        //stay the same
+        for (; i < resp.length; i++) {
+          e = resp[i];
+          if (e.longName === null) {
+            delete e.longName;
+          }
+          if (e.shortName === null) {
+            delete e.shortName;
+          }
+          if (e.color === null) {
+            delete e.color;
+          }
+        }
+        //resp.unshift({"id":"TINYMTA:" + (new Date()).toString()});
+        resp = mapper.buildServiceRoutes(resp);
+        resp = JSON.stringify(resp);
+        //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
+        etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
+        //lock-hazard, update globals no promises
+        etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
+        //console.log(routesEtag);
+        if (routesEtag !== etag) {
+          //atomic hazard
+          routesEtag = etag;
+          routes = resp;
+          //patch ourself
+          resp = await fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js")
+            if (resp.status == 200) {
+              resp = await resp.text();
+              resp = resp.relace(/routesEtag='[^']+'/, 'routesEtag='+etag+"'")
+              resp = resp.relace(/routes='[^']+'/, 'routes='+reoutes+"'")
+
+              /* git auth token extracted like this from windows box
+
+              sh-4.4$  GIT_TRACE=1 GIT_TRACE_PACK_ACCESS=1 GIT_TRACE_PACKET=1 GIT_TRACE_PERFORMANCE=1 GIT_TRACE_SETUP=1 GIT_MERGE_VERBOSITY=1 GIT_CURL_VERBOSE=1 GIT_TRACE_SHALLOW=1 GCM_TRACE=1 GIT_TRACE_REDACT=0 git push
+
+              code taken from
+              https://github.com/renovatebot/renovate/blob/5f213255d088054500cdd980b62092f4d22f5f4c/lib/platform/github/storage.js
+
+               */
+
+              var get = {};
+
+              async function got(url, options) {
+                return ajaxRun("GET", url, options)
+              }
+              async function post(url, options) {
+                return ajaxRun("POST", url, options)
+              }
+              async function patch(url, options) {
+                return ajaxRun("PATCH", url, options)
+              }
+              async function ajaxRun(method, url, options) {
+                url = await fetch('https://api.github.com/' + url, {
+                  method: method,
+                  headers: {
+                    authorization: GHAPISECRET
+                  },
+                  ...(options && {
+                    body: JSON.stringify(options)
+                  })
+                });
+                return await url.json();
+              };
+
+              var config = {
+                repository: 'bulk88/tinymta',
+              };
+
+              let branchFiles = {};
+
+              var global = {
+                gitAuthor: {
+                  name: "RoutesBot",
+                  email: "bulk88@hotmail.com",
+                }
+              };
+
+              //need time zone like moment.js does
+              function toIsoString(date) {
+                var tzo = -date.getTimezoneOffset(),
+                dif = tzo >= 0 ? '+' : '-',
+                pad = function (num) {
+                  return (num < 10 ? '0' : '') + num;
+                };
+
+                return date.getFullYear() +
+                '-' + pad(date.getMonth() + 1) +
+                '-' + pad(date.getDate()) +
+                'T' + pad(date.getHours()) +
+                ':' + pad(date.getMinutes()) +
+                ':' + pad(date.getSeconds()) +
+                dif + pad(Math.floor(Math.abs(tzo) / 60)) +
+                ':' + pad(Math.abs(tzo) % 60);
+              }
+
+              // Create a commit and return commit SHA
+              async function createCommit(parent, tree, message) {
+                /* unused
+                const {
+                gitPrivateKey
+                } = config;
+                 */
+                /* const now = moment(); */
+                let author;
+                if (global.gitAuthor) {
+                  author = {
+                    name: global.gitAuthor.name,
+                    email: global.gitAuthor.email,
+                    date: toIsoString(new Date()) /* now.format() */,
+                  };
+                }
+                const body = {
+                  message,
+                  parents: [parent],
+                  tree,
+                };
+                if (author) {
+                  body.author = author;
+                  /* unused
+                  if (gitPrivateKey) {
+                  const privKeyObj = openpgp.key.readArmored(gitPrivateKey).keys[0];
+                  const commit = `tree ${tree}\nparent ${parent}\nauthor ${
+                  author.name
+                  } <${author.email}> ${now.format('X ZZ')}\ncommitter ${
+                  author.name
+                  } <${author.email}> ${now.format('X ZZ')}\n\n${message}`;
+                  const {
+                  signature
+                  } = await openpgp.sign({
+                  data: openpgp.util.str2Uint8Array(commit),
+                  privateKeys: privKeyObj,
+                  detached: true,
+                  armor: true,
+                  });
+                  body.signature = signature;
+                  }
+                   */
+                }
+                return (await post(`repos/${config.repository}/git/commits`, body))
+                .sha;
+              }
+
+              // Internal: Updates an existing branch to new commit sha
+              async function updateBranch(branchName, commit) {
+                const options = {
+                  sha: commit,
+                  force: true,
+                };
+                try {
+                  await patch(
+`repos/${config.repository}/git/refs/heads/${branchName}`,
+                    options);
+                } catch (err) {
+                  if (err.statusCode === 422) {
+                    console.log(err + ' Branch no longer exists - exiting');
+                    throw new Error('repository-changed');
+                  }
+                  throw err;
+                }
+              }
+              // Low-level commit operations
+
+              // Return the commit SHA for a branch
+              async function getBranchCommit(branchName) {
+                try {
+                  const res = await got(
+`repos/${config.repository}/git/refs/heads/${branchName}`);
+                  return res.object.sha;
+                } catch (err) {
+                  if (err.statusCode === 404) {
+                    throw new Error('repository-changed');
+                  }
+                  if (err.statusCode === 409) {
+                    throw new Error('empty');
+                  }
+                  throw err;
+                }
+              }
+              // Return the tree SHA for a commit
+              async function getCommitTree(commit) {
+                return (await got(`repos/${config.repository}/git/commits/${commit}`))
+                .tree.sha;
+              }
+              async function createBlob(fileContents) {
+                const options = {
+                  encoding: 'base64',
+                  content: btoa(fileContents)
+                };
+                return (await post(`repos/${config.repository}/git/blobs`, options))
+                .sha;
+              }
+
+              // Create a tree and return SHA
+              async function createTree(baseTree, files) {
+                const body = {
+                  base_tree: baseTree,
+                  tree: [],
+                };
+                files.forEach(file => {
+                  body.tree.push({
+                    path: file.name,
+                    mode: '100644',
+                    type: 'blob',
+                    sha: file.blob,
+                  });
+                });
+                return (await post(`repos/${config.repository}/git/trees`, body))
+                .sha;
+              }
+              // Add a new commit, create branch if not existing
+              async function commitFilesToBranch(
+                branchName,
+                files,
+                message,
+                parentBranch = config.baseBranch) {
+                try {
+                  delete branchFiles[branchName];
+                  const fileBlobs = [];
+                  // Create blobs
+                  for (const file of files) {
+                    const blob = createBlob(file.contents);
+                    fileBlobs.push({
+                      name: file.name,
+                      blob,
+                    });
+                  }
+                  const parentCommit = await getBranchCommit(parentBranch);
+                  const parentTree = await getCommitTree(parentCommit);
+                  // Create tree
+                  for (var i = 0; i < fileBlobs.length; i++) {
+                    fileBlobs[i].blob = await fileBlobs[i].blob;
+                  }
+                  const tree = await createTree(parentTree, fileBlobs);
+                  const commit = await createCommit(parentCommit, tree, message);
+                  /*
+                  const isBranchExisting = await branchExists(branchName);
+                  if (isBranchExisting) { */
+                  await updateBranch(branchName, commit);
+                  return 'updated';
+                  /*
+                  }
+                  await createBranch(branchName, commit);
+                  if (branchList) {
+                  branchList.push(branchName);
+                  }
+                  return 'created';
+                   */
+                } catch (err) {
+                  if (err.statusCode === 404) {
+                    throw new Error('repository-changed');
+                  }
+                  throw err;
+                }
+              }
+              commitFilesToBranch("master", [{
+                    name: "cloudflare_as_name.js",
+                    contents: resp
+                  }
+                ], "Routes Upd" + new Date().toLocaleString("en-US", {
+                  timeZone: "America/New_York"
+                }), "master");
+
+            }
+        }
+        resolveCB(true);
+  }})); //event.waitUntil(new Promise
+      return null;
+    }
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
   var cf = request?.cf || {
@@ -485,83 +721,7 @@ else if (pathname_callback === "/routes.json") {
 //catch(e){}
 
 async function updateRoutes(event, resolveCB, url, clientEtag, failedCache) {
-  var i = 0, e, etag, oldDate,
-    resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
-  //console.log('b4 aw f');
-  resp = await resp;
 
-  //console.log('af aw f='+!url.searchParams.get('n200'));
-  if (resp.status === 200 && !url.searchParams.get('n200')) {
-    oldDate = resp.headers.get('date');
-    resp = resp.json();
-    resp = await resp;
-    //MTA origin randomly includes these null fields, must be different
-    //version load balancer serializers, normalize the data so etags
-    //stay the same
-    for(; i < resp.length; i++) {
-        e = resp[i];
-        if(e.longName === null)
-        {delete e.longName;}
-        if(e.shortName === null)
-        {delete e.shortName;}
-        if(e.color === null)
-        {delete e.color;}
-    }
-    //resp.unshift({"id":"TINYMTA:" + (new Date()).toString()});
-    resp = mapper.buildServiceRoutes(resp);
-    resp = JSON.stringify(resp);
-    //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
-    etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
-    //lock-hazard, update globals no promises
-    etag = 'W/"'+btoa(String.fromCharCode.apply(null, new Uint8Array(etag)))+'"';
-    //console.log(routesEtag);
-    if (resolveCB) {
-      console.log('b4 call frm origin rsvCB');
-      resolveCB(new Response(clientEtag === etag ? '' : resp, {
-          status: clientEtag === etag ? 304 : 200,
-          headers: {
-            'content-type': 'application/json',
-            'etag': etag,
-            "x-FRM-ORIGIN": 'true',
-            'x-v8st': v8start,
-            'content-length': resp.length
-          }
-        }));
-        console.log('af call frm origin rsvCB');
-    }
-    
-    console.log('getag '+routesEtag+' letag'+etag);
-    if(routesEtag !== etag || failedCache) {
-        //atomic hazard
-        routesEtag = etag;
-        routes = resp;
-        //must await or cache never updates
-        console.log('will cache put');
-        event.waitUntil(caches.default.put('http://tinymta.us.to/routes_int.json',
-        new Response(resp, {
-            headers: {
-            'content-type': 'application/json',
-            'etag': etag,
-            "x-CAPI": 'true',
-            'x-v8Cst': v8start,
-            'x-date': oldDate,
-            'content-length': resp.length
-            }
-        })));
-        console.log('done cache put');
-        event.waitUntil(caches.default.match('http://tinymta.us.to/routes_int.json'));
-        console.log('done 2nd match '+ resp);
-        if(!resp) {throw "bad cache"}
-        
-    }
-  } else { //not 200
-    if (resolveCB)
-      resolveCB(resp);
-    routes = undefined;
-    routesEtag = undefined;
-    await caches.default.delete('http://tinymta.us.to/routes_int.json');
-  }
-  return true;
 }
 
 var mapper = {};
@@ -718,3 +878,6 @@ mapper.buildServiceRoutes = function (response) {
 
   return routes;
 }
+
+let routesEtag='';
+let routes='';
