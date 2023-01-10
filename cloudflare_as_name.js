@@ -2,6 +2,8 @@
 
 let v8start;
 let routes;
+let routesEtag;
+let textEnc = new TextEncoder();
 const faviconStr = new Int8Array([-119, 80, 78, 71, 13, 10, 26, 10,
     0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 70, 0, 0, 0, 76, 8, 6,
     0, 0, 0, -48, -75, -63, -30, 0, 0, 1, 104, 73, 68, 65, 84,
@@ -56,7 +58,14 @@ function mkJSResp(str,etag) {
 
 addEventListener('fetch', event => {
   if(!v8start) {v8start = Date.now()};
-  event.respondWith(handleRequest(event.request, event))
+  console.log('v8start '+v8start);
+try {
+  var respProm = handleRequest(event.request, event);
+  respProm && event.respondWith(respProm);
+      }catch (e) {
+        console.log(e+' '+e.stack+' '+respProm);
+      //event.respondWith(new Response(e))
+    }
 })
 
 
@@ -103,7 +112,8 @@ async function handleRequest(request, event) {
     return new Response(faviconStr, {
       headers: {
         "cache-control": "max-age=691200,no-transform",
-        "content-type": "image/vnd.microsoft.icon"
+        "content-type": "image/vnd.microsoft.icon",
+        'x-v8st': v8start
       }
     });
   }
@@ -317,39 +327,65 @@ else if (pathname_callback.startsWith('/li/s/')) {
     }
   }
 }
-else if (pathname_callback==="/routes.json") {
-  console.log('inr');
-  return new Promise(async function(resolveCB) {
-    if(routes,0) {
-      resolveCB(new Response(routes, {
+  
+else if (pathname_callback === "/routes.json") {
+  //console.log('inr');
+  var clientEtag = request.headers.get("if-none-match");
+  if (routes && !url.searchParams.get('nhs')) {
+    console.log('call rspwith HSCAPI');
+    event.respondWith(new Response(
+        clientEtag === routesEtag ? '' : routes, {
+        status: clientEtag === routesEtag ? 304 : 200,
         headers: {
           'content-type': 'application/json',
-          'cache-control': 'no-cache, no-store',
+          'etag': routesEtag,
+          //'cache-control': 'no-cache, no-store',
           "x-HSCAPI": 'true',
-          'x-v8st': v8start
+          'x-v8st': v8start,
+          'content-length': routes.length,
         }
       }));
-      updateRoutes(event);
-      return;
-    } else {
+    event.waitUntil(updateRoutes(event, undefined, url));
+    //console.log('hscapi post UR');
+    return null;
+  } else {
+    return new Promise(async function (resolveCB) {
       let response = await caches.default.match('http://tinymta.us.to/routes_int.json');
-      if (response) {
-        routes = await response.clone().text();
-        response = new Response(routes, response);
-        //response.headers.set('x-i', runI++);
-        response.headers.set('x-CAPI', 'true');
-        //response.headers.set('x-hsdbg', JSON.stringify(carrierCache));
-        response.headers.set('x-v8st', v8start);
+      //console.log('fnd c' + response);
+      console.log('cache resp is '+response);
+      if (response && !url.searchParams.get('nc')) {
+        console.log('cache match');
         //promote Cache API entry to HS cache
-        updateRoutes(event);
-        resolveCB(response);
-        return;
+        //lock/promise/race hazard
+        routes = await response.clone().text();
+        routesEtag = response.headers.get('etag');
+        //or fatal "TypeError: Can't modify immutable headers."
+        //response = new Response(routes, response);
+        //response.headers.set('x-i', runI++);
+        //response.headers.set('x-CAPI', 'true');
+        //response.headers.set('x-v8st', v8start);
+        if (clientEtag !== routesEtag) {
+          resolveCB(response);
+        } else {
+          resolveCB(new Response(
+              '', {
+              status: 304,
+              headers: {
+                'content-type': 'application/json',
+                'etag': routesEtag,
+                "x-CAPI": 'true',
+                'x-v8st': v8start
+              }
+            }));
+        }
+        event.waitUntil(updateRoutes(event, undefined, url));
+        return null;
+      } else {
+        updateRoutes(event, resolveCB, url, clientEtag, 1);
+        return null;
       }
-      else {
-        updateRoutes(event, resolveCB);
-      }
-    }
-  });
+    });
+  }
 }
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
@@ -448,52 +484,237 @@ else if (pathname_callback==="/routes.json") {
 //try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
 //catch(e){}
 
-async function updateRoutes(event, resolveCB) {
-  var resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
+async function updateRoutes(event, resolveCB, url, clientEtag, failedCache) {
+  var i = 0, e, etag, oldDate,
+    resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
+  //console.log('b4 aw f');
   resp = await resp;
-  var date = resp.headers.get('date');
-  if (resp.status == 200) {
-    resp = resp.text();
-    //resp = resp.json();
+
+  //console.log('af aw f='+!url.searchParams.get('n200'));
+  if (resp.status === 200 && !url.searchParams.get('n200')) {
+    oldDate = resp.headers.get('date');
+    resp = resp.json();
     resp = await resp;
-    resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false}');
-    routes = resp;
-    //event.waitUntil(
-   //     caches.default.delete('http://tinymta.us.to/routes_int.json')
-
-    //.then(function(){
-        console.log(await caches.default.delete('http://tinymta.us.to/routes_int.json', {ignoreMethod: true}))
-event.waitUntil(
-
-        caches.default.put('http://tinymta.us.to/routes_int.json',
-        
-        new Response(resp,
-            {
-            headers: {
-                'content-type': 'application/json',
-                //'cache-control': 'max-age=31536000',
-                "x-CAPI2": 'true',
-                'last-modified': date
-            }
-        
-            }))
-        );
-
-//      }));
-    
+    //MTA origin randomly includes these null fields, must be different
+    //version load balancer serializers, normalize the data so etags
+    //stay the same
+    for(; i < resp.length; i++) {
+        e = resp[i];
+        if(e.longName === null)
+        {delete e.longName;}
+        if(e.shortName === null)
+        {delete e.shortName;}
+        if(e.color === null)
+        {delete e.color;}
+    }
+    //resp.unshift({"id":"TINYMTA:" + (new Date()).toString()});
+    resp = mapper.buildServiceRoutes(resp);
+    resp = JSON.stringify(resp);
+    //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
+    etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
+    //lock-hazard, update globals no promises
+    etag = 'W/"'+btoa(String.fromCharCode.apply(null, new Uint8Array(etag)))+'"';
+    //console.log(routesEtag);
     if (resolveCB) {
-      resolveCB(new Response(resp, {
+      console.log('b4 call frm origin rsvCB');
+      resolveCB(new Response(clientEtag === etag ? '' : resp, {
+          status: clientEtag === etag ? 304 : 200,
           headers: {
             'content-type': 'application/json',
-            'cache-control': 'no-cache, no-store',
+            'etag': etag,
             "x-FRM-ORIGIN": 'true',
-            'x-v8st': v8start
+            'x-v8st': v8start,
+            'content-length': resp.length
           }
-        }))
+        }));
+        console.log('af call frm origin rsvCB');
     }
-  } else {
+    
+    console.log('getag '+routesEtag+' letag'+etag);
+    if(routesEtag !== etag || failedCache) {
+        //atomic hazard
+        routesEtag = etag;
+        routes = resp;
+        //must await or cache never updates
+        console.log('will cache put');
+        event.waitUntil(caches.default.put('http://tinymta.us.to/routes_int.json',
+        new Response(resp, {
+            headers: {
+            'content-type': 'application/json',
+            'etag': etag,
+            "x-CAPI": 'true',
+            'x-v8Cst': v8start,
+            'x-date': oldDate,
+            'content-length': resp.length
+            }
+        })));
+        console.log('done cache put');
+        event.waitUntil(caches.default.match('http://tinymta.us.to/routes_int.json'));
+        console.log('done 2nd match '+ resp);
+        if(!resp) {throw "bad cache"}
+        
+    }
+  } else { //not 200
     if (resolveCB)
       resolveCB(resp);
+    routes = undefined;
+    routesEtag = undefined;
+    await caches.default.delete('http://tinymta.us.to/routes_int.json');
   }
-  return;
+  return true;
+}
+
+var mapper = {};
+
+function buildSubwayRoute (data) {
+  var routeDetails = [];
+  var i = 0, subwayLine, route, name;
+
+  for(; i < data.length; i++) {
+  subwayLine = data[i];
+  /*b88 pass array only once */
+  if(subwayLine.mode === 'SUBWAY'
+      && !subwayLine.id.indexOf('MTA')) {
+    route = false;
+    name = subwayLine.shortName;
+
+    //b88 turn into a temp hash instead of find(), performance
+    // check to see if a previous, associated, non-express line is found given the current express line
+    if (name.substr(name.length - 1, name.length) === 'X') {
+      // if so, set the route given the previously set non-express route
+      var baseName = name.substr(0, name.indexOf('X'));
+      route = routeDetails.find(function (element) {
+        return typeof element === 'object' && element.name === baseName ? 1 : 0
+      });
+    }
+
+    // check to see if a route was found...
+    if (!route) {
+      // if not, initialize one and add it to the routeDetails array
+      var agency = subwayLine.id.split(":")[0];
+      var id = subwayLine.id.split(":")[1];
+      routeDetails.push({
+        agency: agency,
+        agencyId: agency,
+        name: id,
+        mode: 'SUBWAY',
+        color: subwayLine.color,
+        sortOrder: subwayLine.sortOrder,
+        id: id
+      });
+    } else {
+      //b88 note containsExpress is unused in this app
+      // otherwise, first set the containsExpress variable / flag
+      route.containsExpress = true;
+    }
+  }
+  }
+
+  return routeDetails;
+}
+
+function buildBusRoute (stopData) {
+  var mapRoutes = stopData
+    .filter(function (busRoute) {return busRoute.mode === 'BUS'
+      && !!~busRoute.id.indexOf('MTA')})
+    .map(function (stop) {
+      var agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
+      //var routeId = agency+"_"+stop.id.split(':')[1];
+
+      return Object.assign({
+        agency: agency,
+        inService: true,
+/* const BANNED_XBUS_ROUTE_TYPE = 702; */
+        isExpressBus: (stop.routeType === 702),
+        routeId: agency+"_"+stop.id.split(':')[1], /* routeId,*/
+        route: stop.shortName
+      }, stop)
+    })
+  return mapRoutes
+}
+
+function buildRailRoute (data_line) {
+  var railLines = data_line
+    .filter(function (railLine) {
+      return railLine.mode === 'RAIL' /* mode.toUpperCase removed b88 */
+        /*b88 dont ask why it works, but startsWith || startsWith
+        be careful of LIBUS in refactoring in future*/
+        && !(railLine.id.indexOf('LI') && railLine.id.indexOf('MNR'))
+    })
+    .concat(/* WEIRD_RAIL_LINES */
+    [{
+  id: "MNR:Wassaic",
+  agency: "MNR",
+  color: "0039A6",
+  inService: true,
+  mode: "RAIL",
+  longName: "Wassaic",
+  routeId: "MNR_Wassaic",
+  routeType: 2
+}]
+    )
+    .map(function (railLine) {
+      var agency = !railLine.id.indexOf('LI') ? 'LI' : 'MNR';
+      railLine.inService = true;
+      railLine.agency = agency;
+      railLine.agencyId = agency;
+      railLine.route = railLine.longName;
+      railLine.routeId = railLine.routeId ? railLine.routeId : railLine.id.replace(":", "_");
+      railLine.mode = "RAIL";
+      railLine.shortName = railLine.longName;
+      return railLine;
+    })
+
+  // start by sorting all rail lines alphabetically
+  .sort(function (line1, line2) {
+    if (line1.longName < line2.longName) {  //sort string alphabetically
+      return -1;
+    } else /*if (line1.route > line2.route)*/ {
+      return 1;
+    }
+  });
+
+  // remove all kubes from the railLines array that are contained within the NEW_HAVEN_BRANCHES constant (array)
+  var newHavenBranches = []
+  var newHavenLineIndex
+  var harlemBranches = []
+  var harlemLineIndex
+
+  for (var i = 0; i < railLines.length; i++) {
+    data_line = railLines[i];
+// get the index of the 'New Haven' line
+    if(data_line.id === 'MNR:3') {
+      newHavenLineIndex = i
+    }
+// get the index of the 'Harlem' line
+    if(data_line.id === 'MNR:2') {
+      harlemLineIndex = i
+    }
+    if (/*NEW_HAVEN_BRANCHES.*//^(MNR:4|MNR:5|MNR:6)$/.test(data_line.id)) {
+      newHavenBranches.push(data_line)
+      railLines.splice(i, 1)
+      i--
+    }
+  // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
+    if (/*HARLEM_BRANCHES.*/~data_line.longName.indexOf('Wassaic')) {
+      harlemBranches.push(data_line)
+      railLines.splice(i, 1)
+      i--
+    }
+  }
+
+  // place the (sorted) newHavenBranches into the railLines array directly AFTER the newHavenLineIndex and return
+  railLines = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
+  return railLines.slice(0, harlemLineIndex + 1).concat(harlemBranches).concat(railLines.slice(harlemLineIndex + 1));
+}
+
+mapper.buildServiceRoutes = function (response) {
+  var routes = {
+    busRoutes: buildBusRoute(response),
+    railLines: buildRailRoute(response),
+    subwayLines: buildSubwayRoute(response),
+    //lastUpdated: new Date()
+  };
+
+  return routes;
 }
