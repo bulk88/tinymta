@@ -88,7 +88,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($js?'href="stop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
+                .($js?'href="/rstop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
                 .$stopid
                 .($js?'':','.$name)
     #dont include closing </a> or bytes saving when 2 sibling anchor elements

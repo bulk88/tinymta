@@ -26,30 +26,29 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	-mkdir "../docs/li/js"
 	perl grmp.pl 1 0
 
-stop.htm : stations.js insertstalist.pl ../insertcolors.pl routesmodded.txt
+../rstop.htm : stations.js insertstalist.pl ../insertcolors.pl routesmodded.txt
 	perl insertstalist.pl "$@"
 	perl ../insertcolors.pl "$@" routesmodded.txt
 
 stations.js stations.pl: mkstalist.pl
 	perl mkstalist.pl
 
-stop_.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
-	copy /y stop.htm "$@"
+../rstop_.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	perl ../adj_stoppath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
-../docs/li/stop_.htm : stop_.htm
-	-mkdir "../docs/li"
-	copy /y stop_.htm "$@"
+../docs/rstop_.htm : ../rstop_.htm
+	-mkdir "../docs"
+	copy  /y ..\rstop_.htm ..\docs\rstop_.htm
 
-../docs/li/stop.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
-	-mkdir "../docs/li"
-	copy /y stop.htm "$@"
+../docs/rstop.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
+	-mkdir "../docs"
+	copy /y ../rstop.htm "$@"   
 	perl ../adj_stoppath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
-
+  
 grmp.pl : ../minify_config.json
 
 clean :
@@ -61,11 +60,11 @@ clean :
 	del stations.htm
 	del stop_.htm
 
-package : ../docs/li/stations.htm ../docs/li/stop.htm ../docs/li/stop_.htm
+package : ../docs/li/stations.htm ../docs/rstop.htm ../docs/rstop_.htm
 	-mkdir "..\tinymta\li"
 	copy /y ..\docs\li\stations.htm "..\tinymta\li"
-	copy /y ..\docs\li\stop.htm "..\tinymta\li"
-	copy /y ..\docs\li\stop_.htm "..\tinymta\li"
+	copy /y ..\docs\rstop.htm "..\tinymta\"
+	copy /y ..\docs\rstop_.htm "..\tinymta\"
 
 #routedatafinal.pl : ../gr2.pl routedata.pl stations.pl stops.txt
 #	perl ../gr2.pl
@@ -79,6 +78,6 @@ gtfs.zip :
 	perl ../getgtfs.pl
 
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
-all: ../docs/li/stop_.htm ../docs/li/stop.htm ../docs/li/rt.htm
+all: ../docs/rstop_.htm ../docs/rstop.htm ../docs/li/rt.htm
 all: ../docs/li/js/rt.htm
 

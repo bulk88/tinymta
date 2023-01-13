@@ -22,7 +22,7 @@ my %borotbl = ( 'Queens' => 'Q',
             );
 
 die "1st arg must be generate desktop MTA site stations or mobilized MTA site stations " if ! defined $ARGV[0];
-my $mob = $ARGV[0];
+my $js = $ARGV[0];
 #VERY VERY VERY slow, set to 0 during development, TODO research having 1
 #nodejs processes instead of a million system() calls
 my $minifyhtml = !$ENV{DISABLEMINI};
@@ -65,7 +65,7 @@ foreach my $routename (@routes) {
                 if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('../docs/mn/'.($mob?'m/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', '<style>form{margin-bottom:0px;margin-top:0px;}</style>'.$borofile);
+                write_html('../docs/mn/'.($js?'m/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', '<style>form{margin-bottom:0px;margin-top:0px;}</style>'.$borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -75,7 +75,7 @@ foreach my $routename (@routes) {
                           $borough,
                           '', #no anchor
                           $accesskeyidx++);
-            if($mob && !$rtfileheader) { #otherwise button bad formatting
+            if($js && !$rtfileheader) { #otherwise button bad formatting
                 $rtfileheader = '<style>form{margin-bottom:0px;margin-top:0px;}</style>';
             }
         }
@@ -86,7 +86,7 @@ foreach my $routename (@routes) {
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$rtnum.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
-        write_html('../docs/mn/'.($mob?'m/':'')."$rtnum.htm", $rtfileheader.$rtfile."\n");
+        write_html('../docs/mn/'.($js?'m/':'')."$rtnum.htm", $rtfileheader.$rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
@@ -95,19 +95,14 @@ foreach my $routename (@routes) {
 }
 
 sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchorname, $accesskey)
-my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
-#name attr on input element is an anchor only on IE 6, not Openwave, Chrome, FF, or NN 3
-#id works on IE 6, Openwave, Chrome, FF, but not NN 3 (oh well)
-return ($mob?
-'<form action="http://m.mta.info/mt/as0.mta.info/mnr/mstations/station_status_display.cfm" method="post">
-<input value="'.$dispname.'" '.($anchorname?'id="'.$anchorname.'" ':'')
-.($accesskey?'accesskey='.$accesskey.' ':'').'type="submit">
-<input value="'.$stopid.','.$name.'" name="P_AVIS_ID" type="hidden">
-</form>'
-                                  :('<a '.($anchorname?'name="'.$anchorname.'" ':'')
-                                         .($accesskey?'accesskey='.$accesskey.' ':'')
-                .'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID='
-                 .$stopid.','.$name.'">'.$dispname."</a>\n"));
+    my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
+    return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
+                .($accesskey?'accesskey='.$accesskey.' ':'')
+                .($js?'href="/rstop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
+                .$stopid
+                .($js?'':','.$name)
+    #dont include closing </a> or bytes saving when 2 sibling anchor elements
+                .'">'.$dispname;
 }
 
 my $accesskeyidx = 1;
@@ -117,8 +112,8 @@ my $file;
 sub altRtViewHTML {
     my $html;
     my $pageidx = $_[0];
-    if($mob) {
-        $html .= ' <a href="../rt'.$pageidx.'.htm">MTA No Mobile</a>';
+    if($js) {
+        $html .= ' <a href="../rt'.$pageidx.'.htm">MTA JS Mobile</a>';
     } else {
         $html .= ' <a href="m/rt'.$pageidx.'.htm">MTA Mobile</a>';
     }
@@ -132,19 +127,19 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html('../docs/mn/'.($mob?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+        write_html('../docs/mn/'.($js?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('../docs/mn/'.($mob?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+    write_html('../docs/mn/'.($js?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 
 sub write_html { #$filename, $string
-    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'.($mob?'':'<link href="http://as0.mta.info" rel="preconnect"><link href="http://as0.mta.info" rel="dns-prefetch">').'</head><body>'.$_[1].'<script src=../dumb.js></script></body></html>');
+    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'.($js?'':'<link href="http://as0.mta.info" rel="preconnect"><link href="http://as0.mta.info" rel="dns-prefetch">').'</head><body>'.$_[1].'<script src=../dumb.js></script></body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 

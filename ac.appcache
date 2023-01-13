@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v Tue Jan 10 17:46:16 2023
+# v Fri Jan 13 16:45:45 2023
 
 CACHE:
 1p.js
@@ -7,8 +7,8 @@ dumb.js
 favicon.ico
 index.htm
 li/stations.htm
-li/stop.htm
-li/stop_.htm
+rstop.hth
+rstop_.htm
 mapTileBackground.png
 mn/stations.htm
 plan.htm
