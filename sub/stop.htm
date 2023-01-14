@@ -65,9 +65,9 @@ else
 //text includes [] chars usually, if route blank, text is route
 function mkSubFontTag(text, route) {
   var c =
-/*STARTCOLOR*/
+/*STARTSUBCOLOR*/
 {"1":"EE352E","2":"EE352E","3":"EE352E","4":"00933C","5":"00933C","5X":"00933C","6":"00933C","6X":"00A65C","7":"B933AD","7X":"B933AD","A":"2850AD","B":"FF6319","C":"2850AD","D":"FF6319","E":"2850AD","F":"FF6319","FX":"FF6319","G":"6CBE45","GS":"6D6E71","J":"996633","L":"A7A9AC","M":"FF6319","N":"FCCC0A","Q":"FCCC0A","R":"FCCC0A","W":"FCCC0A","Z":"996633"}
-/*ENDCOLOR*/
+/*ENDSUBCOLOR*/
   [route||text];
   return c ?'<font color='+c+'>'+text+'</font>':text;
 }

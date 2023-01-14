@@ -61,6 +61,11 @@ docs/README.md : README.md
 docs/google71e8cfa7440e51ce.html : google71e8cfa7440e51ce.html
 	copy /y google71e8cfa7440e51ce.html "$@"
 
+cloudflare_as_name.js:  lirr/stations.js lirr/insertstalist.pl insertcolors.pl lirr/routesmodded.txt sub/routes.txt
+	cd lirr & perl insertstalist.pl "..\cloudflare_as_name.js"
+	perl insertcolors.pl RAIL "$@" lirr/routesmodded.txt
+	perl insertcolors.pl SUB "$@" sub/routes.txt
+
 cloudflare_as_name.min.js : cloudflare_as_name.js
 	copy /y cloudflare_as_name.js "$@"
 	terser -c -m toplevel -m eval "$@" -o "$@"

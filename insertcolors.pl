@@ -1,10 +1,11 @@
-# usage: mand-foo.htm optional-routes.txt
+# usage: mand-TAG mand-foo.htm optional-routes.txt
 use strict;
 use File::Slurp;
 use Text::CSV::Hashify;
 use Cpanel::JSON::XS;
+my $tag = $ARGV[0];
 my $obj = Text::CSV::Hashify->new( {
-    file        => $ARGV[1] ? $ARGV[1] : 'routes.txt',
+    file        => $ARGV[2] ? $ARGV[2] : 'routes.txt',
     format      => 'hoh',
     key         => "route_id",
     quote_char          => '"',
@@ -25,15 +26,15 @@ foreach(keys %$routes) {
     }
 }
 
-my $file = read_file( $ARGV[0], { binmode => ':raw' } );
-my $pos = index($file,'/*STARTCOLOR*/
-',0);
+my $file = read_file( $ARGV[1], { binmode => ':raw' } );
+my $pos = index($file,"/*START".$tag."COLOR*/
+",0);
 die "bad starttag match" if $pos == -1;
-$pos += length('/*STARTCOLOR*/
-');
-my $endpos = index($file,'
-/*ENDCOLOR*/', $pos);
+$pos += length("/*START".$tag."COLOR*/
+");
+my $endpos = index($file,"
+/*END".$tag."COLOR*/", $pos);
 die "bad endtag match" if $endpos == -1;
 substr($file,$pos, $endpos-$pos, $coder->encode(\%colors));
-write_file($ARGV[0], {binmode => ':raw'}, $file);
+write_file($ARGV[1], {binmode => ':raw'}, $file);
 

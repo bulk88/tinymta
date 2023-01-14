@@ -28,23 +28,24 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 
 ../rstop.htm : stations.js insertstalist.pl ../insertcolors.pl routesmodded.txt
 	perl insertstalist.pl "$@"
-	perl ../insertcolors.pl "$@" routesmodded.txt
+	perl ../insertcolors.pl RAIL "$@" routesmodded.txt
 
 stations.js stations.pl: mkstalist.pl
 	perl mkstalist.pl
 
 ../rstop_.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
+	copy /y "..\rstop.htm" "$@"
 	perl ../adj_stoppath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
 ../docs/rstop_.htm : ../rstop_.htm
 	-mkdir "../docs"
-	copy  /y ..\rstop_.htm ..\docs\rstop_.htm
+	copy /y "..\rstop_.htm" "$@"
 
 ../docs/rstop.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	-mkdir "../docs"
-	copy /y ../rstop.htm "$@"   
+	copy /y "..\rstop.htm" "$@"
 	perl ../adj_stoppath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
