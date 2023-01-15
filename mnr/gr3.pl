@@ -44,7 +44,11 @@ foreach my $rtid (nsort keys %$VAR1) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
+        push(@{$boroughs{$borough}}, {
+          name => $stop->{name},
+          stop_id => $stop->{stop_id},
+          stop_code => $stop->{stop_code}
+        });
     }
     $line = "$routename:";
     #easier finger tapping if 1 or 2 char routenames
@@ -65,14 +69,14 @@ foreach my $rtid (nsort keys %$VAR1) {
             push(@linestopshtml, "$routename: $borough <a name=\"".$rtid.$borotbl{$borough}."\" href=\"#\">Home");
         } else { #if 1 station per boro, just jump straight to station, saves a tap, only L/Queens/Halsey has this property
             my $name = ${$boroughs{$borough}}[0]->{name};
-            my $stopid = ${$boroughs{$borough}}[0]->{stop};#how to inject $rtanchor
+            my $stopid = ${$boroughs{$borough}}[0]->{$js ? 'stop_code' : 'stop_id'};#how to inject $rtanchor
             $line .= ' '.stopid_to_tag($name, $stopid, $borough, $rtanchor).'</a>';
             push(@linestopshtml, "$routename: $borough <a href=\"#\">Home</a>");
         }
         $rtanchor = '';
         foreach my $stopidx (0..@{$boroughs{$borough}}-1) {
             my $name = ${$boroughs{$borough}}[$stopidx]->{name};
-            my $stopid = ${$boroughs{$borough}}[$stopidx]->{stop};
+            my $stopid = ${$boroughs{$borough}}[$stopidx]->{$js ? 'stop_code' : 'stop_id'};
             push(@linestopshtml, stopid_to_tag($name, $stopid, $name, ''));
         }
 #add closing tag only after a list of station names to not have boro/route header be
