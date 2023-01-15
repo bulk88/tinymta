@@ -111,6 +111,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($js?'href="../stop.htm#':'href="s/')
                 .$stopid
                 .($js?$phase4nids->[$phase3nids->[$phase2nids->[$nmapIDs->{$stopid}]]]:'')
+    #Must having closing </a> to make no underline whitespace between links
                 .'">'.$dispname."</a>\n";
 }
 

@@ -41,7 +41,11 @@ foreach my $routename (@routes) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
+        push(@{$boroughs{$borough}}, {
+          name => $stop->{name},
+          stop_id => $stop->{stop_id},
+          stop_code => $stop->{stop_code}
+        });
     }
     @boroughs = sort keys %boroughs;
     my $rtfile = "$routename:";
@@ -65,7 +69,7 @@ foreach my $routename (@routes) {
                 if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('../docs/mn/'.($js?'js/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', '<style>form{margin-bottom:0px;margin-top:0px;}</style>'.$borofile);
+                write_html('../docs/mn/'.($js?'js/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', $borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -101,8 +105,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($js?'href="/rstop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
                 .$stopid
                 .($js?'':','.$name)
-    #dont include closing </a> or bytes saving when 2 sibling anchor elements
-                .'">'.$dispname;
+    #Must having closing </a> to make no underline whitespace between links
+                .'">'.$dispname."</a>\n";
 }
 
 my $accesskeyidx = 1;

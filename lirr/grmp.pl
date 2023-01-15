@@ -93,6 +93,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
                 .($accesskey?'accesskey='.$accesskey.' ':'')
                 .($js?'href="/rstop.htm#':'href="s/')
                 .$stopid
+    #Must having closing </a> to make no underline whitespace between links
                 .'">'.$dispname."</a>\n";
 }
 
