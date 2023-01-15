@@ -152,6 +152,7 @@ foreach(keys %{$routes1}) {
             $seen{$override_stop_id} = undef;#seen it
             my $stop = $$stops{$stop_id};
             push @newroute, {'stop_id' => $override_stop_id,
+                           'stop_code' => $stop->{stop_code},
                            'name' => $stop->{stop_name},
                            'lat' => $stop->{stop_lat},
                            'lon' => $stop->{stop_lon},
