@@ -22,8 +22,8 @@ stationsjs.htm : gr3.pl routedatafinal.pl
 	-mkdir "../docs/mn"
 	perl grmp.pl 0
 
-../docs/mn/m/rt.htm : grmp.pl routedatafinal.pl
-	-mkdir "../docs/mn/m"
+../docs/mn/js/rt.htm : grmp.pl routedatafinal.pl
+	-mkdir "../docs/mn/js"
 	perl grmp.pl 1
 
 stop.htm :
@@ -66,4 +66,4 @@ gtfs.zip :
 	perl ../getgtfs.pl
 
 all: ../docs/mn/stations.htm ../docs/mn/stationsjs.htm ../docs/mn/rt.htm
-all: ../docs/mn/stop_.htm ../docs/mn/stop.htm ../docs/mn/m/rt.htm
+all: ../docs/mn/stop_.htm ../docs/mn/stop.htm ../docs/mn/js/rt.htm

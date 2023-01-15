@@ -65,7 +65,7 @@ foreach my $routename (@routes) {
                 if(@{$boroughs{$borough}}) {
                     $borofile .= '<a accesskey=0 href='.$rtnum.$borotbl{$borough}.($pageidx+1).'.htm>More</a>'."\n";
                 }
-                write_html('../docs/mn/'.($js?'m/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', '<style>form{margin-bottom:0px;margin-top:0px;}</style>'.$borofile);
+                write_html('../docs/mn/'.($js?'js/':'').$rtnum.$borotbl{$borough}.$pageidx.'.htm', '<style>form{margin-bottom:0px;margin-top:0px;}</style>'.$borofile);
                 $pageidx++;
             }
         } else {    #if 1 station per boro, just jump straight to station
@@ -86,7 +86,7 @@ foreach my $routename (@routes) {
     if(@boroughs > 1) { #partial 'a' tag HTML line, prefix added in later pass
         push(@lineshtml, 'href="'.$rtnum.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
-        write_html('../docs/mn/'.($js?'m/':'')."$rtnum.htm", $rtfileheader.$rtfile."\n");
+        write_html('../docs/mn/'.($js?'js/':'')."$rtnum.htm", $rtfileheader.$rtfile."\n");
     } else { #jump directly to per-boro station page, suppress boro selection file
         push(@lineshtml, 'href="'.$rtnum.$borotbl{$boroughs[0]}.'.htm">'
                         .$routenamepad.$routename.$routenamepad.'</a>');
@@ -113,9 +113,9 @@ sub altRtViewHTML {
     my $html;
     my $pageidx = $_[0];
     if($js) {
-        $html .= ' <a href="../rt'.$pageidx.'.htm">MTA JS Mobile</a>';
+        $html .= ' <a href="../rt'.$pageidx.'.htm">MTA No JS</a>';
     } else {
-        $html .= ' <a href="m/rt'.$pageidx.'.htm">MTA Mobile</a>';
+        $html .= ' <a href="js/rt'.$pageidx.'.htm">MTA JS</a>';
     }
     return $html;
 }
@@ -127,14 +127,14 @@ foreach my $line (@lineshtml) {
     if($accesskeyidx == 10 && @lineshtml){
         $accesskeyidx = 1;
         $file .= '<a accesskey=0 href=rt'.($pageidx+1).'.htm>More</a>'."\n";
-        write_html('../docs/mn/'.($js?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+        write_html('../docs/mn/'.($js?'js/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
             .altRtViewHTML($pageidx)."<br>\n".$file);
         $file = '';
         $pageidx++;
     }
 }
 if($file){
-    write_html('../docs/mn/'.($js?'m/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
+    write_html('../docs/mn/'.($js?'js/':'')."rt$pageidx.htm", "Routes:".($linespages > 1 ? ' '.($pageidx+1)." of ".$linespages:'')
         .altRtViewHTML($pageidx)."<br>\n".$file);
 }
 
