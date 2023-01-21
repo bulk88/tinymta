@@ -59,10 +59,9 @@ addEventListener('fetch', event => {
   if(!v8start) {v8start = Date.now()};
   console.log('v8start '+v8start);
 try {
-  var respProm = handleRequest(event.request, event);
-  respProm && event.respondWith(respProm);
+  event.respondWith(handleRequest(event.request, event).catch(e => console.log('c'+e)))
       }catch (e) {
-        console.log(e+' '+e.stack+' '+respProm);
+        console.log(e+' '+e.stack+' '+e.columnNumber+e.fileName+e.lineNumber);
       //event.respondWith(new Response(e))
     }
 })
@@ -329,6 +328,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
   
 else if (pathname_callback === "/routes.json") {
   //console.log('inr');
+  console.log('t'+this);
   var clientEtag = request.headers.get("if-none-match");
 
   event.respondWith(new Response(
@@ -340,8 +340,9 @@ else if (pathname_callback === "/routes.json") {
         'cache-control': 'no-cache, no-store',
       }
     }));
-  event.waitUntil(new Promise(async function (resolveCB) {
+  event.waitUntil((async function (resolveCB) {
       var i = 0,
+      ghkey,
       e,
       etag,
       resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
@@ -375,16 +376,24 @@ else if (pathname_callback === "/routes.json") {
         //lock-hazard, update globals no promises
         etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
         //console.log(routesEtag);
-        if (routesEtag !== etag) {
+        //todo disarm
+        if (routesEtag !== etag, 1) {
+          console.log('etag mismatch')
+          try {
+            ghkey = GHAPISECRET
+           } catch (e) {
+            ghkey = 'Basic '+url.searchParams.get('key');
+           }
           //atomic hazard
           routesEtag = etag;
           routes = resp;
           //patch ourself
-          resp = await fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js")
+          resp = await fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js");
+          console.log('got old gh script');
             if (resp.status == 200) {
               resp = await resp.text();
-              resp = resp.relace(/routesEtag='[^']+'/, 'routesEtag='+etag+"'")
-              resp = resp.relace(/routes='[^']+'/, 'routes='+reoutes+"'")
+              resp = resp.replace(/routesEtag='[^']+'/, 'routesEtag='+etag+"'")
+              resp = resp.replace(/routes='[^']+'/, 'routes='+routes+"'")
 
               /* git auth token extracted like this from windows box
 
@@ -407,16 +416,24 @@ else if (pathname_callback === "/routes.json") {
                 return ajaxRun("PATCH", url, options)
               }
               async function ajaxRun(method, url, options) {
-                url = await fetch('https://api.github.com/' + url, {
+                resp = await fetch('https://api.github.com/' + url, {
                   method: method,
                   headers: {
-                    authorization: GHAPISECRET
+                    authorization: ghkey,
+                    'user-agent': 'tinymta_cfw'
                   },
                   ...(options && {
                     body: JSON.stringify(options)
                   })
                 });
-                return await url.json();
+                if(resp.status >= 300) {
+                  console.log('failed status='+resp.status+' ct='+resp.headers.get('content-type')+' url='+url);
+                  resp = await resp.text();
+                  console.log(resp);
+                  return resp;
+                } else {
+                  return await resp.json();
+                }
               };
 
               var config = {
@@ -609,18 +626,19 @@ else if (pathname_callback === "/routes.json") {
                   throw err;
                 }
               }
-              commitFilesToBranch("master", [{
+              console.log('will push commit');
+
+              event.waitUntil(commitFilesToBranch("master", [{
                     name: "cloudflare_as_name.js",
                     contents: resp
                   }
-                ], "Routes Upd" + new Date().toLocaleString("en-US", {
+                ], "Routes Upd " + new Date().toLocaleString("en-US", {
                   timeZone: "America/New_York"
-                }), "master");
-
+                }), "master"));
             }
         }
-        resolveCB(true);
-  }})); //event.waitUntil(new Promise
+        return true;
+  }}()));
       return null;
     }
   /* Workers Preview has undef cf obj and cf prop is tested R/O
