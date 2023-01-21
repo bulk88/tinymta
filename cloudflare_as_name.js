@@ -375,9 +375,8 @@ else if (pathname_callback === "/routes.json") {
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises
         etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
-        //console.log(routesEtag);
-        //todo disarm
-        if (routesEtag !== etag, 1) {
+        console.log('o='+routesEtag+'n='+etag);
+        if (routesEtag !== etag) {
           console.log('etag mismatch')
           try {
             ghkey = GHAPISECRET
@@ -388,12 +387,13 @@ else if (pathname_callback === "/routes.json") {
           routesEtag = etag;
           routes = resp;
           //patch ourself
+          //TODO also patch .min
           resp = await fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js");
           console.log('got old gh script');
             if (resp.status == 200) {
               resp = await resp.text();
-              resp = resp.replace(/routesEtag='[^']+'/, 'routesEtag='+etag+"'")
-              resp = resp.replace(/routes='[^']+'/, 'routes='+routes+"'")
+              resp = resp.replace(/[^\]]routesEtag="[^"]+"/, 'routesEtag="'+etag+"'")
+              resp = resp.replace(/[^\]]routes="[^"]+"/, 'routes="'+routes+'"')
 
               /* git auth token extracted like this from windows box
 
@@ -897,5 +897,5 @@ mapper.buildServiceRoutes = function (response) {
   return routes;
 }
 
-let routesEtag='';
-let routes='';
+let routesEtag="";
+let routes="";

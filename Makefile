@@ -68,7 +68,7 @@ cloudflare_as_name.js:  lirr/stations.js lirr/insertstalist.pl insertcolors.pl l
 
 cloudflare_as_name.min.js : cloudflare_as_name.js
 	copy /y cloudflare_as_name.js "$@"
-	terser -c -m toplevel -m eval "$@" -o "$@"
+	terser -c -m toplevel -m "reserved=['routesEtag','routes']" -m eval "$@" -o "$@"
 
 MNRR :
 	cd mnr && $(MAKE) all
