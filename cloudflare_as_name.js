@@ -328,11 +328,10 @@ else if (pathname_callback.startsWith('/li/s/')) {
   
 else if (pathname_callback === "/routes.json") {
   //console.log('inr');
-  console.log('t'+this);
   var clientEtag = request.headers.get("if-none-match");
 
   event.respondWith(new Response(
-      clientEtag === routesEtag ? '' : routes, {
+      clientEtag === routesEtag ? '' : gRoutes, {
       status: clientEtag === routesEtag ? 304 : 200,
       headers: {
         'content-type': 'application/json',
@@ -376,24 +375,29 @@ else if (pathname_callback === "/routes.json") {
         //lock-hazard, update globals no promises
         etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
         console.log('o='+routesEtag+'n='+etag);
-        if (routesEtag !== etag) {
+        if (routesEtag !== etag,1) {
           console.log('etag mismatch')
           try {
             ghkey = GHAPISECRET
-           } catch (e) {
-            ghkey = 'Basic '+url.searchParams.get('key');
-           }
+          } catch (e) {
+            if(!(ghkey = url.searchParams.get('key'))) {
+              console.log("GHAPI key is invalid="+ghkey)
+            }
+            ghkey = 'Basic '+ghkey;
+          }
           //atomic hazard
           routesEtag = etag;
-          routes = resp;
+          gRoutes = resp;
           //patch ourself
           //TODO also patch .min
           resp = await fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js");
           console.log('got old gh script');
             if (resp.status == 200) {
               resp = await resp.text();
-              resp = resp.replace(/[^\]]routesEtag="[^"]+"/, 'routesEtag="'+etag+"'")
-              resp = resp.replace(/[^\]]routes="[^"]+"/, 'routes="'+routes+'"')
+              //\x32 is space
+              resp = resp.replace(/let (\w+)='[^']?',(\w+)='[^']?';$/, "let $1='"+etag+"',$2='"+gRoutes+"';");
+              //resp = resp.replace(/let\x20routesEtag='[^']?'/, "let routes"+"Etag='"+etag+"'")
+              //resp = resp.replace(/,gRoutes='[^']?';/, ",gRou"+"tes='"+resp+"';")
 
               /* git auth token extracted like this from windows box
 
@@ -896,6 +900,5 @@ mapper.buildServiceRoutes = function (response) {
 
   return routes;
 }
-
-let routesEtag="";
-let routes="";
+/* dont touch so bot can find it, ; must be last char of file*/
+let routesEtag='',gRoutes='';
