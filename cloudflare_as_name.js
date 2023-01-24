@@ -342,8 +342,10 @@ else if (pathname_callback === "/routes.json") {
   event.waitUntil((async function (resolveCB) {
       var i = 0,
       ghkey,
-      e,
+      e, /* entry */
       etag,
+      resp_min,
+      routes_escaped,
       resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
       //console.log('b4 aw f');
       resp = await resp;
@@ -390,12 +392,21 @@ else if (pathname_callback === "/routes.json") {
           gRoutes = resp;
           //patch ourself
           //TODO also patch .min
-          resp = await fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js");
+          resp = fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.js", {cf: {cacheTtlByStatus: -1}});
+          resp_min = fetch("https://raw.githubusercontent.com/bulk88/tinymta/master/cloudflare_as_name.min.js", {cf: {cacheTtlByStatus: -1}});
+          resp = await resp;
+          resp_min = await resp_min;
           console.log('got old gh script');
-            if (resp.status == 200) {
+            if (resp.status == 200 && resp_min.status == 200) {
               resp = await resp.text();
-              //\x32 is space
-              resp = resp.replace(/let (\w+)='[^']?',(\w+)='[^']?';$/, "let $1='"+etag+"',$2='"+gRoutes+"';");
+              resp_min = await resp_min.text();
+              //not injection safe, not binary or \n safe
+              //https://github.com/terser/terser/blob/master/lib/output.js#L319
+              routes_escaped = gRoutes.replace(/\x27/g, "\\'");
+              resp = resp.replace(/let (\w+)='[^']?',(\w+)='[^']?';$/, "let $1='"+etag+"',$2='"+routes_escaped+"';");
+              //minify prefers double quotes, always reset to single to minimize chars
+              resp_min = resp_min.replace(/let (\w+)=(?:'[^']?'|"[^"]?"),(\w+)=(?:'[^']?'|"[^"]?");$/, "let $1='"+etag+"',$2='"+routes_escaped+"';");
+              //\x20 is space
               //resp = resp.replace(/let\x20routesEtag='[^']?'/, "let routes"+"Etag='"+etag+"'")
               //resp = resp.replace(/,gRoutes='[^']?';/, ",gRou"+"tes='"+resp+"';")
 
@@ -420,7 +431,7 @@ else if (pathname_callback === "/routes.json") {
                 return ajaxRun("PATCH", url, options)
               }
               async function ajaxRun(method, url, options) {
-                resp = await fetch('https://api.github.com/' + url, {
+                var resp = await fetch('https://api.github.com/' + url, {
                   method: method,
                   headers: {
                     authorization: ghkey,
@@ -635,6 +646,9 @@ else if (pathname_callback === "/routes.json") {
               event.waitUntil(commitFilesToBranch("master", [{
                     name: "cloudflare_as_name.js",
                     contents: resp
+                  },{
+                    name: "cloudflare_as_name.min.js",
+                    contents: resp_min
                   }
                 ], "Routes Upd " + new Date().toLocaleString("en-US", {
                   timeZone: "America/New_York"
