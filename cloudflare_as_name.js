@@ -335,7 +335,7 @@ else if (pathname_callback === "/routes.json") {
       headers: {
         'content-type': 'application/json',
         'etag': routesEtag,
-        'cache-control': 'no-cache, no-store',
+        'cache-control': 'no-cache',
         'access-control-allow-origin': '*',
       }
     }));
