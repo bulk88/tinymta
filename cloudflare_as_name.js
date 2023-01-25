@@ -327,7 +327,6 @@ else if (pathname_callback.startsWith('/li/s/')) {
 }
   
 else if (pathname_callback === "/routes.json") {
-  //console.log('inr');
   var clientEtag = request.headers.get("if-none-match");
 
   event.respondWith(new Response(
@@ -347,10 +346,8 @@ else if (pathname_callback === "/routes.json") {
       resp_min,
       routes_escaped,
       resp = fetch('http://otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE');
-      //console.log('b4 aw f');
       resp = await resp;
 
-      //console.log('af aw f='+!url.searchParams.get('n200'));
       if (resp.status === 200) {
         resp = resp.json();
         resp = await resp;
@@ -376,8 +373,7 @@ else if (pathname_callback === "/routes.json") {
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises
         etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
-        console.log('o='+routesEtag+'n='+etag);
-        if (routesEtag !== etag,1) {
+        if (routesEtag !== etag) {
           console.log('etag mismatch')
           try {
             ghkey = GHAPISECRET
