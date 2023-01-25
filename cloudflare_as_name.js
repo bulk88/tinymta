@@ -387,6 +387,8 @@ paramId (remove it, unused in UI) DONE
 sortOrder (remove for bus & rail, always 0, not used in UI, only used by subway) DONE
 routeType (remove it, unused in UI, or replace mode (Bus/rail/sub) with integer routeType? routeType for bus separates local vs express vs subway shuttle, already missing for subway) DONE
 regionalFareCardAccepted (remove it, unused in UI) DONE
+agencyId (remove it, unused in UI) DONE
+containsExpress (remove it, unused in UI) DONE
 */
         Object.values(resp).forEach(val => {
           for(var i = 0; i < val.length; i++) {
@@ -396,7 +398,9 @@ regionalFareCardAccepted (remove it, unused in UI) DONE
           delete val[i].paramId;
           val[i].sortOrder == 0 && delete val[i].sortOrder;
           delete val[i].routeType;
-          delete val[i].regionalFareCardAccepted
+          delete val[i].regionalFareCardAccepted;
+          delete val[i].agencyId;
+          delete val[i].containsExpress;
           }
         });
         resp = JSON.stringify(resp);
@@ -836,7 +840,7 @@ function buildSubwayRoute (data) {
     } else {
       //b88 note containsExpress is unused in this app
       // otherwise, first set the containsExpress variable / flag
-      route.containsExpress = true;
+      //route.containsExpress = true;
     }
   }
   }
