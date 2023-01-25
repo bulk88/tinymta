@@ -369,6 +369,34 @@ else if (pathname_callback === "/routes.json") {
         }
         //resp.unshift({"id":"TINYMTA:" + (new Date()).toString()});
         resp = mapper.buildServiceRoutes(resp);
+/*
+drawhtml routes DB mandatory fields
+
+agency (needed for drawhtml, unlikely it can be removed)
+inService (complicated if needed, hardwired-on in MTA UI in generating Routes DB, not a backend MTA JSON field, overridden by RT alert summary text to "No Scheduled Service" for belmont line, only bus & rail has it on MTA UI API, not sub, sub MTA UI already doesnt have the field, probably could be removed b/c alerts service delivers the flag (status "no scheduled") indirectly)
+isExpressBus (remove it, unused in UI) DONE
+routeId (needed for drawhtml)
+route (neeeded for drawhtml but not all line types have it, investigate more)
+id (neeeded for drawhtml maybe can be removed, investigate more)
+shortName (needed for drawhtml maybe can be removed, investigate more)
+longName (remove it, unused in UI, only used in building routes, maybe one day re-add it if bus routes UI needs full name) DONE
+agencyName (remove it, unused in UI) DONE
+paramId (remove it, unused in UI) DONE
+sortOrder (remove for bus & rail, always 0, not used in UI, only used by subway) DONE
+routeType (remove it, unused in UI, or replace mode (Bus/rail/sub) with integer routeType? routeType for bus separates local vs express vs subway shuttle, already missing for subway) DONE
+regionalFareCardAccepted (remove it, unused in UI) DONE
+*/
+        Object.values(resp).forEach(val => {
+          for(var i = 0; i < val.length; i++) {
+          delete val[i].isExpressBus;
+          delete val[i].longName;
+          delete val[i].agencyName;
+          delete val[i].paramId;
+          val[i].sortOrder == 0 && delete val[i].sortOrder;
+          delete val[i].routeType;
+          delete val[i].regionalFareCardAccepted
+          }
+        });
         resp = JSON.stringify(resp);
         //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));

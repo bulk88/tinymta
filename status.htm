@@ -15,7 +15,11 @@ parseRoutes.name = 'parseRoutes';
 parseAlerts.name = 'parseAlerts';
 var jsonp;
 
-var url_routes = '//otp-mta-prod.camsys-apps.com/otp/routers/default/index/routes?apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE';
+var url_routes =
+/*STARTDELETE*/
+    '//tinymta.us.to' +
+/*ENDDELETE*/
+'/routes.json';
 var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP';
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
@@ -246,161 +250,6 @@ const WEIRD_RAIL_LINES = [{
   routeType: 2
 }]
 */
-
-mapper = {};
-
-function buildSubwayRoute (data) {
-  var routeDetails = [];
-  var i = 0, subwayLine, route, name;
-
-  for(; i < data.length; i++) {
-  subwayLine = data[i];
-  /*b88 pass array only once */
-  if(subwayLine.mode === 'SUBWAY'
-      && !subwayLine.id.indexOf('MTA')) {
-    route = false;
-    name = subwayLine.shortName;
-
-    //b88 turn into a temp hash instead of find(), performance
-    // check to see if a previous, associated, non-express line is found given the current express line
-    if (name.substr(name.length - 1, name.length) === 'X') {
-      // if so, set the route given the previously set non-express route
-      var baseName = name.substr(0, name.indexOf('X'));
-      route = routeDetails.find(function (element) {
-        return typeof element === 'object' && element.name === baseName ? 1 : 0
-      });
-    }
-
-    // check to see if a route was found...
-    if (!route) {
-      // if not, initialize one and add it to the routeDetails array
-      var agency = subwayLine.id.split(":")[0];
-      var id = subwayLine.id.split(":")[1];
-      routeDetails.push({
-        agency: agency,
-        agencyId: agency,
-        name: id,
-        mode: 'SUBWAY',
-        color: subwayLine.color,
-        sortOrder: subwayLine.sortOrder,
-        id: id
-      });
-    } else {
-      //b88 note containsExpress is unused in this app
-      // otherwise, first set the containsExpress variable / flag
-      route.containsExpress = true;
-    }
-  }
-  }
-
-  return routeDetails;
-}
-
-function buildBusRoute (stopData) {
-  var mapRoutes = stopData
-    .filter(function (busRoute) {return busRoute.mode === 'BUS'
-      && !!~busRoute.id.indexOf('MTA')})
-    .map(function (stop) {
-      var agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
-      //var routeId = agency+"_"+stop.id.split(':')[1];
-
-      return Object.assign({
-        agency: agency,
-        inService: true,
-/* const BANNED_XBUS_ROUTE_TYPE = 702; */
-        isExpressBus: (stop.routeType === 702),
-        routeId: agency+"_"+stop.id.split(':')[1], /* routeId,*/
-        route: stop.shortName
-      }, stop)
-    })
-  return mapRoutes
-}
-
-function buildRailRoute (data_line) {
-  var railLines = data_line
-    .filter(function (railLine) {
-      return railLine.mode === 'RAIL' /* mode.toUpperCase removed b88 */
-        /*b88 dont ask why it works, but startsWith || startsWith
-        be careful of LIBUS in refactoring in future*/
-        && !(railLine.id.indexOf('LI') && railLine.id.indexOf('MNR'))
-    })
-    .concat(/* WEIRD_RAIL_LINES */
-    [{
-  id: "MNR:Wassaic",
-  agency: "MNR",
-  color: "0039A6",
-  inService: true,
-  mode: "RAIL",
-  longName: "Wassaic",
-  routeId: "MNR_Wassaic",
-  routeType: 2
-}]
-    )
-    .map(function (railLine) {
-      var agency = !railLine.id.indexOf('LI') ? 'LI' : 'MNR';
-      railLine.inService = true;
-      railLine.agency = agency;
-      railLine.agencyId = agency;
-      railLine.route = railLine.longName;
-      railLine.routeId = railLine.routeId ? railLine.routeId : railLine.id.replace(":", "_");
-      railLine.mode = "RAIL";
-      railLine.shortName = railLine.longName;
-      return railLine;
-    })
-
-  // start by sorting all rail lines alphabetically
-  .sort(function (line1, line2) {
-    if (line1.longName < line2.longName) {  //sort string alphabetically
-      return -1;
-    } else /*if (line1.route > line2.route)*/ {
-      return 1;
-    }
-  });
-
-  // remove all kubes from the railLines array that are contained within the NEW_HAVEN_BRANCHES constant (array)
-  var newHavenBranches = []
-  var newHavenLineIndex
-  var harlemBranches = []
-  var harlemLineIndex
-
-  for (var i = 0; i < railLines.length; i++) {
-    data_line = railLines[i];
-// get the index of the 'New Haven' line
-    if(data_line.id === 'MNR:3') {
-      newHavenLineIndex = i
-    }
-// get the index of the 'Harlem' line
-    if(data_line.id === 'MNR:2') {
-      harlemLineIndex = i
-    }
-    if (/*NEW_HAVEN_BRANCHES.*//^(MNR:4|MNR:5|MNR:6)$/.test(data_line.id)) {
-      newHavenBranches.push(data_line)
-      railLines.splice(i, 1)
-      i--
-    }
-  // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
-    if (/*HARLEM_BRANCHES.*/~data_line.longName.indexOf('Wassaic')) {
-      harlemBranches.push(data_line)
-      railLines.splice(i, 1)
-      i--
-    }
-  }
-
-  // place the (sorted) newHavenBranches into the railLines array directly AFTER the newHavenLineIndex and return
-  railLines = railLines.slice(0, newHavenLineIndex + 1).concat(newHavenBranches).concat(railLines.slice(newHavenLineIndex + 1));
-  return railLines.slice(0, harlemLineIndex + 1).concat(harlemBranches).concat(railLines.slice(harlemLineIndex + 1));
-}
-
-mapper.buildServiceRoutes = function (response) {
-  var routes = {
-    busRoutes: buildBusRoute(response),
-    railLines: buildRailRoute(response),
-    subwayLines: buildSubwayRoute(response),
-    lastUpdated: new Date()
-  };
-
-  return routes;
-}
 
 function filterCurrentStatii (statii) {
   var alertsByRoute = {}, status, isCurrent;
@@ -724,6 +573,8 @@ function getStatus(obj) {
     // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
     return obj.statusDetails[0].statusSummary;
   }
+  //todo b88, inService is a front end MTA UI field, hard wired in front end HTML route DB to true for bus & rail
+  //manually downgraded by mercury alert above, maybe remove field totally??
   return obj.inService ? "On or Close" : "No Scheduled Service";
 }
 
@@ -749,7 +600,7 @@ var alertsResp;
 function parseRoutes(r) { /*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
   /* r.contents is JSONP */
-  allRoutes = mapper.buildServiceRoutes(typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r))
+  allRoutes = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
   if (alertsResp)
     drawHTML();
 }
