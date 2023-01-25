@@ -336,6 +336,7 @@ else if (pathname_callback === "/routes.json") {
         'content-type': 'application/json',
         'etag': routesEtag,
         'cache-control': 'no-cache, no-store',
+        'access-control-allow-origin': '*',
       }
     }));
   event.waitUntil((async function (resolveCB) {
