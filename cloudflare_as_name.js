@@ -436,12 +436,12 @@ containsExpress (remove it, unused in UI) DONE
               //x27 == '
               routes_escaped = gRoutes.replace(/\x27/g, "\\'");
               //update to new RESP
-              new_resp = resp.replace(/let (\w+)='[^']?',(\w+)='[^']?';$/, "let $1='"+etag+"',$2='"+routes_escaped+"';");
+              new_resp = resp.replace(/let (\w+)='[^']*',(\w+)='[^']*';$/, "let $1='"+etag+"',$2='"+routes_escaped+"';");
               if(new_resp == resp) {
                 console.log('failed to patch full size cfw src');
               }
               //minify prefers double quotes, always reset to single to minimize chars
-              new_resp_min = resp_min.replace(/let (\w+)=(?:'[^']?'|"[^"]?"),(\w+)=(?:'[^']?'|"[^"]?");$/, "let $1='"+etag+"',$2='"+routes_escaped+"';");
+              new_resp_min = resp_min.replace(/let (\w+)=(?:'[^']*'|"[^"]*"),(\w+)=(?:'[^']*'|"[^"]*");$/, "let $1='"+etag+"',$2='"+routes_escaped+"';");
               if(new_resp_min == resp_min) {
                 console.log('failed to patch mini cfw src');
               }
