@@ -90,6 +90,30 @@ function genArvBodyObj(r) {
         + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
         t.direction == 'E' ? h += l : w += l;
     }
+/*b88 todo draw this JSON
+{
+    "banners": [
+        {
+            "title": "Grand Central Madison is Open",
+            "text": "Special LIRR Grand Central Direct service runs between Jamaica Station and Grand Central. Plan your trip in the TrainTime Trips tab and learn more here: https://new.mta.info/grandcentralmadison",
+            "railroad": "LIRR",
+            "type": "ALERT"
+        }
+    ],
+    "alerts": [
+        {
+            "status": "Extra Service",
+            "header": "<p>Special Grand Central Direct trains run between Jamaica and Grand Central</p>",
+            "text": "<p>Regular LIRR schedules will not change for at least three weeks. In the meantime, come explore our new East Side terminal and share this historic moment with us!</p><p>Check out the special schedule and plan your trip on our TrainTime app.</p>",
+            "priority": 9,
+            "start_time": 1674661500,
+            "human_duration": "6:15 AM to 8:15 PM weekdays and 7 AM to 11 PM weekends, starting Jan 25 10:45 AM",
+            "status_level": 1,
+            "station_alternatives": [],
+            "language": "en"
+        }
+    ],
+*/
     document.body.innerHTML += h+w;
 }
 function getStop(addIMS) {

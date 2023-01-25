@@ -740,7 +740,9 @@ function getJSON(url, alertFlag, addIMS) {
         //old Firefoxes send on XHR, new FF and new Chrome send */*
         //Java EE server, if it sees "application/xml" it sends XML instead of JSON
         //"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-        x.setRequestHeader("accept","application/json");
+        //b88 disable for status.htm so preload & fetch are same accept header
+        //not needed for this specific MTA server or the CFW routes DB
+        //x.setRequestHeader("accept","application/json");
         x.send();
     //code byte savings, reuse error var
     } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
