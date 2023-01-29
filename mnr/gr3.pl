@@ -33,9 +33,9 @@ open(HTMLFILE, ">", ($js ? 'stationsjs.htm' : 'stations.htm'))
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
-#a tiny bit of CSS needed so the buttons dont waste vertical space with 16px margin
-$js ?'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"><link href="//mnorth.prod.acquia-sites.com" rel="preconnect"><link href="//mnorth.prod.acquia-sites.com" rel="dns-prefetch"></head><body><a name="#">
-':'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer"><link href="http://as0.mta.info" rel="preconnect"><link href="http://as0.mta.info" rel="dns-prefetch"></head><body><a name="#">
+'<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer">'
+.($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link href="//backend-unified.mylirr.org" rel="dns-prefetch"><link rel=prefetch href=/rstop.htm>':'<link href="http://as0.mta.info" rel="preconnect"><link href="http://as0.mta.info" rel="dns-prefetch">')
+.'</head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
