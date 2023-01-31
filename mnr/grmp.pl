@@ -41,11 +41,7 @@ foreach my $routename (@routes) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {
-          name => $stop->{name},
-          stop_id => $stop->{stop_id},
-          stop_code => $stop->{stop_code}
-        });
+        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{$js ? 'stop_code' : 'stop_id'}});
     }
     @boroughs = sort keys %boroughs;
     my $rtfile = "$routename:";
@@ -61,7 +57,7 @@ foreach my $routename (@routes) {
                 my $accesskeyidx = 1;
                 foreach my $stop (@stopschunk) {
                     $borofile .= stopid_to_tag($stop->{name},
-                        $stop->{$js ? 'stop_code' : 'stop_id'},
+                        $stop->{stop},
                         $stop->{name},
                         '', #no anchor
                         $accesskeyidx++);
@@ -75,7 +71,7 @@ foreach my $routename (@routes) {
         } else {    #if 1 station per boro, just jump straight to station
                     #saves a tap, only L/Queens/Halsey has this property
             $rtfile .= ' '.stopid_to_tag(${$boroughs{$borough}}[0]->{name},
-                          ${$boroughs{$borough}}[0]->{$js ? 'stop_code' : 'stop_id'},
+                          ${$boroughs{$borough}}[0]->{stop},
                           $borough,
                           '', #no anchor
                           $accesskeyidx++);

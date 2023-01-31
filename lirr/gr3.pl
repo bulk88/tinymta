@@ -37,7 +37,7 @@ foreach my $rtid (nsort keys %$VAR1) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
+        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_code}});
     }
     $line = "$routename:";
     #easier finger tapping if 1 or 2 char routenames

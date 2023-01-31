@@ -9,7 +9,6 @@ $Data::Dumper::Sortkeys = 1;
 my $response;
 my $result;
 my %stajs; #ABBR to Full
-my %stapl; #GTFS (0 and up numbers) to ABBR (3 letter code)
 #var r = await fetch("https://backend-unified.mylirr.org/infrastructure", {headers: {'accept-version':'1.5'}});r=await r.json(); var s={}; r.stations.forEach(function(sta) {s[sta.code]=sta.name}); s;
 
 my $http = HTTP::Tiny->new(
@@ -25,10 +24,5 @@ $result = $coder->decode($response->{content});
 my $stations = $result->{stations};
 foreach my $sta (@$stations) {
     $stajs{$sta->{code}} = $sta->{name};
-    #MNR overlaps with LIRR for these codes, IDK what sfStationId is
-    if($sta->{railroad} eq "LIRR") {
-      $stapl{$sta->{sfStationId}} = $sta->{code};
-    }
 }
 write_file('stations.js', {binmode => ':raw'}, 'var s='.$coder->encode(\%stajs).';');
-write_file('stations.pl', {binmode => ':raw'}, Dumper(\%stapl));

@@ -30,7 +30,7 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	perl insertstalist.pl "$@"
 	perl ../insertcolors.pl RAIL "$@" routesmodded.txt
 
-stations.js stations.pl: mkstalist.pl
+stations.js: mkstalist.pl
 	perl mkstalist.pl
 
 ../rstop_.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
@@ -53,13 +53,12 @@ stations.js stations.pl: mkstalist.pl
 grmp.pl : ../minify_config.json
 
 clean :
-	del stations.pl
 	del stations.js
 	del routedatafinal.pl
 	del routedata.pl
 	del stationsnojs.htm
 	del stations.htm
-	del stop_.htm
+	del ..\rstop_.htm
 
 package : ../docs/li/stations.htm ../docs/rstop.htm ../docs/rstop_.htm
 	-mkdir "..\tinymta\li"
@@ -67,8 +66,8 @@ package : ../docs/li/stations.htm ../docs/rstop.htm ../docs/rstop_.htm
 	copy /y ..\docs\rstop.htm "..\tinymta\"
 	copy /y ..\docs\rstop_.htm "..\tinymta\"
 
-#routedatafinal.pl : ../gr2.pl routedata.pl stations.pl stops.txt
-#	perl ../gr2.pl
+routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
+	perl ../gr2.pl
 
 routedata.pl : trips.txt stop_times.txt ../gr.pl
 	perl ../gr.pl

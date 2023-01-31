@@ -39,7 +39,7 @@ foreach my $routename (@routes) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_id}});
+        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_code}});
     }
     @boroughs = sort keys %boroughs;
     my $rtfile = "$routename:";
