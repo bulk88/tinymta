@@ -16,7 +16,7 @@ genArvBodyObj.name = 'genArvBodyObj';
 var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 var jsonp;
 
-var url;
+var stacode = location.hash;
 /* note sta codes 0NY (MNRR) GCT (LIRR) and _GC (Both) are all GCT,
    todo, make choice if show Both for both RRs*/
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
@@ -25,7 +25,7 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
 /*ENDINSERT*/
 
 /* var t is "top" as in top of body (header) */
-var t = location.hash;
+var t;
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
    related to stop.htm because stop.htm is fetched from browser cache, sadly there
@@ -34,7 +34,7 @@ var t = location.hash;
    for latency reasons on 2G networks, 200 always if .reload(1),
    304 typ if .reload(0)
 */
-if(t != '' && t != '#') {
+if(stacode.length > 1) {
     /* https://traintime.lirr.org/api/Departure?loc=CPL is one API from old MTA official LIRR Train Time app, no CORS headers, no cleartext
     https://backend.mylirr.org/arrivals/CPL is from https://www.mylirr.org/main?
     with cors accept-version: 1.5 header is mandatory (plus preflight) or server
@@ -53,17 +53,17 @@ if(t != '' && t != '#') {
     "This is wrong version of the API. Acceptable versions: [1.5, 1.6, 2.0, 3.0]"
     I see no JSON diff with 1.5 vs 3.0
     */
-    url = '//backend-unified.mylirr.org/arrivals/'+t.slice(1);
+    stacode = stacode.slice(1);
     /* generate body top string once, its later used for fast refresh */
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
-          (/stop\.htm$/.test(location.pathname) ? "stop_.htm" : "stop.htm")
+          (/rstop\.htm$/.test(location.pathname) ? "rstop_.htm#" : "rstop.htm#")
 /*ENDINSERTPATH*/
-          +t+'\')">Slow</a>] <a href='+url+'>Raw</a><br>';
+          +stacode+'\')">Slow</a>] <a href=//backend-unified.mylirr.org/arrivals/'+stacode+'>Raw</a><br>';
 }
 
-if(url)
+if(t)
     getStop();
 else
     document.body.innerHTML = 'No station specified in url anchor.';
@@ -84,7 +84,7 @@ function genArvBodyObj(r) {
     r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
     var i, w = "West<br>",
         t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
-        +'<br>Cur Sta: ' + s[location.hash.slice(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
+        +'<br>Cur Sta: ' + s[stacode] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
     for (i = 0; i < r.arrivals.length; i++) {
         t = r.arrivals[i];
         //note to self, ceil is round up, |0 is round down
@@ -129,7 +129,7 @@ function genArvBodyObj(r) {
     for (i in r.banners) {
       i = r.banners[i];
       //always show banners, they aren't attached to all stations at once
-      //l = Number(location.hash.slice(1,2));
+      //l = Number(stacode.slice(0,1));
       // if LIRR && is not numeric aka is LIRR sta code then draw, not in MTA UI code
       // IDK abbrevation for MNRR in API but other railroad && numeric will draw
       //if((i.railroad == 'LIRR') == (l !== +l)) {
@@ -164,7 +164,7 @@ function getStop(addIMS) {
           side, without network traffic.*/
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('get', url, 1);
+        x.open('get', '//backend-unified.mylirr.org/arrivals/'+stacode, 1);
         try {
           x.responseType = 'json';
         } catch (e) {
@@ -199,7 +199,7 @@ function getJSONP() {
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
-    '/api/li/'+location.hash.slice(1)+'?callback=genArvBodyObj';
+    '/api/li/'+stacode+'?callback=genArvBodyObj';
     jsonp = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

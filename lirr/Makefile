@@ -35,7 +35,7 @@ stations.js stations.pl: mkstalist.pl
 
 ../rstop_.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	copy /y "..\rstop.htm" "$@"
-	perl ../adj_stoppath.pl "$@"
+	perl ../adj_stoppath.pl "$@" 2
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
@@ -46,7 +46,7 @@ stations.js stations.pl: mkstalist.pl
 ../docs/rstop.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	-mkdir "../docs"
 	copy /y "..\rstop.htm" "$@"
-	perl ../adj_stoppath.pl "$@"
+	perl ../adj_stoppath.pl "$@" 2
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
   
