@@ -17,6 +17,8 @@ var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsof
 var jsonp;
 
 var url;
+/* note sta codes 0NY (MNRR) GCT (LIRR) and _GC (Both) are all GCT,
+   todo, make choice if show Both for both RRs*/
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
 /*STARTINSERT*/
 var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"Cold Spring","0CT":"Cortlandt","0DF":"Dobbs Ferry","0DV":"Spuyten Duyvil","0GA":"Garrison","0GD":"Glenwood","0GY":"Greystone","0HB":"Highbridge-Employees","0HL":"Harlem-125 St","0HM":"Croton-Harmon","0HS":"Hastings-on-Hudson","0IV":"Irvington","0LU":"Ludlow","0MB":"Marble Hill","0MH":"Morris Heights","0MN":"Manitou","0NM":"New Hamburg","0NY":"Grand Central","0OS":"Ossining","0PE":"Peekskill","0PM":"Philipse Manor","0PO":"Poughkeepsie","0RV":"Riverdale","0SB":"Scarborough","0TT":"Tarrytown","0UH":"University Heights","0YK":"Yonkers","0YS":"Yankees-E 153 St","1AT":"Appalachian Trail","1BG":"Botanical Garden","1BH":"Bedford Hills","1BR":"Southeast","1BW":"Brewster","1BX":"Bronxville","1CF":"Croton Falls","1CQ":"Chappaqua","1CW":"Crestwood","1DO":"Dover Plains","1FO":"Fordham","1FW":"Fleetwood","1GO":"Goldens Bridge","1HA":"Hartsdale","1HN":"Hawthorne","1KA":"Katonah","1MK":"Mt Kisco","1ML":"Melrose","1MP":"Mt Pleasant","1MW":"Mt Vernon West","1NW":"North White Plains","1PA":"Patterson","1PV":"Pleasantville","1PW":"Pawling","1PY":"Purdy's","1SC":"Scarsdale","1TK":"Tuckahoe","1TM":"Tenmile River","1TR":"Tremont","1VA":"Valhalla","1WA":"Wassaic","1WF":"Wakefield","1WG":"Williams Bridge","1WI":"Harlem Valley-Wingdale","1WN":"Woodlawn","1WP":"White Plains","2BP":"Bridgeport","2CC":"Cos Cob","2DA":"Darien","2EN":"East Norwalk","2FF":"Fairfield","2FM":"Fairfield Metro","2GF":"Green's Farms","2GN":"Greenwich","2HS":"Harrison","2LA":"Larchmont","2MA":"Mamaroneck","2ME":"Mt Vernon East","2MI":"Milford","2NH":"New Haven","2NO":"Noroton Heights","2NR":"New Rochelle","2OG":"Old Greenwich","2PC":"Port Chester","2PH":"Pelham","2RO":"Rowayton","2RS":"Riverside","2RY":"Rye","2SM":"Stamford","2SN":"South Norwalk","2SP":"Southport","2SR":"Stratford","2SS":"New Haven-State St","2WH":"West Haven","2WP":"Westport","3GB":"Glenbrook","3NC":"New Canaan","3SD":"Springdale","3TH":"Talmadge Hill","4BE":"Bethel","4BV":"Branchville","4CA":"Cannondale","4DN":"Danbury","4M7":"Merritt 7","4RD":"Redding","4WI":"Wilton","5AN":"Ansonia","5BF":"Beacon Falls","5DB":"Derby-Shelton","5NG":"Naugatuck","5SY":"Seymour","5WB":"Waterbury","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BOL":"Bolands-Employees","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont Park","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Av","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","EMT":"Elmont-UBS Arena","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCT":"Grand Central","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HIL":"Hillside-Employees","HOL":"Hollis","HPA":"Hunterspoint Av","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Av","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic-Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Av","NBD":"Nassau Blvd","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank","_GC":"Grand Central"};
@@ -66,17 +68,25 @@ if(url)
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 
+function noPTag(str) {
+  if(typeof str == 'string') {
+    if (str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
+      return str.slice(3, -4);
+    }
+  }
+  return str;
+}
+
 function genArvBodyObj(r) {
     /*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     /* r.contents is JSONP */
-    /* TODO r.alerts is not rendered */
-    r = (typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r)).arrivals;
+    r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
     var i, w = "West<br>",
         t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[location.hash.slice(1)] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
-    for (i = 0; i < r.length; i++) {
-        t = r[i];
+    for (i = 0; i < r.arrivals.length; i++) {
+        t = r.arrivals[i];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = new Date((l=t.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
@@ -84,22 +94,21 @@ function genArvBodyObj(r) {
         + '-Tk' + (t.track || '?')
         + "-<font color=" + (
 /*STARTRAILCOLOR*/
-{"11":"60269E","12":"4D5357","BY":"00985F","DN":"EE0034","FR":"6E3219","HA":"0039A6","HH":"006EC7","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NC":"EE0034","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WB":"EE0034","WH":"00A1DE"}
+{"11":"60269E","12":"4D5357","BY":"00985F","CI":"4D5357","DN":"EE0034","FR":"6E3219","HA":"0039A6","HH":"006EC7","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NC":"EE0034","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WB":"EE0034","WH":"00A1DE"}
 /*ENDRAILCOLOR*/
         )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
         + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
         t.direction == 'E' ? h += l : w += l;
     }
-/*b88 todo draw this JSON
-{
-    "banners": [
+/* test code
+    r.banners =  [
         {
             "title": "Grand Central Madison is Open",
             "text": "Special LIRR Grand Central Direct service runs between Jamaica Station and Grand Central. Plan your trip in the TrainTime Trips tab and learn more here: https://new.mta.info/grandcentralmadison",
             "railroad": "LIRR",
             "type": "ALERT"
         }
-    ],
+    ];
     "alerts": [
         {
             "status": "Extra Service",
@@ -114,6 +123,30 @@ function genArvBodyObj(r) {
         }
     ],
 */
+    /* add west trains to mega html string and reuse west var */
+    h += w;
+    w = '<br>';
+    for (i in r.banners) {
+      i = r.banners[i];
+      //always show banners, they aren't attached to all stations at once
+      //l = Number(location.hash.slice(1,2));
+      // if LIRR && is not numeric aka is LIRR sta code then draw, not in MTA UI code
+      // IDK abbrevation for MNRR in API but other railroad && numeric will draw
+      //if((i.railroad == 'LIRR') == (l !== +l)) {
+        w += i.title+'<br>'+i.text+'<br><br>';
+      //}
+    }
+    r = r.alerts;
+    //time sort alerts in the array
+    r.sort(function(a, b) {
+        return a.start_time < b.start_time ? -1 :
+            a.start_time > b.start_time ? 1 :
+            0;
+    });
+    for (i in r) {
+      i = r[i];
+      w += i.status+'<br>'+noPTag(i.header)+'<br>'+i.human_duration+'<br>'+noPTag(i.text)+'<br><br>';
+    }
     document.body.innerHTML += h+w;
 }
 function getStop(addIMS) {

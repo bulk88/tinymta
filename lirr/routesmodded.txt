@@ -12,6 +12,7 @@
 "HH","","Port Jefferson","2","006EC7","FFFFFF"
 "11","","Belmont Park","2","60269E","FFFFFF"
 "12","","City Zone","2","4D5357","FFFFFF"
+"CI","","City Zone","2","4D5357","FFFFFF"
 "NH","","New Haven","2","EE0034","FFFFFF"
 "NC","","New Canaan","2","EE0034","FFFFFF"
 "WB","","Waterbury","2","EE0034","FFFFFF"

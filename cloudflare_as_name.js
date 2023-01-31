@@ -76,6 +76,19 @@ function mkSubFontTag(text, route) {
   [route||text];
   return c ?'<font color='+c+'>'+text+'</font>':text;
 }
+
+/* from status.htm not rstop.htm, slighly bigger */
+function noPTag(str) {
+  if(typeof str == 'string') {
+    //some notices include these at the end, after the global P tag we are trying to remove
+    str = str.replace(/(<p style="min-height:10px"><\/p>|<p><\/p>)+$/g,'');
+    if (str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
+      return str.slice(3, -4);
+    }
+  }
+  return str;
+}
+
 //t = "2021-05-11T18:58:08-04:00" getFormattedTime
 /* unused since switch from abs time to Mins
 function getFormattedTime(t) {
@@ -294,25 +307,48 @@ else if (pathname_callback.startsWith('/li/s/')) {
     var w = "<a accesskey=3 name=3 href=#3>West</a><br>"; /*w=west*/
     resp = await resp;
     if (resp.status == 200) {
-      var r = resp.json();
-      r = (await r).arrivals;
+      var r = await resp.json();
       var i, t, l; /*t=train, l=lineofhtml, h=html*/
-      for (i = 0; i < r.length; i++) {
-        t = r[i];
+      for (i = 0; i < r.arrivals.length; i++) {
+        t = r.arrivals[i];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = new Date((l = t.time) * 1000).toLocaleTimeString('en-US', { timeZone: 'America/New_York' }).replace(':00 ', ' ') +
-          '-Min ' + Math.ceil((l - (new Date(new Date().toLocaleString()) / 1000)) / 60) +
-          '-Tk' + (t.track || '?')
+          '-Min ' + Math.ceil((l - (new Date(new Date().toLocaleString()) / 1000)) / 60)
+        + '-Tk' + (t.track || '?')
         + "-<font color=" + (
 /*STARTRAILCOLOR*/
-{"11":"60269E","12":"4D5357","BY":"00985F","DN":"EE0034","FR":"6E3219","HA":"0039A6","HH":"006EC7","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NC":"EE0034","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WB":"EE0034","WH":"00A1DE"}
+{"11":"60269E","12":"4D5357","BY":"00985F","CI":"4D5357","DN":"EE0034","FR":"6E3219","HA":"0039A6","HH":"006EC7","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NC":"EE0034","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WB":"EE0034","WH":"00A1DE"}
 /*ENDRAILCOLOR*/
         )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
         + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
         t.direction == 'E' ? h += l : w += l;
       }
-      h += w;
+    /* add west trains to mega html string and reuse west var */
+    h += w;
+    w = '<br>';
+    for (i in r.banners) {
+      i = r.banners[i];
+      //always show banners, they aren't attached to all stations at once
+      //l = Number(location.hash.slice(1,2));
+      // if LIRR && is not numeric aka is LIRR sta code then draw, not in MTA UI code
+      // IDK abbrevation for MNRR in API but other railroad && numeric will draw
+      //if((i.railroad == 'LIRR') == (l !== +l)) {
+        w += i.title+'<br>'+i.text+'<br><br>';
+      //}
+    }
+    r = r.alerts;
+    //time sort alerts in the array
+    r.sort(function(a, b) {
+        return a.start_time < b.start_time ? -1 :
+            a.start_time > b.start_time ? 1 :
+            0;
+    });
+    for (i in r) {
+      i = r[i];
+      w += i.status+'<br>'+noPTag(i.header)+'<br>'+i.human_duration+'<br>'+noPTag(i.text)+'<br><br>';
+    }
+    h += w;
 
       return new Response(h, {
         headers: {
