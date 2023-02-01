@@ -145,7 +145,7 @@ function genArvBodyObj(r) {
     });
     for (i in r) {
       i = r[i];
-      w += i.status+'<br>'+noPTag(i.header)+'<br>'+i.human_duration+'<br>'+noPTag(i.text)+'<br><br>';
+      w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
     }
     document.body.innerHTML += h+w;
 }

@@ -346,7 +346,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
     });
     for (i in r) {
       i = r[i];
-      w += i.status+'<br>'+noPTag(i.header)+'<br>'+i.human_duration+'<br>'+noPTag(i.text)+'<br><br>';
+      w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
     }
     h += w;
 
