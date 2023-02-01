@@ -523,6 +523,14 @@ $VAR1 = {
                       'stop_id' => '107'
                     },
                     {
+                      'borough' => 'Nassau',
+                      'lat' => '40.720074',
+                      'lon' => '-73.725549',
+                      'name' => 'Elmont-UBS Arena',
+                      'stop_code' => 'EMT',
+                      'stop_id' => '359'
+                    },
+                    {
                       'borough' => 'Queens',
                       'lat' => '40.742390460189',
                       'lon' => '-73.946789974163',
@@ -691,6 +699,24 @@ $VAR1 = {
                       'stop_id' => '198'
                     }
                   ],
+          '11' => [
+                    {
+                      'borough' => 'Queens',
+                      'lat' => '40.699608169502',
+                      'lon' => '-73.808529871584',
+                      'name' => 'Jamaica',
+                      'stop_code' => 'JAM',
+                      'stop_id' => '102'
+                    },
+                    {
+                      'borough' => 'Queens',
+                      'lat' => '40.713687541089',
+                      'lon' => '-73.728297219953',
+                      'name' => 'Belmont Park',
+                      'stop_code' => 'BRT',
+                      'stop_id' => '24'
+                    }
+                  ],
           '12' => [
                     {
                       'borough' => 'Queens',
@@ -699,6 +725,14 @@ $VAR1 = {
                       'name' => 'Jamaica',
                       'stop_code' => 'JAM',
                       'stop_id' => '102'
+                    },
+                    {
+                      'borough' => 'Manhattan',
+                      'lat' => '40.755162',
+                      'lon' => '-73.975455',
+                      'name' => 'Grand Central',
+                      'stop_code' => 'GCT',
+                      'stop_id' => '349'
                     },
                     {
                       'borough' => 'Brooklyn',
@@ -861,6 +895,14 @@ $VAR1 = {
                      'name' => 'Hempstead',
                      'stop_code' => 'HEM',
                      'stop_id' => '84'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.720074',
+                     'lon' => '-73.725549',
+                     'name' => 'Elmont-UBS Arena',
+                     'stop_code' => 'EMT',
+                     'stop_id' => '359'
                    },
                    {
                      'borough' => 'Manhattan',
@@ -1169,6 +1211,14 @@ $VAR1 = {
                      'name' => 'Pinelawn',
                      'stop_code' => 'PLN',
                      'stop_id' => '165'
+                   },
+                   {
+                     'borough' => 'Nassau',
+                     'lat' => '40.720074',
+                     'lon' => '-73.725549',
+                     'name' => 'Elmont-UBS Arena',
+                     'stop_code' => 'EMT',
+                     'stop_id' => '359'
                    },
                    {
                      'borough' => 'Nassau',
