@@ -2,1773 +2,2023 @@ $VAR1 = {
           '1' => [
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.65831',
-                     'lon' => '-73.64655',
+                     'lat' => '40.658318110666',
+                     'lon' => '-73.646549348655',
                      'name' => 'Rockville Centre',
-                     'stop_id' => 'RVC'
+                     'stop_code' => 'RVC',
+                     'stop_id' => '183'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.65672',
-                     'lon' => '-73.60716',
+                     'lat' => '40.656732235482',
+                     'lon' => '-73.607162453643',
                      'name' => 'Baldwin',
-                     'stop_id' => 'BWN'
+                     'stop_code' => 'BWN',
+                     'stop_id' => '225'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.65745',
-                     'lon' => '-73.58232',
+                     'lat' => '40.657457992806',
+                     'lon' => '-73.582324012042',
                      'name' => 'Freeport',
-                     'stop_id' => 'FPT'
+                     'stop_code' => 'FPT',
+                     'stop_id' => '64'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66379',
-                     'lon' => '-73.55062',
+                     'lat' => '40.663800403938',
+                     'lon' => '-73.55062102286',
                      'name' => 'Merrick',
-                     'stop_id' => 'MRK'
+                     'stop_code' => 'MRK',
+                     'stop_id' => '226'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66879',
-                     'lon' => '-73.52886',
+                     'lat' => '40.668800434534',
+                     'lon' => '-73.528860158895',
                      'name' => 'Bellmore',
-                     'stop_id' => 'BMR'
+                     'stop_code' => 'BMR',
+                     'stop_id' => '16'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.67298',
-                     'lon' => '-73.50896',
+                     'lat' => '40.672990158071',
+                     'lon' => '-73.508964843715',
                      'name' => 'Wantagh',
-                     'stop_id' => 'WGH'
+                     'stop_code' => 'WGH',
+                     'stop_id' => '215'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.67572',
-                     'lon' => '-73.48657',
+                     'lat' => '40.67572393081',
+                     'lon' => '-73.486568465649',
                      'name' => 'Seaford',
-                     'stop_id' => 'SFD'
+                     'stop_code' => 'SFD',
+                     'stop_id' => '187'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.67692',
-                     'lon' => '-73.46905',
+                     'lat' => '40.676930139365',
+                     'lon' => '-73.469055515159',
                      'name' => 'Massapequa',
-                     'stop_id' => 'MQA'
+                     'stop_code' => 'MQA',
+                     'stop_id' => '136'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.67785',
-                     'lon' => '-73.45474',
+                     'lat' => '40.677859099302',
+                     'lon' => '-73.454737237713',
                      'name' => 'Massapequa Park',
-                     'stop_id' => 'MPK'
+                     'stop_code' => 'MPK',
+                     'stop_id' => '135'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.68024',
-                     'lon' => '-73.42031',
+                     'lat' => '40.680248589464',
+                     'lon' => '-73.420311922548',
                      'name' => 'Amityville',
-                     'stop_id' => 'AVL'
+                     'stop_code' => 'AVL',
+                     'stop_id' => '8'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.68101',
-                     'lon' => '-73.39834',
+                     'lat' => '40.681015284497',
+                     'lon' => '-73.398340272601',
                      'name' => 'Copiague',
-                     'stop_id' => 'CPG'
+                     'stop_code' => 'CPG',
+                     'stop_id' => '38'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.68826',
-                     'lon' => '-73.36921',
+                     'lat' => '40.688265039296',
+                     'lon' => '-73.36921149343',
                      'name' => 'Lindenhurst',
-                     'stop_id' => 'LHT'
+                     'stop_code' => 'LHT',
+                     'stop_id' => '117'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.70068',
-                     'lon' => '-73.32405',
+                     'lat' => '40.700689424802',
+                     'lon' => '-73.324055613067',
                      'name' => 'Babylon',
-                     'stop_id' => 'BTA'
+                     'stop_code' => 'BTA',
+                     'stop_id' => '27'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
+                     'lat' => '40.719575563308',
+                     'lon' => '-73.844814015321',
                      'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'stop_code' => 'FHL',
+                     'stop_id' => '55'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
+                     'lat' => '40.709649173337',
+                     'lon' => '-73.830888068322',
                      'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
+                     'stop_code' => 'KGN',
+                     'stop_id' => '107'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.65605',
-                     'lon' => '-73.67607',
+                     'lat' => '40.656058137013',
+                     'lon' => '-73.676070834658',
                      'name' => 'Lynbrook',
-                     'stop_id' => 'LYN'
+                     'stop_code' => 'LYN',
+                     'stop_id' => '125'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.69118',
-                     'lon' => '-73.76551',
+                     'lat' => '40.69118348287',
+                     'lon' => '-73.76550936909',
                      'name' => 'St. Albans',
-                     'stop_id' => 'SAB'
+                     'stop_code' => 'SAB',
+                     'stop_id' => '184'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
+                     'lat' => '40.683595959933',
+                     'lon' => '-73.975671116775',
                      'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'stop_code' => 'ATL',
+                     'stop_id' => '241'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.72443',
-                     'lon' => '-73.25408',
+                     'lat' => '40.724433435417',
+                     'lon' => '-73.254082948452',
                      'name' => 'Bay Shore',
-                     'stop_id' => 'BSR'
+                     'stop_code' => 'BSR',
+                     'stop_id' => '26'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74035',
-                     'lon' => '-73.08645',
+                     'lat' => '40.740353734002',
+                     'lon' => '-73.086455307829',
                      'name' => 'Sayville',
-                     'stop_id' => 'SVL'
+                     'stop_code' => 'SVL',
+                     'stop_id' => '204'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.76187',
-                     'lon' => '-73.01574',
+                     'lat' => '40.761879012377',
+                     'lon' => '-73.015744510946',
                      'name' => 'Patchogue',
-                     'stop_id' => 'PGE'
+                     'stop_code' => 'PGE',
+                     'stop_id' => '163'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.79898',
-                     'lon' => '-72.86442',
+                     'lat' => '40.798988151573',
+                     'lon' => '-72.864422717948',
                      'name' => 'Mastic Shirley',
-                     'stop_id' => 'MSY'
+                     'stop_code' => 'MSY',
+                     'stop_id' => '140'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.82117',
-                     'lon' => '-72.70427',
+                     'lat' => '40.821315163654',
+                     'lon' => '-72.705262245283',
                      'name' => 'Speonk',
-                     'stop_id' => 'SPK'
+                     'stop_code' => 'SPK',
+                     'stop_id' => '198'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.73583',
-                     'lon' => '-73.20932',
+                     'lat' => '40.735834489563',
+                     'lon' => '-73.209321448531',
                      'name' => 'Islip',
-                     'stop_id' => 'ISP'
+                     'stop_code' => 'ISP',
+                     'stop_id' => '100'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74044',
-                     'lon' => '-73.17019',
+                     'lat' => '40.740444435855',
+                     'lon' => '-73.170195850396',
                      'name' => 'Great River',
-                     'stop_id' => 'GRV'
+                     'stop_code' => 'GRV',
+                     'stop_id' => '74'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74342',
-                     'lon' => '-73.13243',
+                     'lat' => '40.74343274705',
+                     'lon' => '-73.132435494821',
                      'name' => 'Oakdale',
-                     'stop_id' => 'ODL'
+                     'stop_code' => 'ODL',
+                     'stop_id' => '157'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.77373',
-                     'lon' => '-72.94396',
+                     'lat' => '40.773738904482',
+                     'lon' => '-72.943965742491',
                      'name' => 'Bellport',
-                     'stop_id' => 'BPT'
+                     'stop_code' => 'BPT',
+                     'stop_id' => '21'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66151',
-                     'lon' => '-73.70476',
+                     'lat' => '40.661517619013',
+                     'lon' => '-73.704758752089',
                      'name' => 'Valley Stream',
-                     'stop_id' => 'VSM'
+                     'stop_code' => 'VSM',
+                     'stop_id' => '211'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
+                     'lat' => '40.678387847361',
+                     'lon' => '-73.948221083404',
                      'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'stop_code' => 'NAV',
+                     'stop_id' => '148'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
+                     'lat' => '40.67581191072',
+                     'lon' => '-73.902808815532',
                      'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'stop_code' => 'ENY',
+                     'stop_id' => '50'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
+                     'lat' => '40.742390460189',
+                     'lon' => '-73.946789974163',
                      'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
+                     'stop_code' => 'HPA',
+                     'stop_id' => '90'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.66594',
-                     'lon' => '-73.73555',
+                     'lat' => '40.665949330793',
+                     'lon' => '-73.7355481613',
                      'name' => 'Rosedale',
-                     'stop_id' => 'ROS'
+                     'stop_code' => 'ROS',
+                     'stop_id' => '180'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.66847',
-                     'lon' => '-73.75175',
+                     'lat' => '40.668483044044',
+                     'lon' => '-73.751746866857',
                      'name' => 'Laurelton',
-                     'stop_id' => 'LTN'
+                     'stop_code' => 'LTN',
+                     'stop_id' => '122'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.67513',
-                     'lon' => '-73.76504',
+                     'lat' => '40.675139071202',
+                     'lon' => '-73.76504303069',
                      'name' => 'Locust Manor',
-                     'stop_id' => 'LMR'
+                     'stop_code' => 'LMR',
+                     'stop_id' => '119'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.8303',
-                     'lon' => '-72.65032',
+                     'lat' => '40.830305321957',
+                     'lon' => '-72.650324540393',
                      'name' => 'Westhampton',
-                     'stop_id' => 'WHN'
+                     'stop_code' => 'WHN',
+                     'stop_id' => '233'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.8766',
-                     'lon' => '-72.52395',
+                     'lat' => '40.876609161601',
+                     'lon' => '-72.523949360691',
                      'name' => 'Hampton Bays',
-                     'stop_id' => 'HBY'
+                     'stop_code' => 'HBY',
+                     'stop_id' => '83'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.89471',
-                     'lon' => '-72.39012',
+                     'lat' => '40.894718742702',
+                     'lon' => '-72.390123758063',
                      'name' => 'Southampton',
-                     'stop_id' => 'SHN'
+                     'stop_code' => 'SHN',
+                     'stop_id' => '191'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.93898',
-                     'lon' => '-72.31005',
+                     'lat' => '40.938983784659',
+                     'lon' => '-72.310045934299',
                      'name' => 'Bridgehampton',
-                     'stop_id' => 'BHN'
+                     'stop_code' => 'BHN',
+                     'stop_id' => '13'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.96508',
-                     'lon' => '-72.19324',
+                     'lat' => '40.965086290451',
+                     'lon' => '-72.193242380184',
                      'name' => 'East Hampton',
-                     'stop_id' => 'EHN'
+                     'stop_code' => 'EHN',
+                     'stop_id' => '48'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.98003',
-                     'lon' => '-72.13233',
+                     'lat' => '40.98003964435',
+                     'lon' => '-72.132334158689',
                      'name' => 'Amagansett',
-                     'stop_id' => 'AGT'
+                     'stop_code' => 'AGT',
+                     'stop_id' => '4'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '41.0471',
-                     'lon' => '-71.95388',
+                     'lat' => '41.047108960897',
+                     'lon' => '-71.953881026163',
                      'name' => 'Montauk',
-                     'stop_id' => 'MTK'
+                     'stop_code' => 'MTK',
+                     'stop_id' => '141'
                    }
                  ],
           '10' => [
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.853',
-                      'lon' => '-73.40952',
+                      'lat' => '40.85300971226',
+                      'lon' => '-73.409525763223',
                       'name' => 'Huntington',
-                      'stop_id' => 'HUN'
+                      'stop_code' => 'HUN',
+                      'stop_id' => '91'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.6996',
-                      'lon' => '-73.80853',
+                      'lat' => '40.699608169502',
+                      'lon' => '-73.808529871584',
                       'name' => 'Jamaica',
-                      'stop_id' => 'JAM'
+                      'stop_code' => 'JAM',
+                      'stop_id' => '102'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.74034',
-                      'lon' => '-73.64086',
+                      'lat' => '40.740347428794',
+                      'lon' => '-73.640862925027',
                       'name' => 'Mineola',
-                      'stop_id' => 'MIN'
+                      'stop_code' => 'MIN',
+                      'stop_id' => '132'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.76717',
-                      'lon' => '-73.52853',
+                      'lat' => '40.767174914811',
+                      'lon' => '-73.528533222087',
                       'name' => 'Hicksville',
-                      'stop_id' => 'HVL'
+                      'stop_code' => 'HVL',
+                      'stop_id' => '92'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.82485',
-                      'lon' => '-73.50044',
+                      'lat' => '40.824857463326',
+                      'lon' => '-73.500445595649',
                       'name' => 'Syosset',
-                      'stop_id' => 'SYT'
+                      'stop_code' => 'SYT',
+                      'stop_id' => '205'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.83563',
-                      'lon' => '-73.45108',
+                      'lat' => '40.835638317706',
+                      'lon' => '-73.451085909868',
                       'name' => 'Cold Spring Harbor',
-                      'stop_id' => 'CSH'
+                      'stop_code' => 'CSH',
+                      'stop_id' => '40'
                     },
                     {
                       'borough' => 'Manhattan',
-                      'lat' => '40.75058',
-                      'lon' => '-73.99358',
+                      'lat' => '40.750588444578',
+                      'lon' => '-73.993584084919',
                       'name' => 'Penn Station',
-                      'stop_id' => 'NYK'
+                      'stop_code' => 'NYK',
+                      'stop_id' => '237'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.75345',
-                      'lon' => '-73.58586',
+                      'lat' => '40.75345386364',
+                      'lon' => '-73.585866101374',
                       'name' => 'Westbury',
-                      'stop_id' => 'WBY'
+                      'stop_code' => 'WBY',
+                      'stop_id' => '213'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.73516',
-                      'lon' => '-73.66252',
+                      'lat' => '40.735169029401',
+                      'lon' => '-73.662521484606',
                       'name' => 'Merillon Avenue',
-                      'stop_id' => 'MAV'
+                      'stop_code' => 'MAV',
+                      'stop_id' => '127'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.7492',
-                      'lon' => '-73.60365',
+                      'lat' => '40.749207043991',
+                      'lon' => '-73.603652420643',
                       'name' => 'Carle Place',
-                      'stop_id' => 'CPL'
+                      'stop_code' => 'CPL',
+                      'stop_id' => '39'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.73075',
-                      'lon' => '-73.68096',
+                      'lat' => '40.730757075652',
+                      'lon' => '-73.680958864193',
                       'name' => 'New Hyde Park',
-                      'stop_id' => 'NHP'
+                      'stop_code' => 'NHP',
+                      'stop_id' => '152'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.74584',
-                      'lon' => '-73.90297',
+                      'lat' => '40.745850668789',
+                      'lon' => '-73.902975162886',
                       'name' => 'Woodside',
-                      'stop_id' => 'WDD'
+                      'stop_code' => 'WDD',
+                      'stop_id' => '214'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.86866',
-                      'lon' => '-73.36285',
+                      'lat' => '40.868665240936',
+                      'lon' => '-73.362849768605',
                       'name' => 'Greenlawn',
-                      'stop_id' => 'GWN'
+                      'stop_code' => 'GWN',
+                      'stop_id' => '78'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.88064',
-                      'lon' => '-73.32848',
+                      'lat' => '40.880649715577',
+                      'lon' => '-73.328485131567',
                       'name' => 'Northport',
-                      'stop_id' => 'NPT'
+                      'stop_code' => 'NPT',
+                      'stop_id' => '153'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.88366',
-                      'lon' => '-73.25625',
+                      'lat' => '40.883666594112',
+                      'lon' => '-73.256247569798',
                       'name' => 'Kings Park',
-                      'stop_id' => 'KPK'
+                      'stop_code' => 'KPK',
+                      'stop_id' => '111'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.85654',
-                      'lon' => '-73.19803',
+                      'lat' => '40.856547553946',
+                      'lon' => '-73.198032354995',
                       'name' => 'Smithtown',
-                      'stop_id' => 'STN'
+                      'stop_code' => 'STN',
+                      'stop_id' => '202'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.88216',
-                      'lon' => '-73.15951',
+                      'lat' => '40.882169306824',
+                      'lon' => '-73.159507246848',
                       'name' => 'St. James',
-                      'stop_id' => 'SJM'
+                      'stop_code' => 'SJM',
+                      'stop_id' => '193'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.92031',
-                      'lon' => '-73.12855',
+                      'lat' => '40.920322518837',
+                      'lon' => '-73.128549431354',
                       'name' => 'Stony Brook',
-                      'stop_id' => 'BK'
+                      'stop_code' => 'BK',
+                      'stop_id' => '14'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.93454',
-                      'lon' => '-73.0525',
+                      'lat' => '40.934553101142',
+                      'lon' => '-73.052501636367',
                       'name' => 'Port Jefferson',
-                      'stop_id' => 'PJN'
+                      'stop_code' => 'PJN',
+                      'stop_id' => '164'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.71957',
-                      'lon' => '-73.84481',
+                      'lat' => '40.719575563308',
+                      'lon' => '-73.844814015321',
                       'name' => 'Forest Hills',
-                      'stop_id' => 'FHL'
+                      'stop_code' => 'FHL',
+                      'stop_id' => '55'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.70964',
-                      'lon' => '-73.83089',
+                      'lat' => '40.709649173337',
+                      'lon' => '-73.830888068322',
                       'name' => 'Kew Gardens',
-                      'stop_id' => 'KGN'
+                      'stop_code' => 'KGN',
+                      'stop_id' => '107'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.74238',
-                      'lon' => '-73.94679',
+                      'lat' => '40.742390460189',
+                      'lon' => '-73.946789974163',
                       'name' => 'Hunterspoint Avenue',
-                      'stop_id' => 'HPA'
+                      'stop_code' => 'HPA',
+                      'stop_id' => '90'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.74128',
-                      'lon' => '-73.95639',
+                      'lat' => '40.741343427306',
+                      'lon' => '-73.957639216355',
                       'name' => 'Long Island City',
-                      'stop_id' => 'LIC'
+                      'stop_code' => 'LIC',
+                      'stop_id' => '118'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.72463',
-                      'lon' => '-73.7064',
+                      'lat' => '40.724637249062',
+                      'lon' => '-73.706397140779',
                       'name' => 'Floral Park',
-                      'stop_id' => 'FPK'
+                      'stop_code' => 'FPK',
+                      'stop_id' => '63'
                     },
                     {
                       'borough' => 'Brooklyn',
-                      'lat' => '40.684901',
-                      'lon' => '-73.97768',
+                      'lat' => '40.683595959933',
+                      'lon' => '-73.975671116775',
                       'name' => 'Atlantic Terminal',
-                      'stop_id' => 'ATL'
+                      'stop_code' => 'ATL',
+                      'stop_id' => '241'
                     },
                     {
                       'borough' => 'Brooklyn',
-                      'lat' => '40.6758',
-                      'lon' => '-73.90281',
+                      'lat' => '40.67581191072',
+                      'lon' => '-73.902808815532',
                       'name' => 'East New York',
-                      'stop_id' => 'ENY'
+                      'stop_code' => 'ENY',
+                      'stop_id' => '50'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.80808',
-                      'lon' => '-73.10594',
+                      'lat' => '40.808086130523',
+                      'lon' => '-73.105940225025',
                       'name' => 'Ronkonkoma',
-                      'stop_id' => 'RON'
+                      'stop_code' => 'RON',
+                      'stop_id' => '179'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.79184',
-                      'lon' => '-73.19486',
+                      'lat' => '40.791853124851',
+                      'lon' => '-73.194860817475',
                       'name' => 'Central Islip',
-                      'stop_id' => 'CI'
+                      'stop_code' => 'CI',
+                      'stop_id' => '33'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.78083',
-                      'lon' => '-73.24361',
+                      'lat' => '40.780834744876',
+                      'lon' => '-73.243610738835',
                       'name' => 'Brentwood',
-                      'stop_id' => 'BWD'
+                      'stop_code' => 'BWD',
+                      'stop_id' => '29'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.76948',
-                      'lon' => '-73.29356',
+                      'lat' => '40.76948363844',
+                      'lon' => '-73.293564944726',
                       'name' => 'Deer Park',
-                      'stop_id' => 'DPK'
+                      'stop_code' => 'DPK',
+                      'stop_id' => '44'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.75479',
-                      'lon' => '-73.35806',
+                      'lat' => '40.754801009129',
+                      'lon' => '-73.358065881626',
                       'name' => 'Wyandanch',
-                      'stop_id' => 'WYD'
+                      'stop_code' => 'WYD',
+                      'stop_id' => '220'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.73591',
-                      'lon' => '-73.44124',
+                      'lat' => '40.735915026597',
+                      'lon' => '-73.441238780657',
                       'name' => 'Farmingdale',
-                      'stop_id' => 'FMD'
+                      'stop_code' => 'FMD',
+                      'stop_id' => '59'
                     },
                     {
                       'borough' => 'Nassau',
-                      'lat' => '40.74303',
-                      'lon' => '-73.48344',
+                      'lat' => '40.743039240046',
+                      'lon' => '-73.483438209526',
                       'name' => 'Bethpage',
-                      'stop_id' => 'BPG'
+                      'stop_code' => 'BPG',
+                      'stop_id' => '20'
                     },
                     {
                       'borough' => 'Brooklyn',
-                      'lat' => '40.67838',
-                      'lon' => '-73.94822',
+                      'lat' => '40.678387847361',
+                      'lon' => '-73.948221083404',
                       'name' => 'Nostrand Avenue',
-                      'stop_id' => 'NAV'
+                      'stop_code' => 'NAV',
+                      'stop_id' => '148'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '41.0471',
-                      'lon' => '-71.95388',
+                      'lat' => '41.047108960897',
+                      'lon' => '-71.953881026163',
                       'name' => 'Montauk',
-                      'stop_id' => 'MTK'
+                      'stop_code' => 'MTK',
+                      'stop_id' => '141'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.98003',
-                      'lon' => '-72.13233',
+                      'lat' => '40.98003964435',
+                      'lon' => '-72.132334158689',
                       'name' => 'Amagansett',
-                      'stop_id' => 'AGT'
+                      'stop_code' => 'AGT',
+                      'stop_id' => '4'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.96508',
-                      'lon' => '-72.19324',
+                      'lat' => '40.965086290451',
+                      'lon' => '-72.193242380184',
                       'name' => 'East Hampton',
-                      'stop_id' => 'EHN'
+                      'stop_code' => 'EHN',
+                      'stop_id' => '48'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.93898',
-                      'lon' => '-72.31005',
+                      'lat' => '40.938983784659',
+                      'lon' => '-72.310045934299',
                       'name' => 'Bridgehampton',
-                      'stop_id' => 'BHN'
+                      'stop_code' => 'BHN',
+                      'stop_id' => '13'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.89471',
-                      'lon' => '-72.39012',
+                      'lat' => '40.894718742702',
+                      'lon' => '-72.390123758063',
                       'name' => 'Southampton',
-                      'stop_id' => 'SHN'
+                      'stop_code' => 'SHN',
+                      'stop_id' => '191'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.8766',
-                      'lon' => '-72.52395',
+                      'lat' => '40.876609161601',
+                      'lon' => '-72.523949360691',
                       'name' => 'Hampton Bays',
-                      'stop_id' => 'HBY'
+                      'stop_code' => 'HBY',
+                      'stop_id' => '83'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.8303',
-                      'lon' => '-72.65032',
+                      'lat' => '40.830305321957',
+                      'lon' => '-72.650324540393',
                       'name' => 'Westhampton',
-                      'stop_id' => 'WHN'
+                      'stop_code' => 'WHN',
+                      'stop_id' => '233'
                     },
                     {
                       'borough' => 'Suffolk',
-                      'lat' => '40.82117',
-                      'lon' => '-72.70427',
+                      'lat' => '40.821315163654',
+                      'lon' => '-72.705262245283',
                       'name' => 'Speonk',
-                      'stop_id' => 'SPK'
+                      'stop_code' => 'SPK',
+                      'stop_id' => '198'
                     }
                   ],
           '12' => [
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.6996',
-                      'lon' => '-73.80853',
+                      'lat' => '40.699608169502',
+                      'lon' => '-73.808529871584',
                       'name' => 'Jamaica',
-                      'stop_id' => 'JAM'
+                      'stop_code' => 'JAM',
+                      'stop_id' => '102'
                     },
                     {
                       'borough' => 'Brooklyn',
-                      'lat' => '40.684901',
-                      'lon' => '-73.97768',
+                      'lat' => '40.683595959933',
+                      'lon' => '-73.975671116775',
                       'name' => 'Atlantic Terminal',
-                      'stop_id' => 'ATL'
+                      'stop_code' => 'ATL',
+                      'stop_id' => '241'
                     },
                     {
                       'borough' => 'Brooklyn',
-                      'lat' => '40.6758',
-                      'lon' => '-73.90281',
+                      'lat' => '40.67581191072',
+                      'lon' => '-73.902808815532',
                       'name' => 'East New York',
-                      'stop_id' => 'ENY'
+                      'stop_code' => 'ENY',
+                      'stop_id' => '50'
                     },
                     {
                       'borough' => 'Brooklyn',
-                      'lat' => '40.67838',
-                      'lon' => '-73.94822',
+                      'lat' => '40.678387847361',
+                      'lon' => '-73.948221083404',
                       'name' => 'Nostrand Avenue',
-                      'stop_id' => 'NAV'
+                      'stop_code' => 'NAV',
+                      'stop_id' => '148'
                     },
                     {
                       'borough' => 'Manhattan',
-                      'lat' => '40.75058',
-                      'lon' => '-73.99358',
+                      'lat' => '40.750588444578',
+                      'lon' => '-73.993584084919',
                       'name' => 'Penn Station',
-                      'stop_id' => 'NYK'
+                      'stop_code' => 'NYK',
+                      'stop_id' => '237'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.74584',
-                      'lon' => '-73.90297',
+                      'lat' => '40.745850668789',
+                      'lon' => '-73.902975162886',
                       'name' => 'Woodside',
-                      'stop_id' => 'WDD'
+                      'stop_code' => 'WDD',
+                      'stop_id' => '214'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.71957',
-                      'lon' => '-73.84481',
+                      'lat' => '40.719575563308',
+                      'lon' => '-73.844814015321',
                       'name' => 'Forest Hills',
-                      'stop_id' => 'FHL'
+                      'stop_code' => 'FHL',
+                      'stop_id' => '55'
                     },
                     {
                       'borough' => 'Queens',
-                      'lat' => '40.70964',
-                      'lon' => '-73.83089',
+                      'lat' => '40.709649173337',
+                      'lon' => '-73.830888068322',
                       'name' => 'Kew Gardens',
-                      'stop_id' => 'KGN'
+                      'stop_code' => 'KGN',
+                      'stop_id' => '107'
                     }
                   ],
           '2' => [
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
+                     'lat' => '40.683595959933',
+                     'lon' => '-73.975671116775',
                      'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'stop_code' => 'ATL',
+                     'stop_id' => '241'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
+                     'lat' => '40.678387847361',
+                     'lon' => '-73.948221083404',
                      'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'stop_code' => 'NAV',
+                     'stop_id' => '148'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
+                     'lat' => '40.67581191072',
+                     'lon' => '-73.902808815532',
                      'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'stop_code' => 'ENY',
+                     'stop_id' => '50'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71017',
-                     'lon' => '-73.76675',
+                     'lat' => '40.71018150656',
+                     'lon' => '-73.766752522213',
                      'name' => 'Hollis',
-                     'stop_id' => 'HOL'
+                     'stop_code' => 'HOL',
+                     'stop_id' => '89'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71745',
-                     'lon' => '-73.73646',
+                     'lat' => '40.717457854779',
+                     'lon' => '-73.736459889162',
                      'name' => 'Queens Village',
-                     'stop_id' => 'QVG'
+                     'stop_code' => 'QVG',
+                     'stop_id' => '175'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.7222',
-                     'lon' => '-73.71665',
+                     'lat' => '40.72220443209',
+                     'lon' => '-73.716652885972',
                      'name' => 'Bellerose',
-                     'stop_id' => 'BRS'
+                     'stop_code' => 'BRS',
+                     'stop_id' => '23'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.72463',
-                     'lon' => '-73.7064',
+                     'lat' => '40.724637249062',
+                     'lon' => '-73.706397140779',
                      'name' => 'Floral Park',
-                     'stop_id' => 'FPK'
+                     'stop_code' => 'FPK',
+                     'stop_id' => '63'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.72302',
-                     'lon' => '-73.68102',
+                     'lat' => '40.723027708732',
+                     'lon' => '-73.68102040763',
                      'name' => 'Stewart Manor',
-                     'stop_id' => 'SMR'
+                     'stop_code' => 'SMR',
+                     'stop_id' => '195'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.72295',
-                     'lon' => '-73.6627',
+                     'lat' => '40.722962452273',
+                     'lon' => '-73.662698233573',
                      'name' => 'Nassau Boulevard',
-                     'stop_id' => 'NBD'
+                     'stop_code' => 'NBD',
+                     'stop_id' => '149'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.72309',
-                     'lon' => '-73.64036',
+                     'lat' => '40.723101558546',
+                     'lon' => '-73.640361065047',
                      'name' => 'Garden City',
-                     'stop_id' => 'GCY'
+                     'stop_code' => 'GCY',
+                     'stop_id' => '68'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.72145',
-                     'lon' => '-73.62967',
+                     'lat' => '40.721456558004',
+                     'lon' => '-73.629673860041',
                      'name' => 'Country Life Press',
-                     'stop_id' => 'CLP'
+                     'stop_code' => 'CLP',
+                     'stop_id' => '36'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.71329',
-                     'lon' => '-73.62503',
+                     'lat' => '40.713296628618',
+                     'lon' => '-73.625032394185',
                      'name' => 'Hempstead',
-                     'stop_id' => 'HEM'
+                     'stop_code' => 'HEM',
+                     'stop_id' => '84'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
+                     'lat' => '40.719575563308',
+                     'lon' => '-73.844814015321',
                      'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'stop_code' => 'FHL',
+                     'stop_id' => '55'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
+                     'lat' => '40.709649173337',
+                     'lon' => '-73.830888068322',
                      'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
+                     'stop_code' => 'KGN',
+                     'stop_id' => '107'
                    }
                  ],
           '3' => [
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.74034',
-                     'lon' => '-73.64086',
+                     'lat' => '40.740347428794',
+                     'lon' => '-73.640862925027',
                      'name' => 'Mineola',
-                     'stop_id' => 'MIN'
+                     'stop_code' => 'MIN',
+                     'stop_id' => '132'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.75601',
-                     'lon' => '-73.63941',
+                     'lat' => '40.756019095916',
+                     'lon' => '-73.63940763571',
                      'name' => 'East Williston',
-                     'stop_id' => 'EWN'
+                     'stop_code' => 'EWN',
+                     'stop_id' => '52'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.77205',
-                     'lon' => '-73.64169',
+                     'lat' => '40.772063168484',
+                     'lon' => '-73.641690951778',
                      'name' => 'Albertson',
-                     'stop_id' => 'ABT'
+                     'stop_code' => 'ABT',
+                     'stop_id' => '1'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.79047',
-                     'lon' => '-73.64326',
+                     'lat' => '40.790478098785',
+                     'lon' => '-73.643261754201',
                      'name' => 'Roslyn',
-                     'stop_id' => 'RSN'
+                     'stop_code' => 'RSN',
+                     'stop_id' => '182'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.81571',
-                     'lon' => '-73.62687',
+                     'lat' => '40.815715660905',
+                     'lon' => '-73.62687151863',
                      'name' => 'Greenvale',
-                     'stop_id' => 'GVL'
+                     'stop_code' => 'GVL',
+                     'stop_id' => '77'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.83222',
-                     'lon' => '-73.62612',
+                     'lat' => '40.832225307517',
+                     'lon' => '-73.626118215387',
                      'name' => 'Glen Head',
-                     'stop_id' => 'GHD'
+                     'stop_code' => 'GHD',
+                     'stop_id' => '71'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.85236',
-                     'lon' => '-73.62542',
+                     'lat' => '40.852368045296',
+                     'lon' => '-73.62541695304',
                      'name' => 'Sea Cliff',
-                     'stop_id' => 'SCF'
+                     'stop_code' => 'SCF',
+                     'stop_id' => '185'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.85797',
-                     'lon' => '-73.62122',
+                     'lat' => '40.857981115698',
+                     'lon' => '-73.621217154137',
                      'name' => 'Glen Street',
-                     'stop_id' => 'GST'
+                     'stop_code' => 'GST',
+                     'stop_id' => '76'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.86583',
-                     'lon' => '-73.61616',
+                     'lat' => '40.865834207355',
+                     'lon' => '-73.616166144678',
                      'name' => 'Glen Cove',
-                     'stop_id' => 'GCV'
+                     'stop_code' => 'GCV',
+                     'stop_id' => '67'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.87446',
-                     'lon' => '-73.5983',
+                     'lat' => '40.874466974435',
+                     'lon' => '-73.598302844258',
                      'name' => 'Locust Valley',
-                     'stop_id' => 'LVL'
+                     'stop_code' => 'LVL',
+                     'stop_id' => '123'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.87533',
-                     'lon' => '-73.53403',
+                     'lat' => '40.875337735301',
+                     'lon' => '-73.534033663087',
                      'name' => 'Oyster Bay',
-                     'stop_id' => 'OBY'
+                     'stop_code' => 'OBY',
+                     'stop_id' => '154'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
+                     'lat' => '40.742390460189',
+                     'lon' => '-73.946789974163',
                      'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
+                     'stop_code' => 'HPA',
+                     'stop_id' => '90'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74128',
-                     'lon' => '-73.95639',
+                     'lat' => '40.741343427306',
+                     'lon' => '-73.957639216355',
                      'name' => 'Long Island City',
-                     'stop_id' => 'LIC'
+                     'stop_code' => 'LIC',
+                     'stop_id' => '118'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.73075',
-                     'lon' => '-73.68096',
+                     'lat' => '40.730757075652',
+                     'lon' => '-73.680958864193',
                      'name' => 'New Hyde Park',
-                     'stop_id' => 'NHP'
+                     'stop_code' => 'NHP',
+                     'stop_id' => '152'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.73516',
-                     'lon' => '-73.66252',
+                     'lat' => '40.735169029401',
+                     'lon' => '-73.662521484606',
                      'name' => 'Merillon Avenue',
-                     'stop_id' => 'MAV'
+                     'stop_code' => 'MAV',
+                     'stop_id' => '127'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.72463',
-                     'lon' => '-73.7064',
+                     'lat' => '40.724637249062',
+                     'lon' => '-73.706397140779',
                      'name' => 'Floral Park',
-                     'stop_id' => 'FPK'
+                     'stop_code' => 'FPK',
+                     'stop_id' => '63'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71745',
-                     'lon' => '-73.73646',
+                     'lat' => '40.717457854779',
+                     'lon' => '-73.736459889162',
                      'name' => 'Queens Village',
-                     'stop_id' => 'QVG'
+                     'stop_code' => 'QVG',
+                     'stop_id' => '175'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71017',
-                     'lon' => '-73.76675',
+                     'lat' => '40.71018150656',
+                     'lon' => '-73.766752522213',
                      'name' => 'Hollis',
-                     'stop_id' => 'HOL'
+                     'stop_code' => 'HOL',
+                     'stop_id' => '89'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    }
                  ],
           '4' => [
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.80808',
-                     'lon' => '-73.10594',
+                     'lat' => '40.808086130523',
+                     'lon' => '-73.105940225025',
                      'name' => 'Ronkonkoma',
-                     'stop_id' => 'RON'
+                     'stop_code' => 'RON',
+                     'stop_id' => '179'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.76717',
-                     'lon' => '-73.52853',
+                     'lat' => '40.767174914811',
+                     'lon' => '-73.528533222087',
                      'name' => 'Hicksville',
-                     'stop_id' => 'HVL'
+                     'stop_code' => 'HVL',
+                     'stop_id' => '92'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.74303',
-                     'lon' => '-73.48344',
+                     'lat' => '40.743039240046',
+                     'lon' => '-73.483438209526',
                      'name' => 'Bethpage',
-                     'stop_id' => 'BPG'
+                     'stop_code' => 'BPG',
+                     'stop_id' => '20'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.73591',
-                     'lon' => '-73.44124',
+                     'lat' => '40.735915026597',
+                     'lon' => '-73.441238780657',
                      'name' => 'Farmingdale',
-                     'stop_id' => 'FMD'
+                     'stop_code' => 'FMD',
+                     'stop_id' => '59'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.75479',
-                     'lon' => '-73.35806',
+                     'lat' => '40.754801009129',
+                     'lon' => '-73.358065881626',
                      'name' => 'Wyandanch',
-                     'stop_id' => 'WYD'
+                     'stop_code' => 'WYD',
+                     'stop_id' => '220'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.76948',
-                     'lon' => '-73.29356',
+                     'lat' => '40.76948363844',
+                     'lon' => '-73.293564944726',
                      'name' => 'Deer Park',
-                     'stop_id' => 'DPK'
+                     'stop_code' => 'DPK',
+                     'stop_id' => '44'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.78083',
-                     'lon' => '-73.24361',
+                     'lat' => '40.780834744876',
+                     'lon' => '-73.243610738835',
                      'name' => 'Brentwood',
-                     'stop_id' => 'BWD'
+                     'stop_code' => 'BWD',
+                     'stop_id' => '29'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.79184',
-                     'lon' => '-73.19486',
+                     'lat' => '40.791853124851',
+                     'lon' => '-73.194860817475',
                      'name' => 'Central Islip',
-                     'stop_id' => 'CI'
+                     'stop_code' => 'CI',
+                     'stop_id' => '33'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.74034',
-                     'lon' => '-73.64086',
+                     'lat' => '40.740347428794',
+                     'lon' => '-73.640862925027',
                      'name' => 'Mineola',
-                     'stop_id' => 'MIN'
+                     'stop_code' => 'MIN',
+                     'stop_id' => '132'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74535',
-                     'lon' => '-73.3996',
+                     'lat' => '40.745358512169',
+                     'lon' => '-73.399600923985',
                      'name' => 'Pinelawn',
-                     'stop_id' => 'PLN'
+                     'stop_code' => 'PLN',
+                     'stop_id' => '165'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.75345',
-                     'lon' => '-73.58586',
+                     'lat' => '40.75345386364',
+                     'lon' => '-73.585866101374',
                      'name' => 'Westbury',
-                     'stop_id' => 'WBY'
+                     'stop_code' => 'WBY',
+                     'stop_id' => '213'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.73075',
-                     'lon' => '-73.68096',
+                     'lat' => '40.730757075652',
+                     'lon' => '-73.680958864193',
                      'name' => 'New Hyde Park',
-                     'stop_id' => 'NHP'
+                     'stop_code' => 'NHP',
+                     'stop_id' => '152'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.81739',
-                     'lon' => '-72.99891',
+                     'lat' => '40.817396646608',
+                     'lon' => '-72.998909462422',
                      'name' => 'Medford',
-                     'stop_id' => 'MFD'
+                     'stop_code' => 'MFD',
+                     'stop_id' => '129'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.8256',
-                     'lon' => '-72.91588',
+                     'lat' => '40.825613186792',
+                     'lon' => '-72.915878482553',
                      'name' => 'Yaphank',
-                     'stop_id' => 'YPK'
+                     'stop_code' => 'YPK',
+                     'stop_id' => '223'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.91983',
-                     'lon' => '-72.66691',
+                     'lat' => '40.9198392787',
+                     'lon' => '-72.666910535036',
                      'name' => 'Riverhead',
-                     'stop_id' => 'RHD'
+                     'stop_code' => 'RHD',
+                     'stop_id' => '176'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.99179',
-                     'lon' => '-72.53606',
+                     'lat' => '40.991793540658',
+                     'lon' => '-72.536062427146',
                      'name' => 'Mattituck',
-                     'stop_id' => 'MAK'
+                     'stop_code' => 'MAK',
+                     'stop_id' => '126'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '41.0662',
-                     'lon' => '-72.4281',
+                     'lat' => '41.066320888031',
+                     'lon' => '-72.427880303874',
                      'name' => 'Southold',
-                     'stop_id' => 'SHD'
+                     'stop_code' => 'SHD',
+                     'stop_id' => '190'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '41.0997',
-                     'lon' => '-72.3631',
+                     'lat' => '41.099709911981',
+                     'lon' => '-72.363103955853',
                      'name' => 'Greenport',
-                     'stop_id' => 'GPT'
+                     'stop_code' => 'GPT',
+                     'stop_id' => '73'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.7492',
-                     'lon' => '-73.60365',
+                     'lat' => '40.749207043991',
+                     'lon' => '-73.603652420643',
                      'name' => 'Carle Place',
-                     'stop_id' => 'CPL'
+                     'stop_code' => 'CPL',
+                     'stop_id' => '39'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.73516',
-                     'lon' => '-73.66252',
+                     'lat' => '40.735169029401',
+                     'lon' => '-73.662521484606',
                      'name' => 'Merillon Avenue',
-                     'stop_id' => 'MAV'
+                     'stop_code' => 'MAV',
+                     'stop_id' => '127'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
+                     'lat' => '40.683595959933',
+                     'lon' => '-73.975671116775',
                      'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'stop_code' => 'ATL',
+                     'stop_id' => '241'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
+                     'lat' => '40.709649173337',
+                     'lon' => '-73.830888068322',
                      'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
+                     'stop_code' => 'KGN',
+                     'stop_id' => '107'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
+                     'lat' => '40.67581191072',
+                     'lon' => '-73.902808815532',
                      'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'stop_code' => 'ENY',
+                     'stop_id' => '50'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
+                     'lat' => '40.719575563308',
+                     'lon' => '-73.844814015321',
                      'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'stop_code' => 'FHL',
+                     'stop_id' => '55'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
+                     'lat' => '40.678387847361',
+                     'lon' => '-73.948221083404',
                      'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'stop_code' => 'NAV',
+                     'stop_id' => '148'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
+                     'lat' => '40.742390460189',
+                     'lon' => '-73.946789974163',
                      'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
+                     'stop_code' => 'HPA',
+                     'stop_id' => '90'
                    }
                  ],
           '5' => [
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.70068',
-                     'lon' => '-73.32405',
+                     'lat' => '40.700689424802',
+                     'lon' => '-73.324055613067',
                      'name' => 'Babylon',
-                     'stop_id' => 'BTA'
+                     'stop_code' => 'BTA',
+                     'stop_id' => '27'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.72443',
-                     'lon' => '-73.25408',
+                     'lat' => '40.724433435417',
+                     'lon' => '-73.254082948452',
                      'name' => 'Bay Shore',
-                     'stop_id' => 'BSR'
+                     'stop_code' => 'BSR',
+                     'stop_id' => '26'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.73583',
-                     'lon' => '-73.20932',
+                     'lat' => '40.735834489563',
+                     'lon' => '-73.209321448531',
                      'name' => 'Islip',
-                     'stop_id' => 'ISP'
+                     'stop_code' => 'ISP',
+                     'stop_id' => '100'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74044',
-                     'lon' => '-73.17019',
+                     'lat' => '40.740444435855',
+                     'lon' => '-73.170195850396',
                      'name' => 'Great River',
-                     'stop_id' => 'GRV'
+                     'stop_code' => 'GRV',
+                     'stop_id' => '74'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74342',
-                     'lon' => '-73.13243',
+                     'lat' => '40.74343274705',
+                     'lon' => '-73.132435494821',
                      'name' => 'Oakdale',
-                     'stop_id' => 'ODL'
+                     'stop_code' => 'ODL',
+                     'stop_id' => '157'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.74035',
-                     'lon' => '-73.08645',
+                     'lat' => '40.740353734002',
+                     'lon' => '-73.086455307829',
                      'name' => 'Sayville',
-                     'stop_id' => 'SVL'
+                     'stop_code' => 'SVL',
+                     'stop_id' => '204'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.76187',
-                     'lon' => '-73.01574',
+                     'lat' => '40.761879012377',
+                     'lon' => '-73.015744510946',
                      'name' => 'Patchogue',
-                     'stop_id' => 'PGE'
+                     'stop_code' => 'PGE',
+                     'stop_id' => '163'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.82117',
-                     'lon' => '-72.70427',
+                     'lat' => '40.821315163654',
+                     'lon' => '-72.705262245283',
                      'name' => 'Speonk',
-                     'stop_id' => 'SPK'
+                     'stop_code' => 'SPK',
+                     'stop_id' => '198'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.79898',
-                     'lon' => '-72.86442',
+                     'lat' => '40.798988151573',
+                     'lon' => '-72.864422717948',
                      'name' => 'Mastic Shirley',
-                     'stop_id' => 'MSY'
+                     'stop_code' => 'MSY',
+                     'stop_id' => '140'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.77373',
-                     'lon' => '-72.94396',
+                     'lat' => '40.773738904482',
+                     'lon' => '-72.943965742491',
                      'name' => 'Bellport',
-                     'stop_id' => 'BPT'
+                     'stop_code' => 'BPT',
+                     'stop_id' => '21'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.8303',
-                     'lon' => '-72.65032',
+                     'lat' => '40.830305321957',
+                     'lon' => '-72.650324540393',
                      'name' => 'Westhampton',
-                     'stop_id' => 'WHN'
+                     'stop_code' => 'WHN',
+                     'stop_id' => '233'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.89471',
-                     'lon' => '-72.39012',
+                     'lat' => '40.894718742702',
+                     'lon' => '-72.390123758063',
                      'name' => 'Southampton',
-                     'stop_id' => 'SHN'
+                     'stop_code' => 'SHN',
+                     'stop_id' => '191'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.93898',
-                     'lon' => '-72.31005',
+                     'lat' => '40.938983784659',
+                     'lon' => '-72.310045934299',
                      'name' => 'Bridgehampton',
-                     'stop_id' => 'BHN'
+                     'stop_code' => 'BHN',
+                     'stop_id' => '13'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.96508',
-                     'lon' => '-72.19324',
+                     'lat' => '40.965086290451',
+                     'lon' => '-72.193242380184',
                      'name' => 'East Hampton',
-                     'stop_id' => 'EHN'
+                     'stop_code' => 'EHN',
+                     'stop_id' => '48'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '41.0471',
-                     'lon' => '-71.95388',
+                     'lat' => '41.047108960897',
+                     'lon' => '-71.953881026163',
                      'name' => 'Montauk',
-                     'stop_id' => 'MTK'
+                     'stop_code' => 'MTK',
+                     'stop_id' => '141'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.8766',
-                     'lon' => '-72.52395',
+                     'lat' => '40.876609161601',
+                     'lon' => '-72.523949360691',
                      'name' => 'Hampton Bays',
-                     'stop_id' => 'HBY'
+                     'stop_code' => 'HBY',
+                     'stop_id' => '83'
                    },
                    {
                      'borough' => 'Suffolk',
-                     'lat' => '40.98003',
-                     'lon' => '-72.13233',
+                     'lat' => '40.98003964435',
+                     'lon' => '-72.132334158689',
                      'name' => 'Amagansett',
-                     'stop_id' => 'AGT'
+                     'stop_code' => 'AGT',
+                     'stop_id' => '4'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.76717',
-                     'lon' => '-73.52853',
+                     'lat' => '40.767174914811',
+                     'lon' => '-73.528533222087',
                      'name' => 'Hicksville',
-                     'stop_id' => 'HVL'
+                     'stop_code' => 'HVL',
+                     'stop_id' => '92'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
+                     'lat' => '40.742390460189',
+                     'lon' => '-73.946789974163',
                      'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
+                     'stop_code' => 'HPA',
+                     'stop_id' => '90'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.74034',
-                     'lon' => '-73.64086',
+                     'lat' => '40.740347428794',
+                     'lon' => '-73.640862925027',
                      'name' => 'Mineola',
-                     'stop_id' => 'MIN'
+                     'stop_code' => 'MIN',
+                     'stop_id' => '132'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74128',
-                     'lon' => '-73.95639',
+                     'lat' => '40.741343427306',
+                     'lon' => '-73.957639216355',
                      'name' => 'Long Island City',
-                     'stop_id' => 'LIC'
+                     'stop_code' => 'LIC',
+                     'stop_id' => '118'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
+                     'lat' => '40.709649173337',
+                     'lon' => '-73.830888068322',
                      'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
+                     'stop_code' => 'KGN',
+                     'stop_id' => '107'
                    }
                  ],
           '6' => [
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66151',
-                     'lon' => '-73.70476',
+                     'lat' => '40.661517619013',
+                     'lon' => '-73.704758752089',
                      'name' => 'Valley Stream',
-                     'stop_id' => 'VSM'
+                     'stop_code' => 'VSM',
+                     'stop_id' => '211'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.65605',
-                     'lon' => '-73.67607',
+                     'lat' => '40.656058137013',
+                     'lon' => '-73.676070834658',
                      'name' => 'Lynbrook',
-                     'stop_id' => 'LYN'
+                     'stop_code' => 'LYN',
+                     'stop_id' => '125'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.64831',
-                     'lon' => '-73.66397',
+                     'lat' => '40.648318354302',
+                     'lon' => '-73.663967495726',
                      'name' => 'Centre Avenue',
-                     'stop_id' => 'CAV'
+                     'stop_code' => 'CAV',
+                     'stop_id' => '31'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.6422',
-                     'lon' => '-73.65821',
+                     'lat' => '40.642210853009',
+                     'lon' => '-73.65821625512',
                      'name' => 'East Rockaway',
-                     'stop_id' => 'ERY'
+                     'stop_code' => 'ERY',
+                     'stop_id' => '51'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.63471',
-                     'lon' => '-73.65466',
+                     'lat' => '40.634721021217',
+                     'lon' => '-73.654665821473',
                      'name' => 'Oceanside',
-                     'stop_id' => 'ODE'
+                     'stop_code' => 'ODE',
+                     'stop_id' => '155'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.60129',
-                     'lon' => '-73.65474',
+                     'lat' => '40.601299060884',
+                     'lon' => '-73.654742476888',
                      'name' => 'Island Park',
-                     'stop_id' => 'IPK'
+                     'stop_code' => 'IPK',
+                     'stop_id' => '99'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.59017',
-                     'lon' => '-73.66482',
+                     'lat' => '40.590181700395',
+                     'lon' => '-73.664818219871',
                      'name' => 'Long Beach',
-                     'stop_id' => 'LBH'
+                     'stop_code' => 'LBH',
+                     'stop_id' => '113'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.66594',
-                     'lon' => '-73.73555',
+                     'lat' => '40.665949330793',
+                     'lon' => '-73.7355481613',
                      'name' => 'Rosedale',
-                     'stop_id' => 'ROS'
+                     'stop_code' => 'ROS',
+                     'stop_id' => '180'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.66847',
-                     'lon' => '-73.75175',
+                     'lat' => '40.668483044044',
+                     'lon' => '-73.751746866857',
                      'name' => 'Laurelton',
-                     'stop_id' => 'LTN'
+                     'stop_code' => 'LTN',
+                     'stop_id' => '122'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.67513',
-                     'lon' => '-73.76504',
+                     'lat' => '40.675139071202',
+                     'lon' => '-73.76504303069',
                      'name' => 'Locust Manor',
-                     'stop_id' => 'LMR'
+                     'stop_code' => 'LMR',
+                     'stop_id' => '119'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
+                     'lat' => '40.683595959933',
+                     'lon' => '-73.975671116775',
                      'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'stop_code' => 'ATL',
+                     'stop_id' => '241'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
+                     'lat' => '40.67581191072',
+                     'lon' => '-73.902808815532',
                      'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'stop_code' => 'ENY',
+                     'stop_id' => '50'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
+                     'lat' => '40.678387847361',
+                     'lon' => '-73.948221083404',
                      'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'stop_code' => 'NAV',
+                     'stop_id' => '148'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
+                     'lat' => '40.719575563308',
+                     'lon' => '-73.844814015321',
                      'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'stop_code' => 'FHL',
+                     'stop_id' => '55'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
+                     'lat' => '40.709649173337',
+                     'lon' => '-73.830888068322',
                      'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
+                     'stop_code' => 'KGN',
+                     'stop_id' => '107'
                    }
                  ],
           '7' => [
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
+                     'lat' => '40.683595959933',
+                     'lon' => '-73.975671116775',
                      'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'stop_code' => 'ATL',
+                     'stop_id' => '241'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
+                     'lat' => '40.678387847361',
+                     'lon' => '-73.948221083404',
                      'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'stop_code' => 'NAV',
+                     'stop_id' => '148'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
+                     'lat' => '40.67581191072',
+                     'lon' => '-73.902808815532',
                      'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'stop_code' => 'ENY',
+                     'stop_id' => '50'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66151',
-                     'lon' => '-73.70476',
+                     'lat' => '40.661517619013',
+                     'lon' => '-73.704758752089',
                      'name' => 'Valley Stream',
-                     'stop_id' => 'VSM'
+                     'stop_code' => 'VSM',
+                     'stop_id' => '211'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.64924',
-                     'lon' => '-73.70183',
+                     'lat' => '40.649251729218',
+                     'lon' => '-73.701834833438',
                      'name' => 'Gibson',
-                     'stop_id' => 'GBN'
+                     'stop_code' => 'GBN',
+                     'stop_id' => '66'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.63676',
-                     'lon' => '-73.70514',
+                     'lat' => '40.636764323527',
+                     'lon' => '-73.705138658734',
                      'name' => 'Hewlett',
-                     'stop_id' => 'HWT'
+                     'stop_code' => 'HWT',
+                     'stop_id' => '94'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.63133',
-                     'lon' => '-73.71371',
+                     'lat' => '40.631336456456',
+                     'lon' => '-73.71371544423',
                      'name' => 'Woodmere',
-                     'stop_id' => 'WMR'
+                     'stop_code' => 'WMR',
+                     'stop_id' => '217'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.62217',
-                     'lon' => '-73.72618',
+                     'lat' => '40.622174510272',
+                     'lon' => '-73.726182753764',
                      'name' => 'Cedarhurst',
-                     'stop_id' => 'CHT'
+                     'stop_code' => 'CHT',
+                     'stop_id' => '32'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.61573',
-                     'lon' => '-73.7359',
+                     'lat' => '40.615734701373',
+                     'lon' => '-73.735899552581',
                      'name' => 'Lawrence',
-                     'stop_id' => 'LCE'
+                     'stop_code' => 'LCE',
+                     'stop_id' => '114'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.61228',
-                     'lon' => '-73.74418',
+                     'lat' => '40.612287734083',
+                     'lon' => '-73.744183542466',
                      'name' => 'Inwood',
-                     'stop_id' => 'IWD'
+                     'stop_code' => 'IWD',
+                     'stop_id' => '101'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.60913',
-                     'lon' => '-73.75054',
+                     'lat' => '40.609143108666',
+                     'lon' => '-73.750541345398',
                      'name' => 'Far Rockaway',
-                     'stop_id' => 'FRY'
+                     'stop_code' => 'FRY',
+                     'stop_id' => '65'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.67513',
-                     'lon' => '-73.76504',
+                     'lat' => '40.675139071202',
+                     'lon' => '-73.76504303069',
                      'name' => 'Locust Manor',
-                     'stop_id' => 'LMR'
+                     'stop_code' => 'LMR',
+                     'stop_id' => '119'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.66594',
-                     'lon' => '-73.73555',
+                     'lat' => '40.665949330793',
+                     'lon' => '-73.7355481613',
                      'name' => 'Rosedale',
-                     'stop_id' => 'ROS'
+                     'stop_code' => 'ROS',
+                     'stop_id' => '180'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.66847',
-                     'lon' => '-73.75175',
+                     'lat' => '40.668483044044',
+                     'lon' => '-73.751746866857',
                      'name' => 'Laurelton',
-                     'stop_id' => 'LTN'
+                     'stop_code' => 'LTN',
+                     'stop_id' => '122'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
+                     'lat' => '40.719575563308',
+                     'lon' => '-73.844814015321',
                      'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'stop_code' => 'FHL',
+                     'stop_id' => '55'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.70964',
-                     'lon' => '-73.83089',
+                     'lat' => '40.709649173337',
+                     'lon' => '-73.830888068322',
                      'name' => 'Kew Gardens',
-                     'stop_id' => 'KGN'
+                     'stop_code' => 'KGN',
+                     'stop_id' => '107'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74238',
-                     'lon' => '-73.94679',
+                     'lat' => '40.742390460189',
+                     'lon' => '-73.946789974163',
                      'name' => 'Hunterspoint Avenue',
-                     'stop_id' => 'HPA'
+                     'stop_code' => 'HPA',
+                     'stop_id' => '90'
                    }
                  ],
           '8' => [
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66151',
-                     'lon' => '-73.70476',
+                     'lat' => '40.661517619013',
+                     'lon' => '-73.704758752089',
                      'name' => 'Valley Stream',
-                     'stop_id' => 'VSM'
+                     'stop_code' => 'VSM',
+                     'stop_id' => '211'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.66836',
-                     'lon' => '-73.68121',
+                     'lat' => '40.668372272644',
+                     'lon' => '-73.681208783237',
                      'name' => 'Westwood',
-                     'stop_id' => 'WWD'
+                     'stop_code' => 'WWD',
+                     'stop_id' => '219'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.67547',
-                     'lon' => '-73.66886',
+                     'lat' => '40.675478439206',
+                     'lon' => '-73.668863639489',
                      'name' => 'Malverne',
-                     'stop_id' => 'MVN'
+                     'stop_code' => 'MVN',
+                     'stop_id' => '142'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.68585',
-                     'lon' => '-73.65214',
+                     'lat' => '40.685855824382',
+                     'lon' => '-73.652137774307',
                      'name' => 'Lakeview',
-                     'stop_id' => 'LVW'
+                     'stop_code' => 'LVW',
+                     'stop_id' => '124'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.69491',
-                     'lon' => '-73.64621',
+                     'lat' => '40.694913561152',
+                     'lon' => '-73.646208879636',
                      'name' => 'Hempstead Gardens',
-                     'stop_id' => 'HGN'
+                     'stop_code' => 'HGN',
+                     'stop_id' => '85'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.70195',
-                     'lon' => '-73.64164',
+                     'lat' => '40.701960987421',
+                     'lon' => '-73.641643611755',
                      'name' => 'West Hempstead',
-                     'stop_id' => 'WHD'
+                     'stop_code' => 'WHD',
+                     'stop_id' => '216'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.6996',
-                     'lon' => '-73.80853',
+                     'lat' => '40.699608169502',
+                     'lon' => '-73.808529871584',
                      'name' => 'Jamaica',
-                     'stop_id' => 'JAM'
+                     'stop_code' => 'JAM',
+                     'stop_id' => '102'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.684901',
-                     'lon' => '-73.97768',
+                     'lat' => '40.683595959933',
+                     'lon' => '-73.975671116775',
                      'name' => 'Atlantic Terminal',
-                     'stop_id' => 'ATL'
+                     'stop_code' => 'ATL',
+                     'stop_id' => '241'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.6758',
-                     'lon' => '-73.90281',
+                     'lat' => '40.67581191072',
+                     'lon' => '-73.902808815532',
                      'name' => 'East New York',
-                     'stop_id' => 'ENY'
+                     'stop_code' => 'ENY',
+                     'stop_id' => '50'
                    },
                    {
                      'borough' => 'Brooklyn',
-                     'lat' => '40.67838',
-                     'lon' => '-73.94822',
+                     'lat' => '40.678387847361',
+                     'lon' => '-73.948221083404',
                      'name' => 'Nostrand Avenue',
-                     'stop_id' => 'NAV'
+                     'stop_code' => 'NAV',
+                     'stop_id' => '148'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.69118',
-                     'lon' => '-73.76551',
+                     'lat' => '40.69118348287',
+                     'lon' => '-73.76550936909',
                      'name' => 'St. Albans',
-                     'stop_id' => 'SAB'
+                     'stop_code' => 'SAB',
+                     'stop_id' => '184'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.71957',
-                     'lon' => '-73.84481',
+                     'lat' => '40.719575563308',
+                     'lon' => '-73.844814015321',
                      'name' => 'Forest Hills',
-                     'stop_id' => 'FHL'
+                     'stop_code' => 'FHL',
+                     'stop_id' => '55'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    }
                  ],
           '9' => [
                    {
                      'borough' => 'Manhattan',
-                     'lat' => '40.75058',
-                     'lon' => '-73.99358',
+                     'lat' => '40.750588444578',
+                     'lon' => '-73.993584084919',
                      'name' => 'Penn Station',
-                     'stop_id' => 'NYK'
+                     'stop_code' => 'NYK',
+                     'stop_id' => '237'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.74584',
-                     'lon' => '-73.90297',
+                     'lat' => '40.745850668789',
+                     'lon' => '-73.902975162886',
                      'name' => 'Woodside',
-                     'stop_id' => 'WDD'
+                     'stop_code' => 'WDD',
+                     'stop_id' => '214'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.75789',
-                     'lon' => '-73.83135',
+                     'lat' => '40.75789494155',
+                     'lon' => '-73.831346838214',
                      'name' => 'Flushing Main Street',
-                     'stop_id' => 'FLS'
+                     'stop_code' => 'FLS',
+                     'stop_id' => '56'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.7627',
-                     'lon' => '-73.81454',
+                     'lat' => '40.762709261196',
+                     'lon' => '-73.814539282071',
                      'name' => 'Murray Hill',
-                     'stop_id' => 'MHL'
+                     'stop_code' => 'MHL',
+                     'stop_id' => '130'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.76164',
-                     'lon' => '-73.80176',
+                     'lat' => '40.761653179863',
+                     'lon' => '-73.801766123794',
                      'name' => 'Broadway',
-                     'stop_id' => 'BDY'
+                     'stop_code' => 'BDY',
+                     'stop_id' => '11'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.76143',
-                     'lon' => '-73.78996',
+                     'lat' => '40.761442879546',
+                     'lon' => '-73.789959265817',
                      'name' => 'Auburndale',
-                     'stop_id' => 'ADL'
+                     'stop_code' => 'ADL',
+                     'stop_id' => '2'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.76314',
-                     'lon' => '-73.77125',
+                     'lat' => '40.763152407322',
+                     'lon' => '-73.771249864065',
                      'name' => 'Bayside',
-                     'stop_id' => 'BSD'
+                     'stop_code' => 'BSD',
+                     'stop_id' => '25'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.76806',
-                     'lon' => '-73.74941',
+                     'lat' => '40.768068624919',
+                     'lon' => '-73.749412651705',
                      'name' => 'Douglaston',
-                     'stop_id' => 'DGL'
+                     'stop_code' => 'DGL',
+                     'stop_id' => '42'
                    },
                    {
                      'borough' => 'Queens',
-                     'lat' => '40.77504',
-                     'lon' => '-73.74065',
+                     'lat' => '40.775043932267',
+                     'lon' => '-73.74064662099',
                      'name' => 'Little Neck',
-                     'stop_id' => 'LNK'
+                     'stop_code' => 'LNK',
+                     'stop_id' => '120'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.78721',
-                     'lon' => '-73.7261',
+                     'lat' => '40.787216474398',
+                     'lon' => '-73.726100459101',
                      'name' => 'Great Neck',
-                     'stop_id' => 'GNK'
+                     'stop_code' => 'GNK',
+                     'stop_id' => '72'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.79672',
-                     'lon' => '-73.6999',
+                     'lat' => '40.796724100129',
+                     'lon' => '-73.699899085184',
                      'name' => 'Manhasset',
-                     'stop_id' => 'MHT'
+                     'stop_code' => 'MHT',
+                     'stop_id' => '131'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.81069',
-                     'lon' => '-73.69521',
+                     'lat' => '40.810698532132',
+                     'lon' => '-73.69521437574',
                      'name' => 'Plandome',
-                     'stop_id' => 'PDM'
+                     'stop_code' => 'PDM',
+                     'stop_id' => '162'
                    },
                    {
                      'borough' => 'Nassau',
-                     'lat' => '40.82903',
-                     'lon' => '-73.6874',
+                     'lat' => '40.829035331198',
+                     'lon' => '-73.687401000545',
                      'name' => 'Port Washington',
-                     'stop_id' => 'PWS'
+                     'stop_code' => 'PWS',
+                     'stop_id' => '171'
                    }
                  ]
         };
