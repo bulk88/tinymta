@@ -8,15 +8,15 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Manhattan' => 'M',
                 'Bronx' => 'B',
                 'Brooklyn' => 'K',
-                   'Fairfield' => 'F',
-                   'Middlesex' => 'S',
-                   'Putnam'  => 'P',
-                   'Westchester' => 'W',
-                   'New Haven' => 'H',
-                   'Dutchess' => 'D',
-                   'Rockland' => 'R',
-                   'New London' => 'L',
-                   'Orange' => 'O',
+                'Fairfield' => 'F',
+                'Middlesex' => 'S',
+                'Putnam'  => 'P',
+                'Westchester' => 'W',
+                'New Haven' => 'H',
+                'Dutchess' => 'D',
+                'Rockland' => 'R',
+                'New London' => 'L',
+                'Orange' => 'O',
             );
 
 die "1st arg must be generate desktop MTA site stations or no-JS" if ! defined $ARGV[0];
@@ -96,7 +96,7 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
 }
 
 print join(" \n", @lineshtml);
-print "\n<br>\n".($js?'<a href="stations.htm">MTA No JS</a>'."<br>\n<div>\n":'<a href="stationsjs.htm">MTA JS</a>'."<br>\n");
+print "\n<br>\n".($js?'<a href="stations.htm">No JS</a>'."<br>\n<div>\n":'<a href="stationsjs.htm">Use JS</a>'."<br>\n");
 print join("<br>\n", @linesboroughhtml);
 print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
