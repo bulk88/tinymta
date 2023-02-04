@@ -727,7 +727,7 @@ function getJSON(url, alertFlag, addIMS) {
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? (alertFlag?parseAlerts:parseRoutes)(x.response)
+                    ? (alertFlag?parseAlerts:parseRoutes)(x.response||x.responseText)
                     : getJSON(url, alertFlag, 1);
             }
             else
@@ -750,7 +750,7 @@ function getJSON(url, alertFlag, addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+'&_=')+new Date().getTime()+'&callback='+(alertFlag?'parseAlerts':'parseRoutes');
+        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+(alertFlag?'&_=':'?_='))+new Date().getTime()+'&callback='+(alertFlag?'parseAlerts':'parseRoutes');
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

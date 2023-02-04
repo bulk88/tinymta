@@ -222,7 +222,7 @@ function onRSC()
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? genArvBodyObj(x.response)
+                    ? genArvBodyObj(x.response||x.responseText)
                     : getStop(1);
             }
             else
