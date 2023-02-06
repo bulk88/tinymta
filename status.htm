@@ -703,7 +703,8 @@ function getJSON(url, alertFlag, addIMS) {
           side, without network traffic.*/
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('get', url, 1);
+        /*lower case get even tho gzip friendly, error 400's CF's WAFs, no other servers care*/
+        x.open('GET', url, 1);
         try {
           x.responseType = 'json';
         } catch (e) {
