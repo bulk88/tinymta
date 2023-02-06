@@ -1,18 +1,4 @@
 var originStation;
-onhashchange =
-  // browser cache friendly hash argument
-  function(evt) {
-    var destStation = location.hash.slice(1);
-    //not a "category" click but a final location click
-    if (destStation.indexOf('$') != -1) {
-      if (!originStation) {
-        originStation = destStation;
-      } else {
-        var date = new Date();
-        location.replace('http://tripplanner.mta.info/MyTrip/handler/CustomPlannerHandler.ashx?jsonpacket={"RequestDevicename":"IPHONEAPP","OriginInput":"' + originStation.split('$')[2] + '","DestinationInput":"' + destStation.split('$')[2] + '","Arrdep":"D","InputTime":"' + ("0" + date.getHours()).slice(-2) + ':' + ("0" + date.getMinutes()).slice(-2) + '","InputDate":"' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '","Minimize":"T","Walkdist":"0.50","Mode":"F12RBC","LineStart":"","LineEnd":"","Accessible":"N","OriginCoordinates":"' + escape(originStation) + '","DestinationCoordinates":"' + escape(destStation) + '","LocationType":"","StartServiceType":"train","StartTrainType":"subway","StartBorough":"MN","EndServiceType":"train","EndTrainType":"subway","EndBorough":"MN","Walkincrease":"","Maxinitialwait":"","Maxtriptime":"","Maxtransfers":""}');
-      }
-    }
-  };
 //onload event/back navigate
 (function() {
   //debugger;
@@ -42,6 +28,21 @@ onhashchange =
           }
         }
       }
+    } else {
+      onhashchange =
+        // browser cache friendly hash argument
+        function(evt) {
+          var destStation = location.hash.slice(1);
+          //not a "category" click but a final location click
+          if (destStation.indexOf('$') != -1) {
+            if (!originStation) {
+              originStation = destStation;
+            } else {
+              var date = new Date();
+              location.replace('http://tripplanner.mta.info/MyTrip/handler/CustomPlannerHandler.ashx?jsonpacket={"RequestDevicename":"IPHONEAPP","OriginInput":"' + originStation.split('$')[2] + '","DestinationInput":"' + destStation.split('$')[2] + '","Arrdep":"D","InputTime":"' + ("0" + date.getHours()).slice(-2) + ':' + ("0" + date.getMinutes()).slice(-2) + '","InputDate":"' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '","Minimize":"T","Walkdist":"0.50","Mode":"F12RBC","LineStart":"","LineEnd":"","Accessible":"N","OriginCoordinates":"' + escape(originStation) + '","DestinationCoordinates":"' + escape(destStation) + '","LocationType":"","StartServiceType":"train","StartTrainType":"subway","StartBorough":"MN","EndServiceType":"train","EndTrainType":"subway","EndBorough":"MN","Walkincrease":"","Maxinitialwait":"","Maxtriptime":"","Maxtransfers":""}');
+            }
+          }
+        };
     }
   }
 })();
