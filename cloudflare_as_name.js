@@ -129,9 +129,14 @@ async function handleRequest(request, event) {
     });
   }
 else if (pathname_callback.startsWith('/api/')) {
-  var resp = fetch((pathname_callback.substr(5,3) === 'su/' // 'li/' othr choice
+  var resp = pathname_callback.substr(5,3);
+  resp = fetch((resp === 'su/' // 'li/' othr choice
     ? 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
-    : "http://backend-unified.mylirr.org/arrivals/") + pathname_callback.substring(8), {
+    : resp === 'alt' ?
+    "http://collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP"
+    : "http://backend-unified.mylirr.org/arrivals/")
+    //is "" for "alt"
+    + pathname_callback.substring(8), {
     headers: { //LIRR server errors otherwise
       'accept-version': '1.5'
     }
@@ -143,7 +148,7 @@ else if (pathname_callback.startsWith('/api/')) {
   var ct = resp.headers.get('content-type');
   pathname_callback += resp.status + ',content_type:\'' + ct + '\',contents:';
   resp = await resp.text();
-  return new Response(pathname_callback + (ct === 'application/json'
+  return new Response(pathname_callback + (ct.startsWith('application/json')
     //from express
     ?resp.replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029') :
     JSON.stringify(resp)) + '});', {

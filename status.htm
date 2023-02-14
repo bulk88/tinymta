@@ -751,7 +751,12 @@ function getJSON(url, alertFlag, addIMS) {
         /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
-        scriptElem.src ='//api.allorigins.win/get?url=http%3A'+escape(url+(alertFlag?'&_=':'?_='))+new Date().getTime()+'&callback='+(alertFlag?'parseAlerts':'parseRoutes');
+        scriptElem.src =(alertFlag ?
+        //TODO datestamp in URL can be removed if allorigins routes.json gimicky is removed
+/*STARTDELETE*/
+    '//tinymta.us.to' +
+/*ENDDELETE*/
+        "/api/alt" : '//api.allorigins.win/get?url=http%3A'+escape(url))+'?_='+new Date().getTime()+'&callback='+(alertFlag?'parseAlerts':'parseRoutes');
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
