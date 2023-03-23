@@ -48,7 +48,7 @@ if(stacode.length > 1) {
     https://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=LI%3A31&timeRange=21600&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE
     but 2022 https://traintime.mta.info/ (replacing www.mylirr.org) uses
     https://backend-unified.mylirr.org/arrivals/CLS with
-    with cors accept-version: 1.5 header is mandatory (plus preflight) or server
+    with cors accept-version: 3.0 header is mandatory (plus preflight) or server
     throws an error, cleartext http works, note
     "This is wrong version of the API. Acceptable versions: [1.5, 1.6, 2.0, 3.0]"
     I see no JSON diff with 1.5 vs 3.0
@@ -175,7 +175,7 @@ function getStop(addIMS) {
           and only "Slow" works
           http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
         x.onreadystatechange = onRSC;
-        x.setRequestHeader('accept-version','1.5');
+        x.setRequestHeader('accept-version','3.0');
         //the server sends Set-Cookie: AWSALB= and Set-Cookie: AWSALBCORS=
         //but also "Access-Control-Allow-Origin: *" and credentials doesn't
         //allow wildcard, so never turn this on, just accept forever these

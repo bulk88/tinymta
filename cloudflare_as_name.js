@@ -138,7 +138,7 @@ else if (pathname_callback.startsWith('/api/')) {
     //is "" for "alt"
     + pathname_callback.substring(8), {
     headers: { //LIRR server errors otherwise
-      'accept-version': '1.5'
+      'accept-version': '3.0'
     }
   });
   //from express, but guarenteed JSONP no CORS
@@ -302,7 +302,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
     var url_headsign = "http://backend-unified.mylirr.org/arrivals/" + pathname_callback;
     var resp = fetch(url_headsign, {
       headers: {
-        'accept-version' : '1.5'
+        'accept-version' : '3.0'
       }
     });
     var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] <a href=' + url_headsign + '>Raw</a><br>'
