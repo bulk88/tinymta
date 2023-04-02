@@ -508,7 +508,9 @@ function sortSubwayLines (routes) {
 function SET_SUBWAY_LINES(state, res) {
   var subwayLines = state.subwayLines;
   var goodServiceLines = state.goodServiceLines;
+/* unused
   state.lastUpdated = res.lastUpdated;
+*/
 
   (state.allSubwayLines = res.subwayLines)
   .forEach(function (route) {
@@ -625,17 +627,27 @@ function drawHTML() {
       };
       var state = {
         mnrLines: [],
+/* init unneeded
         busRoutes: [],
+*/
         subwayLines: [],
+/* unused
         componentRoutes: [],
+*/
         longIslandLines: [],
         goodServiceLines: [],
+/* unused
         favorites: null,
         lastUpdated: null,
         lineListError: null,
+*/
+/* init unneeded
         allSubwayLines: null,
+*/
+/* unused
         subwayLineGroups: null,
         serviceStatusLoading: false,
+*/
         alertedBuses: []
       }
 
