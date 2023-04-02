@@ -245,7 +245,8 @@ const WEIRD_RAIL_LINES = [{
   id: "MNR:Wassaic",
   agency: "MNR",
   color: "0039A6",
-  inService: true,
+// unused
+//  inService: true,
   mode: "RAIL",
   longName: "Wassaic",
   routeId: "MNR_Wassaic",
@@ -579,7 +580,9 @@ function getStatus(obj) {
   }
   //todo b88, inService is a front end MTA UI field, hard wired in front end HTML route DB to true for bus & rail
   //manually downgraded by mercury alert above, maybe remove field totally??
-  return obj.inService ? "On or Close" : "No Scheduled Service";
+  //DONE
+  //return obj.inService ? "On or Close" : "No Scheduled Service";
+  return "On or Close";
 }
 
 function emitRRStatus(name, lines) {

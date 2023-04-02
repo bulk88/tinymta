@@ -417,7 +417,10 @@ else if (pathname_callback === "/routes.json") {
 drawhtml routes DB mandatory fields
 
 agency (needed for drawhtml, unlikely it can be removed)
-inService (complicated if needed, hardwired-on in MTA UI in generating Routes DB, not a backend MTA JSON field, overridden by RT alert summary text to "No Scheduled Service" for belmont line, only bus & rail has it on MTA UI API, not sub, sub MTA UI already doesnt have the field, probably could be removed b/c alerts service delivers the flag (status "no scheduled") indirectly)
+inService DONE (complicated if needed, hardwired-on in MTA UI in generating Routes DB, not a backend MTA JSON field, overridden by RT alert summary text to "No Scheduled Service" for belmont line, only bus & rail has it on MTA UI API, not sub, sub MTA UI already doesnt have the field, probably could be removed b/c alerts service delivers the flag (status "no scheduled") indirectly)
+April 2023, Belmont Branch was removed as a route by MTA, probably after Elmont-UBS station opened
+so no more permanent Mercury alert saying "No Scheduled Service" for belmont line, so just remove
+.inService totally
 isExpressBus (remove it, unused in UI) DONE
 routeId (needed for drawhtml)
 route (neeeded for drawhtml but not all line types have it, investigate more)
@@ -443,6 +446,7 @@ containsExpress (remove it, unused in UI) DONE
           delete val[i].regionalFareCardAccepted;
           delete val[i].agencyId;
           delete val[i].containsExpress;
+          delete val[i].inService;
           }
         });
         resp = JSON.stringify(resp);
