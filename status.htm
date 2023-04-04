@@ -688,14 +688,7 @@ function drawHTML() {
 
       h += emitRRStatus('Metro-North Railroad',state.mnrLines);
       h += emitRRStatus('Long Island Rail Road',state.longIslandLines);
-      h += emitRRStatus('Bus', state.alertedBuses
-        .sort(function (line1, line2) {
-          if (line1.shortName < line2.shortName) { //sort string alphabetically
-            return -1;
-          } else /*if (line1.route > line2.route)*/ {
-            return 1;
-          }
-        }));
+      h += emitRRStatus('Bus', state.alertedBuses);
 
     document.body.innerHTML += h;
     alertsResp = void 0;

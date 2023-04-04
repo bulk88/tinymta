@@ -437,16 +437,17 @@ containsExpress (remove it, unused in UI) DONE
 */
         Object.values(resp).forEach(val => {
           for(var i = 0; i < val.length; i++) {
-          delete val[i].isExpressBus;
-          delete val[i].longName;
-          delete val[i].agencyName;
-          delete val[i].paramId;
-          val[i].sortOrder == 0 && delete val[i].sortOrder;
-          delete val[i].routeType;
-          delete val[i].regionalFareCardAccepted;
-          delete val[i].agencyId;
-          delete val[i].containsExpress;
-          delete val[i].inService;
+          e = val[i];
+          delete e.isExpressBus;
+          delete e.longName;
+          delete e.agencyName;
+          delete e.paramId;
+          e.sortOrder == 0 && delete e.sortOrder;
+          delete e.routeType;
+          delete e.regionalFareCardAccepted;
+          delete e.agencyId;
+          delete e.containsExpress;
+          delete e.inService;
           }
         });
         resp = JSON.stringify(resp);
@@ -911,7 +912,13 @@ function buildBusRoute (stopData) {
         route: stop.shortName
       }, stop)
     })
-  return mapRoutes
+  return mapRoutes.sort(function (line1, line2) {
+    if (line1.shortName < line2.shortName) { //sort string alphabetically
+      return -1;
+    } else /*if (line1.route > line2.route)*/ {
+      return 1;
+    }
+  })
 }
 
 function buildRailRoute (data_line) {
