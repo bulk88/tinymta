@@ -246,10 +246,10 @@ const WEIRD_RAIL_LINES = [{
   agency: "MNR",
   color: "0039A6",
 // unused
-//  inService: true,
-  mode: "RAIL",
+//inService: true,
+//mode: "RAIL",
   longName: "Wassaic",
-  routeId: "MNR_Wassaic",
+//routeId: "MNR_Wassaic",
   routeType: 2
 }]
 */
@@ -417,12 +417,7 @@ function mergeStatii (routes, alertsByRoute) {
   };
 
   routes.forEach(function (route) {
-    var mode = route.mode;
-    var key = (mode === 'SUBWAY' ? route.name
-       : mode === 'RAIL' ? (~route.routeId.indexOf('NJT') ? route.routeId.replace('_', ':') : route.routeId.split('_')[1])
-       : mode === 'BUS' ? route.id.split(':')[1]
-      // b88 unknown mode original MTA conditional case
-       : route.shortName).toLowerCase();
+    var key = (route.id.split(':').pop()).toLowerCase();
 
     if (alertsByRoute[route.agency] && alertsByRoute[route.agency][key]) {
       var statii =
