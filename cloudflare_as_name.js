@@ -422,10 +422,10 @@ April 2023, Belmont Branch was removed as a route by MTA, probably after Elmont-
 so no more permanent Mercury alert saying "No Scheduled Service" for belmont line, so just remove
 .inService totally
 isExpressBus (remove it, unused in UI) DONE
-routeId (needed for drawhtml)
-route (neeeded for drawhtml but not all line types have it, investigate more)
-id (neeeded for drawhtml maybe can be removed, investigate more)
-shortName (needed for drawhtml maybe can be removed, investigate more)
+routeId (id is correct, unk purpose) DONE
+route (same as id) DONE
+id (neeeded for drawhtml maybe can be removed, investigate more) CANT REMOVE, its internal route ID for mercury/LMM alerts
+shortName (removed, name and shortName identical) DONE
 longName (remove it, unused in UI, only used in building routes, maybe one day re-add it if bus routes UI needs full name) DONE
 agencyName (remove it, unused in UI) DONE
 paramId (remove it, unused in UI) DONE
@@ -434,8 +434,20 @@ routeType (remove it, unused in UI, or replace mode (Bus/rail/sub) with integer 
 regionalFareCardAccepted (remove it, unused in UI) DONE
 agencyId (remove it, unused in UI) DONE
 containsExpress (remove it, unused in UI) DONE
+agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from ID at UI runtime)
 */
         Object.values(resp).forEach(val => {
+//LIRR has more routes
+function AGENCY_MNR() {return 1}
+function AGENCY_LI() {return 0}
+function AGENCIES_MAP_RAIL() {return ['LI', 'MNR']}
+//NYCT has more routes
+function AGENCY_MTABC() {return 1};
+function AGENCY_MTA_NYCT() {return 0};
+function AGENCIES_MAP_BUS() {return ['MTA NYCT', 'MTABC']}
+//
+function AGENCY_MTASBWY() {return 0};
+function AGENCIES_MAP_SUBWAY() {return ['MTASBWY']}
           for(var i = 0; i < val.length; i++) {
           e = val[i];
           delete e.isExpressBus;
@@ -454,6 +466,9 @@ containsExpress (remove it, unused in UI) DONE
           delete e.shortName;
           e.route && (e.name = e.route);
           delete e.route;
+          e.agency = {LI: AGENCY_LI(), MNR: AGENCY_MNR(), 'MTA NYCT':AGENCY_MTA_NYCT(), MTABC: AGENCY_MTABC(), MTASBWY:AGENCY_MTASBWY()}[e.agency];
+          //RAIL needs stripping
+          e.id = e.id.split(':').pop()
           }
         });
         resp = JSON.stringify(resp);
@@ -906,20 +921,20 @@ function buildBusRoute (stopData) {
     .filter(function (busRoute) {return busRoute.mode === 'BUS'
       && !!~busRoute.id.indexOf('MTA')})
     .map(function (stop) {
-      var agency = stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC';
-      //var routeId = agency+"_"+stop.id.split(':')[1];
-
-      return Object.assign({
-        agency: agency,
-        inService: true,
-/* const BANNED_XBUS_ROUTE_TYPE = 702; */
-        isExpressBus: (stop.routeType === 702),
-        routeId: agency+"_"+stop.id.split(':')[1], /* routeId,*/
-        route: stop.shortName
-      }, stop)
+      //warning, subway shuttles have "id":"MTASBWYSHTL:7-SS" and "agencyName":"MTA NYCT - Subway" in raw route DB
+      //in raw routes DB, reg buses all have "MTA:" id prefix regardless agency
+      //"informed_entity": [{"agency_id": "MTA NYCT","route_id": "M79+"
+      //now important question, what is agency_id of an alert-ed shuttle bus?
+      //raw routes DB uses long agency names, alerts DB uses short
+      return {
+        id: stop.id.split(':')[1],
+        color: stop.color,
+        name: stop.shortName,
+        agency: stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC'
+      };
     })
   return mapRoutes.sort(function (line1, line2) {
-    if (line1.shortName < line2.shortName) { //sort string alphabetically
+    if (line1.name < line2.name) { //sort string alphabetically
       return -1;
     } else /*if (line1.route > line2.route)*/ {
       return 1;
