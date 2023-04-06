@@ -450,6 +450,10 @@ containsExpress (remove it, unused in UI) DONE
           delete e.inService;
           delete e.mode;
           delete e.routeId;
+          e.shortName && (e.route = e.shortName);
+          delete e.shortName;
+          e.route && (e.name = e.route);
+          delete e.route;
           }
         });
         resp = JSON.stringify(resp);

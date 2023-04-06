@@ -586,7 +586,7 @@ function emitRRStatus(name, lines) {
     h += '<hr>' + name + '<br>';
     h += lines.map(function (route) {
       var has_alert = route.statusDetails && route.statusDetails.length;
-      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route.color + '>' + route.route + '</font>' + ' ' + getStatus(route) + (has_alert ? '</summary>' + route.statusDetails.map(function (statusDetail) {
+      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route.color + '>' + route.name + '</font>' + ' ' + getStatus(route) + (has_alert ? '</summary>' + route.statusDetails.map(function (statusDetail) {
           return '<b>' + statusDetail.statusSummary + '</b>'
            + '<br>' + noPTag(statusDetail.statusTitle)
            + (hasDuration(statusDetail) ? '<br>' + getDurations(statusDetail) : '')
