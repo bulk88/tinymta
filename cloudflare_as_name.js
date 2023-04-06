@@ -927,10 +927,10 @@ function buildBusRoute (stopData) {
       //now important question, what is agency_id of an alert-ed shuttle bus?
       //raw routes DB uses long agency names, alerts DB uses short
       return {
-        id: stop.id.split(':')[1],
+        agency: stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC',
         color: stop.color,
-        name: stop.shortName,
-        agency: stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC'
+        id: stop.id.split(':')[1],
+        name: stop.shortName
       };
     })
   return mapRoutes.sort(function (line1, line2) {
@@ -955,28 +955,21 @@ function buildRailRoute (data_line) {
   id: "MNR:Wassaic",
   agency: "MNR",
   color: "0039A6",
-  inService: true,
-  mode: "RAIL",
   longName: "Wassaic",
-  routeId: "MNR_Wassaic",
-  routeType: 2
 }]
     )
     .map(function (railLine) {
-      var agency = !railLine.id.indexOf('LI') ? 'LI' : 'MNR';
-      railLine.inService = true;
-      railLine.agency = agency;
-      railLine.agencyId = agency;
-      railLine.route = railLine.longName;
-      railLine.routeId = railLine.routeId ? railLine.routeId : railLine.id.replace(":", "_");
-      railLine.mode = "RAIL";
-      railLine.shortName = railLine.longName;
-      return railLine;
+      return {
+        agency: !railLine.id.indexOf('LI') ? 'LI' : 'MNR',
+        color: railLine.color,
+        id: railLine.id,
+        name: railLine.longName
+      }
     })
 
   // start by sorting all rail lines alphabetically
   .sort(function (line1, line2) {
-    if (line1.longName < line2.longName) {  //sort string alphabetically
+    if (line1.name < line2.name) {  //sort string alphabetically
       return -1;
     } else /*if (line1.route > line2.route)*/ {
       return 1;
@@ -1005,7 +998,7 @@ function buildRailRoute (data_line) {
       i--
     }
   // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
-    if (/*HARLEM_BRANCHES.*/~data_line.longName.indexOf('Wassaic')) {
+    if (/*HARLEM_BRANCHES.*/~data_line.name.indexOf('Wassaic')) {
       harlemBranches.push(data_line)
       railLines.splice(i, 1)
       i--
