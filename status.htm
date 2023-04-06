@@ -15,6 +15,7 @@ mangleIndex={name:"mangleIndex"};
 getStop.name = 'getStop';
 parseRoutes.name = 'parseRoutes';
 parseAlerts.name = 'parseAlerts';
+/*
 //LIRR has more routes
 function AGENCY_MNR() {return 1}
 function AGENCY_LI() {return 0}
@@ -26,6 +27,7 @@ function AGENCIES_MAP_BUS() {return ['MTA NYCT', 'MTABC']}
 //
 function AGENCY_MTASBWY() {return 0};
 function AGENCIES_MAP_SUBWAY() {return ['MTASBWY']}
+*/
 var jsonp;
 
 var url_routes =
@@ -429,13 +431,15 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
 
   routes.forEach(function (route) {
     var key = route.id.toLowerCase();
+    var agency = agencyMap[route.agency];
+    var alertedRoute;
 
-    if (alertsByRoute[agencyMap[route.agency]] && alertsByRoute[agencyMap[route.agency]][key]) {
+    if ((alertedRoute = alertsByRoute[agency]) && (alertedRoute = alertedRoute[key])) {
       var statii =
-        alertsByRoute[agencyMap[route.agency]][key].map(function (status) {
+        alertedRoute.map(function (status) {
           var direction_id = 1;
           var entity = status.alert.informed_entity.find(function (entity) {
-            return entity.agency_id === agencyMap[route.agency] && entity.route_id.toLowerCase() === key ? 1 : 0
+            return entity.agency_id === agency && entity.route_id.toLowerCase() === key ? 1 : 0
           });
           if (entity.trip) {
             direction_id = entity.trip.direction_id;
@@ -547,7 +551,7 @@ function SET_RAIL_LINES(state, res) {
   var mnrLines = state.mnrLines;
 
   res.railLines.forEach(function (line) {
-    ( line.agency == AGENCY_MNR() ? mnrLines : longIslandLines
+    ( /* line.agency == AGENCY_MNR() mnr == 1 */ line.agency ? mnrLines : longIslandLines
     //  : agency === 'MNR' || agency === 'NJT' ? mnrLines
     // b88 original MTA logic says maybe there are non-MTA rail lines
     // but I can't find any in real data
@@ -630,9 +634,9 @@ function drawHTML() {
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
 
       var allStatii = {
-        busRoutes: mergeStatii(allRoutes.busRoutes, alertsResp, AGENCIES_MAP_BUS()),
-        railLines: mergeStatii(allRoutes.railLines, alertsResp, AGENCIES_MAP_RAIL()),
-        subwayLines: mergeStatii(allRoutes.subwayLines, alertsResp, AGENCIES_MAP_SUBWAY())
+        busRoutes: mergeStatii(allRoutes.busRoutes, alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']),
+        railLines: mergeStatii(allRoutes.railLines, alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']),
+        subwayLines: mergeStatii(allRoutes.subwayLines, alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY'])
       };
       var state = {
         mnrLines: [],
