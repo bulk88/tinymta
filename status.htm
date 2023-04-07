@@ -632,11 +632,13 @@ function parseAlerts(r) { /*r=resp*/
 }
 function drawHTML() {
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
-
+      function BUSROUTES () { return 0;}
+      function RAILLINES () { return 1;}
+      function SUBWAYLINES () { return 2;}
       var allStatii = {
-        busRoutes: mergeStatii(allRoutes.busRoutes, alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']),
-        railLines: mergeStatii(allRoutes.railLines, alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']),
-        subwayLines: mergeStatii(allRoutes.subwayLines, alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY'])
+        busRoutes: mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']),
+        railLines: mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']),
+        subwayLines: mergeStatii(allRoutes[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY'])
       };
       var state = {
         mnrLines: [],
