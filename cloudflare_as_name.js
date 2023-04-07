@@ -450,22 +450,6 @@ function AGENCY_MTASBWY() {return 0};
 function AGENCIES_MAP_SUBWAY() {return ['MTASBWY']}
           for(var i = 0; i < val.length; i++) {
           e = val[i];
-          delete e.isExpressBus;
-          delete e.longName;
-          delete e.agencyName;
-          delete e.paramId;
-          e.sortOrder == 0 && delete e.sortOrder;
-          delete e.routeType;
-          delete e.regionalFareCardAccepted;
-          delete e.agencyId;
-          delete e.containsExpress;
-          delete e.inService;
-          delete e.mode;
-          delete e.routeId;
-          e.shortName && (e.route = e.shortName);
-          delete e.shortName;
-          e.route && (e.name = e.route);
-          delete e.route;
           e.agency = {LI: AGENCY_LI(), MNR: AGENCY_MNR(), 'MTA NYCT':AGENCY_MTA_NYCT(), MTABC: AGENCY_MTABC(), MTASBWY:AGENCY_MTASBWY()}[e.agency];
           //RAIL needs stripping
           e.id = e.id.split(':').pop()
@@ -895,16 +879,13 @@ function buildSubwayRoute (data) {
     // check to see if a route was found...
     if (!route) {
       // if not, initialize one and add it to the routeDetails array
-      var agency = subwayLine.id.split(":")[0];
-      var id = subwayLine.id.split(":")[1];
+      var idSplitArr = subwayLine.id.split(":");
       routeDetails.push({
-        agency: agency,
-        agencyId: agency,
-        name: id,
-        mode: 'SUBWAY',
+        agency: idSplitArr[0],
         color: subwayLine.color,
-        sortOrder: subwayLine.sortOrder,
-        id: id
+        id: idSplitArr[1],
+        name: idSplitArr[1],
+        sortOrder: subwayLine.sortOrder
       });
     } else {
       //b88 note containsExpress is unused in this app
