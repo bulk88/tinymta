@@ -4,7 +4,7 @@
 <!-- put no-referrer so preload reqs match later fetch reqs instead of double req -->
 <meta name="referrer" content="no-referrer">
 <link href="//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP" as="fetch" rel="preload" crossorigin>
-<link href="routes.json" as="fetch" rel="preload">
+<link href="routes.js" as="fetch" rel="preload">
 <!-- older browsers -->
 <link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect">
@@ -34,7 +34,7 @@ var url_routes =
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
-'/routes.json';
+'/routes.js';
 var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP';
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
@@ -349,6 +349,13 @@ function transArrToHTML(translations) {
   return en ? en : none ? none : false;
 }
 
+function ROUTE_ID() {return 0};
+function ROUTE_NAME() {return 1};
+function ROUTE_COLOR() {return 2};
+function ROUTE_AGENCY() {return 3};
+function ROUTE_SORTORDER() {return 4};
+function ROUTE_STATUSDETAILS() {return 5};
+
 function mergeStatii (routes, alertsByRoute, agencyMap) {
   var routesWithStatus = [];
 
@@ -430,8 +437,8 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
   };
 
   routes.forEach(function (route) {
-    var key = route.id.toLowerCase();
-    var agency = agencyMap[route.agency];
+    var key = (""+route[ROUTE_ID()]).toLowerCase();
+    var agency = agencyMap[route[ROUTE_AGENCY()] || 0];
     var alertedRoute;
 
     if ((alertedRoute = alertsByRoute[agency]) && (alertedRoute = alertedRoute[key])) {
@@ -463,7 +470,7 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
         });
 
       if (statii.length > 0) {
-        route.statusDetails = statii;
+        route[ROUTE_STATUSDETAILS()] = statii;
       }
     }
     routesWithStatus.push(route);
@@ -484,10 +491,10 @@ function groupedLines (lines){
   for (var i = 0; i < lines.length; i++){
     line = lines[i];
     // Sort statii by priority
-    line.statusDetails.sort(function (a,b) {
+    line[ROUTE_STATUSDETAILS()].sort(function (a,b) {
       return b.priority - a.priority
     });
-    statusDetails = line.statusDetails[0];
+    statusDetails = line[ROUTE_STATUSDETAILS()][0];
 //function toDashedCase(str){
     status = statusDetails.statusSummary.toLowerCase().replace(/\s/g, '-');
 
@@ -512,7 +519,7 @@ function groupedLines (lines){
 
 function sortSubwayLines (routes) {
   routes.sort(function (rd1, rd2) {
-    return rd1.sortOrder - rd2.sortOrder
+    return rd1[ROUTE_SORTORDER()] - rd2[ROUTE_SORTORDER()]
   })
 }
 
@@ -525,7 +532,7 @@ function SET_SUBWAY_LINES(state, res) {
 
   (state.allSubwayLines = res.subwayLines)
   .forEach(function (route) {
-    if (route.statusDetails) {
+    if (route[ROUTE_STATUSDETAILS()]) {
       subwayLines.push(route)
     } else {
       goodServiceLines.push(route)
@@ -538,8 +545,8 @@ function SET_SUBWAY_LINES(state, res) {
 function SET_BUS_ROUTES(state, res) {
   var alertedBuses = state.alertedBuses;
   (state.busRoutes = res.busRoutes).forEach(function (route) {
-    if (route.statusDetails) {
-      route.statusDetails.sort(function (a, b) {
+    if (route[ROUTE_STATUSDETAILS()]) {
+      route[ROUTE_STATUSDETAILS()].sort(function (a, b) {
         return b.priority - a.priority
       })
       alertedBuses.push(route)
@@ -557,8 +564,8 @@ function SET_RAIL_LINES(state, res) {
     // but I can't find any in real data
     //  : (function() {debugger})()
     ).push(line);
-    if (line.statusDetails) {
-      line.statusDetails.sort(function (a, b) {
+    if (line[ROUTE_STATUSDETAILS()]) {
+      line[ROUTE_STATUSDETAILS()].sort(function (a, b) {
         return b.priority - a.priority
       })
     }
@@ -584,9 +591,9 @@ function getDurations(alert) {
 }
 
 function getStatus(obj) {
-  if (obj.statusDetails && obj.statusDetails.length) {
+  if (obj[ROUTE_STATUSDETAILS()] && obj[ROUTE_STATUSDETAILS()].length) {
     // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
-    return obj.statusDetails[0].statusSummary;
+    return obj[ROUTE_STATUSDETAILS()][0].statusSummary;
   }
   //todo b88, inService is a front end MTA UI field, hard wired in front end HTML route DB to true for bus & rail
   //manually downgraded by mercury alert above, maybe remove field totally??
@@ -600,8 +607,8 @@ function emitRRStatus(name, lines) {
   if (lines.length) {
     h += '<hr>' + name + '<br>';
     h += lines.map(function (route) {
-      var has_alert = route.statusDetails && route.statusDetails.length;
-      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route.color + '>' + route.name + '</font>' + ' ' + getStatus(route) + (has_alert ? '</summary>' + route.statusDetails.map(function (statusDetail) {
+      var has_alert = route[ROUTE_STATUSDETAILS()] && route[ROUTE_STATUSDETAILS()].length;
+      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + getStatus(route) + (has_alert ? '</summary>' + route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
           return '<b>' + statusDetail.statusSummary + '</b>'
            + '<br>' + noPTag(statusDetail.statusTitle)
            + (hasDuration(statusDetail) ? '<br>' + getDurations(statusDetail) : '')
@@ -617,7 +624,7 @@ var alertsResp;
 function parseRoutes(r) { /*r=resp*/
   /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
   /* r.contents is JSONP */
-  allRoutes = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
+  allRoutes = typeof (r = r.contents || r) === 'object' ? r : eval('0,' + r);
   if (alertsResp)
     drawHTML();
 }
@@ -678,8 +685,8 @@ function drawHTML() {
         for (o=0; o < linearr.length; o++) {
           route = linearr[o];
           //if(route.name=='SI') {debugger;}
-          h+='<details><summary>'+mkSubFontTag('['+route.name+']', route.name)+'</summary>';
-          h += route.statusDetails.map(function (statusDetail) {
+          h+='<details><summary>'+mkSubFontTag('['+route[ROUTE_NAME()]+']', route[ROUTE_NAME()])+'</summary>';
+          h += route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
             return '<b>'+statusDetail.statusSummary+'</b>'
             + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
             + (hasDuration(statusDetail)?'<br>'+getDurations(statusDetail):'')
@@ -693,7 +700,7 @@ function drawHTML() {
       if(groupedByStatusLines.length) {
         h += '<hr>No Active Alerts<br>';
         for (i=0; i < groupedByStatusLines.length; i++) {
-          route = groupedByStatusLines[i].name;
+          route = groupedByStatusLines[i][ROUTE_NAME()];
           h+=mkSubFontTag('['+route+']', route)+' ';
         }
       }
@@ -726,7 +733,9 @@ function getJSON(url, alertFlag, addIMS) {
         /*lower case get even tho gzip friendly, error 400's CF's WAFs, no other servers care*/
         x.open('GET', url, 1);
         try {
-          x.responseType = 'json';
+          if(alertFlag) {
+            x.responseType = 'json';
+          }
         } catch (e) {
           //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
         }
@@ -748,7 +757,7 @@ function getJSON(url, alertFlag, addIMS) {
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? (alertFlag?parseAlerts:parseRoutes)(x.response||x.responseText)
+                    ? (alertFlag?parseAlerts:parseRoutes)(x.response)
                     : getJSON(url, alertFlag, 1);
             }
             else
@@ -772,7 +781,7 @@ function getJSON(url, alertFlag, addIMS) {
             raw button (forced download) doesnt work in updating cache */
         scriptElem = document.createElement("script");
         scriptElem.src =(alertFlag ?
-        //TODO datestamp in URL can be removed if allorigins routes.json gimicky is removed
+        //TODO datestamp in URL can be removed if allorigins routes.js gimicky is removed
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
