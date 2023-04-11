@@ -367,14 +367,14 @@ else if (pathname_callback.startsWith('/li/s/')) {
   }
 }
   
-else if (pathname_callback === "/routes.json") {
+else if (pathname_callback === "/routes.js") {
   var clientEtag = request.headers.get("if-none-match");
 
   event.respondWith(new Response(
       clientEtag === routesEtag ? '' : gRoutes, {
       status: clientEtag === routesEtag ? 304 : 200,
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'text/javascript',
         'etag': routesEtag,
         //don't double fetch with preload and fetch()
         'cache-control': 'max-age=10, stale-while-revalidate=86400',
@@ -436,26 +436,10 @@ agencyId (remove it, unused in UI) DONE
 containsExpress (remove it, unused in UI) DONE
 agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from ID at UI runtime)
 */
-        resp.forEach(val => {
-//LIRR has more routes
-function AGENCY_MNR() {return 1}
-function AGENCY_LI() {return 0}
-function AGENCIES_MAP_RAIL() {return ['LI', 'MNR']}
-//NYCT has more routes
-function AGENCY_MTABC() {return 1};
-function AGENCY_MTA_NYCT() {return 0};
-function AGENCIES_MAP_BUS() {return ['MTA NYCT', 'MTABC']}
-//
-function AGENCY_MTASBWY() {return 0};
-function AGENCIES_MAP_SUBWAY() {return ['MTASBWY']}
-          for(var i = 0; i < val.length; i++) {
-          e = val[i];
-          e.agency = {LI: AGENCY_LI(), MNR: AGENCY_MNR(), 'MTA NYCT':AGENCY_MTA_NYCT(), MTABC: AGENCY_MTABC(), MTASBWY:AGENCY_MTASBWY()}[e.agency];
-          //RAIL needs stripping
-          e.id = e.id.split(':').pop()
-          }
-        });
+
         resp = JSON.stringify(resp);
+        //make JS obj literal notation, not JSON to save bytes, must eval() on client
+        resp = resp.replace(/null/g, '');
         //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises
@@ -855,6 +839,9 @@ async function updateRoutes(event, resolveCB, url, clientEtag, failedCache) {
 var mapper = {};
 
 function buildSubwayRoute (data) {
+  function AGENCY_MTASBWY() {return 0};
+  function ROUTE_NAME() {return 1};
+  function ROUTE_SORTORDER() {return 4};
   var routeDetails = [];
   var i = 0, subwayLine, route, name;
 
@@ -872,21 +859,29 @@ function buildSubwayRoute (data) {
       // if so, set the route given the previously set non-express route
       var baseName = name.substr(0, name.indexOf('X'));
       route = routeDetails.find(function (element) {
-        return typeof element === 'object' && element.name === baseName ? 1 : 0
+        return typeof element === 'object' && element[ROUTE_NAME()] == baseName;
       });
     }
 
     // check to see if a route was found...
     if (!route) {
       // if not, initialize one and add it to the routeDetails array
-      var idSplitArr = subwayLine.id.split(":");
-      routeDetails.push({
-        agency: idSplitArr[0],
-        color: subwayLine.color,
-        id: idSplitArr[1],
-        name: idSplitArr[1],
-        sortOrder: subwayLine.sortOrder
-      });
+      name = subwayLine.id.split(":").pop();
+      //save JSON encoding, remove double quotes if possible on integers
+      if (name == ""+(+name)) {
+        name = +name;
+      }
+   //stats for non-false fields
+   //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
+      route = [
+        /*id*/ name,
+        /*name*/ name,
+        /*color*/ subwayLine.color
+        /*agency AGENCY_MTASBWY() */
+      ];
+      /* [3] slot is AGENCY_MTASBWY() is 0, leave empty TODO test JSON vs JS obj literal noation serializer*/
+      route[ROUTE_SORTORDER()] = subwayLine.sortOrder;
+      routeDetails.push(route);
     } else {
       //b88 note containsExpress is unused in this app
       // otherwise, first set the containsExpress variable / flag
@@ -899,6 +894,13 @@ function buildSubwayRoute (data) {
 }
 
 function buildBusRoute (stopData) {
+//NYCT has more routes
+function AGENCY_MTABC() {return 1};
+function AGENCY_MTA_NYCT() {return 0};
+function AGENCIES_MAP_BUS() {return ['MTA NYCT', 'MTABC']};
+function ROUTE_NAME() {return 1};
+function ROUTE_COLOR() {return 2};
+function ROUTE_AGENCY() {return 3};
   var mapRoutes = stopData
     .filter(function (busRoute) {return busRoute.mode === 'BUS'
       && !!~busRoute.id.indexOf('MTA')})
@@ -908,15 +910,25 @@ function buildBusRoute (stopData) {
       //"informed_entity": [{"agency_id": "MTA NYCT","route_id": "M79+"
       //now important question, what is agency_id of an alert-ed shuttle bus?
       //raw routes DB uses long agency names, alerts DB uses short
-      return {
-        agency: stop.agencyName === 'MTA New York City Transit' ? 'MTA NYCT' : 'MTABC',
-        color: stop.color,
-        id: stop.id.split(':')[1],
-        name: stop.shortName
-      };
+      //stats for non-false fields
+      //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
+      var route = [
+        /*id*/   stop.id.split(':').pop(),
+        /* subway shuttles are integers sometimes */
+        /*name*/ stop.shortName == ""+(+stop.shortName) ? +(stop.shortName) : stop.shortName
+      ];
+      /* subway shuttles have no color */
+      if(stop.color) {
+        route[ROUTE_COLOR()] = stop.color;
+      }
+      /* AGENCY_MTA_NYCT() is 0, save array slot */
+      if(stop.agencyName !== 'MTA New York City Transit') {
+        route[ROUTE_AGENCY()] = AGENCY_MTABC();
+      }
+      return route;
     })
   return mapRoutes.sort(function (line1, line2) {
-    if (line1.name < line2.name) { //sort string alphabetically
+    if (line1[ROUTE_NAME()] < line2[ROUTE_NAME()]) { //sort string alphabetically
       return -1;
     } else /*if (line1.route > line2.route)*/ {
       return 1;
@@ -925,33 +937,56 @@ function buildBusRoute (stopData) {
 }
 
 function buildRailRoute (data_line) {
+  //LIRR has more routes
+  function AGENCY_MNR() {return 1};
+  function AGENCY_LI() {return 0};
+  function ROUTE_ID() {return 0};
+  function ROUTE_AGENCY() {return 3};
+  function ROUTE_NAME() {return 1};
   var railLines = data_line
     .filter(function (railLine) {
       return railLine.mode === 'RAIL' /* mode.toUpperCase removed b88 */
-        /*b88 dont ask why it works, but startsWith || startsWith
-        be careful of LIBUS in refactoring in future*/
-        && !(railLine.id.indexOf('LI') && railLine.id.indexOf('MNR'))
-    })
-    .concat(/* WEIRD_RAIL_LINES */
-    [{
-  id: "MNR:Wassaic",
-  agency: "MNR",
-  color: "0039A6",
-  longName: "Wassaic",
-}]
-    )
-    .map(function (railLine) {
-      return {
-        agency: !railLine.id.indexOf('LI') ? 'LI' : 'MNR',
-        color: railLine.color,
-        id: railLine.id,
-        name: railLine.longName
-      }
+      /*b88 dont ask why it works, but startsWith || startsWith
+      be careful of LIBUS in refactoring in future*/
+       && !(railLine.id.indexOf('LI') && railLine.id.indexOf('MNR'))
     })
 
+    .map(function (railLine) {
+      //stats for non-false fields
+      //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
+      var route = railLine.id.split(":").pop();
+      //save JSON encoding, remove double quotes if possible on integers
+      //all but wassaic are ints, but leave provision for alpha route ids vs blindly int-ing
+      route == ""+(+route) && (route = +route);
+      route = [
+        /* id */
+        route,
+        /*name*/
+        railLine.longName,
+        /*color*/
+        railLine.color,
+      ];
+      /* LI is more frequent, and == 0 */
+      if (!~railLine.id.indexOf('LI')) {
+        route[ROUTE_AGENCY()] = AGENCY_MNR();
+      }
+      return route;
+    });
+  railLines.push(/* WEIRD_RAIL_LINES */
+    [
+      /*id*/
+      "Wassaic",
+      /*name*/
+      "Wassaic",
+      /*color*/
+      "0039A6",
+      /*agency*/
+      AGENCY_MNR()
+    ]);
+
   // start by sorting all rail lines alphabetically
-  .sort(function (line1, line2) {
-    if (line1.name < line2.name) {  //sort string alphabetically
+  railLines.sort(function (line1, line2) {
+    if (line1[ROUTE_NAME()] < line2[ROUTE_NAME()]) {  //sort string alphabetically
       return -1;
     } else /*if (line1.route > line2.route)*/ {
       return 1;
@@ -967,20 +1002,26 @@ function buildRailRoute (data_line) {
   for (var i = 0; i < railLines.length; i++) {
     data_line = railLines[i];
 // get the index of the 'New Haven' line
-    if(data_line.id === 'MNR:3') {
+    if(data_line[ROUTE_AGENCY()] /* ==  AGENCY_MNR()*/
+      && data_line[ROUTE_ID()] == 3) {
       newHavenLineIndex = i
     }
 // get the index of the 'Harlem' line
-    if(data_line.id === 'MNR:2') {
+    if(data_line[ROUTE_AGENCY()] /* ==  AGENCY_MNR()*/
+      && data_line[ROUTE_ID()] == 2) {
       harlemLineIndex = i
     }
-    if (/*NEW_HAVEN_BRANCHES.*//^(MNR:4|MNR:5|MNR:6)$/.test(data_line.id)) {
+    if (/*NEW_HAVEN_BRANCHES.*/
+      data_line[ROUTE_AGENCY()] /* ==  AGENCY_MNR()*/
+      /* test MNR:4 to MNR:6 lines */
+      && data_line[ROUTE_ID()] >= 4
+      && data_line[ROUTE_ID()] <= 6) {
       newHavenBranches.push(data_line)
       railLines.splice(i, 1)
       i--
     }
   // remove all kubes from the railLines array that are contained within the HARLEM_BRANCHES constant (array)
-    if (/*HARLEM_BRANCHES.*/~data_line.name.indexOf('Wassaic')) {
+    if (/*HARLEM_BRANCHES.*/~data_line[ROUTE_NAME()].indexOf('Wassaic')) {
       harlemBranches.push(data_line)
       railLines.splice(i, 1)
       i--
@@ -994,6 +1035,13 @@ function buildRailRoute (data_line) {
 
 mapper.buildServiceRoutes = function (response) {
   //constants are in status.htm
+  // fetch('https://tinymta.us.to/routes.json').then(r => {r.json().then(
+   // r => {var s = {}; r.forEach(a => {a.forEach(
+   // e=>{Object.keys(e).forEach(
+   // k => {typeof s[k] === 'undefined' && (s[k] = 0); if(e[k]) {s[k]++} })})});
+   // console.log(s)})})
+   //stats for non-false fields
+   //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
   return [
     buildBusRoute(response),
     buildRailRoute(response),
