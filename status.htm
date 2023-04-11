@@ -349,6 +349,48 @@ function transArrToHTML(translations) {
   return en ? en : none ? none : false;
 }
 
+function noPTag(str) {
+  if(typeof str == 'string') {
+    //some notices include these at the end, after the global P tag we are trying to remove
+    str = str.replace(/(<p style="min-height:10px"><\/p>|<p><\/p>)+$/g,'');
+    if (str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
+      return str.slice(3, -4);
+    }
+  }
+  return str;
+}
+function hasDuration(alert) {
+  return alert.originalStatus.alert["transit_realtime.mercury_alert"]
+  .human_readable_active_period;
+}
+function getDurations(alert) {
+  return transArrToHTML(alert.originalStatus.alert["transit_realtime.mercury_alert"].human_readable_active_period.translation);
+}
+
+
+var allRoutes;
+var alertsResp;
+function parseRoutes(r) { /*r=resp*/
+  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+  /* r.contents is JSONP */
+  allRoutes = typeof (r = r.contents || r) === 'object' ? r : eval('0,' + r);
+  if (alertsResp)
+    drawHTML();
+}
+
+function parseAlerts(r) { /*r=resp*/
+  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
+  /* r.contents is JSONP */
+  /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
+  alertsResp = filterCurrentStatii((typeof(r = r.contents || r) === 'object' ? r : this.JSON ? JSON.parse(r) : eval('0,' + r)).entity);
+  if (allRoutes)
+    drawHTML();
+}
+function drawHTML() {
+function BUSROUTES() { return 0;}
+function RAILLINES() { return 1;}
+function SUBWAYLINES() { return 2;}
+
 function ROUTE_ID() {return 0};
 function ROUTE_NAME() {return 1};
 function ROUTE_COLOR() {return 2};
@@ -558,7 +600,7 @@ function SET_RAIL_LINES(state, res) {
   var mnrLines = state.mnrLines;
 
   res.railLines.forEach(function (line) {
-    ( /* line.agency == AGENCY_MNR() mnr == 1 */ line.agency ? mnrLines : longIslandLines
+    ( /* line.agency == AGENCY_MNR() mnr == 1 */ line[ROUTE_AGENCY()] ? mnrLines : longIslandLines
     //  : agency === 'MNR' || agency === 'NJT' ? mnrLines
     // b88 original MTA logic says maybe there are non-MTA rail lines
     // but I can't find any in real data
@@ -570,24 +612,6 @@ function SET_RAIL_LINES(state, res) {
       })
     }
   })
-}
-
-function noPTag(str) {
-  if(typeof str == 'string') {
-    //some notices include these at the end, after the global P tag we are trying to remove
-    str = str.replace(/(<p style="min-height:10px"><\/p>|<p><\/p>)+$/g,'');
-    if (str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
-      return str.slice(3, -4);
-    }
-  }
-  return str;
-}
-function hasDuration(alert) {
-  return alert.originalStatus.alert["transit_realtime.mercury_alert"]
-  .human_readable_active_period;
-}
-function getDurations(alert) {
-  return transArrToHTML(alert.originalStatus.alert["transit_realtime.mercury_alert"].human_readable_active_period.translation);
 }
 
 function getStatus(obj) {
@@ -619,29 +643,7 @@ function emitRRStatus(name, lines) {
   return h;
 }
 
-var allRoutes;
-var alertsResp;
-function parseRoutes(r) { /*r=resp*/
-  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  /* r.contents is JSONP */
-  allRoutes = typeof (r = r.contents || r) === 'object' ? r : eval('0,' + r);
-  if (alertsResp)
-    drawHTML();
-}
-
-function parseAlerts(r) { /*r=resp*/
-  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  /* r.contents is JSONP */
-  /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
-  alertsResp = filterCurrentStatii((typeof(r = r.contents || r) === 'object' ? r : this.JSON ? JSON.parse(r) : eval('0,' + r)).entity);
-  if (allRoutes)
-    drawHTML();
-}
-function drawHTML() {
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
-      function BUSROUTES () { return 0;}
-      function RAILLINES () { return 1;}
-      function SUBWAYLINES () { return 2;}
       var allStatii = {
         busRoutes: mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']),
         railLines: mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']),
