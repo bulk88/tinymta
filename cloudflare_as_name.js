@@ -117,8 +117,8 @@ function parseIsoDatetime(dt,i) {
  */
 async function handleRequest(request, event) {
   var url = new URL(request.url)
-    ,pathname_callback = url.pathname;
-    console.log(pathname_callback)
+    ,pathname_callback = url.pathname,resp;
+  console.log(pathname_callback)
   if (pathname_callback === '/favicon.ico') {
     return new Response(faviconStr, {
       headers: {
@@ -129,10 +129,18 @@ async function handleRequest(request, event) {
     });
   }
 else if (pathname_callback.startsWith('/api/')) {
-  var resp = pathname_callback.substr(5,3);
-  resp = fetch((resp === 'su/' // 'li/' othr choice
+  var ct_pathnameroot = pathname_callback.substr(5,3);
+  resp = ct_pathnameroot === 'rts' ?
+    new Promise((resolve) => {
+      resolve(new Response(gRoutes, {
+        headers: {
+          'content-type': 'application/json'
+        }
+      }));
+    })
+    : fetch((ct_pathnameroot === 'su/' // 'li/' othr choice
     ? 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
-    : resp === 'alt' ?
+    : ct_pathnameroot === 'alt' ?
     "http://collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP"
     : "http://backend-unified.mylirr.org/arrivals/")
     //is "" for "alt"
@@ -145,10 +153,14 @@ else if (pathname_callback.startsWith('/api/')) {
   pathname_callback = (url.searchParams.get('callback') || '_xcallback').replace(/[^\[\]\w$.]/g, '');
   pathname_callback = '/**/ typeof ' + pathname_callback + ' === \'function\' && ' + pathname_callback + '({http_code:';
   resp = await resp;
-  var ct = resp.headers.get('content-type');
-  pathname_callback += resp.status + ',content_type:\'' + ct + '\',contents:';
+  if (ct_pathnameroot === 'rts') {
+    console.log('wup');
+    event.waitUntil((updateRoutes()));
+  }
+  ct_pathnameroot = resp.headers.get('content-type');
+  pathname_callback += resp.status + ',content_type:\'' + ct_pathnameroot + '\',contents:';
   resp = await resp.text();
-  return new Response(pathname_callback + (ct.startsWith('application/json')
+  return new Response(pathname_callback + (ct_pathnameroot.startsWith('application/json')
     //from express
     ?resp.replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029') :
     JSON.stringify(resp)) + '});', {
@@ -166,7 +178,7 @@ else if (pathname_callback.startsWith('/s/')) {
   pathname_callback = pathname_callback.substr(('/s/'.length), 3);
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:" + pathname_callback;
-    var resp = fetch(url_headsign);
+    resp = fetch(url_headsign);
     var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] <a href=' + url_headsign + '>Raw</a><br>';
     var hotkeys = [2,3,4,5,6,7,8,9,0];
     resp = await resp;
@@ -300,7 +312,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
   pathname_callback = pathname_callback.substr(('/li/s/'.length), 3);
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://backend-unified.mylirr.org/arrivals/" + pathname_callback;
-    var resp = fetch(url_headsign, {
+    resp = fetch(url_headsign, {
       headers: {
         'accept-version' : '3.0'
       }
@@ -381,11 +393,112 @@ else if (pathname_callback === "/routes.js") {
         'access-control-allow-origin': '*',
       }
     }));
-  event.waitUntil((async function (resolveCB) {
+  event.waitUntil((updateRoutes()));
+      return null;
+    }
+  /* Workers Preview has undef cf obj and cf prop is tested R/O
+  United Nations (AS676) is a very unique looking ISP */
+  var cf = request?.cf || {
+    asn: 676
+  };
+  var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
+  var etag = 'W/"'+ip+'.'+cf.asn+'"';
+  if(request?.headers?.get('if-none-match') == etag){
+    return new Response(null, {status: 304});
+  }
+  var asnqstr = "AS" + cf.asn;
+  //todo check len for 255 overflow
+  asnqstr = String.fromCharCode(asnqstr.length) + asnqstr +
+    "\x03\x61\x73\x6e\x05\x63\x79\x6d\x72\x75\x03\x63\x6f\x6d\x00\x00\x10\x00\x01";
+  /* Workers Preview bug doesn't allow IP addr hosts */
+  resp = fetch("https://" + (request?.cf ? "1.1.1.1" :
+    "cloudflare-dns.com") + "/dns-query", {
+    method: 'post',
+    body: "\x00\x02\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + asnqstr,
+    headers: {
+      "content-type": 'application/dns-message'
+    }
+  });
+  /* fit some CPU tast during I/O block */
+  asnqstr = new TextEncoder().encode(asnqstr);
+  /* Chop QTYPE 16b and QCLASS 16b off end, to set up for a
+    future memcmp range leaving only QNAME (host name) as the field to match*/
+  var endptr = asnqstr.byteLength - 4;
+  resp = await resp;
+  /* don't error check the 1.1.1.1 HTTP server, unimaginable it goes down */
+  var bufmetaobj = await resp.arrayBuffer();
+  var bufdv = new DataView(bufmetaobj);
+  /*QR bit 0x8000, Recur desire 0x100
+   (0x200 is truncate, error if on, check is free CPU wise),
+   recur available 0x80, start at offset 2, skipping 16b ID */
+  if ((bufdv.getUint16(2) & 0x8380) == 0x8180
+    /* questions count and answer count */
+    &&
+    bufdv.getUint32(4) == 0x10001
+    /* NS count and additional record count , 2 16b zeros*/
+    &&
+    bufdv.getUint32(8) == 0) {
+    let i, equal_flag, i_ptr;
+    /* https://code.woboq.org/userspace/glibc/resolv/res_send.c.html#266
+    glibc res_nameinquery() checks the question section in the response
+    against what it sent out on the wire to make sure its identical
+    do that here through a memcmp()*/
+    equal_flag = 1;
+    for (i = 0; i < asnqstr.byteLength; i++) {
+      if (asnqstr[i] !== bufdv.getUint8(i + 12)) {
+        equal_flag = 0;
+        break;
+      }
+    }
+    if (equal_flag) {
+      //pointer is on 1st byte after question section now
+      i += 12;
+      let ansdomainlabelptr;
+      if ((bufdv.getUint8(i) & 0xC0) == 0xC0) {
+        /* LABEL_POINTER aka Message compression */
+        /* https://github.com/tjfontaine/native-dns-packet/blob/master/packet.js#L75 */
+        ansdomainlabelptr = bufdv.getUint16(i) & ~0xC000;
+        i_ptr = i + 2;
+      } else {
+        ansdomainlabelptr = i;
+        i_ptr = i + endptr;
+      }
+      equal_flag = 1;
+      for (i = 0; i < endptr; i++) {
+        if (asnqstr[i] !== bufdv.getUint8(i + ansdomainlabelptr)) {
+          equal_flag = 0;
+          break;
+        }
+      }
+      if (equal_flag) {
+        /* 0x10 TXT record, 0x01 class internet */
+        if (bufdv.getUint32(i_ptr) == 0x00100001) {
+          /*skip 16b QTYPE, 16b QCLASS, and 32b TTL */
+          i_ptr += 8;
+          /* check 16b RDLENGTH  for sanity*/
+          if (bufdv.getUint16(i_ptr) + (i_ptr += 2) == bufdv.byteLength) {
+            /* check 8b <character-string> node for sanity*/
+            if (bufdv.getUint8(i_ptr) + (i_ptr += 1) == bufdv.byteLength) {
+              return mkJSResp("Your ISP: "+ip+" | AS"+new TextDecoder().decode(new Uint8Array(bufdv
+                .buffer, i_ptr)),{etag: etag});
+            }
+          }
+        }
+      }
+    }
+  }
+  return mkJSResp("ERROR: raw data: "+new TextDecoder().decode(new Uint8Array(bufmetaobj)),{});
+}
+/* throws in CF, prints JS in browser dev console */
+//try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
+//catch(e){}
+
+async function updateRoutes (resolveCB) {
       var i = 0,
       ghkey,
       e, /* entry */
       etag,
+      resp,
       resp_min,
       new_resp_min,
       routes_escaped,
@@ -444,6 +557,7 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises
         etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
+        console.log('at etag upd comp');
         if (routesEtag !== etag) {
           console.log('etag mismatch')
           try {
@@ -732,109 +846,7 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
             }
         }
         return true;
-  }}()));
-      return null;
-    }
-  /* Workers Preview has undef cf obj and cf prop is tested R/O
-  United Nations (AS676) is a very unique looking ISP */
-  var cf = request?.cf || {
-    asn: 676
-  };
-  var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"'+ip+'.'+cf.asn+'"';
-  if(request?.headers?.get('if-none-match') == etag){
-    return new Response(null, {status: 304});
-  }
-  var asnqstr = "AS" + cf.asn;
-  //todo check len for 255 overflow
-  asnqstr = String.fromCharCode(asnqstr.length) + asnqstr +
-    "\x03\x61\x73\x6e\x05\x63\x79\x6d\x72\x75\x03\x63\x6f\x6d\x00\x00\x10\x00\x01";
-  /* Workers Preview bug doesn't allow IP addr hosts */
-  var resp = fetch("https://" + (request?.cf ? "1.1.1.1" :
-    "cloudflare-dns.com") + "/dns-query", {
-    method: 'post',
-    body: "\x00\x02\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + asnqstr,
-    headers: {
-      "content-type": 'application/dns-message'
-    }
-  });
-  /* fit some CPU tast during I/O block */
-  asnqstr = new TextEncoder().encode(asnqstr);
-  /* Chop QTYPE 16b and QCLASS 16b off end, to set up for a
-    future memcmp range leaving only QNAME (host name) as the field to match*/
-  var endptr = asnqstr.byteLength - 4;
-  resp = await resp;
-  /* don't error check the 1.1.1.1 HTTP server, unimaginable it goes down */
-  var bufmetaobj = await resp.arrayBuffer();
-  var bufdv = new DataView(bufmetaobj);
-  /*QR bit 0x8000, Recur desire 0x100
-   (0x200 is truncate, error if on, check is free CPU wise),
-   recur available 0x80, start at offset 2, skipping 16b ID */
-  if ((bufdv.getUint16(2) & 0x8380) == 0x8180
-    /* questions count and answer count */
-    &&
-    bufdv.getUint32(4) == 0x10001
-    /* NS count and additional record count , 2 16b zeros*/
-    &&
-    bufdv.getUint32(8) == 0) {
-    let i, equal_flag, i_ptr;
-    /* https://code.woboq.org/userspace/glibc/resolv/res_send.c.html#266
-    glibc res_nameinquery() checks the question section in the response
-    against what it sent out on the wire to make sure its identical
-    do that here through a memcmp()*/
-    equal_flag = 1;
-    for (i = 0; i < asnqstr.byteLength; i++) {
-      if (asnqstr[i] !== bufdv.getUint8(i + 12)) {
-        equal_flag = 0;
-        break;
-      }
-    }
-    if (equal_flag) {
-      //pointer is on 1st byte after question section now
-      i += 12;
-      let ansdomainlabelptr;
-      if ((bufdv.getUint8(i) & 0xC0) == 0xC0) {
-        /* LABEL_POINTER aka Message compression */
-        /* https://github.com/tjfontaine/native-dns-packet/blob/master/packet.js#L75 */
-        ansdomainlabelptr = bufdv.getUint16(i) & ~0xC000;
-        i_ptr = i + 2;
-      } else {
-        ansdomainlabelptr = i;
-        i_ptr = i + endptr;
-      }
-      equal_flag = 1;
-      for (i = 0; i < endptr; i++) {
-        if (asnqstr[i] !== bufdv.getUint8(i + ansdomainlabelptr)) {
-          equal_flag = 0;
-          break;
-        }
-      }
-      if (equal_flag) {
-        /* 0x10 TXT record, 0x01 class internet */
-        if (bufdv.getUint32(i_ptr) == 0x00100001) {
-          /*skip 16b QTYPE, 16b QCLASS, and 32b TTL */
-          i_ptr += 8;
-          /* check 16b RDLENGTH  for sanity*/
-          if (bufdv.getUint16(i_ptr) + (i_ptr += 2) == bufdv.byteLength) {
-            /* check 8b <character-string> node for sanity*/
-            if (bufdv.getUint8(i_ptr) + (i_ptr += 1) == bufdv.byteLength) {
-              return mkJSResp("Your ISP: "+ip+" | AS"+new TextDecoder().decode(new Uint8Array(bufdv
-                .buffer, i_ptr)),{etag: etag});
-            }
-          }
-        }
-      }
-    }
-  }
-  return mkJSResp("ERROR: raw data: "+new TextDecoder().decode(new Uint8Array(bufmetaobj)),{});
-}
-/* throws in CF, prints JS in browser dev console */
-//try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
-//catch(e){}
-
-async function updateRoutes(event, resolveCB, url, clientEtag, failedCache) {
-
-}
+  }}
 
 var mapper = {};
 
