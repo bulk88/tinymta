@@ -117,8 +117,9 @@ function parseIsoDatetime(dt,i) {
  */
 async function handleRequest(request, event) {
   var url = new URL(request.url)
-    ,pathname_callback = url.pathname,resp;
-  console.log(pathname_callback)
+    ,pathname_callback = url.pathname
+    ,resp;
+  //console.log(pathname_callback);
   if (pathname_callback === '/favicon.ico') {
     return new Response(faviconStr, {
       headers: {
@@ -154,7 +155,6 @@ else if (pathname_callback.startsWith('/api/')) {
   pathname_callback = '/**/ typeof ' + pathname_callback + ' === \'function\' && ' + pathname_callback + '({http_code:';
   resp = await resp;
   if (ct_pathnameroot === 'rts') {
-    console.log('wup');
     event.waitUntil((updateRoutes()));
   }
   ct_pathnameroot = resp.headers.get('content-type');
@@ -557,9 +557,9 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises
         etag = 'W/"' + btoa(String.fromCharCode.apply(null, new Uint8Array(etag))) + '"';
-        console.log('at etag upd comp');
+        //console.log('at etag upd comp');
         if (routesEtag !== etag) {
-          console.log('etag mismatch')
+          //console.log('etag mismatch');
           try {
             ghkey = GHAPISECRET
           } catch (e) {
