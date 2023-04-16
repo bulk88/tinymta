@@ -565,14 +565,11 @@ function sortSubwayLines (routes) {
   })
 }
 
-function SET_SUBWAY_LINES(state, res) {
+function SET_SUBWAY_LINES(state, subwayLinesAlertsMerged) {
   var subwayLines = state.subwayLines;
   var goodServiceLines = state.goodServiceLines;
-/* unused
-  state.lastUpdated = res.lastUpdated;
-*/
 
-  (state.allSubwayLines = res.subwayLines)
+  (state.allSubwayLines = subwayLinesAlertsMerged)
   .forEach(function (route) {
     if (route[ROUTE_STATUSDETAILS()]) {
       subwayLines.push(route)
@@ -584,9 +581,9 @@ function SET_SUBWAY_LINES(state, res) {
   sortSubwayLines(subwayLines)
   sortSubwayLines(goodServiceLines)
 }
-function SET_BUS_ROUTES(state, res) {
+function SET_BUS_ROUTES(state, busRoutes) {
   var alertedBuses = state.alertedBuses;
-  (state.busRoutes = res.busRoutes).forEach(function (route) {
+  (state.busRoutes = busRoutes).forEach(function (route) {
     if (route[ROUTE_STATUSDETAILS()]) {
       route[ROUTE_STATUSDETAILS()].sort(function (a, b) {
         return b.priority - a.priority
@@ -595,11 +592,11 @@ function SET_BUS_ROUTES(state, res) {
     }
   })
 }
-function SET_RAIL_LINES(state, res) {
+function SET_RAIL_LINES(state, railLines) {
   var longIslandLines = state.longIslandLines;
   var mnrLines = state.mnrLines;
 
-  res.railLines.forEach(function (line) {
+  railLines.forEach(function (line) {
     ( /* line.agency == AGENCY_MNR() mnr == 1 */ line[ROUTE_AGENCY()] ? mnrLines : longIslandLines
     //  : agency === 'MNR' || agency === 'NJT' ? mnrLines
     // b88 original MTA logic says maybe there are non-MTA rail lines
@@ -644,11 +641,6 @@ function emitRRStatus(name, lines) {
 }
 
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
-      var allStatii = {
-        busRoutes: mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']),
-        railLines: mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']),
-        subwayLines: mergeStatii(allRoutes[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY'])
-      };
       var state = {
         mnrLines: [],
 /* init unneeded
@@ -675,9 +667,9 @@ function emitRRStatus(name, lines) {
         alertedBuses: []
       }
 
-      SET_SUBWAY_LINES(state, allStatii);
-      SET_RAIL_LINES(state, allStatii);
-      SET_BUS_ROUTES(state, allStatii);
+      SET_SUBWAY_LINES(state, mergeStatii(allRoutes[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY']));
+      SET_RAIL_LINES(state, mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']));
+      SET_BUS_ROUTES(state, mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']));
       var groupedByStatusLines = groupedLines(state.subwayLines);
 
       for (i=0; i < groupedByStatusLines.length; i++) {
