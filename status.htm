@@ -404,8 +404,8 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
   function getSummary (status) {
     var alert = "No Status Summary";
 
-    if (status.alert['transit_realtime.mercury_alert']) {
-      alert = status.alert['transit_realtime.mercury_alert'].alert_type;
+    if (status = status.alert['transit_realtime.mercury_alert']) {
+      alert = status.alert_type;
     }
 
     return alert;
@@ -465,13 +465,13 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
     return false;
   };
 
-  function getPriority (entity) {
+  function getPriority (entity_sortorder) {
     var priority = -10;
 
-    if (entity['transit_realtime.mercury_entity_selector']) {
-      if (entity['transit_realtime.mercury_entity_selector'].sort_order) {
-        priority = entity['transit_realtime.mercury_entity_selector'].sort_order.split(':');
-        priority = priority[2] ? priority[2] * 1 : 100;
+    if (entity_sortorder = entity_sortorder['transit_realtime.mercury_entity_selector']) {
+      if (entity_sortorder = entity_sortorder.sort_order) {
+        priority = entity_sortorder.split(':')[2];
+        priority = priority ? priority * 1 : 100;
       }
     }
 
