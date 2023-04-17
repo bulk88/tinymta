@@ -498,12 +498,8 @@ function sortSubwayLines (routes) {
   })
 }
 
-function SET_SUBWAY_LINES(state, subwayLinesAlertsMerged) {
-  var subwayLines = state.subwayLines;
-  var goodServiceLines = state.goodServiceLines;
-
-  (state.allSubwayLines = subwayLinesAlertsMerged)
-  .forEach(function (route) {
+function SET_SUBWAY_LINES(subwayLines, goodServiceLines, subwayLinesAlertsMerged) {
+  subwayLinesAlertsMerged.forEach(function (route) {
     if (route[ROUTE_STATUSDETAILS()]) {
       subwayLines.push(route)
     } else {
@@ -514,9 +510,8 @@ function SET_SUBWAY_LINES(state, subwayLinesAlertsMerged) {
   sortSubwayLines(subwayLines)
   sortSubwayLines(goodServiceLines)
 }
-function SET_BUS_ROUTES(state, busRoutes) {
-  var alertedBuses = state.alertedBuses;
-  (state.busRoutes = busRoutes).forEach(function (route) {
+function SET_BUS_ROUTES(alertedBuses, busRoutes) {
+  busRoutes.forEach(function (route) {
     if (route[ROUTE_STATUSDETAILS()]) {
       route[ROUTE_STATUSDETAILS()].sort(function (a, b) {
         return b.priority - a.priority
@@ -525,10 +520,7 @@ function SET_BUS_ROUTES(state, busRoutes) {
     }
   })
 }
-function SET_RAIL_LINES(state, railLines) {
-  var longIslandLines = state.longIslandLines;
-  var mnrLines = state.mnrLines;
-
+function SET_RAIL_LINES(mnrLines, longIslandLines, railLines) {
   railLines.forEach(function (line) {
     ( /* line.agency == AGENCY_MNR() mnr == 1 */ line[ROUTE_AGENCY()] ? mnrLines : longIslandLines
     //  : agency === 'MNR' || agency === 'NJT' ? mnrLines
@@ -574,36 +566,16 @@ function emitRRStatus(name, lines) {
 }
 
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
-      var state = {
-        mnrLines: [],
-/* init unneeded
-        busRoutes: [],
-*/
-        subwayLines: [],
-/* unused
-        componentRoutes: [],
-*/
-        longIslandLines: [],
-        goodServiceLines: [],
-/* unused
-        favorites: null,
-        lastUpdated: null,
-        lineListError: null,
-*/
-/* init unneeded
-        allSubwayLines: null,
-*/
-/* unused
-        subwayLineGroups: null,
-        serviceStatusLoading: false,
-*/
-        alertedBuses: []
-      }
+      var alertedBuses = [];
+      var mnrLines = [];
+      var longIslandLines = [];
+      var subwayLines = [];
+      var goodServiceLines = [];
 
-      SET_SUBWAY_LINES(state, mergeStatii(allRoutes[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY']));
-      SET_RAIL_LINES(state, mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']));
-      SET_BUS_ROUTES(state, mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']));
-      var groupedByStatusLines = groupedLines(state.subwayLines);
+      SET_SUBWAY_LINES(subwayLines, goodServiceLines, mergeStatii(allRoutes[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY']));
+      SET_RAIL_LINES(mnrLines, longIslandLines, mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']));
+      SET_BUS_ROUTES(alertedBuses, mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']));
+      var groupedByStatusLines = groupedLines(subwayLines);
 
       for (i=0; i < groupedByStatusLines.length; i++) {
         var linearr = groupedByStatusLines[i];
@@ -623,7 +595,7 @@ function emitRRStatus(name, lines) {
         }
       }
 
-      groupedByStatusLines = state.goodServiceLines;
+      groupedByStatusLines = goodServiceLines;
       if(groupedByStatusLines.length) {
         h += '<hr>No Active Alerts<br>';
         for (i=0; i < groupedByStatusLines.length; i++) {
@@ -632,9 +604,9 @@ function emitRRStatus(name, lines) {
         }
       }
 
-      h += emitRRStatus('Metro-North Railroad',state.mnrLines);
-      h += emitRRStatus('Long Island Rail Road',state.longIslandLines);
-      h += emitRRStatus('Bus', state.alertedBuses);
+      h += emitRRStatus('Metro-North Railroad', mnrLines);
+      h += emitRRStatus('Long Island Rail Road', longIslandLines);
+      h += emitRRStatus('Bus', alertedBuses);
 
     document.body.innerHTML += h;
     alertsResp = void 0;
