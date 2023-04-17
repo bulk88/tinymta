@@ -539,10 +539,8 @@ function getStatus(obj) {
 }
 
 function emitRRStatus(name, lines) {
-  var h = '';
-  if (lines.length) {
-    h += '<hr>' + name + '<br>';
-    h += lines.map(function (route) {
+  return '<hr>' + name + '<br>'
+    + lines.map(function (route) {
       var status = getStatus(route);
       var has_alert = status  != "On or Close";
       return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + status + (has_alert ? '</summary>' + route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
@@ -552,8 +550,6 @@ function emitRRStatus(name, lines) {
            + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription) : '')
         }).join('<hr>') + '</details>' : '')
     }).join('');
-  }
-  return h;
 }
 
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
@@ -586,11 +582,10 @@ function emitRRStatus(name, lines) {
         }
       }
 
-      groupedByStatusLines = goodServiceLines;
-      if(groupedByStatusLines.length) {
+      if(goodServiceLines.length) {
         h += '<hr>No Active Alerts<br>';
-        for (i=0; i < groupedByStatusLines.length; i++) {
-          route = groupedByStatusLines[i][ROUTE_NAME()];
+        for (i=0; i < goodServiceLines.length; i++) {
+          route = goodServiceLines[i][ROUTE_NAME()];
           h+=mkSubFontTag('['+route+']', route)+' ';
         }
       }
@@ -675,7 +670,7 @@ function getJSON(url, alertFlag, addIMS) {
     '//tinymta.us.to' +
 /*ENDDELETE*/
         (alertFlag ?
-        "/api/alt" : "/api/rts")+'?callback='+(alertFlag?'parseAlerts':'parseRoutes');
+        "/api/alt?callback=" + 'parseAlerts' : "/api/rts?callback=" + 'parseRoutes');
         jsonp = document.getElementsByTagName('head')[0];
         /*dont leak mem adding infinite JSONP script elements
         this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
