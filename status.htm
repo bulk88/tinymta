@@ -71,31 +71,6 @@ function mkSubFontTag(text, route) {
   return c ?'<font color='+c+'>'+text+'</font>':text;
 }
 
-if (typeof Object.assign != 'function') {
-  Object.assign = function (target, varArgs) { // .length of function is 2
-  'use strict';
-  if (target == null) { // TypeError if undefined or null
-    throw new TypeError('Cannot convert undefined or null to object');
-  }
-
-  var to = Object(target);
-
-  for (var index = 1; index < arguments.length; index++) {
-    var nextSource = arguments[index];
-
-    if (nextSource != null) { // Skip over if undefined or null
-      for (var nextKey in nextSource) {
-        // Avoid bugs when hasOwnProperty is shadowed
-        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-          to[nextKey] = nextSource[nextKey];
-        }
-      }
-    }
-  }
-  return to;
-}
-}
-
 if (!Array.prototype.find) {
   Array.prototype.find = function(callback) {
   if (this === null) {
@@ -411,46 +386,6 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
     return alert;
   }
 
-  function getDates (status) {
-    var startDate = null;
-    var endDate = null;
-    var creationDate = null;
-
-    if (status.alert.active_period) {
-      var currentTime = Math.round(Date.now() / 1000);
-      var activePeriod = false;
-
-      status.alert.active_period.forEach(function (period) {
-        if (period.start) {
-          if (currentTime > period.start) {
-            activePeriod = period;
-          }
-
-          if (period.end && currentTime > period.end) {
-            activePeriod = false;
-          }
-
-          if (activePeriod) {
-            return;
-          }
-        }
-      });
-
-      startDate = activePeriod.start ? new Date(activePeriod.start * 1000).toISOString() : null;
-      endDate = activePeriod.end ? new Date(activePeriod.end * 1000).toISOString() : null;
-    }
-
-    if (status.alert['transit_realtime.mercury_alert']) {
-      creationDate = new Date(status.alert['transit_realtime.mercury_alert'].created_at * 1000).toISOString();
-    }
-
-    return {
-      startDate: startDate,
-      endDate: endDate,
-      creationDate: creationDate
-    }
-  }
-
   function getDescription(status) {
     if (status = status.alert.description_text) {
       return transArrToHTML(status.translation)
@@ -497,9 +432,8 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
           var description = getDescription(status);
           var header = getHeader(status);
           var priority = getPriority(entity);
-          var dates = getDates(status);
 
-          var statusItem = Object.assign({
+          return { //statusItem
             id: status.id,
             statusSummary: summary,
             statusDescription: description,
@@ -507,8 +441,7 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
             priority: priority,
             direction: direction_id,
             originalStatus: status
-          }, dates);
-          return statusItem;
+          };
         });
 
       if (statii.length > 0) {
