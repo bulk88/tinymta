@@ -334,14 +334,6 @@ function noPTag(str) {
   }
   return str;
 }
-function hasDuration(alert) {
-  return alert.originalStatus.alert["transit_realtime.mercury_alert"]
-  .human_readable_active_period;
-}
-function getDurations(alert) {
-  return transArrToHTML(alert.originalStatus.alert["transit_realtime.mercury_alert"].human_readable_active_period.translation);
-}
-
 
 var allRoutes;
 var alertsResp;
@@ -421,26 +413,24 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
     if ((alertedRoute = alertsByRoute[agency]) && (alertedRoute = alertedRoute[key])) {
       var statii =
         alertedRoute.map(function (status) {
-          var direction_id = 1;
           var entity = status.alert.informed_entity.find(function (entity) {
             return entity.agency_id === agency && entity.route_id.toLowerCase() === key ? 1 : 0
           });
-          if (entity.trip) {
-            direction_id = entity.trip.direction_id;
-          }
+
           var summary = getSummary(status);
           var description = getDescription(status);
           var header = getHeader(status);
           var priority = getPriority(entity);
 
+          var duration = status.alert["transit_realtime.mercury_alert"].human_readable_active_period;
+          duration = duration ? transArrToHTML(duration.translation) : '';
+
           return { //statusItem
-            id: status.id,
             statusSummary: summary,
             statusDescription: description,
             statusTitle: header,
             priority: priority,
-            direction: direction_id,
-            originalStatus: status
+            duration: duration
           };
         });
 
@@ -553,11 +543,12 @@ function emitRRStatus(name, lines) {
   if (lines.length) {
     h += '<hr>' + name + '<br>';
     h += lines.map(function (route) {
-      var has_alert = route[ROUTE_STATUSDETAILS()] && route[ROUTE_STATUSDETAILS()].length;
-      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + getStatus(route) + (has_alert ? '</summary>' + route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
+      var status = getStatus(route);
+      var has_alert = status  != "On or Close";
+      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + status + (has_alert ? '</summary>' + route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
           return '<b>' + statusDetail.statusSummary + '</b>'
            + '<br>' + noPTag(statusDetail.statusTitle)
-           + (hasDuration(statusDetail) ? '<br>' + getDurations(statusDetail) : '')
+           + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
            + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription) : '')
         }).join('<hr>') + '</details>' : '')
     }).join('');
@@ -588,7 +579,7 @@ function emitRRStatus(name, lines) {
           h += route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
             return '<b>'+statusDetail.statusSummary+'</b>'
             + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
-            + (hasDuration(statusDetail)?'<br>'+getDurations(statusDetail):'')
+            + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
             + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription).replace(/\[(\w+)\]/g, mkSubFontTag):'')
           }).join('<hr>');
           h+='</details>';
