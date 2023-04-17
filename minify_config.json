@@ -6,7 +6,8 @@
   "minifyJS": {
     "compress": {
       "inline": true,
-      "unsafe": true
+      "unsafe": true,
+      "passes": 2
     },
     "ie": true,
     "mangle": {
