@@ -642,7 +642,7 @@ function getJSON(url, alertFlag, addIMS) {
                   which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
                 */
                 'withCredentials' in x || x.getResponseHeader("Date")
-                    ? (alertFlag?parseAlerts:parseRoutes)(x.response)
+                    ? (alertFlag?parseAlerts:parseRoutes)(x.response||x.responseText)
                     : getJSON(url, alertFlag, 1);
             }
             else
