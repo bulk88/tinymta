@@ -83,22 +83,22 @@ function genArvBodyObj(r) {
     /* r.contents is JSONP */
     r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
     var i, w = "West<br>",
-        t, l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
+        l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[stacode] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
-    for (i = 0; i < r.arrivals.length; i++) {
-        t = r.arrivals[i];
+    for (i in r.arrivals) {
+        i = r.arrivals[i];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
-        l = new Date((l=t.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
+        l = new Date((l=i.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
         + '-Min ' + Math.ceil((l- (new Date().getTime()/1000)) / 60)
-        + '-Tk' + (t.track || '?')
+        + '-Tk' + (i.track || '?')
         + "-<font color=" + (
 /*STARTRAILCOLOR*/
-{"11":"60269E","12":"4D5357","BY":"00985F","CI":"4D5357","DN":"EE0034","FR":"6E3219","HA":"0039A6","HH":"006EC7","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NC":"EE0034","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WB":"EE0034","WH":"00A1DE"}
+{"11":"60269e","12":"4d5357","BY":"00985f","CI":"4d5357","DN":"ee0034","FR":"6e3219","HA":"0039a6","HH":"006ec7","HM":"ce8e00","HU":"009b3a","LB":"ff6319","MK":"00b2a9","NC":"ee0034","NH":"ee0034","OB":"00af3f","PJ":"006ec7","PW":"c60c30","RK":"a626aa","WB":"ee0034","WH":"00a1de"}
 /*ENDRAILCOLOR*/
-        )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
-        + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
-        t.direction == 'E' ? h += l : w += l;
+        )[i.branch] + ">" + s[(l=i.stops)[l.length - 1]]
+        + "</font>"+(i.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
+        i.direction == 'E' ? h += l : w += l;
     }
 /* test code
     r.banners =  [

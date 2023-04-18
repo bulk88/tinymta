@@ -71,7 +71,7 @@ try {
 function mkSubFontTag(text, route) {
   var c =
 /*STARTSUBCOLOR*/
-{"1":"EE352E","2":"EE352E","3":"EE352E","4":"00933C","5":"00933C","5X":"00933C","6":"00933C","6X":"00A65C","7":"B933AD","7X":"B933AD","A":"2850AD","B":"FF6319","C":"2850AD","D":"FF6319","E":"2850AD","F":"FF6319","FX":"FF6319","G":"6CBE45","GS":"6D6E71","J":"996633","L":"A7A9AC","M":"FF6319","N":"FCCC0A","Q":"FCCC0A","R":"FCCC0A","W":"FCCC0A","Z":"996633"}
+{"1":"ee352e","2":"ee352e","3":"ee352e","4":"00933c","5":"00933c","5X":"00933c","6":"00933c","6X":"00a65c","7":"b933ad","7X":"b933ad","A":"2850ad","B":"ff6319","C":"2850ad","D":"ff6319","E":"2850ad","F":"ff6319","FX":"ff6319","G":"6cbe45","GS":"6d6e71","J":"996633","L":"a7a9ac","M":"ff6319","N":"fccc0a","Q":"fccc0a","R":"fccc0a","W":"fccc0a","Z":"996633"}
 /*ENDSUBCOLOR*/
   [route||text];
   return c ?'<font color='+c+'>'+text+'</font>':text;
@@ -335,7 +335,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
         + '-Tk' + (t.track || '?')
         + "-<font color=" + (
 /*STARTRAILCOLOR*/
-{"11":"60269E","12":"4D5357","BY":"00985F","CI":"4D5357","DN":"EE0034","FR":"6E3219","HA":"0039A6","HH":"006EC7","HM":"CE8E00","HU":"009B3A","LB":"FF6319","MK":"00B2A9","NC":"EE0034","NH":"EE0034","OB":"00AF3F","PJ":"006EC7","PW":"C60C30","RK":"A626AA","WB":"EE0034","WH":"00A1DE"}
+{"11":"60269e","12":"4d5357","BY":"00985f","CI":"4d5357","DN":"ee0034","FR":"6e3219","HA":"0039a6","HH":"006ec7","HM":"ce8e00","HU":"009b3a","LB":"ff6319","MK":"00b2a9","NC":"ee0034","NH":"ee0034","OB":"00af3f","PJ":"006ec7","PW":"c60c30","RK":"a626aa","WB":"ee0034","WH":"00a1de"}
 /*ENDRAILCOLOR*/
         )[t.branch] + ">" + s[(l=t.stops)[l.length - 1]]
         + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak

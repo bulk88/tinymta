@@ -19,7 +19,7 @@ my $coder = Cpanel::JSON::XS->new->ascii->canonical(1);
 foreach(keys %$routes) {
     my $color = $routes->{$_}{route_color};
     if(length $color){ 
-        $colors{$_} = $color;
+        $colors{$_} = lc($color);
     } else {
         #JS code knows a hole means skip font tag
         #$colors{$_} = '000000';
