@@ -2,7 +2,7 @@
 use strict;
 use File::Slurp;
 use Text::CSV::Hashify;
-use Cpanel::JSON::XS;
+use JSON::PP;
 my $tag = $ARGV[0];
 my $obj = Text::CSV::Hashify->new( {
     file        => $ARGV[2] ? $ARGV[2] : 'routes.txt',
@@ -15,10 +15,23 @@ my $obj = Text::CSV::Hashify->new( {
 } );
 my %colors;
 my $routes = $obj->all;
-my $coder = Cpanel::JSON::XS->new->ascii->canonical(1);
+my $coder = JSON::PP->new->ascii->sort_by(sub {
+  my $a = $JSON::PP::a;
+  my $b = $JSON::PP::b;
+  #sort by value first, if value same,then key (route) name
+  return $_[0]->{$a} eq $_[0]->{$b} ? $a cmp $b : $_[0]->{$a} cmp $_[0]->{$b};
+  });
 foreach(keys %$routes) {
     my $color = $routes->{$_}{route_color};
-    if(length $color){ 
+    if(length $color){
+        #optimize to 3 digit hex color, only J/Z pass right now
+        #decided to not "round" the colors of the other routes
+        if (substr($color,0,1) eq substr($color,1,1)
+            && substr($color,2,1) eq substr($color,3,1)
+            && substr($color,4,1) eq substr($color,5,1)) {
+            $color = substr($color,1,1).substr($color,3,1).substr($color,5,1);
+        }
+
         $colors{$_} = lc($color);
     } else {
         #JS code knows a hole means skip font tag
