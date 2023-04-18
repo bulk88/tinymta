@@ -939,8 +939,7 @@ function ROUTE_AGENCY() {return 3};
       //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
       var route = [
         /*id*/   stop.id.split(':').pop(),
-        /* subway shuttles are integers sometimes */
-        /*name*/ stop.shortName == ""+(+stop.shortName) ? +(stop.shortName) : stop.shortName
+        /*name*/ stop.shortName
       ];
       /* subway shuttles have no color */
       if(stop.color) {
@@ -952,13 +951,21 @@ function ROUTE_AGENCY() {return 3};
       }
       return route;
     })
-  return mapRoutes.sort(function (line1, line2) {
+  mapRoutes.sort(function (line1, line2) {
     if (line1[ROUTE_NAME()] < line2[ROUTE_NAME()]) { //sort string alphabetically
       return -1;
     } else /*if (line1.route > line2.route)*/ {
       return 1;
     }
-  })
+  }).forEach(function(route) {
+/* subway shuttles are integers sometimes, save JSON bytes*/
+    var name = route[ROUTE_NAME()];
+    var nameInt = +name;
+    if(name == ""+nameInt) {
+      route[ROUTE_NAME()] = nameInt;
+    }
+  });
+  return mapRoutes;
 }
 
 function buildRailRoute (data_line) {

@@ -317,14 +317,8 @@ function transArrToHTML(translations) {
 }
 
 function noPTag(str) {
-  if(typeof str == 'string') {
-    //some notices include these at the end, after the global P tag we are trying to remove
-    str = str.replace(/(<p style="min-height:10px"><\/p>|<p><\/p>)+$/g,'');
-    if (str.indexOf('<p>') === 0 && str.indexOf('</p>', str.length - 4) !== -1) {
-      return str.slice(3, -4);
-    }
-  }
-  return str;
+  //remove root <p> tags and double blank lines and blank lines at end of HTML string
+  return str.replace(/(<p style="min-height:10px"><\/p>)|(^<p>)|((<p><\/p>|<\/p>)+$)/g,'');
 }
 
 var allRoutes;
