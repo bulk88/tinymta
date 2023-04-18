@@ -155,7 +155,7 @@ else if (pathname_callback.startsWith('/api/')) {
   pathname_callback = '/**/ typeof ' + pathname_callback + ' === \'function\' && ' + pathname_callback + '({http_code:';
   resp = await resp;
   if (ct_pathnameroot === 'rts') {
-    event.waitUntil((updateRoutes()));
+    event.waitUntil((updateRoutes(event)));
   }
   ct_pathnameroot = resp.headers.get('content-type');
   pathname_callback += resp.status + ',content_type:\'' + ct_pathnameroot + '\',contents:';
@@ -393,7 +393,7 @@ else if (pathname_callback === "/routes.js") {
         'access-control-allow-origin': '*',
       }
     }));
-  event.waitUntil((updateRoutes()));
+  event.waitUntil((updateRoutes(event)));
       return null;
     }
   /* Workers Preview has undef cf obj and cf prop is tested R/O
@@ -493,7 +493,7 @@ else if (pathname_callback === "/routes.js") {
 //try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
 //catch(e){}
 
-async function updateRoutes (resolveCB) {
+async function updateRoutes (event) {
       var i = 0,
       ghkey,
       e, /* entry */
