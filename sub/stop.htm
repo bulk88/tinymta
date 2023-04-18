@@ -170,20 +170,14 @@ if (r.length) {
                 (trip.track === void 0 ? '-Tk?' : '') +
                 (!trip.realtime ? '-NRT-' : '-') +
                 (function(rts) {
-                    switch (rts) {
-                        case "SCHEDULED":
-                            return "SCH";
-                        case "UPDATED":
-                            return "UPD";
-                        case "CANCELED":
-                            return "CNX";
-                        case "ADDED":
-                            return "ADD";
-                        case "MODIFIED":
-                            return "MOD";
-                        default:
-                            return "UNK";
-                    }
+                  rts = {
+                        "SCHEDULED": "SCH",
+                        "UPDATED": "UPD",
+                        "CANCELED": "CNX",
+                        "ADDED": "ADD",
+                        "MODIFIED": "MOD"
+                        }[rts];
+                  return rts ? rts : "UNK";
                 })(trip.realtimeState)
 /* delay can be neg, chop off fractional,
 OTP overflow bug on "service day", scheduledDeparture is seconds
