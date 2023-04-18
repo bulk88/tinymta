@@ -14,6 +14,9 @@ docs/more.htm : more.htm minify_config.json
 	copy /y more.htm "$@"
 	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
 
+status.htm : sub/routes.txt insertcolors.pl
+	perl insertcolors.pl "SUB" "$@" sub/routes.txt
+
 docs/status.htm : status.htm minify_config.json adj_stoppath.pl adj_postmini.pl
 	copy /y status.htm "$@"
 	perl adj_stoppath.pl "$@" 1
