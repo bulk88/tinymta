@@ -332,6 +332,19 @@ else if (pathname_callback.startsWith('/li/s/')) {
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = new Date((l = t.time) * 1000).toLocaleTimeString('en-US', { timeZone: 'America/New_York' }).replace(':00 ', ' ') +
           '-Min ' + Math.ceil((l - (new Date(new Date().toLocaleString()) / 1000)) / 60)
+/*
+        } else if (!_.isUndefined(train.status.otp)) {
+            const otpMin = Math.trunc(train.status.otp / 60)
+            const otpMinAbs = Math.abs(otpMin)
+            otpStr = 'On time'
+            if (otpMinAbs !== 0) {
+                const otpClass = otpMin < 0 ? 'late' : 'early'
+                const otpTerm = otpMinAbs === 1 ? 'minute' : 'minutes'
+                otpStr = `${otpMinAbs} ${otpTerm} ${otpClass}`
+            }
+        }
+*/
+        + ((l=i.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
         + '-Tk' + (t.track || '?')
         + "-<font color=" + (
 /*STARTRAILCOLOR*/
