@@ -533,15 +533,15 @@ function getStatus(obj) {
 }
 
 function emitRRStatus(name, lines) {
-  for(var i = 0; i < lines.length; i++) {
+  for(var statusDetail, n, i = 0; i < lines.length; i++) {
     var route = lines[i];
     var status = getStatus(route);
     var has_alert = status  != "On or Close";
     var statusDetails = '';
     if(has_alert) {
       statusDetails = route[ROUTE_STATUSDETAILS()];
-      for(var n = 0; n < statusDetails.length; n++) {
-        var statusDetail = statusDetails[n];
+      for(n = 0; n < statusDetails.length; n++) {
+        statusDetail = statusDetails[n];
         statusDetails[n] = '<b>' + statusDetail.statusSummary + '</b>'
          + '<br>' + noPTag(statusDetail.statusTitle)
          + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
