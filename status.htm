@@ -533,17 +533,25 @@ function getStatus(obj) {
 }
 
 function emitRRStatus(name, lines) {
-  return '<hr>' + name + '<br>'
-    + lines.map(function (route) {
-      var status = getStatus(route);
-      var has_alert = status  != "On or Close";
-      return '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + status + (has_alert ? '</summary>' + route[ROUTE_STATUSDETAILS()].map(function (statusDetail) {
-          return '<b>' + statusDetail.statusSummary + '</b>'
-           + '<br>' + noPTag(statusDetail.statusTitle)
-           + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
-           + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription) : '')
-        }).join('<hr>') + '</details>' : '')
-    }).join('');
+  for(var i = 0; i < lines.length; i++) {
+    var route = lines[i];
+    var status = getStatus(route);
+    var has_alert = status  != "On or Close";
+    var statusDetails = '';
+    if(has_alert) {
+      statusDetails = route[ROUTE_STATUSDETAILS()];
+      for(var n = 0; n < statusDetails.length; n++) {
+        var statusDetail = statusDetails[n];
+        statusDetails[n] = '<b>' + statusDetail.statusSummary + '</b>'
+         + '<br>' + noPTag(statusDetail.statusTitle)
+         + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
+         + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription) : '');
+      }
+      statusDetails = statusDetails.join('<hr>');
+    }
+    lines[i] =  '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + status + (has_alert ? '</summary>' + statusDetails + '</details>' : '');
+  }
+  return '<hr>' + name + '<br>' +lines.join('');
 }
 
       var h=(new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>",i,route,o;
