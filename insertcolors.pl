@@ -26,11 +26,15 @@ foreach(keys %$routes) {
     if(length $color){
         #optimize to 3 digit hex color, only J/Z pass right now
         #decided to not "round" the colors of the other routes
-        if (substr($color,0,1) eq substr($color,1,1)
-            && substr($color,2,1) eq substr($color,3,1)
-            && substr($color,4,1) eq substr($color,5,1)) {
-            $color = substr($color,1,1).substr($color,3,1).substr($color,5,1);
-        }
+        #REMOVED OPTIMIZATION <font color=E67> invalid for font tag
+        #but valid for <span style=color:, egh, dont want to upgrade whole
+        #code base and since J/Z only lines, with this optimizatoin, longer tag
+        #template in JS wont win vs jus 2 lines of wire bytes of color IMO
+        #if (substr($color,0,1) eq substr($color,1,1)
+        #    && substr($color,2,1) eq substr($color,3,1)
+        #    && substr($color,4,1) eq substr($color,5,1)) {
+        #    $color = substr($color,1,1).substr($color,3,1).substr($color,5,1);
+        #}
 
         $colors{$_} = lc($color);
     } else {
