@@ -235,47 +235,50 @@ const WEIRD_RAIL_LINES = [{
 */
 
 function filterCurrentStatii (statii) {
-  var alertsByRoute = {}, status, isCurrent;
+  var alertsByRoute = {}, status, isCurrent_routeId,
+      mercury_alert, n, arr_activePeriod_informedEntity, period_entity, startTime_route;
   var currentTime = Math.round(Date.now() / 1000);
   // Reduce the number of statii to only those that are current
   for(var i = 0; i < statii.length; i++) {
     status = statii[i];
-    isCurrent = false;
+    isCurrent_routeId = false;
 
     try {
     //MNR elevators do not have .active_period member, NYCT elevators do, both no mercury alert
     //no active_period 31 records, no mercury_alert 126 records, put mercury_alert test first
-      if (status.alert['transit_realtime.mercury_alert'] && status.alert.active_period
+      if ((mercury_alert = status.alert['transit_realtime.mercury_alert']) && status.alert.active_period
       /* b88 removed because GTFS spec says required field
         && status.alert['transit_realtime.mercury_alert'].alert_type */
         ) {
         /* <p>Exit/Entry for 3 Av will only be available from 2 PM to 10 PM on weekdays.
          at 53/lex DOES NOT HAVE A display_before_active field, this is opposite of MTA GTFS spec
          it has an alert_type of "Station Notice" */
-        var hasBeforeActive = status.alert['transit_realtime.mercury_alert'].hasOwnProperty('display_before_active');
+        var hasBeforeActive = mercury_alert.hasOwnProperty('display_before_active');
 
         var isPlannedWork = ~status.id.indexOf('planned_work');
 
         if (isPlannedWork && !hasBeforeActive) {
-          isCurrent = false;
+          isCurrent_routeId = false;
         } else {
-          status.alert.active_period.forEach(function (period) {
-            if (period.start && !isCurrent) {
-              var startTime = period.start;
+          arr_activePeriod_informedEntity = status.alert.active_period;
+          for(n=0; n < arr_activePeriod_informedEntity.length; n++) {
+            period_entity = arr_activePeriod_informedEntity[n];
+            if (period_entity.start && !isCurrent_routeId) {
+              startTime_route = period_entity.start;
 
               if (hasBeforeActive) {
-                startTime = startTime - status.alert['transit_realtime.mercury_alert'].display_before_active;
+                startTime_route = startTime_route - mercury_alert.display_before_active;
               }
 
-              if (currentTime > startTime) {
-                isCurrent = true;
+              if (currentTime > startTime_route) {
+                isCurrent_routeId = true;
               }
 
-              if (period.end && currentTime > period.end) {
-                isCurrent = false;
+              if (period_entity.end && currentTime > period_entity.end) {
+                isCurrent_routeId = false;
               }
             }
-          });
+          }
         }
       }
     } catch (e) {
@@ -283,17 +286,22 @@ function filterCurrentStatii (statii) {
     }
 
     // add to output byRoutes hash, initial props if needed
-    if (isCurrent) {
-      status.alert.informed_entity.forEach(function (entity) {
-        var route_id;
-        if (route_id = entity.route_id) { // some alerts are "stop_id" only
+    if (isCurrent_routeId) {
+      arr_activePeriod_informedEntity = status.alert.informed_entity;
+      for(n=0; n < arr_activePeriod_informedEntity.length; n++) {
+        /*now entity*/
+        period_entity = arr_activePeriod_informedEntity[n];
+        /*now routeId*/
+        isCurrent_routeId = period_entity.route_id;
+        if (isCurrent_routeId) { // some alerts are "stop_id" only
           //MNR:wassaic has diff caps between alerts and routes servers
-          route_id = route_id.toLowerCase();
-          var i = alertsByRoute[entity.agency_id] = alertsByRoute[entity.agency_id] || {};
-          i = (i[route_id] = i[route_id] || []);
-          i.push(status);
+          isCurrent_routeId = isCurrent_routeId.toLowerCase();
+          /*now route*/
+          startTime_route = alertsByRoute[period_entity.agency_id] = alertsByRoute[period_entity.agency_id] || {};
+          startTime_route = (startTime_route[isCurrent_routeId] = startTime_route[isCurrent_routeId] || []);
+          startTime_route.push(status);
         }
-      })
+      }
     }
   }
   return alertsByRoute;
