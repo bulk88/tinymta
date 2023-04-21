@@ -344,7 +344,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
             }
         }
 */
-        + ((l=i.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
+        + ((l=t.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
         + '-Tk' + (t.track || '?')
         + "-<font color=" + (
 /*STARTRAILCOLOR*/
