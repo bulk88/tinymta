@@ -360,7 +360,6 @@ function ROUTE_SORTORDER() {return 4};
 function ROUTE_STATUSDETAILS() {return 5};
 
 function mergeStatii (routes, alertsByRoute, agencyMap) {
-  var routesWithStatus = [];
 
   function getSummary (status) {
     var alert = "No Status Summary";
@@ -432,10 +431,11 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
         route[ROUTE_STATUSDETAILS()] = statii;
       }
     }
-    routesWithStatus.push(route);
   });
 
-  return routesWithStatus;
+  /*MTA code originally duped the array, no point, we filter routes for display
+    later on*/
+  return routes;
 }
 
 /*returns an array of status category objs,
