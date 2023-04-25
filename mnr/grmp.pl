@@ -41,7 +41,7 @@ foreach my $routename (@routes) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{$js ? 'stop_code' : 'stop_id'}});
+        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_code}});
     }
     @boroughs = sort keys %boroughs;
     my $rtfile = "$routename:";
@@ -75,9 +75,6 @@ foreach my $routename (@routes) {
                           $borough,
                           '', #no anchor
                           $accesskeyidx++);
-            if($js && !$rtfileheader) { #otherwise button bad formatting
-                $rtfileheader = '<style>form{margin-bottom:0px;margin-top:0px;}</style>';
-            }
         }
 
     }
@@ -98,9 +95,8 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($js?'href="/rstop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
+                .($js?'href="/rstop.htm#':'href="/li/s/')
                 .$stopid
-                .($js?'':','.$name)
     #Must having closing </a> to make no underline whitespace between links
                 .'">'.$dispname."</a>\n";
 }
@@ -113,9 +109,9 @@ sub altRtViewHTML {
     my $html;
     my $pageidx = $_[0];
     if($js) {
-        $html .= ' <a href="../rt'.$pageidx.'.htm">MTA No JS</a>';
+        $html .= ' <a href="../rt'.$pageidx.'.htm">No JS</a>';
     } else {
-        $html .= ' <a href="js/rt'.$pageidx.'.htm">MTA JS</a>';
+        $html .= ' <a href="js/rt'.$pageidx.'.htm">Use JS</a>';
     }
     return $html;
 }
@@ -139,7 +135,7 @@ if($file){
 }
 
 sub write_html { #$filename, $string
-    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'.($js?'':'<link href="http://as0.mta.info" rel="preconnect"><link href="http://as0.mta.info" rel="dns-prefetch">').'</head><body>'.$_[1].'<script src=../dumb.js></script></body></html>');
+    write_file($_[0], {binmode => ':raw'}, '<html><head><meta name=mobileoptimized content=0>'.($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link href="//backend-unified.mylirr.org" rel="dns-prefetch">':'').'</head><body>'.$_[1].'<script src=../../dumb.js></script></body></html>');
     system('html-minifier -c "../minify_config.json" -o "'.$_[0].'" "'.$_[0].'"') if $minifyhtml;
 }
 

@@ -19,7 +19,7 @@ my %borotbl = ( 'Queens' => 'Q',
                 'Orange' => 'O',
             );
 
-die "1st arg must be generate desktop MTA site stations or no-JS" if ! defined $ARGV[0];
+die "1st arg must be generate JS stations or no-JS" if ! defined $ARGV[0];
 my $js = $ARGV[0];
 our $VAR1;
 do '.\routedatafinal.pl';
@@ -28,13 +28,13 @@ my @linesboroughhtml;
 my @linestopshtml;
 my %rtdispname = getRouteDisplayNames('route_long_name');
 
-open(HTMLFILE, ">", ($js ? 'stationsjs.htm' : 'stations.htm'))
+open(HTMLFILE, ">", ($js ? 'stations.htm' : 'stationsnojs.htm'))
         || die "$0: can't open stations.htm for writing: $!";
 select(HTMLFILE);
 binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer">'
-.($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link href="//backend-unified.mylirr.org" rel="dns-prefetch"><link rel=prefetch href=/rstop.htm>':'<link href="http://as0.mta.info" rel="preconnect"><link href="http://as0.mta.info" rel="dns-prefetch">')
+.($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link href="//backend-unified.mylirr.org" rel="dns-prefetch"><link rel=prefetch href=/rstop.htm>':'')
 .'</head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
@@ -44,7 +44,7 @@ foreach my $rtid (nsort keys %$VAR1) {
     foreach my $stopidx (0..@$route-1) {
         my $stop = $$route[$stopidx];
         my $borough = $stop->{borough};
-        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{$js ? 'stop_code' : 'stop_id'}});
+        push(@{$boroughs{$borough}}, {name => $stop->{name}, stop => $stop->{stop_code}});
     }
     $line = "$routename:";
     #easier finger tapping if 1 or 2 char routenames
@@ -88,15 +88,14 @@ sub stopid_to_tag { #$html = stopid_to_tag($name, $stopid, $dispname, $anchornam
     my ($name, $stopid, $dispname, $anchorname, $accesskey) = @_;
     return '<a '.($anchorname?'name="'.$anchorname.'" ':'')
                 .($accesskey?'accesskey='.$accesskey.' ':'')
-                .($js?'href="/rstop.htm#':'href="http://as0.mta.info/mnr/mstations/station_status_display.cfm?P_AVIS_ID=')
+                .($js?'href="/rstop.htm#':'href="/li/s/')
                 .$stopid
-                .($js?'':','.$name)
     #dont include closing </a> or bytes saving when 2 sibling anchor elements
                 .'">'.$dispname;
 }
 
 print join(" \n", @lineshtml);
-print "\n<br>\n".($js?'<a href="stations.htm">No JS</a>'."<br>\n<div>\n":'<a href="stationsjs.htm">Use JS</a>'."<br>\n");
+print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.htm">Use JS</a>')."<br>\n";
 print join("<br>\n", @linesboroughhtml);
 print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
