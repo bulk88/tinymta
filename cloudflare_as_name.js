@@ -928,7 +928,14 @@ function ROUTE_COLOR() {return 2};
 function ROUTE_AGENCY() {return 3};
   var mapRoutes = stopData
     .filter(function (busRoute) {return busRoute.mode === 'BUS'
-      && !!~busRoute.id.indexOf('MTA')})
+      && !!~busRoute.id.indexOf('MTA')
+      //remove subway shuttle buses
+      //their alerts show up under actual mode subway/original rail routes
+      //this causes less route updates on weekends, in any case, Bustime app
+      //and MTA CS public side use made up Q**/B** to refer to shuttle buses
+      //on BT, not 7/J/A routes, yes GTFS paper doesn't agree with BT app on
+      //route names and schedules of shuttle buses
+      && busRoute.agencyName != 'MTA NYCT - Subway'})
     .map(function (stop) {
       //warning, subway shuttles have "id":"MTASBWYSHTL:7-SS" and "agencyName":"MTA NYCT - Subway" in raw route DB
       //in raw routes DB, reg buses all have "MTA:" id prefix regardless agency
