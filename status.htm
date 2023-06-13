@@ -245,12 +245,16 @@ function BUSROUTES() { return 0;}
 function RAILLINES() { return 1;}
 function SUBWAYLINES() { return 2;}
 
+//field 1 and 3 same for bus/rail/sub, all others differ
+//rail+bus is unified
 function ROUTE_ID() {return 0};
-function ROUTE_NAME() {return 1};
-function ROUTE_COLOR() {return 2};
-function ROUTE_AGENCY() {return 3};
-function ROUTE_SORTORDER() {return 4};
-function ROUTE_STATUSDETAILS() {return 5};
+function ROUTE_AGENCY() {return 2};
+
+function ROUTE_SUB_SORTORDER() {return 1};
+
+function ROUTE_COLOR() {return 1};
+function ROUTE_NAME() {return 3};
+function ROUTE_STATUSDETAILS() {return 4};
 
 function mergeStatii (routes, alertsByRoute, agencyMap) {
 
@@ -369,7 +373,7 @@ function groupedLines (lines){
 
 function sortSubwayLines (routes) {
   routes.sort(function (rd1, rd2) {
-    return rd1[ROUTE_SORTORDER()] - rd2[ROUTE_SORTORDER()]
+    return rd1[ROUTE_SUB_SORTORDER()] - rd2[ROUTE_SUB_SORTORDER()]
   })
 }
 
@@ -440,7 +444,7 @@ function emitRRStatus(name, lines) {
       }
       statusDetails = statusDetails.join('<hr>');
     }
-    lines[i] =  '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + route[ROUTE_NAME()] + '</font>' + ' ' + status + (has_alert ? '</summary>' + statusDetails + '</details>' : '');
+    lines[i] =  '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + (route[ROUTE_NAME()] ? route[ROUTE_NAME()] :  route[ROUTE_ID()].charAt(0) == 'B' && route[ROUTE_ID()].charAt(1) == 'X' ? "Bx"+route[ROUTE_ID()].substr(2):route[ROUTE_ID()]) + '</font>' + ' ' + status + (has_alert ? '</summary>' + statusDetails + '</details>' : '');
   }
   return '<hr>' + name + '<br>' +lines.join('');
 }
@@ -464,7 +468,7 @@ function emitRRStatus(name, lines) {
         for (o=0; o < linearr.length; o++) {
           route = linearr[o];
           //if(route.name=='SI') {debugger;}
-          h+='<details><summary>'+mkSubFontTag('['+route[ROUTE_NAME()]+']', route[ROUTE_NAME()])+'</summary>';
+          h+='<details><summary>'+mkSubFontTag('['+route[ROUTE_ID()]+']', route[ROUTE_ID()])+'</summary>';
           //route now alerts array, overwrite status-details array of objs with string.
           route = route[ROUTE_STATUSDETAILS()];
           for (n=0; n < route.length; n++) {
@@ -482,7 +486,7 @@ function emitRRStatus(name, lines) {
       if(goodServiceLines.length) {
         h += '<hr>No Active Alerts<br>';
         for (i=0; i < goodServiceLines.length; i++) {
-          route = goodServiceLines[i][ROUTE_NAME()];
+          route = goodServiceLines[i][ROUTE_ID()];
           h+=mkSubFontTag('['+route+']', route)+' ';
         }
       }

@@ -391,7 +391,114 @@ else if (pathname_callback.startsWith('/li/s/')) {
     }
   }
 }
-  
+//original 2270 gz, all gz sizes
+//Bx->BX, and display name dupe drop 1662
+//drop 5 slice subway to 3 slice (rmv ,s) 1657
+//agency vs display name flip for bus and rail 1652 (rmv ,s)
+//subway sort order before color, drop color if null, 1652->1646
+//H, FS, SI are missing colors in MTA routes DB
+//rmv subway colors from routes DB, b/c unused, we inc our
+//own color DB in HTML 1646->1600
+else if (pathname_callback === "/routesn.js") {
+    var j = JSON.parse(gRoutes.replace(/,,,/g, ',null,null,').replace(/,,/g, ',null,'));
+    j.forEach(e => {
+      e.forEach(e => {
+        var c = e[2];
+        var d = e[1];
+        e[1] = c;
+        e[2] = d;
+        if(String(e[2]).substr(0,2) === 'Bx') {
+          e[2] = 'BX'+e[2].substr(2);
+        }
+        if (e[0] === e[2]) {
+          e[2] = null;
+          if (e[2] == null && e.length == 3) {
+            e.pop();
+          }
+        }
+      })
+    });
+    return new Response(
+        clientEtag === routesEtag ? '' : JSON.stringify(j).replace(/null/g,''), {
+        status: clientEtag === routesEtag ? 304 : 200,
+        headers: {
+          'content-type': 'text/javascript',
+          'etag': routesEtag,
+          //don't double fetch with preload and fetch()
+          'cache-control': 'max-age=10, stale-while-revalidate=86400',
+          'access-control-allow-origin': '*',
+        }
+      });
+}
+else if (pathname_callback === "/routesa.js") {
+    var j = JSON.parse(gRoutes.replace(/,,,/g, ',null,null,').replace(/,,/g, ',null,'));
+    j.forEach(e => {
+      e.forEach(e => {
+        var c = e[2];
+        var d = e[1];
+        e[1] = c;
+        e[2] = d;
+        if(String(e[2]).substr(0,2) === 'Bx') {
+          e[2] = 'BX'+e[2].substr(2);
+        }
+        if (e[0] === e[2]) {
+          e[2] = null;
+          if (e[2] == null && e.length == 3) {
+            e.pop();
+          }
+        }
+      })
+    });
+    j[2].forEach(e => {e[2]=e[4];e.length=3});
+    return new Response(
+        clientEtag === routesEtag ? '' : JSON.stringify(j).replace(/null/g,''), {
+        status: clientEtag === routesEtag ? 304 : 200,
+        headers: {
+          'content-type': 'text/javascript',
+          'etag': routesEtag,
+          //don't double fetch with preload and fetch()
+          'cache-control': 'max-age=10, stale-while-revalidate=86400',
+          'access-control-allow-origin': '*',
+        }
+      });
+}
+else if (pathname_callback === "/routesb.js") {
+    var j = JSON.parse(gRoutes.replace(/,,,/g, ',null,null,').replace(/,,/g, ',null,'));
+    j.forEach(e => {
+      e.forEach(e => {
+        var c = e[2];
+        var d = e[1];
+        e[1] = c;
+        e[2] = d;
+        if(String(e[2]).substr(0,2) === 'Bx') {
+          e[2] = 'BX'+e[2].substr(2);
+        }
+        if (e[0] === e[2]) {
+          e[2] = null;
+          if (e[2] == null && e.length == 3) {
+            e.pop();
+          }
+        }
+      })
+    });
+    j[2].forEach(e => {e[2]=e[4];e.length=3});
+    j[2].forEach(e => {var s= e[2], c=e[1]; e[1] = s; e[2]=c; e[2]=null;var i = e.length; while(i && !e[i-1]) {e.length = i-1; i--};});
+    //non-false for rail+bus, agency 99, display names 43
+    function cleanbus (e) {var a = e[3]; var d = e[2]; e[2] = a; e[3] = d; var i = e.length; while(i && !e[i-1]) {e.length = i-1; i--};}
+    j[0].forEach(cleanbus);
+    j[1].forEach(cleanbus);
+    return new Response(
+        clientEtag === routesEtag ? '' : JSON.stringify(j).replace(/null/g,''), {
+        status: clientEtag === routesEtag ? 304 : 200,
+        headers: {
+          'content-type': 'text/javascript',
+          'etag': routesEtag,
+          //don't double fetch with preload and fetch()
+          'cache-control': 'max-age=10, stale-while-revalidate=86400',
+          'access-control-allow-origin': '*',
+        }
+      });
+}  
 else if (pathname_callback === "/routes.js") {
   var clientEtag = request.headers.get("if-none-match");
 
