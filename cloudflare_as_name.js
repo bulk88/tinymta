@@ -391,114 +391,6 @@ else if (pathname_callback.startsWith('/li/s/')) {
     }
   }
 }
-//original 2270 gz, all gz sizes
-//Bx->BX, and display name dupe drop 1662
-//drop 5 slice subway to 3 slice (rmv ,s) 1657
-//agency vs display name flip for bus and rail 1652 (rmv ,s)
-//subway sort order before color, drop color if null, 1652->1646
-//H, FS, SI are missing colors in MTA routes DB
-//rmv subway colors from routes DB, b/c unused, we inc our
-//own color DB in HTML 1646->1600
-else if (pathname_callback === "/routesn.js") {
-    var j = JSON.parse(gRoutes.replace(/,,,/g, ',null,null,').replace(/,,/g, ',null,'));
-    j.forEach(e => {
-      e.forEach(e => {
-        var c = e[2];
-        var d = e[1];
-        e[1] = c;
-        e[2] = d;
-        if(String(e[2]).substr(0,2) === 'Bx') {
-          e[2] = 'BX'+e[2].substr(2);
-        }
-        if (e[0] === e[2]) {
-          e[2] = null;
-          if (e[2] == null && e.length == 3) {
-            e.pop();
-          }
-        }
-      })
-    });
-    return new Response(
-        clientEtag === routesEtag ? '' : JSON.stringify(j).replace(/null/g,''), {
-        status: clientEtag === routesEtag ? 304 : 200,
-        headers: {
-          'content-type': 'text/javascript',
-          'etag': routesEtag,
-          //don't double fetch with preload and fetch()
-          'cache-control': 'max-age=10, stale-while-revalidate=86400',
-          'access-control-allow-origin': '*',
-        }
-      });
-}
-else if (pathname_callback === "/routesa.js") {
-    var j = JSON.parse(gRoutes.replace(/,,,/g, ',null,null,').replace(/,,/g, ',null,'));
-    j.forEach(e => {
-      e.forEach(e => {
-        var c = e[2];
-        var d = e[1];
-        e[1] = c;
-        e[2] = d;
-        if(String(e[2]).substr(0,2) === 'Bx') {
-          e[2] = 'BX'+e[2].substr(2);
-        }
-        if (e[0] === e[2]) {
-          e[2] = null;
-          if (e[2] == null && e.length == 3) {
-            e.pop();
-          }
-        }
-      })
-    });
-    j[2].forEach(e => {e[2]=e[4];e.length=3});
-    return new Response(
-        clientEtag === routesEtag ? '' : JSON.stringify(j).replace(/null/g,''), {
-        status: clientEtag === routesEtag ? 304 : 200,
-        headers: {
-          'content-type': 'text/javascript',
-          'etag': routesEtag,
-          //don't double fetch with preload and fetch()
-          'cache-control': 'max-age=10, stale-while-revalidate=86400',
-          'access-control-allow-origin': '*',
-        }
-      });
-}
-else if (pathname_callback === "/routesb.js") {
-    var j = JSON.parse(gRoutes.replace(/,,,/g, ',null,null,').replace(/,,/g, ',null,'));
-    j.forEach(e => {
-      e.forEach(e => {
-        var c = e[2];
-        var d = e[1];
-        e[1] = c;
-        e[2] = d;
-        if(String(e[2]).substr(0,2) === 'Bx') {
-          e[2] = 'BX'+e[2].substr(2);
-        }
-        if (e[0] === e[2]) {
-          e[2] = null;
-          if (e[2] == null && e.length == 3) {
-            e.pop();
-          }
-        }
-      })
-    });
-    j[2].forEach(e => {e[2]=e[4];e.length=3});
-    j[2].forEach(e => {var s= e[2], c=e[1]; e[1] = s; e[2]=c; e[2]=null;var i = e.length; while(i && !e[i-1]) {e.length = i-1; i--};});
-    //non-false for rail+bus, agency 99, display names 43
-    function cleanbus (e) {var a = e[3]; var d = e[2]; e[2] = a; e[3] = d; var i = e.length; while(i && !e[i-1]) {e.length = i-1; i--};}
-    j[0].forEach(cleanbus);
-    j[1].forEach(cleanbus);
-    return new Response(
-        clientEtag === routesEtag ? '' : JSON.stringify(j).replace(/null/g,''), {
-        status: clientEtag === routesEtag ? 304 : 200,
-        headers: {
-          'content-type': 'text/javascript',
-          'etag': routesEtag,
-          //don't double fetch with preload and fetch()
-          'cache-control': 'max-age=10, stale-while-revalidate=86400',
-          'access-control-allow-origin': '*',
-        }
-      });
-}  
 else if (pathname_callback === "/routes.js") {
   var clientEtag = request.headers.get("if-none-match");
 
@@ -668,6 +560,16 @@ regionalFareCardAccepted (remove it, unused in UI) DONE
 agencyId (remove it, unused in UI) DONE
 containsExpress (remove it, unused in UI) DONE
 agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from ID at UI runtime)
+
+-original 2270 bytes gz, all gz sizes
+-Bx->BX, and display name dupe drop to 1662 bytes
+-drop 5 slice subway to 3 slice (rmv ,s) drop to 1657 bytes
+-non-false for rail+bus, agency 99, display names 43
+-agency vs display name flip for bus and rail drop to 1652 bytes (rmv ,s)
+-subway sort order before color, drop color if null, 1652->1646
+-H, FS, SI are missing colors in MTA routes DB
+-rmv subway colors from routes DB, b/c unused & need agency in same slot
+-we inc our own color DB anyways in HTML 1646->1600
 */
 
         resp = JSON.stringify(resp);
@@ -972,8 +874,8 @@ var mapper = {};
 
 function buildSubwayRoute (data) {
   function AGENCY_MTASBWY() {return 0};
-  function ROUTE_NAME() {return 1};
-  function ROUTE_SORTORDER() {return 4};
+  function ROUTE_ID() {return 0};
+  function ROUTE_SUB_SORTORDER() {return 1};
   var routeDetails = [];
   var i = 0, subwayLine, route, name;
 
@@ -991,7 +893,7 @@ function buildSubwayRoute (data) {
       // if so, set the route given the previously set non-express route
       var baseName = name.substr(0, name.indexOf('X'));
       route = routeDetails.find(function (element) {
-        return typeof element === 'object' && element[ROUTE_NAME()] == baseName;
+        return typeof element === 'object' && element[ROUTE_ID()] == baseName;
       });
     }
 
@@ -1005,15 +907,17 @@ function buildSubwayRoute (data) {
       }
    //stats for non-false fields
    //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
-      route = [
-        /*id*/ name,
-        /*name*/ name,
-        /*color*/ subwayLine.color
-        /*agency AGENCY_MTASBWY() */
-      ];
-      /* [3] slot is AGENCY_MTASBWY() is 0, leave empty TODO test JSON vs JS obj literal noation serializer*/
-      route[ROUTE_SORTORDER()] = subwayLine.sortOrder;
-      routeDetails.push(route);
+   //June 2023, reduced to route_id and sortOrder only, agency implied slot 3
+      routeDetails.push(
+      //route =
+        [
+          /*id ROUTE_ID() */ name,
+          /*sortOrder ROUTE_SUB_SORTORDER() */ subwayLine.sortOrder
+          /*agency AGENCY_MTASBWY() */
+          /*color subwayLine.color unused in UI*/
+        ]
+      //route
+      );
     } else {
       //b88 note containsExpress is unused in this app
       // otherwise, first set the containsExpress variable / flag
@@ -1030,9 +934,11 @@ function buildBusRoute (stopData) {
 function AGENCY_MTABC() {return 1};
 function AGENCY_MTA_NYCT() {return 0};
 function AGENCIES_MAP_BUS() {return ['MTA NYCT', 'MTABC']};
-function ROUTE_NAME() {return 1};
-function ROUTE_COLOR() {return 2};
-function ROUTE_AGENCY() {return 3};
+function ROUTE_ID() {return 0};
+function ROUTE_COLOR() {return 1};
+function ROUTE_AGENCY() {return 2};
+function ROUTE_NAME() {return 3};
+
   var mapRoutes = stopData
     .filter(function (busRoute) {return busRoute.mode === 'BUS'
       && !!~busRoute.id.indexOf('MTA')
@@ -1053,15 +959,18 @@ function ROUTE_AGENCY() {return 3};
       //{agency: 110, id: 394, name: 394, color: 380, sortOrder: 26}
       var route = [
         /*id*/   stop.id.split(':').pop(),
-        /*name*/ stop.shortName
+        /* subway shuttles have no color, but also Jun 2023
+           we exclude subway shuttles b/c they arent used,
+           leave code just incase*/
+        /*color*/ stop.color || null,
       ];
-      /* subway shuttles have no color */
-      if(stop.color) {
-        route[ROUTE_COLOR()] = stop.color;
-      }
       /* AGENCY_MTA_NYCT() is 0, save array slot */
       if(stop.agencyName !== 'MTA New York City Transit') {
         route[ROUTE_AGENCY()] = AGENCY_MTABC();
+      }
+      /* almost all bus display names are same as route ID, save space */
+      if(route[ROUTE_ID()] != stop.shortName && !route[ROUTE_ID()].startsWith("BX")) {
+        route[ROUTE_NAME()] = stop.shortName;
       }
       return route;
     })
@@ -1085,10 +994,10 @@ function ROUTE_AGENCY() {return 3};
 function buildRailRoute (data_line) {
   //LIRR has more routes
   function AGENCY_MNR() {return 1};
-  function AGENCY_LI() {return 0};
+  /* function AGENCY_LI() {return 0}; */
   function ROUTE_ID() {return 0};
-  function ROUTE_AGENCY() {return 3};
-  function ROUTE_NAME() {return 1};
+  function ROUTE_AGENCY() {return 2};
+  function ROUTE_NAME() {return 3};
   var railLines = data_line
     .filter(function (railLine) {
       return railLine.mode === 'RAIL' /* mode.toUpperCase removed b88 */
@@ -1107,27 +1016,26 @@ function buildRailRoute (data_line) {
       route = [
         /* id */
         route,
-        /*name*/
-        railLine.longName,
         /*color*/
         railLine.color,
+        /* LI is more frequent, and == 0, null is rmv later*/
+        /*agency*/
+        !~railLine.id.indexOf('LI') ? AGENCY_MNR() : null,
+        /*name*/
+        railLine.longName
       ];
-      /* LI is more frequent, and == 0 */
-      if (!~railLine.id.indexOf('LI')) {
-        route[ROUTE_AGENCY()] = AGENCY_MNR();
-      }
       return route;
     });
   railLines.push(/* WEIRD_RAIL_LINES */
     [
       /*id*/
       "Wassaic",
-      /*name*/
-      "Wassaic",
       /*color*/
       "0039A6",
       /*agency*/
-      AGENCY_MNR()
+      AGENCY_MNR(),
+      /*name*/
+      "Wassaic"
     ]);
 
   // start by sorting all rail lines alphabetically
