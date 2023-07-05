@@ -1,0 +1,12 @@
+
+name: sync tinymta to tinymta_com
+on: push
+jobs:
+  my-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: sync tinymta.us.to to tinymta.com
+        run: |
+            git clone --bare --mirror "https://github.com/bulk88/tinymta.git" .git
+            git remote add mirror-remote "https://${{secrets.TINYMTACOM_PAT}}@github.com/bulk88/tinymta_com.git"
+            git push --tags --force  mirror-remote "refs/remotes/origin/*:refs/heads/*"
