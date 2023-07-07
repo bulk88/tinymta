@@ -9,4 +9,4 @@ jobs:
         run: |
             git clone --bare --mirror "https://github.com/bulk88/tinymta.git" .git
             git remote add mirror-remote "https://${{secrets.TINYMTACOM_PAT}}@github.com/bulk88/tinymta_com.git"
-            git push --tags --force  mirror-remote "refs/remotes/origin/*:refs/heads/*"
+            git push -v --progress --force --all mirror-remote 
