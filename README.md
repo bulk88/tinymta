@@ -13,9 +13,9 @@ Regularly tested with Internet Explorer 6 (2001), Openwave 7 (2004 flip phones),
 Tinymta gets its arrival information from the same server as [https://new.mta.info/nearby](https://new.mta.info/nearby). If the MTA's server is slow, unresponsive, or down, both Tinymta and the official MTA "Nearby Stations & Stops" website equally do not work.
 
 ## Usage
-This client/website was intended so that you download the zip file and use the HTML pages from your own phone's internal storage (disk) and not from the web through a `http://` address.  Although this website runs perfectly from [http://tinymta.us.to](http://tinymta.us.to) or its slightly slower backup host [http://site.tinymta.workers.dev/](http://site.tinymta.workers.dev/), it will be faster and more reliable if you run it from your phone's internal storage, especially on flakey 2G cell networks. Internal storage is faster, since the `Refresh` function will still call the tinymta webserver to check if the locally cached copy has changed or not (HTTP 304).  Some older browsers will always refetch the tinymta HTML because of poor and old HTTP cache header support.
+This client/website was intended so that you download the zip file and use the HTML pages from your own phone's internal storage (disk) and not from the web through a `http://` address.  Although this website runs perfectly from [http://tinymta.com](http://tinymta.com) or its slightly slower backup host [http://site.tinymta.workers.dev/](http://site.tinymta.workers.dev/), it will be faster and more reliable if you run it from your phone's internal storage, especially on flakey 2G cell networks. Internal storage is faster, since the `Refresh` function will still call the tinymta webserver to check if the locally cached copy has changed or not (HTTP 304).  Some older browsers will always refetch the tinymta HTML because of poor and old HTTP cache header support.
 
-On flip phones, pressing 0-9 on your keypad triggers menu options to open. Saves your fingers versus using Up/Down/Enter to pick links. Only the [http://tinymta.us.to](http://tinymta.us.to) has the numerical shortcut key hints on the left side but 0-9 shortcuts work on all dumbphone pages. Just try them on any page ≧◠ᴥ◠≦✊
+On flip phones, pressing 0-9 on your keypad triggers menu options to open. Saves your fingers versus using Up/Down/Enter to pick links. Only the [http://tinymta.com](http://tinymta.com) has the numerical shortcut key hints on the left side but 0-9 shortcuts work on all dumbphone pages. Just try them on any page ≧◠ᴥ◠≦✊
 
 Typically, to run this site from phone internal storage, you only need 3 files: `stations.htm`, `stop.htm` and `stop_.htm`.  Put all 3 files in the same folder.  Open `stations.htm` on your phone.  Navigate to your station.
 
@@ -40,13 +40,13 @@ Tinymta can fetch the arrival information for stations on routes that the MTA do
 Tinymta includes 5 implementations.
 
 * `stations.htm` Single page design for touchscreens, requires Javascript and Internet Explorer 6 (or anything with JS)
-* `stationsnojs.htm` Single page design for touchscreens, no Javascript, shows raw MTA JSON data, rest is upto you and your browser on what to do with the raw JSON file (old browsers will try to save to internal storage the file)
+* `stationsnojs.htm` Single page design for touchscreens, no Javascript, shows same arrivals data as JS version but its slower, and slightly less features
 * `rt.htm` split page design for dumb phones, no Javascript, uses a Cloudflare Worker to draw XHTML Basic "Mobile Profile" pages for Openwave 7
 * `js/rt.htm` split page design for dumb phones, requires Javascript and Internet Explorer 5 (or anything with JS), Opera Mini, 4G dumb flip phone browsers like KaiOS or Cymbal OS
 
-All split page implementations implement 0-9 hotkey navigation.  `1` is 1st link. `9` is last link. `0` is `More` link.  No `Back` link since that is probably a soft key in your mini-browswer.  You can try to memorize the numeric code of your favorite stations to enter on your numeric keypad.  Not all smartphone browsers (Opera Mini and GoogleWebLight specifically) support hotkey navigation, blame the browser vendor.  Openwave and ZTE Cymbal supports hotkeys.
+All split page implementations implement 0-9 hotkey navigation.  `1` is 1st link. `9` is last link. `0` is `More` link.  No `Back` link since that is probably a soft key in your mini-browswer.  You can try to memorize the numeric code of your favorite stations to enter on your numeric keypad.  Not all smartphone browsers (Opera Mini) support hotkey navigation, blame the browser vendor.  Openwave and ZTE Cymbal and Kai supports hotkeys.
 
-Single page does not have hotkey navigation.
+Single page view does not have hotkey navigation.
 
 ## Compatibility
 
