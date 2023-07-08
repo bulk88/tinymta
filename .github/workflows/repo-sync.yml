@@ -7,9 +7,11 @@ jobs:
     steps:
       - name: sync tinymta.us.to to tinymta.com
         run: |
-            git clone -b master "https://github.com/bulk88/tinymta.git"
+            git clone -n --filter=tree:0 "https://github.com/bulk88/tinymta.git"
             cd tinymta
-            git remote add mirror-remote "https://${{secrets.TINYMTACOM_PAT}}@github.com/bulk88/tinymta_com.git"
+            git remote add -f mirror-remote "https://${{secrets.TINYMTACOM_PAT}}@github.com/bulk88/tinymta_com.git"
+            git checkout master docs/CNAME ;     git checkout master docs/CNAME
             sed -i 's/tinymta\.us\.to/tinymta.com/g' ./docs/CNAME
-            git -c user.name="Your Name" -c user.email="you@example.com" commit -a -m "change CNAME domain (bot)"
-            git push -v --progress --force --all mirror-remote 
+            git add ./docs/CNAME
+            git -c user.name="Domain Change Bot" -c user.email="no-reply@no-reply.com" commit -o ./docs/CNAME -m "change CNAME domain (bot)"
+            git push --progress --force --all mirror-remote
