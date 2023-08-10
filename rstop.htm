@@ -215,7 +215,8 @@ function getJSONP() {
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
-    '/api/li/'+stacode+'?callback=genArvBodyObj';
+    /*ra = rail arrivals*/
+    '/api/ra/'+stacode+'?callback=genArvBodyObj';
     jsonp = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

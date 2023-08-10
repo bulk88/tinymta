@@ -143,9 +143,13 @@ else if (pathname_callback.startsWith('/api/')) {
     ? 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
     : ct_pathnameroot === 'alt' ?
     "http://collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP"
+    //railroad occupany
+    : ct_pathnameroot === 'ro/' ?
+    "http://backend-unified.mylirr.org/locations/"
+    //ra = railroad arrivals
     : "http://backend-unified.mylirr.org/arrivals/")
-    //is "" for "alt"
-    + pathname_callback.substring(8), {
+    + pathname_callback.substring(8)
+    + (ct_pathnameroot === 'ro/' ? '?geometry=NONE' : ''), {
     headers: { //LIRR server errors otherwise
       'accept-version': '3.0'
     }

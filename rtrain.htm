@@ -118,7 +118,7 @@ function genArvBodyObj(r) {
             'NO_DATA'
             : i.loading
         ];
-      h += '<span style="background-color:' + color + '">&nbsp' + (typeof i.passengers === 'undefined' ? '?' : i.passengers) + (i.restroom ? '&#x1f6be;' : '') + '&nbsp</span>&nbsp;';
+      h += '<span style="background-color:' + color + '">&nbsp' + (typeof i.passengers === 'undefined' ? '?' : i.passengers) + (i.restroom ? '&#x1f6be;' : '') + (i.revenue ? '' : '&#x26d4;') +'&nbsp</span>&nbsp;';
     }
     r.details.direction === 'E' && (h += '&gt;');
 /* test code
@@ -222,7 +222,8 @@ function getJSONP() {
 /*STARTDELETE*/
     '//tinymta.us.to' +
 /*ENDDELETE*/
-    '/api/li/'+stacode+'?callback=genArvBodyObj';
+    /*ro = rail occupancy*/
+    '/api/ro/'+stacode+'?callback=genArvBodyObj';
     jsonp = document.getElementsByTagName('head')[0];
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
