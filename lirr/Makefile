@@ -53,7 +53,27 @@ stations.js: mkstalist.pl
 	perl ../adj_stoppath.pl "$@" 2
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
+
+../rtrain_.htm : ../rtrain.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
+	copy /y "..\rtrain.htm" "$@"
+	perl ../adj_stoppath.pl "$@" 2
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+	perl ../adj_postmini.pl "$@"
+
+../docs/rtrain_.htm : ../rtrain_.htm
+	-mkdir "../docs"
+	copy /y "..\rtrain_.htm" "$@"
+
+../docs/rtrain.htm : ../rtrain.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
+	-mkdir "../docs"
+	copy /y "..\rtrain.htm" "$@"
+	perl ../adj_stoppath.pl "$@" 2
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+	perl ../adj_postmini.pl "$@"
   
+
+
+
 grmp.pl : ../minify_config.json
 
 clean :
@@ -83,5 +103,5 @@ gtfs.zip :
 
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/rstop_.htm ../docs/rstop.htm ../docs/li/rt.htm
-all: ../docs/li/js/rt.htm
+all: ../docs/li/js/rt.htm ../docs/rtrain_.htm ../docs/rtrain.htm
 

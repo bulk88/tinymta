@@ -98,23 +98,27 @@ function genArvBodyObj(r) {
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     /* r.contents is JSONP */
     r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
-    //debugger;
-    var i,
-        l, h = (jsonp ? ' via JSONP' : ' via CORS')+'<br>Dest: <font color="'+ (
+
+    var i, h = (jsonp ? ' via JSONP' : ' via CORS')+'<br>Dest: <font color='+(
 /*STARTRAILCOLOR*/
 {"Harlem":"0039a6","Port Jefferson":"006ec7","Babylon":"00985f","Hudson":"009b3a","West Hempstead":"00a1de","Oyster Bay":"00af3f","Montauk":"00b2a9","City Zone":"4d5357","Belmont Park":"60269e","Far Rockaway":"6e3219","Ronkonkoma":"a626aa","Port Washington":"c60c30","Hempstead":"ce8e00","Danbury":"ee0034","New Canaan":"ee0034","New Haven":"ee0034","Waterbury":"ee0034","Long Beach":"ff6319"}
 /*ENDRAILCOLOR*/
-        )[r.details.branch]+'">'+r.details.headsign+'</font> Fleet: '+r.consist.fleet+'<br>'
-        , color, hideLoading; /*l=lineofhtml, h=html*/
-    r.details.direction === 'E' && r.consist.cars.reverse();
-    r.details.direction === 'W' && (h += '&lt;');
+        )[r.details.branch]+'>'+r.details.headsign+'</font> Fleet: '+r.consist.fleet+'<br>'
+        , color; /*h=html*/
+    //flip car order for drawing based on Dir
+    r.details.direction === 'E' ? r.consist.cars.reverse() : /*west dir 'W'*/(h += '&lt;');
     for (i in r.consist.cars) {
-        i = r.consist.cars[i];
-    //not MNR compat MTA notes
-    hideLoading = /*isEquipment MTA */ suppressLoading(r) || (i.type !== 'DEDM' && i.revenue === false)
-    color =  i.locomotive ? 'blue' : loadColors[hideLoading ? 'NO_DATA' : i.loading]
-    h+='<span style="background-color:'+color+'">&nbsp'+(typeof i.passengers==='undefined'?'?':i.passengers)+(i.restroom?'&#x1f6be;':'')+'&nbsp</span>&nbsp;';
-        //debugger;
+      i = r.consist.cars[i];
+      //not MNR compat MTA notes
+      color = i.locomotive ?
+        'blue'
+        : loadColors[(/*hideLoading*/(/*isEquipment MTA */
+          suppressLoading(r)
+          || (i.type !== 'DEDM' && i.revenue === false))) ?
+            'NO_DATA'
+            : i.loading
+        ];
+      h += '<span style="background-color:' + color + '">&nbsp' + (typeof i.passengers === 'undefined' ? '?' : i.passengers) + (i.restroom ? '&#x1f6be;' : '') + '&nbsp</span>&nbsp;';
     }
     r.details.direction === 'E' && (h += '&gt;');
 /* test code
@@ -152,8 +156,9 @@ function genArvBodyObj(r) {
         h += i.title+'<br>'+i.text+'<br><br>';
       //}
     }
-    //debugger;
-    if( r = r.alerts) {
+    //alerts prop missing from JSON unless filled
+    //guard against undef passed to sort()
+    if(r = r.alerts) {
       //time sort alerts in the array
       r.sort(function(a, b) {
           return a.start_time < b.start_time ? -1 :
