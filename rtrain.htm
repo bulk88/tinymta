@@ -4,7 +4,6 @@
 <meta name="referrer" content="no-referrer">
 <link href="//backend-unified.mylirr.org" rel="dns-prefetch">
 <link href="//backend-unified.mylirr.org" rel="preconnect">
-<link href=rtrain.htm rel=prefetch>
 <style>a.t:link{color: initial; text-decoration: initial}.b{text-decoration: underline}</style>
 </head>
 <body>No javascript</body>
@@ -60,9 +59,9 @@ if(stacode.length > 1) {
     t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
-          (/rstop\.htm$/.test(location.pathname) ? "rstop_.htm#" : "rstop.htm#")
+          (/rtrain\.htm$/.test(location.pathname) ? "rtrain_.htm#" : "rtrain.htm#")
 /*ENDINSERTPATH*/
-          +stacode+'\')">Slow</a>] <a href=//backend-unified.mylirr.org/arrivals/'+stacode+'>Raw</a><br>';
+          +stacode+'\')">Slow</a>] <a href=//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE>Raw</a><br>';
 }
 
 if(t)
@@ -80,42 +79,44 @@ function noPTag(str) {
 }
 
 function genArvBodyObj(r) {
+    function suppressLoading(train) {
+      return
+      //empty
+      !train.details.stops ||
+      train.details.stops[train.details.stops.length-1].stop_status === 'BERTHED' ||
+      train.status.canceled;
+    }
+    const loadColors = {
+        EMPTY: 'green',
+        MANY_SEATS: 'yellow',
+        FEW_SEATS: 'orange',
+        SRO: 'red',
+        FULL: 'red',
+        NO_DATA: 'gray'
+    }
     /*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     /* r.contents is JSONP */
     r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
-    var i, w = "West<br>",
-        l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
-        +'<br>Cur Sta: ' + s[stacode] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
-    for (i in r.arrivals) {
-        i = r.arrivals[i];
-        //debugger;
-        //note to self, ceil is round up, |0 is round down
-        //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
-        l = '<a class=t href=rtrain.htm#'+i.railroad+'_'+i.train_num+'>'+new Date((l=i.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
-        + '-Min ' + Math.ceil((l- (new Date().getTime()/1000)) / 60)
-/*
-        } else if (!_.isUndefined(train.status.otp)) {
-            const otpMin = Math.trunc(train.status.otp / 60)
-            const otpMinAbs = Math.abs(otpMin)
-            otpStr = 'On time'
-            if (otpMinAbs !== 0) {
-                const otpClass = otpMin < 0 ? 'late' : 'early'
-                const otpTerm = otpMinAbs === 1 ? 'minute' : 'minutes'
-                otpStr = `${otpMinAbs} ${otpTerm} ${otpClass}`
-            }
-        }
-*/
-        + ((l=i.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
-        + '-Tk' + (i.track || '?')
-        + "-<font class=b color=" + (
+    //debugger;
+    var i,
+        l, h = (jsonp ? ' via JSONP' : ' via CORS')+'<br>Dest: <font color="'+ (
 /*STARTRAILCOLOR*/
-{"HA":"0039a6","HH":"006ec7","PJ":"006ec7","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","12":"4d5357","CI":"4d5357","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","DN":"ee0034","NC":"ee0034","NH":"ee0034","WB":"ee0034","LB":"ff6319"}
+{"Harlem":"0039a6","Port Jefferson":"006ec7","Babylon":"00985f","Hudson":"009b3a","West Hempstead":"00a1de","Oyster Bay":"00af3f","Montauk":"00b2a9","City Zone":"4d5357","Belmont Park":"60269e","Far Rockaway":"6e3219","Ronkonkoma":"a626aa","Port Washington":"c60c30","Hempstead":"ce8e00","Danbury":"ee0034","New Canaan":"ee0034","New Haven":"ee0034","Waterbury":"ee0034","Long Beach":"ff6319"}
 /*ENDRAILCOLOR*/
-        )[i.branch] + ">" + s[(l=i.stops)[l.length - 1]]
-        + "</font>"+(i.peak_code == 'O'?'':'-Pk')+"</a><br>"; //A or P are peak
-        i.direction == 'E' ? h += l : w += l;
+        )[r.details.branch]+'">'+r.details.headsign+'</font> Fleet: '+r.consist.fleet+'<br>'
+        , color, hideLoading; /*l=lineofhtml, h=html*/
+    r.details.direction === 'E' && r.consist.cars.reverse();
+    r.details.direction === 'W' && (h += '&lt;');
+    for (i in r.consist.cars) {
+        i = r.consist.cars[i];
+    //not MNR compat MTA notes
+    hideLoading = /*isEquipment MTA */ suppressLoading(r) || (i.type !== 'DEDM' && i.revenue === false)
+    color =  i.locomotive ? 'blue' : loadColors[hideLoading ? 'NO_DATA' : i.loading]
+    h+='<span style="background-color:'+color+'">&nbsp'+(typeof i.passengers==='undefined'?'?':i.passengers)+(i.restroom?'&#x1f6be;':'')+'&nbsp</span>&nbsp;';
+        //debugger;
     }
+    r.details.direction === 'E' && (h += '&gt;');
 /* test code
     r.banners =  [
         {
@@ -139,9 +140,8 @@ function genArvBodyObj(r) {
         }
     ],
 */
-    /* add west trains to mega html string and reuse west var */
-    h += w;
-    w = '<br>';
+
+    h += '<br>'
     for (i in r.banners) {
       i = r.banners[i];
       //always show banners, they aren't attached to all stations at once
@@ -149,21 +149,23 @@ function genArvBodyObj(r) {
       // if LIRR && is not numeric aka is LIRR sta code then draw, not in MTA UI code
       // IDK abbrevation for MNRR in API but other railroad && numeric will draw
       //if((i.railroad == 'LIRR') == (l !== +l)) {
-        w += i.title+'<br>'+i.text+'<br><br>';
+        h += i.title+'<br>'+i.text+'<br><br>';
       //}
     }
-    r = r.alerts;
-    //time sort alerts in the array
-    r.sort(function(a, b) {
-        return a.start_time < b.start_time ? -1 :
-            a.start_time > b.start_time ? 1 :
-            0;
-    });
-    for (i in r) {
-      i = r[i];
-      w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
+    //debugger;
+    if( r = r.alerts) {
+      //time sort alerts in the array
+      r.sort(function(a, b) {
+          return a.start_time < b.start_time ? -1 :
+              a.start_time > b.start_time ? 1 :
+              0;
+      });
+      for (i in r) {
+        i = r[i];
+        h += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
+      }
     }
-    document.body.innerHTML += h+w;
+    document.body.innerHTML += h;
 }
 function getStop(addIMS) {
     document.body.innerHTML = t; /*t=top*/
@@ -180,7 +182,7 @@ function getStop(addIMS) {
           side, without network traffic.*/
         if(jsonp) throw(0);
         /*open() can fire errors events or throw exceptions*/
-        x.open('get', '//backend-unified.mylirr.org/arrivals/'+stacode, 1);
+        x.open('get', '//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', 1);
         try {
           x.responseType = 'json';
         } catch (e) {

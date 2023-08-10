@@ -30,6 +30,10 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	perl insertstalist.pl "$@"
 	perl ../insertcolors.pl RAIL "$@" routesmodded.txt
 
+../rtrain.htm : stations.js insertstalist.pl ../insertcolors.pl routesmoddednodups.txt
+	perl insertstalist.pl "$@"
+	perl ../insertcolors.pl RAIL "$@" routesmoddednodups.txt 1
+
 stations.js: mkstalist.pl
 	perl mkstalist.pl
 

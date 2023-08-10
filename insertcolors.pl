@@ -1,4 +1,4 @@
-# usage: mand-TAG mand-foo.htm optional-routes.txt
+# usage: mand-TAG mand-foo.htm optional-routes.txt optional-bool-long_name
 use strict;
 use File::Slurp;
 use Text::CSV::Hashify;
@@ -7,7 +7,7 @@ my $tag = $ARGV[0];
 my $obj = Text::CSV::Hashify->new( {
     file        => $ARGV[2] ? $ARGV[2] : 'routes.txt',
     format      => 'hoh',
-    key         => "route_id",
+    key         => $ARGV[3] ? "route_long_name" : "route_id",
     quote_char          => '"',
     escape_char          => undef,
     allow_loose_quotes=>1,
