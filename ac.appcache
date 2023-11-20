@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v Thu Aug 10 15:19:48 2023
+# v Mon Nov 20 12:53:18 2023
 
 CACHE:
 1p.js
@@ -11,8 +11,6 @@ rstop.htm
 rstop_.htm
 mapTileBackground.png
 mn/stations.htm
-plan.htm
-plan.js
 stations.htm
 stop.htm
 stop_.htm

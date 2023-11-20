@@ -130,5 +130,5 @@ all: ../docs/rt.htm ../docs/js/rt.htm
 all: ../docs/tileMap.htm ../docs/mapTileBackground.png
 all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
 all: ../docs/zoom_out.png ../docs/zoom_out_over.png
-all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
-all: plan2.htm
+#all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
+#all: plan2.htm
