@@ -90,8 +90,8 @@ package : ../docs/li/stations.htm ../docs/rstop.htm ../docs/rstop_.htm
 	copy /y ..\docs\rstop.htm "..\tinymta\"
 	copy /y ..\docs\rstop_.htm "..\tinymta\"
 
-#routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
-#	perl ../gr2.pl
+routedatafinal.pl : ../gr2.pl routedata.pl stops.txt
+	perl ../gr2.pl
 
 routedata.pl : trips.txt stop_times.txt ../gr.pl
 	perl ../gr.pl
