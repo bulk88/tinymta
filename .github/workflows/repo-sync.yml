@@ -15,3 +15,10 @@ jobs:
             git add ./docs/CNAME
             git -c user.name="Domain Change Bot" -c user.email="no-reply@no-reply.com" commit -o ./docs/CNAME -m "change CNAME domain (bot)"
             git push --progress --force --all mirror-remote
+            git reset --soft HEAD~1
+            git remote add -f mirror-remoteghp "https://${{secrets.TINYMTACOM_PAT}}@github.com/bulk88/tinymta_ghp.git"
+            git checkout master docs/CNAME ;     git checkout master docs/CNAME
+            sed -i 's/tinymta\.us\.to/gh.tinymta.us.to/g' ./docs/CNAME
+            git add ./docs/CNAME
+            git -c user.name="Domain Change Bot" -c user.email="no-reply@no-reply.com" commit -o ./docs/CNAME -m "change CNAME domain (bot)"
+            git push --progress --force --all mirror-remoteghp
