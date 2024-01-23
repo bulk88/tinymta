@@ -3,6 +3,8 @@
 <meta name=mobileoptimized content=0><meta name="referrer" content="no-referrer">
 <link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect" crossorigin>
+<link href="https://api.weather.com" rel="dns-prefetch">
+<link href="https://api.weather.com" rel="preconnect" crossorigin>
 <link href=stations.htm rel=prefetch>
 <link href=mn/stations.htm rel=prefetch>
 <link href=li/stations.htm rel=prefetch>
@@ -21,8 +23,44 @@ Do you have a<br>
 <!-- [8]<a accesskey=8 href=plan.htm>Smart Phone UI (Subway) Trip Planner</a><br> -->
 <!-- [9]<a accesskey=9 href=more.htm>More</a><br> -->
 [0]<a accesskey=0 href=README.html>About</a><br>
-<script src=dumb.js></script>
-<script src=as.js></script>
+<!-- get I/O on wire first -->
+<script async src=as.js></script>
+<script async src=dumb.js></script>
+<script>
+var se = document.currentScript;
+fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-US&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909')
+.then(function (r) {
+r.json().then(function (r) {
+  var frag = document.createDocumentFragment(),
+  e, //elem
+  v, //val
+  l = r.qpf.length, //qpf shortest by chars token
+  i = 0;
+  for (; i < l; i++) {
+    e = frag.appendChild(document.createElement('div'));
+    e.className = 'h';
+    v = +r.validTimeLocal[i].slice(11, 13);
+    //perf, skip locale/Date objects
+    e.appendChild(document.createTextNode((v % 12 || 12) + (v >= 12 ? 'PM\xa0' : 'AM\xa0')));
+    e.appendChild(document.createElement('br'));
+    e.appendChild(document.createTextNode(r.temperature[i] + "F"));
+    e.appendChild(document.createElement('br'));
+    e.appendChild(document.createTextNode(r.precipChance[i] + "%\ud83d\udca7"));
+    e.appendChild(document.createElement('br'));
+    v = e.appendChild(document.createElement('img'));
+    v.src = 'https://www.wunderground.com/static/i/c/v4/'+r.iconCode[i]+'.svg';
+    v.className = 'i';
+  }
+  se.parentNode.replaceChild(frag, se);
+  }
+)});
+</script>
+<!-- parse after script tag, rendering is async b/c IO -->
+<style>
+.h{display:inline-block}
+.i{height:2em}
+</style>
+<!-- spam trap -->
 <br><br><br>
 <a href="mailto:bulk88@tinymta.com"><font color="#fefefe">Contact us</font></a><br><a href="mailto:bulk88@tinymta.us.to"><font color="#fefefe">Contact us</font></a>
 </body></html>
