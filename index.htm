@@ -48,7 +48,11 @@ r.json().then(function (r) {
     e.appendChild(document.createTextNode(r.precipChance[i] + "%\ud83d\udca7"));
     e.appendChild(document.createElement('br'));
     v = e.appendChild(document.createElement('img'));
-    v.src = 'https://www.wunderground.com/static/i/c/v4/'+r.iconCode[i]+'.svg';
+    v.src =
+/*STARTINSERTPATH*/
+    'w/'
+/*ENDINSERTPATH*/
+    +r.iconCode[i]+'.svg';
     v.className = 'i';
   }
   se.parentNode.replaceChild(frag, se);
