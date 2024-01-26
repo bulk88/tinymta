@@ -34,8 +34,8 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	perl insertstalist.pl "$@"
 	perl ../insertcolors.pl RAIL "$@" routesmoddednodups.txt 1
 
-stations.js: mkstalist.pl
-	perl mkstalist.pl
+#stations.js: mkstalist.pl
+#	perl mkstalist.pl
 
 ../rstop_.htm : ../rstop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	copy /y "..\rstop.htm" "$@"
