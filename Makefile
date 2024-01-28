@@ -5,7 +5,7 @@ first: all
 docs/index.htm : index.htm minify_config.json sub/adj_tilepath.pl adj_emoji.pl
 	copy /y index.htm "$@"
 	perl sub/adj_tilepath.pl "$@"
-	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl adj_emoji.pl "$@"
 
 docs/index.html : docs/index.htm
@@ -19,7 +19,7 @@ docs/%.svg: w/%.svg svgo.config.js
 
 #docs/more.htm : more.htm minify_config.json
 #	copy /y more.htm "$@"
-#	html-minifier.cmd -c minify_config.json --minify-js -o "$@" "$@"
+#	html-minifier.cmd -c minify_config.json -o "$@" "$@"
 
 status.htm : sub/routes.txt insertcolors.pl
 	perl insertcolors.pl "SUB" "$@" sub/routes.txt

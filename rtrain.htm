@@ -97,7 +97,7 @@ function genArvBodyObj(r) {
     /*r=resp*/
     /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
     /* r.contents is JSONP */
-    r = typeof (r = r.contents || r) === 'object' ? r : this.JSON?JSON.parse(r):eval('0,' + r);
+    r = typeof (r = r.contents || r) === 'object' ? r : window.JSON?JSON.parse(r):eval('0,' + r);
 
     var i, h = (jsonp ? ' via JSONP' : ' via CORS')+'<br>Dest: <font color='+(
 /*STARTRAILCOLOR*/

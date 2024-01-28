@@ -13,4 +13,7 @@ die "bad endtag match" if $endpos == -1;
 substr($file,$pos, $endpos-$pos, '
   ""
 ');
+
+$file =~ s/\Q\/*STARTDELETE*\/\E.*?\Q\/*ENDDELETE*\/\E//gs;
+
 write_file($ARGV[0], {binmode => ':raw'}, $file);
