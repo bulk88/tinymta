@@ -76,6 +76,7 @@ window.fetch = function (url) {
                   '//tinymta.us.to' +
 /*ENDDELETE*/
                   '/api/wea?callback=j';
+//IE 5.5 and 6.0 don't have document.head
                 jsonp = document.getElementsByTagName('head')[0];
                 /*dont leak mem adding infinite JSONP script elements
                 this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */

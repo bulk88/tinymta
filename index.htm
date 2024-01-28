@@ -30,7 +30,8 @@ Do you have a<br>
 <script>
 //>C29, E12, F4, O16, SF8, IE never
 //var se = document.currentScript;
-var se = document.scripts[document.scripts.length - 1];
+var scriptElem = document.scripts, //reused later
+  cse = scriptElem[scriptElem.length - 1];
 var y = function () {
   fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-US&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909')
   .then(function (r) {
@@ -59,14 +60,15 @@ var y = function () {
           +r.iconCode[i] + '.svg';
         v.className = 'i';
       }
-      se.parentNode.replaceChild(frag, se);
+      cse.parentNode.replaceChild(frag, cse);
     })
   });
 };
 
 if (typeof fetch !== 'function') {
-  var scriptElem = document.createElement("script");
+  scriptElem = document.createElement("script");
   scriptElem.src = 'f.js'
+//IE 5.5 and 6.0 don't have document.head
   document.getElementsByTagName('head')[0].appendChild(scriptElem);
 } else {
   y();

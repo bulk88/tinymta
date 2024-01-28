@@ -19,7 +19,7 @@ if (document.addEventListener) {
         e_realkey = 'Enter';
         break;
       case 8: //C button
-        e_realkey = "Backspace";
+        e_realkey = 'Backspace';
         break;
       case 49: //asci 1
         e_realkey = 1;
@@ -72,10 +72,15 @@ if (document.addEventListener) {
       case 46: //asci peroid
         e_realkey = '*';
         break;
-
+      default:
+        e_realkey = null;
     }
-    if (/^\d+$/.test(e_realkey)) {
-      document.querySelector('[accesskey="' + e_realkey + '"]').click()
+    //note table above can be used by 3rd parties for something else
+    //I only need 0-9, not a map app or game
+    if (typeof e_realkey === 'number') {
+      e_realkey = document.querySelector('[accesskey="' + e_realkey + '"]');
+      //avoid err console noise for "called method click on undef"
+      e_realkey && e_realkey.click()
     }
   }
   //FF3.0 throws exception "not enough arguments" if #3 missing
