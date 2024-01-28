@@ -143,6 +143,8 @@ else if (pathname_callback.startsWith('/api/')) {
     ? 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
     : ct_pathnameroot === 'alt' ?
     "http://collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP"
+    : ct_pathnameroot === 'wea' ?
+    "https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-US&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909"
     //railroad occupany
     : ct_pathnameroot === 'ro/' ?
     "http://backend-unified.mylirr.org/locations/"
