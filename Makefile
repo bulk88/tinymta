@@ -69,7 +69,7 @@ docs/CNAME : CNAME
 docs/_config.yml : _config.yml
 	copy /y _config.yml "$@"
 
-docs/README.md : README.md
+docs/abt.md : README.md
 	copy /y README.md "$@"
 
 docs/google71e8cfa7440e51ce.html : google71e8cfa7440e51ce.html
@@ -113,7 +113,7 @@ mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
 docs/ac.appcache : docs/index.htm docs/404.html docs/favicon.ico
-docs/ac.appcache : docs/CNAME docs/README.md docs/_config.yml docs/index.html
+docs/ac.appcache : docs/CNAME docs/abt.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
 docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm docs/status_.htm
 docs/ac.appcache : docs/f.js
