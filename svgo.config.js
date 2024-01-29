@@ -18,7 +18,7 @@ module.exports = {
     "removeTitle",
     "removeDesc",
     "removeUselessDefs",
-    "removeDimensions",
+    "removeViewBox",
     "removeRasterImages",
     "collapseGroups",
     "cleanupIds",
