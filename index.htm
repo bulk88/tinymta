@@ -82,5 +82,8 @@ if (typeof fetch !== 'function') {
 </style>
 <!-- spam trap -->
 <br><br><br>
-<font color="#fefefe"><a href="mailto:bulk88@tinymta.com">Contact us</a><br><a href="mailto:bulk88@tinymta.us.to">Contact us</a></font>
+<!-- FONT tag outside of a A tag, works for modern Chrome but not IE,
+ just use style=, its technically longer but its gzip compressed away
+ -->
+<a style="color:#fefefe" href="mailto:bulk88@tinymta.com">Contact us</a><br><a style="color:#fefefe" href="mailto:bulk88@tinymta.us.to">Contact us</a>
 </body></html>
