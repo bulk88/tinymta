@@ -6,6 +6,7 @@ module.exports = {
       params: {
         overrides: {
           cleanupNumericValues: { floatPrecision: 1 },
+          removeViewBox: false,
         },
       },
     },
@@ -18,7 +19,10 @@ module.exports = {
     "removeTitle",
     "removeDesc",
     "removeUselessDefs",
-    "removeViewBox",
+//height width req for Safari 5/AOSP 4 browser, acknowleged bug
+//    "removeDimensions",
+//viewBox required for IE img scale logic
+//    "removeViewBox",
     "removeRasterImages",
     "collapseGroups",
     "cleanupIds",
