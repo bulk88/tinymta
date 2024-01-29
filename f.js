@@ -1,4 +1,5 @@
-var jsonp;
+(function(){
+var jsonp; //must be not global
 window.fetch = function (url) {
   return {
     then: function (cb) {
@@ -101,3 +102,4 @@ window.fetch = function (url) {
 };
 //run main body
 y();
+})();
