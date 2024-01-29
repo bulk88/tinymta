@@ -49,11 +49,18 @@ window.fetch = function (url) {
                       } else {
                         this_func(cb, 1);
                       }
-                    } else
-                      alert("error HTTP status " + x.status);
+                  } else {
+                      x.status && alert("error HTTP status " + x.status);
+                      jsonp = 1;
+                      //TLS 1.0 Browsers WILL connect api.weather.com but get
+                      //a no CORS headers "TLS version is too old" text resp
+                      //so just always retry again as JSONP, can't separate
+                      //CORS fail from timeout
+                      this_func(cb);
                   }
                   /*else
                   alert("currently the application is at" + invocation.readyState); */
+                  }
                 };
                 if (addIMS)
                   x.setRequestHeader("if-modified-since", new Date(0));
