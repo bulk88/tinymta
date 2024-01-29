@@ -11,11 +11,16 @@ docs/index.htm : index.htm minify_config.json sub/adj_tilepath.pl adj_emoji.pl
 docs/index.html : docs/index.htm
 	copy /y "docs\index.htm" "$@"
 
-WEATHERICONS: docs/0.svg docs/1.svg docs/2.svg docs/3.svg docs/4.svg docs/5.svg docs/6.svg docs/7.svg docs/8.svg docs/9.svg docs/10.svg docs/11.svg docs/12.svg docs/13.svg docs/14.svg docs/15.svg docs/16.svg docs/17.svg docs/18.svg docs/19.svg docs/20.svg docs/21.svg docs/22.svg docs/23.svg docs/24.svg docs/25.svg docs/26.svg docs/27.svg docs/28.svg docs/29.svg docs/30.svg docs/31.svg docs/32.svg docs/33.svg docs/34.svg docs/35.svg docs/36.svg docs/37.svg docs/38.svg docs/39.svg docs/40.svg docs/41.svg docs/42.svg docs/43.svg docs/44.svg docs/45.svg docs/46.svg docs/47.svg
+WEATHERICONS: docs/0.svg docs/1.svg docs/2.svg docs/3.svg docs/4.svg docs/5.svg docs/6.svg docs/7.svg docs/8.svg docs/9.svg docs/10.svg docs/11.svg docs/12.svg docs/13.svg docs/14.svg docs/15.svg docs/16.svg docs/17.svg docs/18.svg docs/19.svg docs/20.svg docs/21.svg docs/22.svg docs/23.svg docs/24.svg docs/25.svg docs/26.svg docs/27.svg docs/28.svg docs/29.svg docs/30.svg docs/31.svg docs/32.svg docs/33.svg docs/34.svg docs/35.svg docs/36.svg docs/37.svg docs/38.svg docs/39.svg docs/40.svg docs/41.svg docs/42.svg docs/43.svg docs/44.svg docs/45.svg docs/46.svg docs/47.svg docs/0.png docs/1.png docs/2.png docs/3.png docs/4.png docs/5.png docs/6.png docs/7.png docs/8.png docs/9.png docs/10.png docs/11.png docs/12.png docs/13.png docs/14.png docs/15.png docs/16.png docs/17.png docs/18.png docs/19.png docs/20.png docs/21.png docs/22.png docs/23.png docs/24.png docs/25.png docs/26.png docs/27.png docs/28.png docs/29.png docs/30.png docs/31.png docs/32.png docs/33.png docs/34.png docs/35.png docs/36.png docs/37.png docs/38.png docs/39.png docs/40.png docs/41.png docs/42.png docs/43.png docs/44.png docs/45.png docs/46.png docs/47.png
 
 docs/%.svg: w/%.svg svgo.config.js
 	svgo "$<" -o "$@"
 
+docs/%.png: w/%.png
+	copy /y "$(subst /,\,$<)" "$(subst /,\,$@)"
+
+w/%.png: w/%.svg
+	magick convert -debug All "$<" -resize 32x32 "$@"
 
 #docs/more.htm : more.htm minify_config.json
 #	copy /y more.htm "$@"
