@@ -225,7 +225,7 @@ function getJSONP() {
     /*ro = rail occupancy*/
     '/api/ro/'+stacode+'?callback=genArvBodyObj';
 //IE 5.5 and 6.0 don't have document.head
-    jsonp = document.getElementsByTagName('head')[0];
+    jsonp = document.documentElement.firstChild;
     /*dont leak mem adding infinite JSONP script elements
     this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
     if(jsonp.childNodes.length > 1)

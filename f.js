@@ -107,7 +107,7 @@ window.fetch = function (url) {
 //                  +'&a='+((new Date().getTime())+0)
                   ;
 //IE 5.5 and 6.0 don't have document.head
-                jsonp = document.getElementsByTagName('head')[0];
+                jsonp = document.documentElement.firstChild;
                 /*dont leak mem adding infinite JSONP script elements
                 this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
                 //TODO, fix for LAST TAG SCRIPT in head, then rmv/add
@@ -139,7 +139,7 @@ y(
     is_ie
     && !( document.implementation
           && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
-        ),
+        ) ? '.png' : 0,
 /*
 IE 6.0 has doc.CDF, IE 5.5 missing doc.CDF func (undef)
 but IE 5.0 has doc.CDF func, says "native" but that IE 5.0 doc.CDF func always

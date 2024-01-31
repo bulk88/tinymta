@@ -17,7 +17,7 @@ Do you have a<br>
 [2]<a accesskey=2 href=mn/stations.htm>Smart Phone (Metro North)</a><br>
 [3]<a accesskey=3 href=li/stations.htm>Smart Phone (Long Island)</a><br>
 [4]<a accesskey=4 href=jsrdt.htm>Dumb Phone (Subway)</a><br>
-[5]<a accesskey=5 href=mn/rt.htm>Dumb Phone (Metro North)</a><br>
+[5]<a accesskey=5 href=mn/jsrdt.htm>Dumb Phone (Metro North)</a><br>
 [6]<a accesskey=6 href=li/jsrdt.htm>Dumb Phone (Long Island)</a><br>
 [7]<a accesskey=7 href=status.htm>Service Changes</a><br>
 <!-- [8]<a accesskey=8 href=plan.htm>Smart Phone UI (Subway) Trip Planner</a><br> -->
@@ -31,18 +31,23 @@ Do you have a<br>
 <script>
 //>C29, E12, F4, O16, SF8, IE never
 //var se = document.currentScript;
-var scriptElem = document.scripts, //reused later
-  cse = scriptElem[scriptElem.length - 1];
-var y = function (nosvg, polyCDF) {
-  fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-US&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909')
+var scriptElem = document.scripts, // var reused later
+  cse = scriptElem[scriptElem.length - 1]; //cse = current script elem
+function y (nosvg) {
+  fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909')
   .then(function (r) {
     r.json().then(function (r) {
-      var frag = polyCDF ? polyCDF() : document.createDocumentFragment(),
+/*
+was a polyfill func or real doc.CDF, but it was switched to "polyfill always"
+DIV tag, to keep this minified/gziped htm file
+inside exactly 1 http 1.1 resp packet (1500 bytes)
+*/
+      var frag = document.createElement('div'),
       e, //elem
       v, //val
       l = r.qpf.length, //qpf shortest by chars token
       i = 0,
-      img_ext = nosvg ? '.png' : '.svg',
+      img_ext = nosvg ? nosvg : '.svg',
       br = document.createElement('br');
       for (; i < l; i++) {
 /*
@@ -79,16 +84,15 @@ meaningless for self closing BR tag
     })
   });
 };
-
-if (typeof fetch !== 'function') {
+if (this.fetch) {
+  y();
+} else {
   scriptElem = document.createElement("script");
   scriptElem.src = 'f.js'
 //    +'?a='+((new Date().getTime())+0)
   ;
 //IE 5.5 and 6.0 don't have document.head
-  document.getElementsByTagName('head')[0].appendChild(scriptElem);
-} else {
-  y();
+  document.documentElement.firstChild.appendChild(scriptElem);
 }
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->
