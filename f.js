@@ -1,6 +1,5 @@
 (function(){
 //alert(this); window obj TODO research if "window." can be removed and survive minify
-var jsonp; //must be not global
 window.fetch = function (url) {
   return {
     then: function (cb) {
@@ -103,7 +102,10 @@ window.fetch = function (url) {
 /*STARTDELETE*/
                   '//tinymta.us.to' +
 /*ENDDELETE*/
-                  '/api/wea?callback=j';
+                  '/api/wea?callback=j'
+//doesnt seem to be needed on old IEs
+//                  +'&a='+((new Date().getTime())+0)
+                  ;
 //IE 5.5 and 6.0 don't have document.head
                 jsonp = document.getElementsByTagName('head')[0];
                 /*dont leak mem adding infinite JSONP script elements
@@ -122,20 +124,39 @@ window.fetch = function (url) {
     }
   }
 };
+
+  var jsonp, //must be not global
+  ua = window.navigator.userAgent,
+  uaIdx = ua.indexOf('MSIE '),
+  is_ie = uaIdx > 0;
+  if (is_ie) {
+    uaIdx+=5; //skip ahead to ver num
+    ua = ua.slice(uaIdx, ua.indexOf(';',uaIdx)).split('.');
+  }
 //run main body
-//args (nosvg, polyCDF)
+//args (nosvg, polyfillCDF_or_false)
 y(
-  window.navigator.userAgent.indexOf('MSIE ') > 0
+    is_ie
     && !( document.implementation
           && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
         ),
-  //fake doc frag for IE 5.5 with custom tag, IE 6 has working doc.CDF
-  //note in IE 5.5 writing to document.createDocumentFragment is fatal
-  //exceptions thrown, but doc.CDF read is undefined, but writing to
-  //document.createDocumentFragmeNNNt is fine for IE 5.5, prop CDF some kind of
-  //undocumented (or no docs exist on Google anymore) reserved keyword in the
-  //IE 5.5 DOM IDL
-
-  document.createDocumentFragment ? 0 : function () {return document.createElement('xfrag');}
+/*
+IE 6.0 has doc.CDF, IE 5.5 missing doc.CDF func (undef)
+but IE 5.0 has doc.CDF func, says "native" but that IE 5.0 doc.CDF func always
+throws "Error: Not Implemented", prob b/c this site is NOT XHTML/XML compliant
+also also in IE 5.5, writing to undefined document.createDocumentFragment is
+fatal exceptions thrown, so for 5.0, use shim by ver num chk, for 5.5 test
+member (maybe this also catchs ancient 1990s webkit???), 6.0 is fine, use
+native CDF, seems MS implemented it broken, in 5.0, then tried to hide
+the method, for feature probing reasons, but still keep it as a reserved word
+in 5.5, so nobody can write polyfills, then MS fixed/turned it back on for
+IE 6.0
+*/
+  document.createDocumentFragment && (!is_ie || (ua[0] >= 5 && ua[1] >= 5)) ? 0 : function () {
+/*IE 5.5 xfrag tag works, with appendChild, no prob, 5.0 throws
+Error: Unexpected call to method or property access
+switch to div, no render diff between docfrag and the div in doc tree*/
+    return document.createElement('div');
+    }
 );
 })();
