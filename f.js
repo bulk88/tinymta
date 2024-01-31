@@ -1,4 +1,5 @@
 (function(){
+//alert(this); window obj TODO research if "window." can be removed and survive minify
 var jsonp; //must be not global
 window.fetch = function (url) {
   return {
@@ -43,20 +44,39 @@ window.fetch = function (url) {
 
                       asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
                       which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
+
+                      originally instead of typeof, this was an "in" operator test
+                      but changed to typeof because "in" was only added in IE 5.5
+                      but is a syntax error in IE 5.0, a polyfill for property
+                      check and in operator/hasOwnProperty for IE 4/5/Netscape 4
+                      floating around online is typeof x.myPropName === 'undefined'
                        */
-                      if ('withCredentials' in x || x.getResponseHeader("Date")) {
+                      if(typeof(x.withCredentials) === 'boolean' || x.getResponseHeader("Date")) {
+                        //unknown if XHR has JSON parse or not, we don't care
                         x = x.response || x.responseText;
+                        //security irrel, native JSON faster than JS eval
+                        //according to articles online, but just use eval for
+                        //perf, we use JSONP/innerHTML, and loading a JSON parser
+                        //polyfill abs insane in this micro-HTML site
                         cb(typeof(x) === 'object' ? x : window.JSON ? JSON.parse(x) : eval('0,' + x));
                       } else {
+                        //retry the XHR with IE XHR cache buster option
                         this_func(cb, 1);
                       }
                   } else {
+                      //in reality, if CORS browser and 100% CORS 3pty API
+                      //status 0 should be shown to user, to show no I/O
+                      //available, and never fallback to JSONP
                       x.status && alert("error HTTP status " + x.status);
                       jsonp = 1;
-                      //TLS 1.0 Browsers WILL connect api.weather.com but get
-                      //a no CORS headers "TLS version is too old" text resp
+                      //TLS 1.0 CORS Browsers WILL connect api.weather.com but
+                      //get a no CORS headers "TLS version is too old" text resp
                       //so just always retry again as JSONP, can't separate
-                      //CORS fail from timeout
+                      //CORS fail from timeout, note, no CORS browsers NEVER
+                      //do cross-origin network IO, and instead throw very
+                      //fast an excception, so no-CORS browsers are not caught
+                      //here, this block should be modified/removed all other
+                      //APIs like the MTA APIs
                       this_func(cb);
                   }
                   /*else
@@ -88,6 +108,8 @@ window.fetch = function (url) {
                 jsonp = document.getElementsByTagName('head')[0];
                 /*dont leak mem adding infinite JSONP script elements
                 this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
+                //TODO, fix for LAST TAG SCRIPT in head, then rmv/add
+                //DONT touch title tag for example, this is sloppy
                 if (jsonp.childNodes.length > 1)
                   jsonp.removeChild(jsonp.childNodes[1]);
                 jsonp.appendChild(scriptElem);
@@ -101,5 +123,19 @@ window.fetch = function (url) {
   }
 };
 //run main body
-y();
+//args (nosvg, polyCDF)
+y(
+  window.navigator.userAgent.indexOf('MSIE ') > 0
+    && !( document.implementation
+          && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
+        ),
+  //fake doc frag for IE 5.5 with custom tag, IE 6 has working doc.CDF
+  //note in IE 5.5 writing to document.createDocumentFragment is fatal
+  //exceptions thrown, but doc.CDF read is undefined, but writing to
+  //document.createDocumentFragmeNNNt is fine for IE 5.5, prop CDF some kind of
+  //undocumented (or no docs exist on Google anymore) reserved keyword in the
+  //IE 5.5 DOM IDL
+
+  document.createDocumentFragment ? 0 : function () {return document.createElement('xfrag');}
+);
 })();
