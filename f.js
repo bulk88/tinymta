@@ -7,7 +7,7 @@ window.fetch = function (url) {
         json: function () {
           return {
             then: function (cb, addIMS /*spec breaking, shud be reject cb*/) {
-              var this_func = this.then; /*xhr cb has differnt this obj than here*/
+              var thisFunc_oldScriptElem = this.then; /*xhr cb has differnt this obj than here*/
               var x = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
               try {
                 /*throw (0);*/
@@ -60,7 +60,7 @@ window.fetch = function (url) {
                         cb(typeof(x) === 'object' ? x : window.JSON ? JSON.parse(x) : eval('0,' + x));
                       } else {
                         //retry the XHR with IE XHR cache buster option
-                        this_func(cb, 1);
+                        thisFunc_oldScriptElem(cb, 1);
                       }
                   } else {
                       //in reality, if CORS browser and 100% CORS 3pty API
@@ -76,7 +76,7 @@ window.fetch = function (url) {
                       //fast an excception, so no-CORS browsers are not caught
                       //here, this block should be modified/removed all other
                       //APIs like the MTA APIs
-                      this_func(cb);
+                      thisFunc_oldScriptElem(cb);
                   }
                   /*else
                   alert("currently the application is at" + invocation.readyState); */
@@ -93,10 +93,11 @@ window.fetch = function (url) {
               } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
                 /* alert("XHR failed-will try JSONP:\n"+e); */
                 /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
-                raw button (forced download) doesnt work in updating cache */
-                window.j = function (r) {
-                  cb(r.contents)
-                };
+                raw button (forced download) doesnt work in updating cache
+
+                put script tag first, some browser preemptive start .src
+                download before tree insert
+                */
                 scriptElem = document.createElement("script");
                 scriptElem.src =
 /*STARTDELETE*/
@@ -106,18 +107,25 @@ window.fetch = function (url) {
 //doesnt seem to be needed on old IEs
 //                  +'&a='+((new Date().getTime())+0)
                   ;
+                scriptElem.onerror = function (e){
+                  alert("JSONP network error")
+                };
 //IE 5.5 and 6.0 don't have document.head
-                jsonp = document.documentElement.firstChild;
+                jsonp /*HEAD*/ = document.documentElement.firstChild;
                 /*dont leak mem adding infinite JSONP script elements
                 this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
-                //TODO, fix for LAST TAG SCRIPT in head, then rmv/add
-                //DONT touch title tag for example, this is sloppy
-                if (jsonp.childNodes.length > 1)
-                  jsonp.removeChild(jsonp.childNodes[1]);
+                ;
+                thisFunc_oldScriptElem = (thisFunc_oldScriptElem = jsonp.childNodes)[thisFunc_oldScriptElem.length-1];
+                if (thisFunc_oldScriptElem.nodeName == 'SCRIPT')
+                  jsonp.removeChild(thisFunc_oldScriptElem);
+                /* add JSONP runner to global, window. not needed */
+                j = function (r) {
+                  cb(r.contents, 1 /*JSONP flag*/)
+                };
                 jsonp.appendChild(scriptElem);
                 /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
-              }
-            }
+              } //end catch blk
+            } //end of JSON.then() method
           };
         }
       });
@@ -136,6 +144,7 @@ window.fetch = function (url) {
 //run main body
 //args (nosvg, polyfillCDF_or_false)
 y(
+/* SVG test for IE */
     is_ie
     && !( document.implementation
           && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
@@ -154,7 +163,7 @@ IE 6.0
 */
   document.createDocumentFragment && (!is_ie || (ua[0] >= 5 && ua[1] >= 5)) ? 0 : function () {
 /*IE 5.5 xfrag tag works, with appendChild, no prob, 5.0 throws
-Error: Unexpected call to method or property access
+"Error: Unexpected call to method or property access" in appendCHild to tag xfrag
 switch to div, no render diff between docfrag and the div in doc tree*/
     return document.createElement('div');
     }
