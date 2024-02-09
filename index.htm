@@ -34,8 +34,11 @@ Do you have a<br>
 var scriptElem = document.scripts, // var reused later
   cse = scriptElem[scriptElem.length - 1]; //cse = current script elem
 function y (nosvg) {
-  fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909')
+  fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909',{},'wea')
   .then(function (r) {
+  r.status != 200 ? //put != first for r.status gzip reasons
+    alert("error http status " + r.status)
+  :
     r.json().then(function (r) {
 /*
 was a polyfill func or real doc.CDF, but it was switched to "polyfill always"
@@ -81,8 +84,8 @@ meaningless for self closing BR tag
         v.className = 'i';
       }
       cse.parentNode.replaceChild(frag, cse);
-    })
-  });
+    }); //json cb
+  }); //end fetch CB
 };
 if (this.fetch) {
   y();

@@ -12,9 +12,8 @@
 <body>No javascript</body>
 <script type="text/javascript">
 mangleIndex={name:"mangleIndex"};
-getStop.name = 'getStop';
-parseRoutes.name = 'parseRoutes';
-parseAlerts.name = 'parseAlerts';
+y/*getStop*/.name = 'y';
+
 /*
 //LIRR has more routes
 function AGENCY_MNR() {return 1}
@@ -45,19 +44,39 @@ var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alert
    304 typ if .reload(0)
 */
 /* generate body top string once, its later used for fast refresh */
-/* var t is "top" as in top of body (header) */
-var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
+/* var t is "top" as in top of body (header), func y() real name is getStop */
+var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:y()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/status\.htm$/.test(location.pathname) ? "status_.htm" : "status.htm")
 /*ENDINSERTPATH*/
           +'\')">Slow</a>] <a href='+url_routes+'>RawR</a> <a href='+url_alerts+'>RawA</a><br>';
 
-getStop();
+if (this.fetch) {
+  y/*getStop*/();
+} else {
+  scriptElem = document.createElement("script");
+  scriptElem.src = 'f.js'
+//    +'?a='+((new Date().getTime())+0)
+  ;
+//IE 5.5 and 6.0 don't have document.head
+  document.documentElement.firstChild.appendChild(scriptElem);
+}
 
-function getStop() {
-getJSON(url_routes);
-getJSON(url_alerts,1);
+/*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
+function y() {
+fetch(url_alerts,{},'alt').then(function(r) {
+  r.status != 200 ? //put != first for r.status gzip reasons
+    alert("error http status " + r.status)
+  :
+    r.json().then(gotAlerts);
+  });
+fetch(url_routes,{},'rts', 1).then(function(r) {
+  r.status != 200 ? //put != first for r.status gzip reasons
+    alert("error http status " + r.status)
+  :
+    r.text().then(gotRoutes);
+  });
 document.body.innerHTML = t; /*t=top*/
 }
 
@@ -71,6 +90,7 @@ function mkSubFontTag(text, route) {
   return c ?'<font color='+c+'>'+text+'</font>':text;
 }
 
+/* can't move to f.js, fetch() added in Chrome 42, Array.find in Chrome 45 */
 if (!Array.prototype.find) {
   Array.prototype.find = function(callback) {
   if (this === null) {
@@ -89,25 +109,6 @@ if (!Array.prototype.find) {
     }
   }
 }
-}
-
-if (!Array.prototype.forEach) {
-  Array.prototype.forEach = function (fn, scope) {
-    'use strict';
-    var i,
-    len;
-    for (i = 0, len = this.length; i < len; ++i) {
-      if (i in this) {
-        fn.call(scope, this[i], i, this);
-      }
-    }
-  };
-}
-
-if (!Date.now) {
-  Date.now = function now() {
-    return new Date().getTime();
-  };
 }
 
 /* inlined
@@ -224,19 +225,21 @@ function noPTag(str) {
 
 var allRoutes;
 var alertsResp;
-function parseRoutes(r) { /*r=resp*/
-  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  /* r.contents is JSONP */
-  allRoutes = typeof (r = r.contents || r) === 'object' ? r : eval('0,' + r);
+function gotRoutes(r,jspFlag) { /*r=resp*/
+  jsonp = jspFlag;
+  /* routes.js is JS not JSON, to save "s on key/prop names
+     JSONP polyfill and the CF Worker/JSONP proxy ignores text() vs json()
+     for performance/wire size, anti-double JS eval() pases in browser
+     */
+  allRoutes = typeof r == 'object' ? r :eval('0,' + r);
   if (alertsResp)
     drawHTML();
 }
 
-function parseAlerts(r) { /*r=resp*/
-  /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-  /* r.contents is JSONP */
+function gotAlerts(r,jspFlag) { /*r=resp*/
+  jsonp = jspFlag;
   /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
-  alertsResp = filterCurrentStatii((typeof(r = r.contents || r) === 'object' ? r : this.JSON ? JSON.parse(r) : eval('0,' + r)).entity);
+  alertsResp = filterCurrentStatii(r.entity);
   if (allRoutes)
     drawHTML();
 }
@@ -499,90 +502,6 @@ function emitRRStatus(name, lines) {
     alertsResp = void 0;
     allRoutes = void 0;
 }
-function getJSON(url, alertFlag, addIMS) {
-/*Firefox, Opera, IE7, and other browsers will use the native object*/
-/*IE 5 and 6 will use the ActiveX control*/
-    var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-    try {
-        /*throw(0);*/
-        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
-          will happen over network, once browser sees no Access Control header
-          it will "fail" the req to the page, then the page does the JSONP network
-          request, stop this double request thing to save network traffic after CORS
-          fails the 1st time, the server wont magically get the header one minute.
-          Once CORS fails once, it will never succeed on that particular client, so
-          never try a CORS request again.
-          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
-          side, without network traffic.*/
-        if(jsonp) throw(0);
-        /*open() can fire errors events or throw exceptions*/
-        /*lower case get even tho gzip friendly, error 400's CF's WAFs, no other servers care*/
-        x.open('GET', url, 1);
-        try {
-          if(alertFlag) {
-            x.responseType = 'json';
-          }
-        } catch (e) {
-          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
-        }
-        /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
-          wont drawn train times using "Fast" beyond the 1st/initial page load
-          and only "Slow" works
-          http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
-        x.onreadystatechange = function ()
-{
-    if (x.readyState == 4)
-    {
-            if (x.status == 200)
-            {   /* IE 6 cache hit, no IP traffic happened, thats bad,
-                  this detects it and resends it, on Chrome with CORS
-                  XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
-                  so include IMS header ONLY if IE with cache bug by feature test and no CORS support
-
-                  asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
-                  which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
-                */
-                'withCredentials' in x || x.getResponseHeader("Date")
-                    ? (alertFlag?parseAlerts:parseRoutes)(x.response||x.responseText)
-                    : getJSON(url, alertFlag, 1);
-            }
-            else
-                alert("error HTTP status "+x.status);
-    }
-    /*else
-        alert("currently the application is at" + invocation.readyState); */
-};
-        if(addIMS) x.setRequestHeader("if-modified-since", new Date(0));
-        //old Firefoxes send on XHR, new FF and new Chrome send */*
-        //Java EE server, if it sees "application/xml" it sends XML instead of JSON
-        //"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-        //b88 disable for status.htm so preload & fetch are same accept header
-        //not needed for this specific MTA server or the CFW routes DB
-        //x.setRequestHeader("accept","application/json");
-        x.send();
-    //code byte savings, reuse error var
-    } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
-        /* alert("XHR failed-will try JSONP:\n"+e); */
-        /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
-            raw button (forced download) doesnt work in updating cache */
-        scriptElem = document.createElement("script");
-        scriptElem.src =
-/*STARTDELETE*/
-    '//tinymta.us.to' +
-/*ENDDELETE*/
-        (alertFlag ?
-        "/api/alt?callback=" + 'parseAlerts' : "/api/rts?callback=" + 'parseRoutes');
-//IE 5.5 and 6.0 don't have document.head
-        jsonp = document.documentElement.firstChild;
-        /*dont leak mem adding infinite JSONP script elements
-        this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
-        if(jsonp.childNodes.length > 1)
-            jsonp.removeChild(jsonp.childNodes[1]);
-        jsonp.appendChild(scriptElem);
-        /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
-    }
-}
-
 </script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash
