@@ -67,14 +67,15 @@ try {
 })
 
 
-//text includes [] chars usually, if route blank, text is route
-function mkSubFontTag(text, route) {
+//typ a .replace() CB, but manual call sometimes
+function mkSubFontTag(unused, route) {
   var c =
 /*STARTSUBCOLOR*/
 {"4":"00933c","5":"00933c","5X":"00933c","6":"00933c","6X":"00a65c","A":"2850ad","C":"2850ad","E":"2850ad","G":"6cbe45","GS":"6d6e71","J":"996633","Z":"996633","L":"a7a9ac","7":"b933ad","7X":"b933ad","1":"ee352e","2":"ee352e","3":"ee352e","N":"fccc0a","Q":"fccc0a","R":"fccc0a","W":"fccc0a","B":"ff6319","D":"ff6319","F":"ff6319","FX":"ff6319","M":"ff6319"}
 /*ENDSUBCOLOR*/
-  [route||text];
-  return c ?'<font color='+c+'>'+text+'</font>':text;
+  [route];
+  route = '['+route+']'
+  return c ?'<font color='+c+'>'+route+'</font>':route;
 }
 
 /* from status.htm not rstop.htm, slighly bigger */

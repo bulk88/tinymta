@@ -82,14 +82,15 @@ fetch(url_routes,{},'rts', 1).then(function(r) {
 document.body.innerHTML = t; /*t=top*/
 }
 
-//text includes [] chars usually, if route blank, text is route
-function mkSubFontTag(text, route) {
+//typ a .replace() CB, but manual call sometimes
+function mkSubFontTag(unused, route) {
   var c =
 /*STARTSUBCOLOR*/
 {"4":"00933c","5":"00933c","5X":"00933c","6":"00933c","6X":"00a65c","A":"2850ad","C":"2850ad","E":"2850ad","G":"6cbe45","GS":"6d6e71","J":"996633","Z":"996633","L":"a7a9ac","7":"b933ad","7X":"b933ad","1":"ee352e","2":"ee352e","3":"ee352e","N":"fccc0a","Q":"fccc0a","R":"fccc0a","W":"fccc0a","B":"ff6319","D":"ff6319","F":"ff6319","FX":"ff6319","M":"ff6319"}
 /*ENDSUBCOLOR*/
-  [route||text];
-  return c ?'<font color='+c+'>'+text+'</font>':text;
+  [route];
+  route = '['+route+']'
+  return c ?'<font color='+c+'>'+route+'</font>':route;
 }
 
 /* can't move to f.js, fetch() added in Chrome 42, Array.find in Chrome 45 */
@@ -221,8 +222,11 @@ function transArrToHTML(translations) {
 }
 
 function noPTag(str) {
+  return str
   //remove root <p> tags and double blank lines and blank lines at end of HTML string
-  return str.replace(/(<p style="min-height:10px"><\/p>)|(^<p>)|((<p><\/p>|<\/p>)+$)/g,'');
+  ? str.replace(/(<p style="min-height:10px"><\/p>)|(^<p>)|((<p><\/p>|<\/p>)+$)/g,'')
+  .replace(/\[(\w+)\]/g, mkSubFontTag)
+  : '';
 }
 
 var allRoutes;
@@ -261,16 +265,16 @@ function ROUTE_COLOR() {return 1};
 function ROUTE_NAME() {return 3};
 function ROUTE_STATUSDETAILS() {return 4};
 
+function sortPriority (a,b) {
+      return b.priority - a.priority
+    }
+
 function mergeStatii (routes, alertsByRoute, agencyMap) {
 
   function getSummary (status) {
-    var alert = "No Status Summary";
-
-    if (status = status.alert['transit_realtime.mercury_alert']) {
-      alert = status.alert_type;
-    }
-
-    return alert;
+    return (status = status.alert['transit_realtime.mercury_alert'])
+      ? status.alert_type
+      : "No Status Summary";
   }
 
   function getDescription(status) {
@@ -350,9 +354,7 @@ function groupedLines (lines){
   for (var i = 0; i < lines.length; i++){
     line = lines[i];
     // Sort statii by priority
-    line[ROUTE_STATUSDETAILS()].sort(function (a,b) {
-      return b.priority - a.priority
-    });
+    line[ROUTE_STATUSDETAILS()].sort(sortPriority);
     statusDetails = line[ROUTE_STATUSDETAILS()][0];
 //function toDashedCase(str){
     status = statusDetails.statusSummary.toLowerCase().replace(/\s/g, '-');
@@ -369,9 +371,7 @@ function groupedLines (lines){
     prioritizedLines.push(statii[status])
   }
 
-  prioritizedLines.sort(function (a,b) {
-    return b.priority - a.priority
-  })
+  prioritizedLines.sort(sortPriority)
 
   return prioritizedLines
 }
@@ -397,9 +397,7 @@ function SET_SUBWAY_LINES(subwayLines, goodServiceLines, subwayLinesAlertsMerged
 function SET_BUS_ROUTES(alertedBuses, busRoutes) {
   busRoutes.forEach(function (route) {
     if (route[ROUTE_STATUSDETAILS()]) {
-      route[ROUTE_STATUSDETAILS()].sort(function (a, b) {
-        return b.priority - a.priority
-      })
+      route[ROUTE_STATUSDETAILS()].sort(sortPriority)
       alertedBuses.push(route)
     }
   })
@@ -413,9 +411,7 @@ function SET_RAIL_LINES(mnrLines, longIslandLines, railLines) {
     //  : (function() {debugger})()
     ).push(line);
     if (line[ROUTE_STATUSDETAILS()]) {
-      line[ROUTE_STATUSDETAILS()].sort(function (a, b) {
-        return b.priority - a.priority
-      })
+      line[ROUTE_STATUSDETAILS()].sort(sortPriority)
     }
   })
 }
@@ -445,7 +441,7 @@ function emitRRStatus(name, lines) {
         statusDetails[n] = '<b>' + statusDetail.statusSummary + '</b>'
          + '<br>' + noPTag(statusDetail.statusTitle)
          + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
-         + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription) : '');
+         + '<br>' + noPTag(statusDetail.statusDescription);
       }
       statusDetails = statusDetails.join('<hr>');
     }
@@ -473,15 +469,15 @@ function emitRRStatus(name, lines) {
         for (o=0; o < linearr.length; o++) {
           route = linearr[o];
           //if(route.name=='SI') {debugger;}
-          h+='<details><summary>'+mkSubFontTag('['+route[ROUTE_ID()]+']', route[ROUTE_ID()])+'</summary>';
+          h+='<details><summary>'+mkSubFontTag(0, route[ROUTE_ID()])+'</summary>';
           //route now alerts array, overwrite status-details array of objs with string.
           route = route[ROUTE_STATUSDETAILS()];
           for (n=0; n < route.length; n++) {
             statusDetail = route[n];
             route[n] ='<b>'+statusDetail.statusSummary+'</b>'
-            + '<br>' + noPTag(statusDetail.statusTitle).replace(/\[(\w+)\]/g, mkSubFontTag)
+            + '<br>' + noPTag(statusDetail.statusTitle)
             + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
-            + '<br>' + (statusDetail.statusDescription ? noPTag(statusDetail.statusDescription).replace(/\[(\w+)\]/g, mkSubFontTag):'');
+            + '<br>' + noPTag(statusDetail.statusDescription);
           }
           h += route.join('<hr>');
           h += '</details>';
@@ -491,8 +487,7 @@ function emitRRStatus(name, lines) {
       if(goodServiceLines.length) {
         h += '<hr>No Active Alerts<br>';
         for (i=0; i < goodServiceLines.length; i++) {
-          route = goodServiceLines[i][ROUTE_ID()];
-          h+=mkSubFontTag('['+route+']', route)+' ';
+          h+=mkSubFontTag(0, goodServiceLines[i][ROUTE_ID()])+' ';
         }
       }
 
