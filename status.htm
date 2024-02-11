@@ -4,10 +4,10 @@
 <!-- put no-referrer so preload reqs match later fetch reqs instead of double req -->
 <meta name="referrer" content="no-referrer">
 <link href="//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP" as="fetch" rel="preload" crossorigin>
-<link href="routes.js" as="fetch" rel="preload" crossorigin>
 <!-- older browsers -->
-<link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect" crossorigin>
+<link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
+<link href="routes.js" as="fetch" rel="preload" crossorigin>
 </head>
 <body>No javascript</body>
 <script type="text/javascript">
@@ -205,20 +205,24 @@ function filterCurrentStatii (statii) {
 }
 
 function transArrToHTML(translations) {
-  var en = false,
-  none = false,
-  translation;
-  for (var i = 0; i < translations.length; i++) {
-    translation = translations[i];
-    if (translation.language === 'en-html')
+  var en,
+  none,
+  translation,
+  language,
+  text;
+  var i = translations.length;
+  while(translation = translations[--i]) {
+    text = translation.text;
+    if ((language = translation.language) === 'en-html')
       //note we skip if(text) anti empty string MTA logic
-      return translation.text;
-    else if (translation.language === 'en')
-      en = translation.text;
-    else if (translation.language === '')
-      none = translation.text;
+      return text;
+    else if (language === 'en') {
+      en = text;
+    } else { // was if (language === '') {
+      none = text;
+    }
   }
-  return en ? en : none ? none : false;
+  return en ? en : none;
 }
 
 function noPTag(str) {
@@ -231,24 +235,7 @@ function noPTag(str) {
 
 var allRoutes;
 var alertsResp;
-function gotRoutes(r,jspFlag) { /*r=resp*/
-  jsonp = jspFlag;
-  /* routes.js is JS not JSON, to save "s on key/prop names
-     JSONP polyfill and the CF Worker/JSONP proxy ignores text() vs json()
-     for performance/wire size, anti-double JS eval() pases in browser
-     */
-  allRoutes = typeof r == 'object' ? r :eval('0,' + r);
-  if (alertsResp)
-    drawHTML();
-}
 
-function gotAlerts(r,jspFlag) { /*r=resp*/
-  jsonp = jspFlag;
-  /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
-  alertsResp = filterCurrentStatii(r.entity);
-  if (allRoutes)
-    drawHTML();
-}
 function drawHTML() {
 function BUSROUTES() { return 0;}
 function RAILLINES() { return 1;}
@@ -417,8 +404,9 @@ function SET_RAIL_LINES(mnrLines, longIslandLines, railLines) {
 }
 
 function getStatus(obj) {
-  if (obj[ROUTE_STATUSDETAILS()] && obj[ROUTE_STATUSDETAILS()].length) {
+  if (obj[ROUTE_STATUSDETAILS()]) {
     // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
+    //assume array if present has atleast 1 elem
     return obj[ROUTE_STATUSDETAILS()][0].statusSummary;
   }
   //todo b88, inService is a front end MTA UI field, hard wired in front end HTML route DB to true for bus & rail
@@ -496,8 +484,8 @@ function emitRRStatus(name, lines) {
       h += emitRRStatus('Bus', alertedBuses);
 
     document.body.innerHTML += h;
-    alertsResp = void 0;
-    allRoutes = void 0;
+    alertsResp = 0;
+    allRoutes = 0;
 }
 </script></html>
 <!--
