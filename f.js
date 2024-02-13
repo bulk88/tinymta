@@ -21,7 +21,42 @@ if (!Date.now) {
   };
 }
 
+/* fetch() added in Chrome 42, Array.find in Chrome 45, f.js sometimes called
+   for just Array.find */
+if (!Array.prototype.find) {
+  Array.prototype.find = function(callback) {
+  if (this === null) {
+    throw new TypeError('Array.prototype.find called on null or undefined');
+  } else if (typeof callback !== 'function') {
+    throw new TypeError('callback must be a function');
+  }
+  var list = Object(this);
+  // Makes sures is always has an positive integer as length.
+  var length = list.length >>> 0;
+  var thisArg = arguments[1];
+  for (var i = 0; i < length; i++) {
+    var element = list[i];
+    if ( callback.call(thisArg, element, i, list) ) {
+      return element;
+    }
+  }
+}
+}
+
+if (!Object.values) {
+  Object.values = function (obj) {
+    var values = [];
+
+    for (var i in obj) {
+      values.push(obj[i]);
+    }
+    return values;
+  };
+}
+
 (function(){
+//sometimes just polyfills above needed, fetch exists
+if (!window.fetch) {
 //alert(this); window obj TODO research if "window." can be removed and survive minify
 //arg 3 and 4 are private to this PF and non-spec Fetch API, but needed
 window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
@@ -207,6 +242,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
             } //end of fetch.then() method
     };
   };
+}//end fetch pf
 
   var jsonp, //must be not global
   ua = window.navigator.userAgent,

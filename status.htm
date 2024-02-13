@@ -54,7 +54,7 @@ var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:y
           +'\')">Slow</a>] <a href='+url_routes+'>RawR</a> <a href='+url_alerts+'>RawA</a><br>';
 var scriptElem;
 
-if (this.fetch) {
+if (this.fetch && Array.prototype.find) {
   y/*getStop*/();
 } else {
   scriptElem = document.createElement("script");
@@ -108,27 +108,6 @@ function mkSubFontTag(unused, route) {
   return c ?'<font color='+c+'>'+route+'</font>':route;
 }
 
-/* can't move to f.js, fetch() added in Chrome 42, Array.find in Chrome 45 */
-if (!Array.prototype.find) {
-  Array.prototype.find = function(callback) {
-  if (this === null) {
-    throw new TypeError('Array.prototype.find called on null or undefined');
-  } else if (typeof callback !== 'function') {
-    throw new TypeError('callback must be a function');
-  }
-  var list = Object(this);
-  // Makes sures is always has an positive integer as length.
-  var length = list.length >>> 0;
-  var thisArg = arguments[1];
-  for (var i = 0; i < length; i++) {
-    var element = list[i];
-    if ( callback.call(thisArg, element, i, list) ) {
-      return element;
-    }
-  }
-}
-}
-
 /* inlined
 const BANNED_XBUS_ROUTE_TYPE = 702;
 const NEW_HAVEN_BRANCHES = ['MNR:4', 'MNR:5', 'MNR:6'];
@@ -153,7 +132,7 @@ function filterCurrentStatii (statii) {
   // Reduce the number of statii to only those that are current
   for(var i = 0; i < statii.length; i++) {
     status = statii[i];
-    isCurrent_routeId = false;
+    isCurrent_routeId = +false;
 
     try {
     //MNR elevators do not have .active_period member, NYCT elevators do, both no mercury alert
@@ -170,7 +149,7 @@ function filterCurrentStatii (statii) {
         var isPlannedWork = ~status.id.indexOf('planned_work');
 
         if (isPlannedWork && !hasBeforeActive) {
-          isCurrent_routeId = false;
+          isCurrent_routeId = +false;
         } else {
           arr_activePeriod_informedEntity = status.alert.active_period;
           for(n=0; n < arr_activePeriod_informedEntity.length; n++) {
@@ -183,11 +162,11 @@ function filterCurrentStatii (statii) {
               }
 
               if (currentTime > startTime_route) {
-                isCurrent_routeId = true;
+                isCurrent_routeId = +true;
               }
 
               if (period_entity.end && currentTime > period_entity.end) {
-                isCurrent_routeId = false;
+                isCurrent_routeId = +false;
               }
             }
           }
@@ -271,9 +250,17 @@ function ROUTE_COLOR() {return 1};
 function ROUTE_NAME() {return 3};
 function ROUTE_STATUSDETAILS() {return 4};
 
-function sortPriority (a,b) {
-      return b.priority - a.priority
-    }
+//SI statusItem, idx 0 and 1 shared between grouped lines and statusitem structs
+function SI_SUMMARY () {return 0;}
+function SI_PRIORITY () {return 1;}
+function GRPLINES_LINES () {return 2;}
+function SI_TITLE () {return 2;}
+function SI_DESCRIPTION () {return 3;}
+function SI_DURATION () {return 4;}
+
+function sortPriority(a, b) {
+  return b[SI_PRIORITY()] - a[SI_PRIORITY()]
+}
 
 function mergeStatii (routes, alertsByRoute, agencyMap) {
 
@@ -313,13 +300,13 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
         });
 
         //reuse array from GTFS feed, dont alloc new one, saves mem
-        alertedRoute[i] = { //statusItem
-          statusSummary: getSummary(status),
-          statusDescription: transArrToHTML(status.alert.description_text),
-          statusTitle: transArrToHTML(status.alert.header_text),
-          priority: getPriority(entity),
-          duration: transArrToHTML(status.alert["transit_realtime.mercury_alert"].human_readable_active_period)
-        };
+        alertedRoute[i] = [ //statusItem
+          getSummary(status), //SI_SUMMARY
+          getPriority(entity), //SI_PRIORITY
+          transArrToHTML(status.alert.header_text), //SI_TITLE
+          transArrToHTML(status.alert.description_text), //SI_DESCRIPTION
+          transArrToHTML(status.alert["transit_realtime.mercury_alert"].human_readable_active_period) //SI_DURATION
+        ];
       }
       route[ROUTE_STATUSDETAILS()] = alertedRoute;
     }
@@ -333,8 +320,7 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
 /*returns an array of status category objs,
   each which has an array of lines under it*, SUBWAYS ONLY*/
 function groupedLines (lines){
-  var statii = {}
-  var prioritizedLines = []
+  var statii = {};
   var line;
   var status;
   var statusDetails;
@@ -344,24 +330,18 @@ function groupedLines (lines){
     // Sort statii by priority
     line[ROUTE_STATUSDETAILS()].sort(sortPriority);
     statusDetails = line[ROUTE_STATUSDETAILS()][0];
-//function toDashedCase(str){
-    status = statusDetails.statusSummary.toLowerCase().replace(/\s/g, '-');
+    status = statusDetails[SI_SUMMARY()];
 
-    status = statii[status] = statii[status] || {
-        status: statusDetails.statusSummary,
-        priority: statusDetails.priority
-    };
+    status = (statii[status] = statii[status] || [
+        status,
+        statusDetails[SI_PRIORITY()],
+        []//lines arr
+    ]);
+    status[GRPLINES_LINES()].push(line); //add line to line arr
 
-    (status.lines = status.lines || []).push(line)
   }
-
-  for(status in statii) {
-    prioritizedLines.push(statii[status])
-  }
-
-  prioritizedLines.sort(sortPriority)
-
-  return prioritizedLines
+  //strip category labels, and sort by label priority code (MTA server)
+  return Object.values(statii).sort(sortPriority);
 }
 
 function sortSubwayLines (routes) {
@@ -406,9 +386,9 @@ function SET_RAIL_LINES(mnrLines, longIslandLines, railLines) {
 
 function getStatus(obj) {
   if (obj[ROUTE_STATUSDETAILS()]) {
-    // console.log('rail-line-list-vue obj.statusDetails[0].statusSummary', obj.statusDetails[0].statusSummary)
+    // console.log('rail-line-list-vue obj.statusDetails[0][SI_SUMMARY()]', obj.statusDetails[0][SI_SUMMARY()])
     //assume array if present has atleast 1 elem
-    return obj[ROUTE_STATUSDETAILS()][0].statusSummary;
+    return obj[ROUTE_STATUSDETAILS()][0][SI_SUMMARY()];
   }
   //todo b88, inService is a front end MTA UI field, hard wired in front end HTML route DB to true for bus & rail
   //manually downgraded by mercury alert above, maybe remove field totally??
@@ -427,10 +407,10 @@ function emitRRStatus(name, lines) {
       statusDetails = route[ROUTE_STATUSDETAILS()];
       for(n = 0; n < statusDetails.length; n++) {
         statusDetail = statusDetails[n];
-        statusDetails[n] = '<b>' + statusDetail.statusSummary + '</b>'
-         + '<br>' + noPTag(statusDetail.statusTitle)
-         + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
-         + '<br>' + noPTag(statusDetail.statusDescription);
+        statusDetails[n] = '<b>' + statusDetail[SI_SUMMARY()] + '</b>'
+         + '<br>' + noPTag(statusDetail[SI_TITLE()])
+         + (statusDetail[SI_DURATION()] ? '<br>' + statusDetail[SI_DURATION()] : '')
+         + '<br>' + noPTag(statusDetail[SI_DESCRIPTION()]);
       }
       statusDetails = statusDetails.join('<hr>');
     }
@@ -453,8 +433,8 @@ function emitRRStatus(name, lines) {
 
       for (i=0; i < groupedByStatusLines.length; i++) {
         linearr = groupedByStatusLines[i];
-        h += '<hr>' + linearr.status + '<br>';
-        linearr = linearr.lines;
+        h += '<hr>' + linearr[SI_SUMMARY()] + '<br>';
+        linearr = linearr[GRPLINES_LINES()];
         for (o=0; o < linearr.length; o++) {
           route = linearr[o];
           //if(route.name=='SI') {debugger;}
@@ -463,10 +443,10 @@ function emitRRStatus(name, lines) {
           route = route[ROUTE_STATUSDETAILS()];
           for (n=0; n < route.length; n++) {
             statusDetail = route[n];
-            route[n] ='<b>'+statusDetail.statusSummary+'</b>'
-            + '<br>' + noPTag(statusDetail.statusTitle)
-            + (statusDetail.duration ? '<br>' + statusDetail.duration : '')
-            + '<br>' + noPTag(statusDetail.statusDescription);
+            route[n] ='<b>'+statusDetail[SI_SUMMARY()]+'</b>'
+            + '<br>' + noPTag(statusDetail[SI_TITLE()])
+            + (statusDetail[SI_DURATION()] ? '<br>' + statusDetail[SI_DURATION()] : '')
+            + '<br>' + noPTag(statusDetail[SI_DESCRIPTION()]);
           }
           h += route.join('<hr>');
           h += '</details>';
