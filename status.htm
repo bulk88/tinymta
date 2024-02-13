@@ -67,19 +67,34 @@ if (this.fetch) {
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
 function y() {
-fetch(url_alerts,{},'alt').then(function(r) {
-  r.status != 200 ? //put != first for r.status gzip reasons
+  fetch(url_alerts, {}, 'alt').then(function (r) {
+    r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
-  :
-    r.json().then(gotAlerts);
+     :
+    r.json().then(function /*gotAlerts*/(r, jspFlag) { /*r=resp*/
+      jsonp = jspFlag;
+      /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
+      alertsResp = filterCurrentStatii(r.entity);
+      if (allRoutes)
+        drawHTML();
+    });
   });
-fetch(url_routes,{},'rts', 1).then(function(r) {
-  r.status != 200 ? //put != first for r.status gzip reasons
+  fetch(url_routes, {}, 'rts', 1).then(function (r) {
+    r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
-  :
-    r.text().then(gotRoutes);
+     :
+    r.text().then(function /*gotRoutes*/(r, jspFlag) { /*r=resp*/
+      jsonp = jspFlag;
+      /* routes.js is JS not JSON, to save "s on key/prop names
+      JSONP polyfill and the CF Worker/JSONP proxy ignores text() vs json()
+      for performance/wire size, anti-double JS eval() pases in browser
+       */
+      allRoutes = typeof r == 'object' ? r : eval('0,' + r);
+      if (alertsResp)
+        drawHTML();
+    });
   });
-document.body.innerHTML = t; /*t=top*/
+  document.body.innerHTML = t; /*t=top*/
 }
 
 //typ a .replace() CB, but manual call sometimes
@@ -209,20 +224,24 @@ function transArrToHTML(translations) {
   none,
   translation,
   language,
-  text;
-  var i = translations.length;
-  while(translation = translations[--i]) {
-    text = translation.text;
-    if ((language = translation.language) === 'en-html')
-      //note we skip if(text) anti empty string MTA logic
-      return text;
-    else if (language === 'en') {
-      en = text;
-    } else { // was if (language === '') {
-      none = text;
+  text,
+  i;
+  if (translations) { //shorter than object type chk
+    translations = translations.translation;
+    i = translations.length;
+    while (translation = translations[--i]) {
+      text = translation.text;
+      if ((language = translation.language) === 'en-html')
+        //note we skip if(text) anti empty string MTA logic
+        return text;
+      else if (language === 'en') {
+        en = text;
+      } else { // was if (language === '') {
+        none = text;
+      }
     }
   }
-  return en ? en : none;
+  return en ? en : none ? none : '';
 }
 
 function noPTag(str) {
@@ -264,20 +283,6 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
       : "No Status Summary";
   }
 
-  function getDescription(status) {
-    if (status = status.alert.description_text) {
-      return transArrToHTML(status.translation)
-    }
-    return false;
-  };
-
-  function getHeader (status) {
-    if (status = status.alert.header_text) {
-      return transArrToHTML(status.translation)
-    }
-    return false;
-  };
-
   function getPriority (entity_sortorder) {
     var priority = -10;
 
@@ -297,7 +302,6 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
     var alertedRoute;
     var i;
     var status;
-    var duration;
     var entity;
 
     if ((alertedRoute = alertsByRoute[agency]) && (alertedRoute = alertedRoute[key])) {
@@ -308,16 +312,13 @@ function mergeStatii (routes, alertsByRoute, agencyMap) {
           return entity.agency_id === agency && entity.route_id.toLowerCase() === key ? 1 : 0
         });
 
-        duration = status.alert["transit_realtime.mercury_alert"].human_readable_active_period;
-        duration = duration ? transArrToHTML(duration.translation) : '';
-
         //reuse array from GTFS feed, dont alloc new one, saves mem
         alertedRoute[i] = { //statusItem
           statusSummary: getSummary(status),
-          statusDescription: getDescription(status),
-          statusTitle: getHeader(status),
+          statusDescription: transArrToHTML(status.alert.description_text),
+          statusTitle: transArrToHTML(status.alert.header_text),
           priority: getPriority(entity),
-          duration: duration
+          duration: transArrToHTML(status.alert["transit_realtime.mercury_alert"].human_readable_active_period)
         };
       }
       route[ROUTE_STATUSDETAILS()] = alertedRoute;
