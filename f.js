@@ -7,7 +7,8 @@ if (!Array.prototype.forEach) {
     var i,
     len;
     for (i = 0, len = this.length; i < len; ++i) {
-      if (i in this) {
+      //not IE 5, only 5.5 // if (i in this) {
+      if (typeof this[i] !== 'undefined') {
         fn.call(scope, this[i], i, this);
       }
     }
@@ -43,6 +44,13 @@ if (!Array.prototype.find) {
 }
 }
 
+/* IE 5.0 polyfill, 5.5 has array push() */
+if (!Array.prototype.push) {
+  Array.prototype.push = function (a) {
+  this[this.length] = a;
+  }
+}
+
 if (!Object.values) {
   Object.values = function (obj) {
     var values = [];
@@ -54,7 +62,42 @@ if (!Object.values) {
   };
 }
 
+// toLocaleTimeString polyfill for IE 5
+if (!Date.prototype.toLocaleTimeString) {
+  Date.prototype.toLocaleTimeString = function() {
+    var hours = this.getHours();
+    var minutes = this.getMinutes();
+    var seconds = this.getSeconds();
+    var meridian = hours < 12 ? "AM" : "PM";
+    hours = hours % 12 || 12;
+    return hours + ":" + minutes + ":" + seconds + " " + meridian;
+  };
+}
+
 (function(){
+
+//added in IE 5.5, not in 5.0, PF hand made by me, not copied
+if (!Function.prototype.call) {
+/* a PF I saw, used eval('string') to pass .arguments var arg, to make a
+   one time use function, that is unlimited args for IE w/o .call()/apply()
+   for perf/sanity, just hardwire to 3 args, the max used by all other PFs
+   calling .call
+*/
+  Function.prototype.call = function (newThis, a1, a2, a3 /*, a4, a5, a6*/) {
+    var ret;
+    var fnName;
+    if (typeof newThis === 'object') { //untested but prob correct
+      fnName = 'j' + ((new Date().getTime()) + (jsonpi++));
+      newThis[fnName] = this;
+      ret = newThis[fnName](a1, a2, a3);
+      delete newThis[fnName];
+    } else {
+      ret = this(a1, a2, a3);
+    }
+    return ret;
+  };
+}
+
 //sometimes just polyfills above needed, fetch exists
 if (!window.fetch) {
 //alert(this); window obj TODO research if "window." can be removed and survive minify
@@ -65,7 +108,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
       /* don't use arguments.callee, b/c even tho Tinymta DOES NOT use "strict"
       it could one day, xhr on RSC cb has differnt this obj than here, so
       save func ref now*/
-              var thisFunc_oldScriptElem = this.then;
+              var thisFunc = this.then;
               var g_jtcb; //json or text CB
               var content_fk_promise = { //can't lift obj higher b/c closure
                   then: function(local_jtcb) {
@@ -77,8 +120,9 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
               var x = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
               //many call sites, make this a func, with closure vars
               function call_f_then_cb(httpstatus, jsonpFlag) {
-                /* don't leak, run first in case user CB throw exceptions */
-                jsonpFlag && delete window[jsonpFnName];
+                /* don't leak, run first in case user CB throw exceptions
+                 IE doesnt support/throws xcpt for delete op on window obj */
+                jsonpFlag && (window[jsonpFnName] = 0);
                 //note, the CB might never call json() method if
                 //bad status, but we syncronously must give a chance for
                 //fetch.then() cb to offer the json().then() cb for us to
@@ -123,22 +167,8 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 and only "Slow" works
                 http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
                 x.onreadystatechange = function () {
-                  if (x.readyState == 3) {
-                    if(x.status == 0) {
-                      //in reality, if CORS browser and 100% CORS 3pty API
-                      //status 0 should be shown to user, to show no I/O
-                      //available, and never fallback to JSONP
-                      jsonp = 1;
-                      //TLS 1.0 CORS Browsers WILL connect api.weather.com but
-                      //get a no CORS headers "TLS version is too old" text resp
-                      //so just always retry again as JSONP, can't separate
-                      //CORS fail from timeout, note, no CORS browsers NEVER
-                      //do cross-origin network IO, and instead throw very
-                      //fast an excception, so no-CORS browsers are not caught
-                      //here, this block should be modified/removed all other
-                      //APIs like the MTA APIs
-                      thisFunc_oldScriptElem(cb);
-                    } else {
+                  if (x.readyState == 2) { //2 == headers status rcv
+                    if(x.status /* not 0 */) {
                       /* IE 6 cache hit, no IP traffic happened, thats bad,
                       this detects it and resends it, on Chrome with CORS
                       XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
@@ -157,11 +187,27 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                         call_f_then_cb(x.status);
                       } else {
                         //retry the XHR with IE XHR cache buster option
-                        thisFunc_oldScriptElem(cb, 1);
+                        thisFunc(cb, 1);
                       }
                     }
-                  } else if (x.readyState == 4) {
-                    if (g_jtcb && x.status == 200) {
+                  } else if (x.readyState == 4) {// 4 == full body, 3 is partial body
+                    if( ! x.status /* == 0*/) {
+                      //in reality, if CORS browser and 100% CORS 3pty API
+                      //status 0 should be shown to user, to show no I/O
+                      //available, and never fallback to JSONP
+                      jsonp = 1;
+                      //TLS 1.0 CORS Browsers WILL connect api.weather.com but
+                      //get a no CORS headers "TLS version is too old" text resp
+                      //so just always retry again as JSONP, can't separate
+                      //CORS fail from timeout, note, no CORS browsers NEVER
+                      //do cross-origin network IO, and instead throw very
+                      //fast an exception, so no-CORS browsers are not caught
+                      //here, this block should be modified/removed all other
+                      //APIs like the MTA APIs, Safari 5.1.7 for Windows
+                      //fires RSC 4, status 0, and skips firing RSC 3, so
+                      //don't do fallback to JSONP in RSC 3, but in RSC 4
+                      thisFunc(cb);
+                    } else if (g_jtcb && x.status == 200) {
                         //unknown if XHR has JSON parse or not, we don't care
                         //.response is "newer" and native browser parsed
                         //by "responseType" if .RT implemented, otherwise fall back to
@@ -181,8 +227,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                     }
 */
                   } //end .RS == 4
-                  /*else
-                  alert("currently the application is at" + x.readyState); */
+                  //alert("currently the application is at" + x.readyState + ' ' + x.status);
                 };//end onRSC func
                 if (addIMS)
                   x.setRequestHeader("if-modified-since", new Date(0));
@@ -199,9 +244,10 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 raw button (forced download) doesnt work in updating cache
 
                 put script tag first, some browser preemptive start .src
-                download before tree insert
+                download before tree insert, on IE getTime() returns same time
+                if called twice fast, add mixer number so CBs dont clash
                 */
-                jsonpFnName = 'j'+((new Date().getTime())+0);
+                jsonpFnName = 'j'+((new Date().getTime())+(jsonpi++));
                 scriptElem = document.createElement("script");
                 scriptElem.src =
 /*STARTDELETE*/
@@ -213,6 +259,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                   ;
                 scriptElem.onerror = function (e) {
                   alert("JSONP network error")
+                  scriptElem.parentElement.removeChild(scriptElem);
                   /* ,1 is window.jsonpCB anti-leak */
                   call_f_then_cb(/*http status*/ 0, 1);
                 };
@@ -224,11 +271,13 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 in status.htm still run fine, after almost instant wiping of
                 JSONP req script tag*/
                 ;
-                thisFunc_oldScriptElem = (thisFunc_oldScriptElem = jsonp.childNodes)[thisFunc_oldScriptElem.length-1];
-                if (thisFunc_oldScriptElem.nodeName == 'SCRIPT')
-                  jsonp.removeChild(thisFunc_oldScriptElem);
                 /* add JSONP runner to global scope*/
                 window[jsonpFnName] = function (r) {
+                  /* anti leak, IE 5 will never load the .js if
+                  appendChild/removeChild is done syncronously,
+                  Opera/Chrome/FF/Safari don't mind rapid sync
+                  appendChild/removeChild, but IE cancels the load */
+                  scriptElem.parentElement.removeChild(scriptElem);
                   /* ,1 is window.jsonpCB anti-leak */
                   call_f_then_cb(r.http_code, 1);
                   /* g_jtcb is not set/json() never called if != 200
@@ -245,21 +294,39 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
 }//end fetch pf
 
   var jsonp, //must be not global
-  ua = window.navigator.userAgent,
-  uaIdx = ua.indexOf('MSIE '),
-  is_ie = uaIdx > 0;
+  jsonpi = 0,
+  ua_IeGTE55 = window.navigator.userAgent,
+  uaIdx_styleShtArr = ua_IeGTE55.indexOf('MSIE '),
+  is_ie = uaIdx_styleShtArr > 0;
   if (is_ie) {
-    uaIdx+=5; //skip ahead to ver num
-    ua = ua.slice(uaIdx, ua.indexOf(';',uaIdx)).split('.');
+    uaIdx_styleShtArr+=5; //skip ahead to ver num
+    ua_IeGTE55 = ua_IeGTE55.slice(uaIdx_styleShtArr, ua_IeGTE55.indexOf(';',uaIdx_styleShtArr)).split('.');
+    ua_IeGTE55 = (ua_IeGTE55[0] == 5 && ua_IeGTE55[1] >= 5) || ua_IeGTE55[0] > 5;
+    if(!ua_IeGTE55) {
+      uaIdx_styleShtArr = document.styleSheets;
+      //insert CSS for IE 5.0 no inline-block fix using tables
+      if (uaIdx_styleShtArr.length) {
+        uaIdx_styleShtArr = uaIdx_styleShtArr[uaIdx_styleShtArr.length-1];
+        //insertRule IE 9+, instead addRule for 5.0
+        uaIdx_styleShtArr.addRule('table','display:inline');
+      }
+    }
   }
 //run main body
-//args (nosvg, polyfillCDF_or_false)
+//args (nosvg, polyfill_no_inline_block_el_container, polyfillCDF_or_false)
 y(
 /* SVG test for IE */
     is_ie
     && !( document.implementation
           && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
         ) ? '.png' : 0,
+
+    is_ie && !ua_IeGTE55 ? function (parentEl) {
+        return parentEl.appendChild(document.createElement('table'))
+        .appendChild(document.createElement('tbody'))
+        .appendChild(document.createElement('tr'))
+        .appendChild(document.createElement('td'));
+    } : 0,
 /*
 IE 6.0 has doc.CDF, IE 5.5 missing doc.CDF func (undef)
 but IE 5.0 has doc.CDF func, says "native" but that IE 5.0 doc.CDF func always
@@ -272,7 +339,7 @@ the method, for feature probing reasons, but still keep it as a reserved word
 in 5.5, so nobody can write polyfills, then MS fixed/turned it back on for
 IE 6.0
 */
-  document.createDocumentFragment && (!is_ie || (ua[0] >= 5 && ua[1] >= 5)) ? 0 : function () {
+    document.createDocumentFragment && (!is_ie || ua_IeGTE55) ? 0 : function () {
 /*IE 5.5 xfrag tag works, with appendChild, no prob, 5.0 throws
 "Error: Unexpected call to method or property access" in appendChild to tag xfrag
 switch to div, no render diff between docfrag and the div in doc tree*/

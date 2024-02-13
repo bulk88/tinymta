@@ -1,6 +1,10 @@
 //don't bother with hotkeys < IE 9 cursor/mouse based
 //all Chrome/Kai/FFs/ASOPs/webkits in history have addEventListener()
-if (document.addEventListener) {
+/* IE <9 doesn't have document.querySelector, and 4G no touch flips, are always
+   FF/WEBK, not IE, lets ignore IE Windows Mobile flips from early 2000s, I dont
+   have one to test with
+*/
+if (document.addEventListener && document.querySelector) {
   function kph(e_realkey) {
     switch (e_realkey.keyCode) {
       case 38: //up arrow

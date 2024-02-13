@@ -144,7 +144,8 @@ function filterCurrentStatii (statii) {
         /* <p>Exit/Entry for 3 Av will only be available from 2 PM to 10 PM on weekdays.
          at 53/lex DOES NOT HAVE A display_before_active field, this is opposite of MTA GTFS spec
          it has an alert_type of "Station Notice" */
-        var hasBeforeActive = mercury_alert.hasOwnProperty('display_before_active');
+        /* was mercury_alert.hasOwnProperty('display_before_active') but switched for IE compat, this int 0 sometimes */
+        var hasBeforeActive = typeof mercury_alert.display_before_active !== 'undefined';
 
         var isPlannedWork = ~status.id.indexOf('planned_work');
 
@@ -173,7 +174,7 @@ function filterCurrentStatii (statii) {
         }
       }
     } catch (e) {
-      console.log(e);
+    //window.console ? console.log(e) : alert(e.message+e.error+e.toString()+e.toValue());
     }
 
     // add to output byRoutes hash, initial props if needed

@@ -33,7 +33,7 @@ Do you have a<br>
 //var se = document.currentScript;
 var scriptElem = document.scripts, // var reused later
   cse = scriptElem[scriptElem.length - 1]; //cse = current script elem
-function y (nosvg) {
+function y (nosvg, mkWeatherCellContainerPF) {
   fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909',{},'wea')
   .then(function (r) {
   r.status != 200 ? //put != first for r.status gzip reasons
@@ -53,13 +53,26 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       img_ext = nosvg ? nosvg : '.svg',
       br = document.createElement('br');
       for (; i < l; i++) {
+/*no inline-block for IE 5.0, inline-block 5.5 up.
+  A 1 cell table, is a old PF hack inline-block emulate for IE 5.0
+  http://mrclay.org/web_design/shrink_to_fit/
+  http://mrclay.org/web_design/shrink_to_fit/ieshrink.js
+  I fixed a bug in code above "<table><tr><td>" only works for
+  .innerHTML/real HTML parser in IE, <tbody> required if appendChild/W3C DOM
+  for IE 5 5.5 and 6, in my testing
+  see https://blog.tomayac.com/2006/06/23/dynamically-created-tables-in-internet-explorer-214331/
+*/
+        if (mkWeatherCellContainerPF) {
+          e = mkWeatherCellContainerPF(frag);
+        } else {
 /*
 originally a DIV tag, switched to SPAN for IE 5.5/6 compat.
 So IE 11 and all FF/WBK/Chrome know style=display=inline-block on a DIV tag
 but IE 5.5/6 refuse to honor inline-block on a DIV tag, switch to SPAN
 */
-        e = frag.appendChild(document.createElement('span'));
-        e.className = 'h';
+          e = frag.appendChild(document.createElement('span'));
+          e.className = 'h';
+        }
         v = +r.validTimeLocal[i].slice(11, 13);
         //perf, skip locale/Date objects
         e.appendChild(document.createTextNode((v % 12 || 12) + (v >= 12 ? 'PM\xa0' : 'AM\xa0')));
