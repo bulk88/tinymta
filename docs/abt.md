@@ -1,4 +1,5 @@
 ---
+permalink: /abt.htm
 ---
 # tinymta
 Lightweight Javascript-free HTML flip phone client for NYC MTA Subway Train arrival times

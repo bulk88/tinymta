@@ -57,12 +57,8 @@ var scriptElem;
 if (this.fetch && Array.prototype.find) {
   y/*getStop*/();
 } else {
-  scriptElem = document.createElement("script");
-  scriptElem.src = 'f.js'
-//    +'?a='+((new Date().getTime())+0)
-  ;
 //IE 5.5 and 6.0 don't have document.head
-  document.documentElement.firstChild.appendChild(scriptElem);
+  document.documentElement.firstChild.appendChild(document.createElement("script")).src = 'f.js';
 }
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */

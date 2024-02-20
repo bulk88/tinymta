@@ -24,7 +24,7 @@ Do you have a<br>
 [7]<a accesskey=7 href=status.htm>Service Changes</a><br>
 <!-- [8]<a accesskey=8 href=plan.htm>Smart Phone UI (Subway) Trip Planner</a><br> -->
 <!-- [9]<a accesskey=9 href=more.htm>More</a><br> -->
-[0]<a accesskey=0 href=abt.html>About</a><br>
+[0]<a accesskey=0 href=abt.htm>About</a><br>
 <!-- get I/O on wire first -->
 <!-- id=n used by as.js in async mode to find its write location -->
 <script async src=as.js id=n></script>
@@ -32,11 +32,13 @@ Do you have a<br>
 <br>
 <script>
 //>C29, E12, F4, O16, SF8, IE never
-//var se = document.currentScript;
-var scriptElem = document.scripts, // var reused later
-  cse = scriptElem[scriptElem.length - 1]; //cse = current script elem
+//var cse = document.currentScript;
+var headElem = document.scripts, // var reused later
+  cse = headElem[headElem.length - 1]; //cse = current script elem
+//IE 5.5 and 6.0 don't have document.head
+headElem = document.documentElement.firstChild;
 function y (nosvg, mkWeatherCellContainerPF) {
-  fetch('https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909',{},'wea')
+  fetch(headElem.children[2].href,{},'wea')
   .then(function (r) {
   r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
@@ -51,9 +53,9 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       e, //elem
       v, //val
       l = r.qpf.length, //qpf shortest by chars token
-      i = 0,
       img_ext = nosvg ? nosvg : '.svg',
-      br = document.createElement('br');
+      br = document.createElement('br'),
+      i = 0;
       for (; i < l; i++) {
 /*no inline-block for IE 5.0, inline-block 5.5 up.
   A 1 cell table, is a old PF hack inline-block emulate for IE 5.0
@@ -73,7 +75,6 @@ So IE 11 and all FF/WBK/Chrome know style=display=inline-block on a DIV tag
 but IE 5.5/6 refuse to honor inline-block on a DIV tag, switch to SPAN
 */
           e = frag.appendChild(document.createElement('span'));
-          e.className = 'h';
         }
         v = +r.validTimeLocal[i].slice(11, 13);
         //perf, skip locale/Date objects
@@ -90,13 +91,12 @@ meaningless for self closing BR tag
         e.appendChild(br.cloneNode(0));
         e.appendChild(document.createTextNode(r.precipChance[i] + "%\ud83d\udca7"));
         e.appendChild(br.cloneNode(0));
-        v = e.appendChild(document.createElement('img'));
-        v.src =
+        e.appendChild(document.createElement('img'))
+        .src =
 /*STARTINSERTPATH*/
           'w/'
 /*ENDINSERTPATH*/
           +r.iconCode[i] + img_ext;
-        v.className = 'i';
       }
       cse.parentNode.replaceChild(frag, cse);
     }); //json cb
@@ -105,17 +105,12 @@ meaningless for self closing BR tag
 if (this.fetch) {
   y();
 } else {
-  scriptElem = document.createElement("script");
-  scriptElem.src = 'f.js'
-//    +'?a='+((new Date().getTime())+0)
-  ;
-//IE 5.5 and 6.0 don't have document.head
-  document.documentElement.firstChild.appendChild(scriptElem);
+  headElem.appendChild(document.createElement("script")).src = 'f.js';
 }
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->
 <style>
-.h{display:inline-block}.i{height:2em}
+span{display:inline-block}img{height:2em}
 </style>
 <!-- spam trap -->
 <br><br><br>
