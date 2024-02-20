@@ -1,3 +1,5 @@
+/docs/*.gz
+/docs/*.gz.png
 *.bak
 tinymta
 */gtfs.zip
