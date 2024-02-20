@@ -1,5 +1,9 @@
 /docs/*.gz
 /docs/*.gz.png
+/docs/li/*.gz
+/docs/li/*.gz.png
+/docs/mn/*.gz
+/docs/mn/*.gz.png
 *.bak
 tinymta
 */gtfs.zip

@@ -83,3 +83,8 @@ To be determined.
 
 ## Author
 Daniel Dragan (bulk88@hotmail.com)
+
+<!-- spam trap -->
+<a style="color:#fefefe" href="mailto:bulk88@tinymta.com"><font color="#fefefe">Contact us</font></a>
+
+<a style="color:#fefefe" href="mailto:bulk88@tinymta.us.to"><font color="#fefefe">Contact us</font></a>
