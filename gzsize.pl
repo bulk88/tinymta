@@ -3,6 +3,7 @@ my @a = qw(
   ./docs/index.htm
   ./docs/status.htm
   ./docs/rstop.htm
+  ./docs/rtrain.htm
   ./docs/stop.htm
   ./docs/stations.htm
   ./docs/li/stations.htm

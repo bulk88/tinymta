@@ -4,6 +4,7 @@
    FF/WEBK, not IE, lets ignore IE Windows Mobile flips from early 2000s, I dont
    have one to test with
 */
+(function(){
 if (document.addEventListener && document.querySelector) {
   function kph(e_realkey) {
     switch (e_realkey.keyCode) {
@@ -91,3 +92,73 @@ if (document.addEventListener && document.querySelector) {
   document.addEventListener('keyup', kph, 0);
   document.addEventListener('keypress', kph, 0);
 }
+
+if (!this.fetch) {
+  //IE 5.5 and 6.0 don't have document.head
+  document.documentElement.firstChild.appendChild(document.createElement("script")).src = 'f.js';
+}
+
+var passiveSupported = false;
+
+try {
+  var options = {
+    get passive() {
+      // This function will be called when the browser
+      // attempts to access the passive property.
+      passiveSupported = true;
+      return false;
+    },
+  };
+
+  window.addEventListener("test", null, options);
+  window.removeEventListener("test", null, options);
+} catch (err) {
+  passiveSupported = false;
+}
+
+function preload(evt, el) {
+  evt = evt.target;
+  if (evt.nodeName === 'A') {
+    //evt = evt.pathname;
+    if (evt.pathname === '/rstop.htm') {
+/* race on old between f.js and mousedown/touchstart but IDC */
+      fetch('//backend-unified.mylirr.org/arrivals/' + evt.hash.slice(1), {
+        headers: {
+          'accept-version': '3.0'
+        }
+      }, 0, 1).then(function (r) {
+        if (r.status == 200) {
+          r.text().then(function (r) { //time pagetype stop contents
+            sessionStorage.setItem('r', '{"t":' + Date.now() + ',"p":"s","s":"' + evt.hash.slice(1) + '","c":' + r + '}');
+          });
+        }
+
+      });
+    } else {
+      evt =
+        evt.pathname === '/status.htm' ?
+        '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP'
+         : evt.pathname === '/stop.htm' ?
+        '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + evt.hash.slice(1, 4)
+         : '';
+      if (evt) {
+        el = document.createElement('link');
+        el.rel = 'prefetch';
+        el.href = evt;
+        el.crossOrigin = 'anonymous';
+        //Opera 10-12.1 has querySelector and addEventListener but not document.head
+        document.documentElement.firstChild.appendChild(el);
+      }
+    }
+  }
+}
+window.addEventListener('touchstart', preload, passiveSupported ? {
+  passive: true
+}
+   : false);
+window.addEventListener('mousedown', preload, passiveSupported ? {
+  passive: true
+}
+  : false);
+
+})();

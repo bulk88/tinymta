@@ -11,12 +11,6 @@
 <script type="text/javascript">
 
 mangleIndex={name:"mangleIndex"};
-getStop.name = 'getStop';
-genArvBodyObj.name = 'genArvBodyObj';
-/*Firefox, Opera, IE7, and other browsers will use the native object*/
-/*IE 5 and 6 will use the ActiveX control*/
-var x = this.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-var jsonp;
 
 var stacode = location.hash;
 /* note sta codes 0NY (MNRR) GCT (LIRR) and _GC (Both) are all GCT,
@@ -57,7 +51,7 @@ if(stacode.length > 1) {
     */
     stacode = stacode.slice(1);
     /* generate body top string once, its later used for fast refresh */
-    t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:getStop()>Fast</a> <a href=\"javascript:location.replace(\''
+    t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:y()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/rstop\.htm$/.test(location.pathname) ? "rstop_.htm#" : "rstop.htm#")
@@ -65,8 +59,14 @@ if(stacode.length > 1) {
           +stacode+'\')">Slow</a>] <a href=//backend-unified.mylirr.org/arrivals/'+stacode+'>Raw</a><br>';
 }
 
-if(t)
-    getStop();
+if (t) {
+  if (this.fetch) {
+    y/*getStop*/();
+  } else {
+    //IE 5.5 and 6.0 don't have document.head
+    document.documentElement.firstChild.appendChild(document.createElement("script")).src = 'f.js';
+  }
+}
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 
@@ -79,17 +79,32 @@ function noPTag(str) {
   return str;
 }
 
-function genArvBodyObj(r) {
+/*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
+function y() {
+  document.body.innerHTML = t; /*t=top*/
+    <!-- var ls = sessionStorage.getItem('r'); -->
+    <!-- if(ls) { -->
+      <!-- sessionStorage.removeItem('r'); -->
+      <!-- ls = JSON.parse(ls); -->
+      <!-- //debugger; -->
+      <!-- x = {readyState: 4, status:200, response: ls.c, withCredentials: 1}; -->
+      <!-- onRSC(); -->
+      <!-- return; -->
+    /*ra = rail arrivals*/
+  fetch('//backend-unified.mylirr.org/arrivals/'+stacode, {headers: {'accept-version': '3.0'}}, 'ra/'+stacode).then(
+    function (r) {
+    r.status != 200 ? //put != first for r.status gzip reasons
+    alert("error http status " + r.status)
+     :
+    r.json().then(function (r, /*r=resp*/ jsonp) {
     /*r=resp*/
-    /*injection IDC, < IE 8 dont have JSON obj & not gonna load 3rd party*/
-    /* r.contents is JSONP */
-    r = typeof (r = r.contents || r) === 'object' ? r : window.JSON?JSON.parse(r):eval('0,' + r);
-    var i, w = "West<br>",
+    var i, n, w = "West<br>",
         l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[stacode] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
-    for (i in r.arrivals) {
-        i = r.arrivals[i];
-        //debugger;
+    /* DO NOT convert to for( in ) {}, because Array.prototype. PFs show up
+       in the loop, and object.defineProperty unavail IE <= 8 */
+    for (n=0; n < r.arrivals.length; n++) {
+        i = r.arrivals[n];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = '<a class=t href=rtrain.htm#'+i.railroad+'_'+i.train_num+'>'+new Date((l=i.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
@@ -142,8 +157,8 @@ function genArvBodyObj(r) {
     /* add west trains to mega html string and reuse west var */
     h += w;
     w = '<br>';
-    for (i in r.banners) {
-      i = r.banners[i];
+    for (n=0; n < r.banners.length; n++) {
+      i = r.banners[n];
       //always show banners, they aren't attached to all stations at once
       //l = Number(stacode.slice(0,1));
       // if LIRR && is not numeric aka is LIRR sta code then draw, not in MTA UI code
@@ -159,158 +174,13 @@ function genArvBodyObj(r) {
             a.start_time > b.start_time ? 1 :
             0;
     });
-    for (i in r) {
-      i = r[i];
+    for (n=0; n < r.length; n++) {
+      i = r[n];
       w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
     }
     document.body.innerHTML += h+w;
-}
-function getStop(addIMS) {
-    document.body.innerHTML = t; /*t=top*/
-    try {
-        /*throw(0);*/
-        /* on Fast refresh, on CORS enabled browsers, a traintime.lirr.org XHR req
-          will happen over network, once browser sees no Access Control header
-          it will "fail" the req to the page, then the page does the JSONP network
-          request, stop this double request thing to save network traffic after CORS
-          fails the 1st time, the server wont magically get the header one minute.
-          Once CORS fails once, it will never succeed on that particular client, so
-          never try a CORS request again.
-          Browsers without CORS like Opera 10, fail the XHR req, instantly, client
-          side, without network traffic.*/
-        if(jsonp) throw(0);
-        /*open() can fire errors events or throw exceptions*/
-        x.open('get', '//backend-unified.mylirr.org/arrivals/'+stacode, 1);
-        try {
-          x.responseType = 'json';
-        } catch (e) {
-          //old chromes throw "SYNTAX_ERR: DOM Exception 12" if no XHR JSON
-        }
-        /* handler assignment can't be factored to root or IE6 desktop and IE6 mobile
-          wont drawn train times using "Fast" beyond the 1st/initial page load
-          and only "Slow" works
-          http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
-        x.onreadystatechange = onRSC;
-        x.setRequestHeader('accept-version','3.0');
-        //the server sends Set-Cookie: AWSALB= and Set-Cookie: AWSALBCORS=
-        //but also "Access-Control-Allow-Origin: *" and credentials doesn't
-        //allow wildcard, so never turn this on, just accept forever these
-        //cookies will come
-        //x.withCredentials = !0;
-        if(addIMS) x.setRequestHeader("if-modified-since", new Date(0));
-        x.send();
-    } catch (e) {
-        getJSONP();
-    }
+})});
+
 }
 
-function getJSONP() {
-    /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
-    /* alert("XHR failed-will try JSONP:\n"+e); */
-    /*  opera mobile 10.00, opera desktop 10.00 1750 need cache busting
-        raw button (forced download) doesnt work in updating cache */
-    var scriptElem = document.createElement("script");
-    //note this WILL NOT RUN FROM 127.0.0.1 or file://
-    scriptElem.src =
-/*STARTDELETE*/
-    '//tinymta.us.to' +
-/*ENDDELETE*/
-    /*ra = rail arrivals*/
-    '/api/ra/'+stacode+'?callback=genArvBodyObj';
-//IE 5.5 and 6.0 don't have document.head
-    jsonp = document.documentElement.firstChild;
-    /*dont leak mem adding infinite JSONP script elements
-    this also cancels last in-progress, maybe timing out, JSONP fetch supposedly */
-    if(jsonp.childNodes.length > 1)
-        jsonp.removeChild(jsonp.childNodes[1]);
-    jsonp.appendChild(scriptElem);
-    /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
-}
-function onRSC()
-{
-    if (x.readyState == 4)
-    {
-            if (x.status == 200)
-            {   /* IE 6 cache hit, no IP traffic happened, thats bad,
-                  this detects it and resends it, on Chrome with CORS
-                  XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
-                  so include IMS header ONLY if IE with cache bug by feature test and no CORS support
-                  
-                  asking CORS chrome for the Date header causes "Refused to get unsafe header "Date"" and empty header value
-                  which would trigger the IE 6 retry, but dont do the IE6 retry on chrome, so test first for CORS
-                */
-                'withCredentials' in x || x.getResponseHeader("Date")
-                    ? genArvBodyObj(x.response||x.responseText)
-                    : getStop(1);
-            }
-            else
-                alert("error HTTP status "+x.status);
-    }
-    /*else
-        alert("currently the application is at" + invocation.readyState); */
-}
 </script></html>
-<!--
-JSONP innerhtml on body element/appendchild script element to body IE6 crash
->   mshtml.dll!CTreePos::SourceIndex()  + 0x3
-    mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b
-    mshtml.dll!CDoc::InsertElement()  + 0x98
-    mshtml.dll!CDocument::get_implementation()  + 0x135
-    mshtml.dll!CElement::insertBefore()  + 0xd0
-    mshtml.dll!CElement::appendChild()  + 0x33
-    mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60
-    mshtml.dll!CBase::ContextInvokeEx()  + 0x15b
-    mshtml.dll!CElement::ContextInvokeEx()  + 0x49
-    mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43
-    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
-    jscript.dll!IDispatchExInvokeEx()  + 0x3e
-    jscript.dll!InvokeDispatchEx()  + 0x78
-    jscript.dll!VAR::InvokeByName()  + 0x9f0
-    jscript.dll!VAR::InvokeDispName()  + 0x40
-    jscript.dll!VAR::InvokeByDispID()  + 0x54
-    jscript.dll!CScriptRuntime::Run()  + 0x2db0
-    jscript.dll!ScrFncObj::Call()  + 0x85
-    jscript.dll!CSession::Execute()  + 0x9c
-    jscript.dll!NameTbl::InvokeDef()  + 0x101
-    jscript.dll!NameTbl::InvokeEx()  + 0xb6
-    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
-    jscript.dll!IDispatchExInvokeEx()  + 0x3e
-    jscript.dll!NameTbl::InvokeEx()  - 0x194a0
-    mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f
-    mshtml.dll!CWindow::InvokeEx()  + 0x2c49e
-    mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c
-    mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26
-    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
-    jscript.dll!IDispatchExInvokeEx()  + 0x3e
-    jscript.dll!InvokeDispatchEx()  + 0x78
-    jscript.dll!VAR::InvokeByDispID()  - 0x3b65
-    jscript.dll!CScriptRuntime::Run()  + 0x2db0
-    jscript.dll!ScrFncObj::Call()  + 0x85
-    jscript.dll!CSession::Execute()  + 0x9c
-    jscript.dll!NameTbl::InvokeDef()  + 0x101
-    jscript.dll!NameTbl::InvokeEx()  + 0xb6
-    mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce
-    mshtml.dll!CBase::InvokeEvent()  + 0x70e2d
-    mshtml.dll!CBase::FireEvent()  + 0xc5
-    mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed
-    mshtml.dll!CElement::FireEvent()  + 0x10168
-    mshtml.dll!CElement::Fire_onclick()  + 0x1c
-    mshtml.dll!CElement::DoClick()  + 0x67
-    mshtml.dll!CInput::DoClick()  + 0x3a
-    mshtml.dll!CDoc::PumpMessage()  + 0x279b9
-    mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7
-    mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a
-    mshtml.dll!CServer::WndProc()  + 0x76
-    user32.dll!_InternalCallWinProc@20()  + 0x28
-    user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7
-    user32.dll!_DispatchMessageWorker@8()  + 0xdc
-    user32.dll!_DispatchMessageW@4()  + 0xf
-    browseui.dll!TimedDispatchMessage()  + 0x33
-    browseui.dll!BrowserThreadProc()  + 0x336
-    browseui.dll!BrowserProtectedThreadProc()  + 0x50
-    browseui.dll!_SHOpenFolderWindow@4()  + 0x22c
-    shdocvw.dll!_IEWinMain@8()  + 0x133
-    IEXPLORE.EXE!WinMainT()  + 0x2de
-    IEXPLORE.EXE!__ModuleEntry@0()  + 0x99
-    kernel32.dll!_BaseProcessStart@4()  + 0x23
--->

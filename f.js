@@ -105,10 +105,7 @@ if (!window.fetch) {
 window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
   return {
     then: function (cb, addIMS /*arg 2 spec breaking, shud be reject cb*/) {
-      /* don't use arguments.callee, b/c even tho Tinymta DOES NOT use "strict"
-      it could one day, xhr on RSC cb has differnt this obj than here, so
-      save func ref now*/
-              var thisFunc = this.then;
+              var i_thisFunc;
               var g_jtcb; //json or text CB
               var content_fk_promise = { //can't lift obj higher b/c closure
                   then: function(local_jtcb) {
@@ -187,7 +184,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                         call_f_then_cb(x.status);
                       } else {
                         //retry the XHR with IE XHR cache buster option
-                        thisFunc(cb, 1);
+                        i_thisFunc(cb, 1);
                       }
                     }
                   } else if (x.readyState == 4) {// 4 == full body, 3 is partial body
@@ -206,7 +203,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                       //APIs like the MTA APIs, Safari 5.1.7 for Windows
                       //fires RSC 4, status 0, and skips firing RSC 3, so
                       //don't do fallback to JSONP in RSC 3, but in RSC 4
-                      thisFunc(cb);
+                      i_thisFunc(cb);
                     } else if (g_jtcb && x.status == 200) {
                         //unknown if XHR has JSON parse or not, we don't care
                         //.response is "newer" and native browser parsed
@@ -231,11 +228,30 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 };//end onRSC func
                 if (addIMS)
                   x.setRequestHeader("if-modified-since", new Date(0));
-                //old Firefoxes send on XHR, new FF and new Chrome send by default
-                //accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-                //MTA's Java EE server, if it sees "application/xml" it sends XML instead of JSON
-                //older browsers send "*/*" for XHR, but always override this
+                /*
+                old Firefoxes send on XHR, new FF and new Chrome send by default
+                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,* /*;q=0.8"
+                MTA's Java EE server, if it sees "application/xml" it sends XML instead of JSON
+                older browsers send "* /*" for XHR, but always override this
+                and don't remove b/c native fetch sends "* /*" while native XHR sends
+                the long "application/xml" accept string
+                */
                 x.setRequestHeader("accept", "application/json");
+                //add headers, LIRR specific
+                if(options && (options = options.headers)) {
+                  for(i_thisFunc in options) {
+                    x.setRequestHeader(i_thisFunc, options[i_thisFunc]);
+                  }
+                }
+      /* don't use arguments.callee, b/c even tho Tinymta DOES NOT use "strict"
+      it could one day, xhr on RSC cb has differnt this obj than here, so
+      save func ref now*/
+                i_thisFunc = this.then;
+      /* a retired (legacy comment) MTA server sends Set-Cookie: AWSALB=
+      and Set-Cookie: AWSALBCORS= but also "Access-Control-Allow-Origin: *"
+      and credentials doesn't allow wildcard, so never turn this on,
+      just accept forever these cookies will come */
+                //x.withCredentials = !0;
                 x.send();
                 //code byte savings, reuse error var
               } catch (scriptElem) { /*no CORS (old Operas, IE6 either yes/no sec warn or just works)*/
@@ -249,6 +265,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 */
                 jsonpFnName = 'j'+((new Date().getTime())+(jsonpi++));
                 scriptElem = document.createElement("script");
+                //note this WILL NOT RUN FROM 127.0.0.1 or file://
                 scriptElem.src =
 /*STARTDELETE*/
                   '//tinymta.us.to' +
@@ -347,3 +364,68 @@ switch to div, no render diff between docfrag and the div in doc tree*/
     }
 );
 })();
+
+/*
+JSONP innerhtml on body element/appendchild script element to body IE6 crash
+>   mshtml.dll!CTreePos::SourceIndex()  + 0x3
+    mshtml.dll!CMarkup::InsertElementInternal()  + 0x37b
+    mshtml.dll!CDoc::InsertElement()  + 0x98
+    mshtml.dll!CDocument::get_implementation()  + 0x135
+    mshtml.dll!CElement::insertBefore()  + 0xd0
+    mshtml.dll!CElement::appendChild()  + 0x33
+    mshtml.dll!Method_IDispatchpp_IDispatchp()  + 0x60
+    mshtml.dll!CBase::ContextInvokeEx()  + 0x15b
+    mshtml.dll!CElement::ContextInvokeEx()  + 0x49
+    mshtml.dll!CElement::ContextThunk_InvokeEx()  + 0x43
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e
+    jscript.dll!InvokeDispatchEx()  + 0x78
+    jscript.dll!VAR::InvokeByName()  + 0x9f0
+    jscript.dll!VAR::InvokeDispName()  + 0x40
+    jscript.dll!VAR::InvokeByDispID()  + 0x54
+    jscript.dll!CScriptRuntime::Run()  + 0x2db0
+    jscript.dll!ScrFncObj::Call()  + 0x85
+    jscript.dll!CSession::Execute()  + 0x9c
+    jscript.dll!NameTbl::InvokeDef()  + 0x101
+    jscript.dll!NameTbl::InvokeEx()  + 0xb6
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e
+    jscript.dll!NameTbl::InvokeEx()  - 0x194a0
+    mshtml.dll!CScriptCollection::InvokeEx()  + 0x8f
+    mshtml.dll!CWindow::InvokeEx()  + 0x2c49e
+    mshtml.dll!COmWindowProxy::InvokeEx()  + 0x3379c
+    mshtml.dll!COmWindowProxy::subInvokeEx()  + 0x26
+    jscript.dll!IDispatchExInvokeEx2()  + 0x6f
+    jscript.dll!IDispatchExInvokeEx()  + 0x3e
+    jscript.dll!InvokeDispatchEx()  + 0x78
+    jscript.dll!VAR::InvokeByDispID()  - 0x3b65
+    jscript.dll!CScriptRuntime::Run()  + 0x2db0
+    jscript.dll!ScrFncObj::Call()  + 0x85
+    jscript.dll!CSession::Execute()  + 0x9c
+    jscript.dll!NameTbl::InvokeDef()  + 0x101
+    jscript.dll!NameTbl::InvokeEx()  + 0xb6
+    mshtml.dll!CBase::InvokeDispatchWithThis()  + 0xce
+    mshtml.dll!CBase::InvokeEvent()  + 0x70e2d
+    mshtml.dll!CBase::FireEvent()  + 0xc5
+    mshtml.dll!CElement::BubbleEventHelper()  - 0x6ed
+    mshtml.dll!CElement::FireEvent()  + 0x10168
+    mshtml.dll!CElement::Fire_onclick()  + 0x1c
+    mshtml.dll!CElement::DoClick()  + 0x67
+    mshtml.dll!CInput::DoClick()  + 0x3a
+    mshtml.dll!CDoc::PumpMessage()  + 0x279b9
+    mshtml.dll!CDoc::OnMouseMessage()  + 0x1a7
+    mshtml.dll!CDoc::OnWindowMessage()  + 0x5a60a
+    mshtml.dll!CServer::WndProc()  + 0x76
+    user32.dll!_InternalCallWinProc@20()  + 0x28
+    user32.dll!_UserCallWinProcCheckWow@32()  + 0xb7
+    user32.dll!_DispatchMessageWorker@8()  + 0xdc
+    user32.dll!_DispatchMessageW@4()  + 0xf
+    browseui.dll!TimedDispatchMessage()  + 0x33
+    browseui.dll!BrowserThreadProc()  + 0x336
+    browseui.dll!BrowserProtectedThreadProc()  + 0x50
+    browseui.dll!_SHOpenFolderWindow@4()  + 0x22c
+    shdocvw.dll!_IEWinMain@8()  + 0x133
+    IEXPLORE.EXE!WinMainT()  + 0x2de
+    IEXPLORE.EXE!__ModuleEntry@0()  + 0x99
+    kernel32.dll!_BaseProcessStart@4()  + 0x23
+*/

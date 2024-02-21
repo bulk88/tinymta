@@ -144,8 +144,8 @@ all: docs/ac.appcache cloudflare_as_name.min.js
 
 gz: docs/index.htm.gz.png docs/status.htm.gz.png docs/rstop.htm.gz.png
 gz: docs/stop.htm.gz.png docs/stations.htm.gz.png docs/li/stations.htm.gz.png
-gz: docs/mn/stations.htm.gz.png
-gz: docs/index.htm.gz docs/status.htm.gz docs/rstop.htm.gz
+gz: docs/mn/stations.htm.gz.png docs/rstop.htm.gz.png
+gz: docs/index.htm.gz docs/status.htm.gz docs/rstop.htm.gz docs/rtrain.htm.gz
 gz: docs/stop.htm.gz docs/stations.htm.gz docs/li/stations.htm.gz
 gz: docs/mn/stations.htm.gz
 
