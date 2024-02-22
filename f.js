@@ -73,6 +73,14 @@ if (!Date.prototype.toLocaleTimeString) {
     return hours + ":" + minutes + ":" + seconds + " " + meridian;
   };
 }
+if(window.opera) {
+  if(!window.console) {
+    window.console = {};
+  }
+  if(!window.console.log) {
+    window.console.log = function (err) {opera.postError(err);};
+  }
+}
 
 (function(){
 
@@ -331,7 +339,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
   }
 //run main body
 //args (nosvg, polyfill_no_inline_block_el_container, polyfillCDF_or_false)
-y(
+this.y && y(
 /* SVG test for IE */
     is_ie
     && !( document.implementation

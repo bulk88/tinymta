@@ -81,22 +81,27 @@ function noPTag(str) {
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
 function y() {
   document.body.innerHTML = t; /*t=top*/
-    <!-- var ls = sessionStorage.getItem('r'); -->
-    <!-- if(ls) { -->
-      <!-- sessionStorage.removeItem('r'); -->
-      <!-- ls = JSON.parse(ls); -->
-      <!-- //debugger; -->
-      <!-- x = {readyState: 4, status:200, response: ls.c, withCredentials: 1}; -->
-      <!-- onRSC(); -->
-      <!-- return; -->
-    /*ra = rail arrivals*/
+    /*rl = rail train location*/
+  if(window.sessionStorage && (ls = sessionStorage.getItem('r'))
+      && (sessionStorage.removeItem('r'), ls = JSON.parse(ls))
+    //window.name has latency problems, very fast physical clicks (mousedown/mouseup)
+    //will cause window.name to be empty string in new page/double network I/O
+    //stick to sessionStorage, Opera 10, oh well, its too old to need perf
+    //console.log(' read '+window.name.slice(0, 5)+' read ');
+    //if((ls = window.name) && (window.name='',ls = JSON.parse(ls))
+      && ls.s === stacode && Date.now()-ls.t < 3000) {
+      //console.log('pickup ls');
+    gotJson(ls.c, 1);
+  } else {
   fetch('//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', {headers: {'accept-version': '3.0'}}, 'rl/'+stacode).then(
     function (r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
      :
-    r.json().then(function (r, /*r=resp*/ jsonp) {
-    /*r=resp*/
+    r.json().then(gotJson)});
+  }
+
+    function gotJson(r, /*r=resp*/ jsonp) {
     function suppressLoading(train) {
       return
       //empty
@@ -189,8 +194,9 @@ function y() {
       }
     }
     document.body.innerHTML += h;
-})});
+}
 
 }
+
 
 </script></html>

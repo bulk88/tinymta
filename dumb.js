@@ -6,6 +6,71 @@
 */
 (function(){
 if (document.addEventListener && document.querySelector) {
+
+  //1p and dumb phone pages, don't naturally do XHR IO
+  if (!this.fetch) {
+    //IE 5.5 and 6.0 don't have document.head
+    document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/f.js';
+  }
+
+  function preload(evt) {
+    var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
+    evt = evt.target;
+    if (evt.nodeName === 'A' && (isTouchStart || !evt.tmts)) {
+      stacode = evt.hash;
+      pathname = evt.pathname;
+      if (pathname === '/rstop.htm'
+          //Saf 3 and Opera 10 have AEL and QS but not SS
+          && window.sessionStorage
+          ) {
+        stacode = stacode.slice(1);
+  /* race on old between f.js and mousedown/touchstart but IDC */
+        fetch('//backend-unified.mylirr.org/arrivals/' + stacode, {
+          headers: {
+            'accept-version': '3.0'
+          }
+        }, 'ra/'+stacode, 1).then(function (r) {
+          if (r.status == 200) {
+            r.text().then(function (r) { //time pagetype stop contents
+              sessionStorage.setItem('r', '{"t":' + Date.now() + ',"s":"' + stacode + '","c":' + r + '}');
+              /* use SS, window.name+fetch on modern chrome, often doesn't
+              update window.name, causing 2 network HTTP GET I/Os, if I do very
+              fast mousedown/mouseup click, it does work on "slow" clicks, but
+              because window.name update speed unreliable, just always use SS
+              var s =  '{"t":' + Date.now() + ',"s":"' + stacode + '","c":' + r + '}';
+                window.name = s;
+                if(window.name != s) alert('bwn'+window.name);
+                console.log(' set '+window.name.slice(0, 5)+' set ');
+             */
+            });
+          }
+
+        });
+        evt.tmts = isTouchStart;
+      }//end of sessionStorage+fetch b/c LIRR requires
+       //customer headers which native <link> prefetch is impossible
+      else {
+        pathname =
+          pathname === '/status.htm' ?
+          '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP'
+           : pathname === '/stop.htm' ?
+          '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + stacode.slice(1, 4)
+           : '';
+        if (pathname) {
+          el = document.createElement('link');
+          el.rel = 'prefetch';
+          el.href = pathname;
+          el.crossOrigin = 'anonymous';
+          //Opera 10-12.1 has querySelector and addEventListener but not document.head
+          document.documentElement.firstChild.appendChild(el);
+          evt.tmts = isTouchStart;
+        }
+      }
+    }
+  }
+  window.addEventListener('touchstart', preload, {passive: true});
+  window.addEventListener('mousedown', preload, {passive: true});
+
   function kph(e_realkey) {
     switch (e_realkey.keyCode) {
       case 38: //up arrow
@@ -92,73 +157,5 @@ if (document.addEventListener && document.querySelector) {
   document.addEventListener('keyup', kph, 0);
   document.addEventListener('keypress', kph, 0);
 }
-
-if (!this.fetch) {
-  //IE 5.5 and 6.0 don't have document.head
-  document.documentElement.firstChild.appendChild(document.createElement("script")).src = 'f.js';
-}
-
-var passiveSupported = false;
-
-try {
-  var options = {
-    get passive() {
-      // This function will be called when the browser
-      // attempts to access the passive property.
-      passiveSupported = true;
-      return false;
-    },
-  };
-
-  window.addEventListener("test", null, options);
-  window.removeEventListener("test", null, options);
-} catch (err) {
-  passiveSupported = false;
-}
-
-function preload(evt, el) {
-  evt = evt.target;
-  if (evt.nodeName === 'A') {
-    //evt = evt.pathname;
-    if (evt.pathname === '/rstop.htm') {
-/* race on old between f.js and mousedown/touchstart but IDC */
-      fetch('//backend-unified.mylirr.org/arrivals/' + evt.hash.slice(1), {
-        headers: {
-          'accept-version': '3.0'
-        }
-      }, 0, 1).then(function (r) {
-        if (r.status == 200) {
-          r.text().then(function (r) { //time pagetype stop contents
-            sessionStorage.setItem('r', '{"t":' + Date.now() + ',"p":"s","s":"' + evt.hash.slice(1) + '","c":' + r + '}');
-          });
-        }
-
-      });
-    } else {
-      evt =
-        evt.pathname === '/status.htm' ?
-        '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP'
-         : evt.pathname === '/stop.htm' ?
-        '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + evt.hash.slice(1, 4)
-         : '';
-      if (evt) {
-        el = document.createElement('link');
-        el.rel = 'prefetch';
-        el.href = evt;
-        el.crossOrigin = 'anonymous';
-        //Opera 10-12.1 has querySelector and addEventListener but not document.head
-        document.documentElement.firstChild.appendChild(el);
-      }
-    }
-  }
-}
-window.addEventListener('touchstart', preload, passiveSupported ? {
-  passive: true
-}
-   : false);
-window.addEventListener('mousedown', preload, passiveSupported ? {
-  passive: true
-}
-  : false);
 
 })();

@@ -44,7 +44,7 @@ status_.htm : status.htm minify_config.json adj_stoppath.pl adj_postmini.pl
 docs/status_.htm : status_.htm
 	copy /y status_.htm "$@"
 
-docs/jsrdt.htm : jsrdt.htm minify_config.json
+docs/jsrdt.htm : jsrdt.htm
 	copy /y jsrdt.htm "$@"
 
 docs/li/jsrdt.htm : docs/jsrdt.htm
