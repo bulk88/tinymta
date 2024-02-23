@@ -54,7 +54,13 @@ var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:y
           +'\')">Slow</a>] <a href='+url_routes+'>RawR</a> <a href='+url_alerts+'>RawA</a><br>';
 var scriptElem;
 
-if (this.fetch && Array.prototype.find) {
+/* reqs
+fetch C42, S10.1, FF 39,Op 29
+array.find C45, S7.1, FF25, OP 32
+object.values C50, S10.1, FF 47, OP 41
+*/
+
+if (Object.values) {
   y/*getStop*/();
 } else {
 //IE 5.5 and 6.0 don't have document.head
