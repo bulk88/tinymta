@@ -86,11 +86,13 @@ function getFormattedTime(t) {
 function parseIsoDatetime(dt,i) {
     dt = dt.split(/[: T-]/);
     for (i=0; i < dt.length; i++)
-        dt[i] = parseFloat(dt[i]);
-    //return //modified by bulk88 to be mins away instead of parse
-    return 'Min '+Math.floor(Math.abs((
+        //cast string to num
+        dt[i] = +dt[i];
+    //return //modified by bulk88 to be mins away instead of parse, Math.floor->0|
+    //factoring out Math.abs to x < 0 ? -x : x primative increased gz 4 bytes
+    return 'Min '+(0|(Math.abs((
         new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
-        - (new Date)) / 1e3) / 60);
+        - (new Date)) / 1e3) / 60));
 }
 
 /* MTA orig algo
@@ -116,17 +118,14 @@ function y() {
     r.json().then(function (r, /*r=resp*/ jsonp) {
     /*h=html and timestamp*/
     var h = 0,i,n,route,trip,alerts_headsign,o = {} /*,hotkey, hotkeys = [2,3,4,5,6,7,8,9,0] */;
-if (r.length) {
-    //initial array is for a geosearch with multiple stations, not exact sta
-    r = r[0];
+if (r = r[0]) {//if(r.length) { shorter alternative
+    //initial array is for a geosearch with multiple stations, not exact sta, so go 1 level deep
     //server returns sorted by route, we want sort by dir
-    /* DO NOT convert to for( in ) {}, because Array.prototype. PFs show up
-       in the loop, and object.defineProperty unavail IE <= 8 */
-    for (i=0; i < r.groups.length; i++) {
-        route = r.groups[i];
+    i=0;
+    while(route = r.groups[i++]) {
         alerts_headsign = route.headsign;
-        for (n=0; n < route.times.length; n++) {
-            trip = route.times[n];
+        n=0;
+        while(trip = route.times[n++]){
             trip.shortRouteName = route.route.shortName;
             trip.timestamp > h && (h = trip.timestamp);
             (o[alerts_headsign] = o[alerts_headsign] || []).push(trip);
@@ -162,20 +161,20 @@ if (r.length) {
         h += i + "<br>";
         //route is dir really
         route = o[i];
-        for (i=0; i < route.length; i++) {
+        i=0;
+        while(trip = route[i++]){
             //if departureDelay > 0 
             //todo (49620-49080)/60 = 9 mins late
             //MN/LIR algo, NYCT reports also
             //realtimeDeparture: 49620
             //scheduledDeparture: 49080
-            trip = route[i];
             h += parseIsoDatetime(trip.departureFmt) +
                 '-' + mkSubFontTag(trip.shortRouteName) +
                 '-' + trip.tripHeadsign +
                 //disable track numbers, nobody cares, this isn't Commuter rail
                 //'-Tk' + (trip.track === void 0 ? '?' : ' ' + trip.track ) +
                 (trip.track === void 0 ? '-Tk?' : '') +
-                (!trip.realtime ? '-NRT-' : '-') +
+                (trip.realtime ? '-' : '-NRT-') +
                 (function(rts) {
                   rts = {
                         "SCHEDULED": "SCH",
@@ -204,8 +203,8 @@ midnight of today, happens right after 1200AM */
             a.effectiveStartDate > b.effectiveStartDate ? 1 :
             0;
     });
-    for (i=0; i < r.length; i++) {
-    trip = r[i];
+    i=0;
+    while(trip = r[i++]) {
     if(trip.alertType) { //skip elevators, elevators are missing alertType field
       route = trip.alertType+"<br>"+(trip.humanReadableActivePeriod || 'Ongoing')+"<br>"+trip.alertHeaderText.replace(/\[(\w+)\]/g, mkSubFontTag)+(trip.alertDescriptionText?"<br>"+trip.alertDescriptionText.replace(/\[(\w+)\]/g, mkSubFontTag):'')+"<br><br>";
       //delays dont have a time period, put them first in UI

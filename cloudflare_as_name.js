@@ -213,7 +213,7 @@ else if (pathname_callback.startsWith('/s/')) {
             (o[url_headsign] = o[url_headsign] || []).push(trip);
           }
         }
-        for (i in o)
+        for (i in o) //object keys
           //alpha sort ISO 8601 timestamps
           o[i].sort(function(a, b) {
             return a.departureFmt < b.departureFmt ? -1 :
@@ -239,7 +239,7 @@ else if (pathname_callback.startsWith('/s/')) {
           + " via CFW<br>"
           + 'CurSta:' + r.stop.name + "<br>";
 
-        for (i in o) {
+        for (i in o) { //object keys
           h += '<a accesskey='+(hotkey_timestamp=hotkeys.shift())+' name='+hotkey_timestamp+' href=#'+hotkey_timestamp+'>'+i+"</a><br>";
           //route is dir really
           route = o[i];
@@ -256,7 +256,7 @@ else if (pathname_callback.startsWith('/s/')) {
               //disable track numbers, nobody cares, this isn't Commuter rail
               //'-Tk' + (trip.track === void 0 ? '?' : ' ' + trip.track ) +
               (trip.track === void 0 ? '-Tk?' : '') +
-              (!trip.realtime ? '-NRT-' : '-') +
+              (trip.realtime ? '-' : '-NRT-') +
               (function(rts) {
                 switch (rts) {
                   case "SCHEDULED":
