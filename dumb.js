@@ -5,7 +5,7 @@
    have one to test with
 */
 (function(){
-if (document.addEventListener && document.querySelector) {
+if (this.addEventListener && document.querySelector) {
 
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!this.fetch) {
@@ -68,8 +68,8 @@ if (document.addEventListener && document.querySelector) {
       }
     }
   }
-  window.addEventListener('touchstart', preload, {passive: true});
-  window.addEventListener('mousedown', preload, {passive: true});
+  addEventListener('touchstart', preload, {passive: true});
+  addEventListener('mousedown', preload, {passive: true});
 
   function kph(e_realkey) {
     switch (e_realkey.keyCode) {
@@ -154,8 +154,8 @@ if (document.addEventListener && document.querySelector) {
     }
   }
   //FF3.0 throws exception "not enough arguments" if #3 missing
-  document.addEventListener('keyup', kph, 0);
-  document.addEventListener('keypress', kph, 0);
+  addEventListener('keyup', kph, 0);
+  addEventListener('keypress', kph, 0);
 }
 
 })();
