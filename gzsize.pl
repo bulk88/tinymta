@@ -9,6 +9,9 @@ my @a = qw(
   ./docs/li/stations.htm
   ./docs/mn/stations.htm
   routes.js
+  ./docs/f.js
+  ./docs/1p.js
+  ./docs/dumb.js
 );
 
 foreach(@a) {

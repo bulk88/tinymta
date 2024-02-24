@@ -147,6 +147,7 @@ gz: docs/stop.htm.gz.png docs/stations.htm.gz.png docs/li/stations.htm.gz.png
 gz: docs/mn/stations.htm.gz.png docs/rstop.htm.gz.png
 gz: docs/index.htm.gz docs/status.htm.gz docs/rstop.htm.gz docs/rtrain.htm.gz
 gz: docs/stop.htm.gz docs/stations.htm.gz docs/li/stations.htm.gz
-gz: docs/mn/stations.htm.gz routes.js.gz routes.js.gz.png
+gz: docs/mn/stations.htm.gz routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
+gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
 
 

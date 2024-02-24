@@ -110,19 +110,21 @@ function y() {
       train.status.canceled;
     }
     var loadColors = {
-        EMPTY: 'green',
-        MANY_SEATS: 'yellow',
-        FEW_SEATS: 'orange',
-        SRO: 'red',
-        FULL: 'red',
-        NO_DATA: 'gray'
-    }
-
-    var i, n, h = (jsonp ? ' via JSONP' : ' via CORS')+'<br>Dest: <font color='+(
+        EMPTY: '#00C364',
+        MANY_SEATS: '#fae100',
+        FEW_SEATS: "#e6a500",
+        SRO:  "#C31000",
+        FULL: "#8D0B1B",
+        NO_DATA: "#C3C3C3"
+    };
+var c = 
 /*STARTRAILCOLOR*/
 {"Harlem":"0039a6","Port Jefferson":"006ec7","Babylon":"00985f","Hudson":"009b3a","West Hempstead":"00a1de","Oyster Bay":"00af3f","Montauk":"00b2a9","City Zone":"4d5357","Belmont Park":"60269e","Far Rockaway":"6e3219","Ronkonkoma":"a626aa","Port Washington":"c60c30","Hempstead":"ce8e00","Danbury":"ee0034","New Canaan":"ee0034","New Haven":"ee0034","Waterbury":"ee0034","Long Beach":"ff6319"}
 /*ENDRAILCOLOR*/
-        )[r.details.branch]+'>'+r.details.headsign+'</font> Fleet: '+r.consist.fleet+'<br>'
+;
+    var i, n, h = (jsonp ? ' via JSONP' : ' via CORS')+
+    '<br>Src: <font color='+c[r.details.branch]+'>'+s[r.details.stops[0].code]+'</font>'+
+    '<br>Dest: <font color='+c[r.details.branch]+'>'+r.details.headsign+'</font> Fleet: '+r.consist.fleet+'<br>'
         , color; /*h=html*/
     //flip car order for drawing based on Dir
     r.details.direction === 'E' ? r.consist.cars.reverse() : /*west dir 'W'*/(h += '&lt;');
@@ -139,7 +141,7 @@ function y() {
             'NO_DATA'
             : i.loading
         ];
-      h += '<span style="background-color:' + color + '">&nbsp' + (typeof i.passengers === 'undefined' ? '?' : i.passengers) + (i.restroom ? '&#x1f6be;' : '') + (i.revenue ? '' : '&#x26d4;') +'&nbsp</span>&nbsp;';
+      h += '<span style="background-color:' + color + '">&nbsp;' + (typeof i.passengers === 'undefined' ? '?' : i.passengers) + (i.restroom ? '&#x1f6be;' : '') + (i.revenue ? '' : '&#x26d4;') +'&nbsp;</span>&nbsp;';
     }
     r.details.direction === 'E' && (h += '&gt;');
 /* test code
