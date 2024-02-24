@@ -83,9 +83,9 @@ docs/abt.md : README.md
 docs/google71e8cfa7440e51ce.html : google71e8cfa7440e51ce.html
 	copy /y google71e8cfa7440e51ce.html "$@"
 
-cloudflare_as_name.js:  lirr/stations.js lirr/insertstalist.pl insertcolors.pl lirr/routesmodded.txt sub/routes.txt
-	cd lirr & perl insertstalist.pl "..\cloudflare_as_name.js"
-	perl insertcolors.pl RAIL "$@" lirr/routesmodded.txt
+cloudflare_as_name.js:  li/stations.js li/insertstalist.pl insertcolors.pl li/routesmodded.txt sub/routes.txt
+	cd li & perl insertstalist.pl "..\cloudflare_as_name.js"
+	perl insertcolors.pl RAIL "$@" li/routesmodded.txt
 	perl insertcolors.pl SUB "$@" sub/routes.txt
 
 cloudflare_as_name.min.js : cloudflare_as_name.js
@@ -95,10 +95,10 @@ cloudflare_as_name.min.js : cloudflare_as_name.js
 	terser -c -m toplevel -m eval "$@" -o "$@"
 
 MNRR :
-	cd mnr && $(MAKE) all
+	cd mn && $(MAKE) all
 
 LIRRMKF:
-	cd lirr && $(MAKE) all
+	cd li && $(MAKE) all
 
 SUBMKF:
 	cd sub && $(MAKE) all
@@ -107,8 +107,8 @@ SUBMKF:
 package: docs\index.htm
 	-mkdir "tinymta"
 	copy /y docs\index.htm "tinymta"
-	cd mnr && $(MAKE) package
-	cd lirr && $(MAKE) package
+	cd mn && $(MAKE) package
+	cd li && $(MAKE) package
 	cd sub && $(MAKE) package
 
 %.gz: %
@@ -118,8 +118,8 @@ package: docs\index.htm
 	gzthermal $< && move /y gzthermal-result.png $@
 
 clean :
-	cd mnr && $(MAKE) clean
-	cd lirr && $(MAKE) clean
+	cd mn && $(MAKE) clean
+	cd li && $(MAKE) clean
 	cd sub && $(MAKE) clean
 
 #dev tool target, set F= on cmd line

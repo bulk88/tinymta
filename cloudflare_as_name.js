@@ -147,12 +147,12 @@ else if (pathname_callback.startsWith('/api/')) {
     : ct_pathnameroot === 'wea' ?
     "https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-US&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909"
     //railroad occupany
-    : ct_pathnameroot === 'ro/' ?
+    : ct_pathnameroot === 'rl/' ?
     "http://backend-unified.mylirr.org/locations/"
     //ra = railroad arrivals
     : "http://backend-unified.mylirr.org/arrivals/")
     + pathname_callback.substring(8)
-    + (ct_pathnameroot === 'ro/' ? '?geometry=NONE' : ''), {
+    + (ct_pathnameroot === 'rl/' ? '?geometry=NONE' : ''), {
     headers: { //LIRR server errors otherwise
       'accept-version': '3.0'
     }
@@ -251,7 +251,7 @@ else if (pathname_callback.startsWith('/s/')) {
             //scheduledDeparture: 49080
             trip = route[i];
             h += parseIsoDatetime(trip.departureFmt) +
-              '-' + mkSubFontTag(trip.shortRouteName) +
+              '-' + mkSubFontTag(0,trip.shortRouteName) +
               '-' + trip.tripHeadsign +
               //disable track numbers, nobody cares, this isn't Commuter rail
               //'-Tk' + (trip.track === void 0 ? '?' : ' ' + trip.track ) +
