@@ -89,7 +89,11 @@ meaningless for self closing BR tag
         e.appendChild(br.cloneNode(0));
         e.appendChild(document.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
-        e.appendChild(document.createTextNode(r.precipChance[i] + "%\ud83d\udca7"));
+        e.appendChild(document.createTextNode(r.precipChance[i]));
+        v = e.appendChild(document.createElement('font'));
+        v.face="Wingdings";
+        v.appendChild(document.createTextNode("S"));
+        e.appendChild(document.createTextNode("%\ud83d\udca7"));
         e.appendChild(br.cloneNode(0));
         e.appendChild(document.createElement('img'))
         .src =

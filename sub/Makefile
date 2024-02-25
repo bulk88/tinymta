@@ -1,8 +1,8 @@
-first: all
+  first: all
 
 .PHONY: all package
 
-stop.htm : routes.txt ../insertcolors.pl
+stop.htm : routes.txt ../insertcolors.pl f.js dumb.js
 	perl ../insertcolors.pl "SUB" "$@"
 
 stop_.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
@@ -46,8 +46,14 @@ plan2.htm : plan.htm
 	copy /y plan.js "$@"
 	uglifyjs -c -m toplevel -m eval --keep-fnames --ie "$@" -o "$@"
 
+dumb.js : ../dumb.js
+	cmd /c  mklink /h dumb.js ..\dumb.js
+
 1p.js : ../1p.js
-	copy /y "..\1p.js" "$@"
+	cmd /c  mklink /h 1p.js ..\1p.js
+
+f.js : ../f.js
+	cmd /c mklink /h f.js ..\f.js
 
 ../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
@@ -72,7 +78,7 @@ plan2.htm : plan.htm
 ../docs/zoom_out_over.png : $(@F)
 	copy /y $(@F) "$@"
 
-stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl 1p.js
+stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl 1p.js f.js
 	perl gr3.pl 1 0
 
 stationsnojs.htm : gr3.pl routedatafinal.pl
