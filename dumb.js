@@ -8,7 +8,7 @@
 if (this.addEventListener && document.querySelector) {
 
   //1p and dumb phone pages, don't naturally do XHR IO
-  if (!this.fetch) {
+  if (!this.fetch && !this.f) {
     //IE 5.5 and 6.0 don't have document.head
     document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/f.js';
   }

@@ -27,9 +27,10 @@ Do you have a<br>
 [0]<a accesskey=0 href=abt.htm>About</a><br>
 <!-- get I/O on wire first -->
 <!-- id=n used by as.js in async mode to find its write location -->
+<div>
 <script async src=as.js id=n></script>
+</div>
 <script async src=dumb.js></script>
-<br>
 <script>
 //>C29, E12, F4, O16, SF8, IE never
 //var cse = document.currentScript;
@@ -109,11 +110,13 @@ meaningless for self closing BR tag
 if (this.fetch) {
   y();
 } else {
+  //dont double load in dumb.js
+  f=1;
   headElem.appendChild(document.createElement("script")).src = 'f.js';
 }
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->
 <style>
-span{display:inline-block}img{height:2em}
+span{display:inline-block}img{height:2em}@media(max-width:600px){div{min-height:2lh}}
 </style>
 </body></html>
