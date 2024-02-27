@@ -111,6 +111,12 @@ package: docs\index.htm
 	cd li && $(MAKE) package
 	cd sub && $(MAKE) package
 
+#Github Pages/Fastly's wire gz format can't be reproduced length for
+#length/byte count, CF's gz byte count is identical to the non-standard GHP
+#byte count, per CF spec, its no recompression, anyways 7z -mx=3 is larger
+#than GHP  1071 vs 1069, mx=5 is smaller 1062 vs 1069, just leave 7z at default
+#local wire bytes "probably" help remote wire bytes, but no way to locally
+#reproduced GHP's gz algo
 %.gz: %
 	del "$(subst /,\,$@)" & "C:\Program Files\7-Zip\7z" a -tgzip $@ $<
 

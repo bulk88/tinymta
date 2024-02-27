@@ -47,7 +47,7 @@ plan2.htm : plan.htm
 	uglifyjs -c -m toplevel -m eval --keep-fnames --ie "$@" -o "$@"
 
 dumb.js : ../dumb.js
-	cmd /c  mklink /h dumb.js ..\dumb.js
+	if not exist dumb.js cmd /c  mklink /h dumb.js ..\dumb.js
 
 1p.js : ../1p.js
 	cmd /c  mklink /h 1p.js ..\1p.js

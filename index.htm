@@ -3,15 +3,18 @@
 <meta name=mobileoptimized content=0><meta name="referrer" content="no-referrer">
 <!-- preconnect Chrome 46/FF41-70 115-, preconnect Chrome 50/FF 85, inc both -->
 <link href="https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909" as="fetch" rel="preload" crossorigin>
-<link href="https://api.weather.com" rel="preconnect" crossorigin>
-<link href="https://api.weather.com" rel="dns-prefetch">
+<!-- routes.js takes a while to generate b/c its a CFW, so start it early -->
+<!-- it doesn't cause congestion on the wire b/c CFW latency, its also small -->
+<!-- vs MTA alerts file -->
+<link href=routes.js as="fetch" rel="preload" crossorigin>
+<!-- dont do preconnect fallback for weather, not worth wire bytes -->
+<!-- 1062 vs 1059 bytes gz local af rm weather PC tag -->
+<!-- 1059 vs 1047 bytes gz local af rm 2 dns-fetch tags -->
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect" crossorigin>
-<link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
 <link href=stations.htm rel=prefetch>
 <link href=mn/stations.htm rel=prefetch>
 <link href=li/stations.htm rel=prefetch>
 <link href=status.htm rel=prefetch>
-<link href=routes.js as="fetch" rel="preload" crossorigin>
 <title>tinymta - Lightweight NYC MTA Subway Train arrival times</title>
 </head><body>
 Do you have a<br>
@@ -35,8 +38,9 @@ Do you have a<br>
 <script>
 //>C29, E12, F4, O16, SF8, IE never
 //var cse = document.currentScript;
+//because of legacy no async vs async browsers, offset into scripts can't be hard coded
 var headElem = document.scripts, // var reused later
-  cse = headElem[headElem.length - 1]; //cse = current script elem
+  cse = headElem[headElem.length - 1]; //cse = current script elem, TODO not ancient FF compat
 //IE 5.5 and 6.0 don't have document.head
 headElem = document.documentElement.firstChild;
 function y (nosvg, mkWeatherCellContainerPF) {
@@ -54,11 +58,11 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       var frag = document.createElement('div'),
       e, //elem
       v, //val
-      l = r.qpf.length, //qpf shortest by chars token
       img_ext = nosvg ? nosvg : '.svg',
       br = document.createElement('br'),
       i = 0;
-      for (; i < l; i++) {
+      /*hardcode 24 hr in a day to save wire*/
+      for (; i < 24; i++) {
 /*no inline-block for IE 5.0, inline-block 5.5 up.
   A 1 cell table, is a old PF hack inline-block emulate for IE 5.0
   http://mrclay.org/web_design/shrink_to_fit/
@@ -91,7 +95,7 @@ meaningless for self closing BR tag
         e.appendChild(br.cloneNode(0));
         e.appendChild(document.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
-        e.appendChild(document.createTextNode(r.precipChance[i]+"%"));
+        e.appendChild(document.createTextNode(r.precipChance[i] + "%"));
 /*
         v = e.appendChild(document.createElement('font'));
         v.color='#4ec1f5';
@@ -124,6 +128,7 @@ if (this.fetch) {
 }
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->
+<!-- add 2 blank lines if mobile, as.js UI jerk -->
 <style>
 span{display:inline-block}img{height:2em}@media(max-width:600px){div{min-height:2lh}}
 </style>
