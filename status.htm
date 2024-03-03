@@ -229,7 +229,8 @@ function transArrToHTML(translations) {
 function noPTag(str) {
   return str
   //remove root <p> tags and double blank lines and blank lines at end of HTML string
-  ? str.replace(/(<p style="min-height:10px"><\/p>)|(^<p>)|((<p><\/p>|<\/p>)+$)/g,'')
+  //and zero width non joiner char for IE5.0
+  ? str.replace(/(\xE2\x80\u0152)|(<p style="min-height:10px"><\/p>)|(^<p>)|((<p><\/p>|<\/p>)+$)/g,'')
   .replace(/\[(\w+)\]/g, mkSubFontTag)
   : '';
 }

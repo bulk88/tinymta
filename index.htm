@@ -36,13 +36,10 @@ Do you have a<br>
 </div>
 <script async src=dumb.js></script>
 <script>
-//>C29, E12, F4, O16, SF8, IE never
-//var cse = document.currentScript;
-//because of legacy no async vs async browsers, offset into scripts can't be hard coded
-var headElem = document.scripts, // var reused later
-  cse = headElem[headElem.length - 1]; //cse = current script elem, TODO not ancient FF compat
+//gz 1021 "document.", gz 1019 "d." everywhere
+var d = document;
 //IE 5.5 and 6.0 don't have document.head
-headElem = document.documentElement.firstChild;
+var headElem = d.documentElement.firstChild;
 function y (nosvg, mkWeatherCellContainerPF) {
   fetch(headElem.children[2].href,{},'wea')
   .then(function (r) {
@@ -55,11 +52,11 @@ was a polyfill func or real doc.CDF, but it was switched to "polyfill always"
 DIV tag, to keep this minified/gziped htm file
 inside exactly 1 http 1.1 resp packet (1500 bytes)
 */
-      var frag = document.createElement('div'),
+      var frag = d.createElement('div'),
       e, //elem
       v, //val
       img_ext = nosvg ? nosvg : '.svg',
-      br = document.createElement('br'),
+      br = d.createElement('br'),
       i = 0;
       /*hardcode 24 hr in a day to save wire*/
       for (; i < 24; i++) {
@@ -80,11 +77,11 @@ originally a DIV tag, switched to SPAN for IE 5.5/6 compat.
 So IE 11 and all FF/WBK/Chrome know style=display=inline-block on a DIV tag
 but IE 5.5/6 refuse to honor inline-block on a DIV tag, switch to SPAN
 */
-          e = frag.appendChild(document.createElement('span'));
+          e = frag.appendChild(d.createElement('span'));
         }
         v = +r.validTimeLocal[i].slice(11, 13);
         //perf, skip locale/Date objects
-        e.appendChild(document.createTextNode((v % 12 || 12) + (v >= 12 ? 'PM\xa0' : 'AM\xa0')));
+        e.appendChild(d.createTextNode((v % 12 || 12) + (v >= 12 ? 'PM\xa0' : 'AM\xa0')));
 /*
 Only opera 10 fatal excpt err if missing arg. All IEs don't err and no modern
 Safari/WBK/Chrome/FF needs arg. But MDN archives say W3C fuzzyness and spec
@@ -93,29 +90,29 @@ to mandate the arg 100% of time, false is "clone shallow" true is "clone deep"
 meaningless for self closing BR tag
 */
         e.appendChild(br.cloneNode(0));
-        e.appendChild(document.createTextNode(r.temperature[i] + "F"));
+        e.appendChild(d.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
-        e.appendChild(document.createTextNode(r.precipChance[i] + "%"));
+        e.appendChild(d.createTextNode(r.precipChance[i] + "%"));
 /*
-        v = e.appendChild(document.createElement('font'));
+        v = e.appendChild(d.createElement('font'));
         v.color='#4ec1f5';
         v.face="Wingdings";
-        v.appendChild(document.createTextNode("S"));
+        v.appendChild(d.createTextNode("S"));
 
 add color for older Windows, its ignored on android
 */
-        v = e.appendChild(document.createElement('font'));
+        v = e.appendChild(d.createElement('font'));
         v.color='#4ec1f5';
-        v.appendChild(document.createTextNode("\ud83d\udca7"));
+        v.appendChild(d.createTextNode("\ud83d\udca7"));
         e.appendChild(br.cloneNode(0));
-        e.appendChild(document.createElement('img'))
+        e.appendChild(d.createElement('img'))
         .src =
 /*STARTINSERTPATH*/
           'w/'
 /*ENDINSERTPATH*/
           +r.iconCode[i] + img_ext;
       }
-      cse.parentNode.replaceChild(frag, cse);
+      d.body.appendChild(frag);
     }); //json cb
   }); //end fetch CB
 };
@@ -124,7 +121,7 @@ if (this.fetch) {
 } else {
   //dont double load in dumb.js
   f=1;
-  headElem.appendChild(document.createElement("script")).src = 'f.js';
+  headElem.appendChild(d.createElement("script")).src = 'f.js';
 }
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->

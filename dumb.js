@@ -175,25 +175,26 @@ PC       C46, S11.1,            FF 39-70 >=115, no IE
 DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't)
 */
 
-for (el = head.firstChild; el = el.nextElementSibling; /*empty*/) {
-  if (el.nodeName === 'LINK') {
-    //link tag, its rel/href attrs, all 3 defined HTML 3.02, dont use .getAttribute()
-    if (el.rel === 'preconnect') {
-      newLinkArr.push(newEl = document.createElement('link'));
-      newEl.rel = 'dns-prefetch';
-      newEl.href = el.href;
+if (newLinkArr.pop) { //IE 5.0 no pop, 5.5 yes
+  for (el = head.firstChild; el = el.nextElementSibling; /*empty*/) {
+    if (el.nodeName === 'LINK') {
+      //link tag, its rel/href attrs, all 3 defined HTML 3.02, dont use .getAttribute()
+      if (el.rel === 'preconnect') {
+        newLinkArr.push(newEl = document.createElement('link'));
+        newEl.rel = 'dns-prefetch';
+        newEl.href = el.href;
+      }
+      //link preload as=document unimplimented and console warns on Chrome.
+      //as=script testing shows FF 115 double downloads, BAD
+      //but C109 does preload as=script static tag in index.htm
+      //does cache for navigates to stations.htm, but C will probably break one day
+      //and double download
+      //B/c I cant test modern SF, and very old browsers aand SF 17 have .appcache
+      //don't bother with fallback navigate prefetches
     }
-    //link preload as=document unimplimented and console warns on Chrome.
-    //as=script testing shows FF 115 double downloads, BAD
-    //but C109 does preload as=script static tag in index.htm
-    //does cache for navigates to stations.htm, but C will probably break one day
-    //and double download
-    //B/c I cant test modern SF, and very old browsers aand SF 17 have .appcache
-    //don't bother with fallback navigate prefetches
   }
+  while (el = newLinkArr.pop())
+    head.appendChild(el);
 }
-while (el = newLinkArr.pop())
-  head.appendChild(el);
-
 
 })();

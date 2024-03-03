@@ -45,8 +45,8 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
 /* ASN/ISP lookup cloudflare worker script */
 function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
-  return new Response("(function(e){e=document.getElementById('n');e.parentNode.replaceChild(document.createTextNode(" + JSON
-  .stringify(str) + "),e)})()", {
+  return new Response('document.getElementById("n").parentNode.innerText=' + JSON
+  .stringify(str) + ";", {
       headers: {
         "content-type": "text/javascript",
         "cache-control":"no-cache, no-transform",
