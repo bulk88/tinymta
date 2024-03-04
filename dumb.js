@@ -50,21 +50,21 @@ if (this.addEventListener && document.querySelector) {
         });
         evt.tmts = isTouchStart;
       }//end of sessionStorage+fetch b/c LIRR requires
-       //customer headers which native <link> prefetch is impossible
+       //custom headers which native <link> prefetch is impossible
       else {
         pathname =
           pathname === '/status.htm' ?
           '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP'
            : pathname === '/stop.htm' ?
           '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + stacode.slice(1, 4)
-           : '';
+           : 0;
         if (pathname) {
           el = document.createElement('link');
           el.rel = 'prefetch';
           el.href = pathname;
           el.crossOrigin = 'anonymous';
           //Opera 10-12.1 has querySelector and addEventListener but not document.head
-          document.documentElement.firstChild.appendChild(el);
+          head.appendChild(el);
           evt.tmts = isTouchStart;
         }
       }

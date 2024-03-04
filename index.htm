@@ -36,10 +36,10 @@ Do you have a<br>
 </div>
 <script async src=dumb.js></script>
 <script>
-//gz 1021 "document.", gz 1019 "d." everywhere
-var d = document;
+//gz 1021 "document.", gz 1019 "doc." everywhere
+var doc = document;
 //IE 5.5 and 6.0 don't have document.head
-var headElem = d.documentElement.firstChild;
+var headElem = doc.documentElement.firstChild;
 function y (nosvg, mkWeatherCellContainerPF) {
   fetch(headElem.children[2].href,{},'wea')
   .then(function (r) {
@@ -52,11 +52,11 @@ was a polyfill func or real doc.CDF, but it was switched to "polyfill always"
 DIV tag, to keep this minified/gziped htm file
 inside exactly 1 http 1.1 resp packet (1500 bytes)
 */
-      var frag = d.createElement('div'),
+      var frag = doc.createElement('div'),
       e, //elem
       v, //val
       img_ext = nosvg ? nosvg : '.svg',
-      br = d.createElement('br'),
+      br = doc.createElement('br'),
       i = 0;
       /*hardcode 24 hr in a day to save wire*/
       for (; i < 24; i++) {
@@ -77,11 +77,11 @@ originally a DIV tag, switched to SPAN for IE 5.5/6 compat.
 So IE 11 and all FF/WBK/Chrome know style=display=inline-block on a DIV tag
 but IE 5.5/6 refuse to honor inline-block on a DIV tag, switch to SPAN
 */
-          e = frag.appendChild(d.createElement('span'));
+          e = frag.appendChild(doc.createElement('span'));
         }
         v = +r.validTimeLocal[i].slice(11, 13);
         //perf, skip locale/Date objects
-        e.appendChild(d.createTextNode((v % 12 || 12) + (v >= 12 ? 'PM\xa0' : 'AM\xa0')));
+        e.appendChild(doc.createTextNode((v % 12 || 12) + (v >= 12 ? 'PM\xa0' : 'AM\xa0')));
 /*
 Only opera 10 fatal excpt err if missing arg. All IEs don't err and no modern
 Safari/WBK/Chrome/FF needs arg. But MDN archives say W3C fuzzyness and spec
@@ -90,29 +90,29 @@ to mandate the arg 100% of time, false is "clone shallow" true is "clone deep"
 meaningless for self closing BR tag
 */
         e.appendChild(br.cloneNode(0));
-        e.appendChild(d.createTextNode(r.temperature[i] + "F"));
+        e.appendChild(doc.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
-        e.appendChild(d.createTextNode(r.precipChance[i] + "%"));
+        e.appendChild(doc.createTextNode(r.precipChance[i] + "%"));
 /*
-        v = e.appendChild(d.createElement('font'));
+        v = e.appendChild(doc.createElement('font'));
         v.color='#4ec1f5';
         v.face="Wingdings";
-        v.appendChild(d.createTextNode("S"));
+        v.appendChild(doc.createTextNode("S"));
 
 add color for older Windows, its ignored on android
 */
-        v = e.appendChild(d.createElement('font'));
+        v = e.appendChild(doc.createElement('font'));
         v.color='#4ec1f5';
-        v.appendChild(d.createTextNode("\ud83d\udca7"));
+        v.appendChild(doc.createTextNode("\ud83d\udca7"));
         e.appendChild(br.cloneNode(0));
-        e.appendChild(d.createElement('img'))
+        e.appendChild(doc.createElement('img'))
         .src =
 /*STARTINSERTPATH*/
           'w/'
 /*ENDINSERTPATH*/
           +r.iconCode[i] + img_ext;
       }
-      d.body.appendChild(frag);
+      doc.body.appendChild(frag);
     }); //json cb
   }); //end fetch CB
 };
@@ -121,7 +121,7 @@ if (this.fetch) {
 } else {
   //dont double load in dumb.js
   f=1;
-  headElem.appendChild(d.createElement("script")).src = 'f.js';
+  headElem.appendChild(doc.createElement("script")).src = 'f.js';
 }
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->

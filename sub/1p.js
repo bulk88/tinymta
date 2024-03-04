@@ -67,7 +67,7 @@ if(window.addEventListener) {
         });
         evt.tmts = isTouchStart;
       }//end of sessionStorage+fetch b/c LIRR requires
-       //customer headers which native <link> prefetch is impossible
+       //custom headers which native <link> prefetch is impossible
       else {
         pathname = pathname === '/stop.htm' ?
           '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + stacode.slice(1, 4)
