@@ -6,7 +6,7 @@
 <!-- routes.js takes a while to generate b/c its a CFW, so start it early -->
 <!-- it doesn't cause congestion on the wire b/c CFW latency, its also small -->
 <!-- vs MTA alerts file -->
-<link href=routes.js as="fetch" rel="preload" crossorigin>
+<link href=routes.js as=script rel=preload>
 <!-- dont do preconnect fallback for weather, not worth wire bytes -->
 <!-- 1062 vs 1059 bytes gz local af rm weather PC tag -->
 <!-- 1059 vs 1047 bytes gz local af rm 2 dns-fetch tags -->

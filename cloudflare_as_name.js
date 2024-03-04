@@ -132,15 +132,7 @@ async function handleRequest(request, event) {
   }
 else if (pathname_callback.startsWith('/api/')) {
   var ct_pathnameroot = pathname_callback.substr(5,3);
-  resp = ct_pathnameroot === 'rts' ?
-    new Promise((resolve) => {
-      resolve(new Response(gRoutes, {
-        headers: {
-          'content-type': 'application/json'
-        }
-      }));
-    })
-    : fetch((ct_pathnameroot === 'su/' // 'li/' othr choice
+  resp = fetch((ct_pathnameroot === 'su/' // 'li/' othr choice
     ? 'http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'
     : ct_pathnameroot === 'alt' ?
     "http://collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP"
@@ -581,7 +573,7 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
 
         resp = JSON.stringify(resp);
         //make JS obj literal notation, not JSON to save bytes, must eval() on client
-        resp = resp.replace(/null/g, '');
+        resp = '!function(E){E=this.R,this.R='+resp.replace(/null/g, '')+',E&&E()}();';
         //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises

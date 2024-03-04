@@ -28,7 +28,7 @@ binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer">'
 .($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link href="//backend-unified.mylirr.org" rel="dns-prefetch"><link rel=prefetch href=/rstop.htm>':'')
-.'</head><body><a name="#">
+.'<script async src="../1p.js"></script></head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
@@ -92,7 +92,7 @@ print "\n<br>\n".($js?'<a href="stationsnojs.htm">No JS</a>':'<a href="stations.
 print join("<br>\n", @linesboroughhtml);
 print "\n<br><br>\n";
 print join("<br>\n", @linestopshtml);
-print "\n".'<script src=../1p.js></script>'.'</body></html>';
+print "\n</body></html>";
 $Data::Dumper::Sortkeys = 1;
 
 #return a hash that translates route_id to a friendly display name

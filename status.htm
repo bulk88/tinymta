@@ -7,13 +7,14 @@
 <!-- older browsers -->
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect" crossorigin>
 <link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
-<link href="routes.js" as="fetch" rel="preload" crossorigin>
+<script async src=routes.js></script>
 </head>
 <body>No javascript</body>
 <script type="text/javascript">
 /*y = getStop*/
 mangleIndex={name:"mangleIndex"};
 y.name = 'y';
+fastRefresh.name = 'fastRefresh';
 
 /*
 //LIRR has more routes
@@ -30,11 +31,6 @@ function AGENCIES_MAP_SUBWAY() {return ['MTASBWY']}
 */
 var jsonp;
 
-var url_routes =
-/*STARTDELETE*/
-    '//tinymta.us.to' +
-/*ENDDELETE*/
-'/routes.js';
 var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP';
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
@@ -46,12 +42,12 @@ var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alert
 */
 /* generate body top string once, its later used for fast refresh */
 /* var t is "top" as in top of body (header), func y() real name is getStop */
-var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:y()>Fast</a> <a href=\"javascript:location.replace(\''
+var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:fastRefresh()>Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/status\.htm$/.test(location.pathname) ? "status_.htm" : "status.htm")
 /*ENDINSERTPATH*/
-          +'\')">Slow</a>] <a href='+url_routes+'>RawR</a> <a href='+url_alerts+'>RawA</a><br>';
+          +'\')">Slow</a>] <a href='+url_alerts+'>Raw</a><br>';
 var scriptElem;
 
 /* reqs
@@ -68,7 +64,7 @@ if (Object.values) {
 }
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
-function y() {
+function y(/*unused args in PF mode, empty reg*/) {
   fetch(url_alerts, {}, 'alt').then(function (r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
@@ -77,26 +73,27 @@ function y() {
       jsonp = jspFlag;
       /* filter out irrelavent future alerts, route DB not needed yet, parallelism */
       alertsResp = filterCurrentStatii(r.entity);
-      if (allRoutes)
+      if (R/*allRoutes*/)
         drawHTML();
-    });
-  });
-  fetch(url_routes, {}, 'rts', 1).then(function (r) {
-    r.status != 200 ? //put != first for r.status gzip reasons
-    alert("error http status " + r.status)
-     :
-    r.text().then(function /*gotRoutes*/(r, jspFlag) { /*r=resp*/
-      jsonp = jspFlag;
-      /* routes.js is JS not JSON, to save "s on key/prop names
-      JSONP polyfill and the CF Worker/JSONP proxy ignores text() vs json()
-      for performance/wire size, anti-double JS eval() pases in browser
-       */
-      allRoutes = typeof r == 'object' ? r : eval('0,' + r);
-      if (alertsResp)
-        drawHTML();
+      else
+        R = drawHTML;
     });
   });
   document.body.innerHTML = t; /*t=top*/
+}
+
+function fastRefresh() {
+  //refresh routes.js
+  var el = document.documentElement.firstChild.lastChild, src_newEl;
+  for(;el;el = el.previousSibling) {
+    src_newEl = el.src;
+    if(src_newEl && src_newEl.lastIndexOf("routes.js") === src_newEl.length-9) {
+      (src_newEl = document.createElement('script')).src = "routes.js";
+      el.parentNode.replaceChild(src_newEl, el);
+      break;
+    }
+  }
+  y();
 }
 
 //typ a .replace() CB, but manual call sometimes
@@ -235,7 +232,7 @@ function noPTag(str) {
   : '';
 }
 
-var allRoutes;
+var R/*allRoutes*/;
 var alertsResp;
 
 function drawHTML() {
@@ -430,9 +427,9 @@ function emitRRStatus(name, lines) {
       var subwayLines = [];
       var goodServiceLines = [];
 
-      SET_SUBWAY_LINES(subwayLines, goodServiceLines, mergeStatii(allRoutes[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY']));
-      SET_RAIL_LINES(mnrLines, longIslandLines, mergeStatii(allRoutes[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']));
-      SET_BUS_ROUTES(alertedBuses, mergeStatii(allRoutes[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']));
+      SET_SUBWAY_LINES(subwayLines, goodServiceLines, mergeStatii(R/*allRoutes*/[SUBWAYLINES()], alertsResp, /*AGENCIES_MAP_SUBWAY()*/ ['MTASBWY']));
+      SET_RAIL_LINES(mnrLines, longIslandLines, mergeStatii(R/*allRoutes*/[RAILLINES()], alertsResp, /*AGENCIES_MAP_RAIL()*/ ['LI', 'MNR']));
+      SET_BUS_ROUTES(alertedBuses, mergeStatii(R/*allRoutes*/[BUSROUTES()], alertsResp, /*AGENCIES_MAP_BUS()*/ ['MTA NYCT', 'MTABC']));
       var groupedByStatusLines = groupedLines(subwayLines);
 
       for (i=0; i < groupedByStatusLines.length; i++) {
@@ -470,7 +467,7 @@ function emitRRStatus(name, lines) {
 
     document.body.innerHTML += h;
     alertsResp = 0;
-    allRoutes = 0;
+    R/*allRoutes*/ = 0;
 }
 </script></html>
 <!--

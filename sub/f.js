@@ -46,9 +46,12 @@ if (!Array.prototype.find) {
 
 /* IE 5.0 polyfill, 5.5 has array push() */
 if (!Array.prototype.push) {
-  Array.prototype.push = function (a) {
-  this[this.length] = a;
-  }
+  Array.prototype.push = function() {
+    for (var i = 0; i < arguments.length; i++) {
+      this[this.length] = arguments[i];
+    }
+    return this.length;
+  };
 }
 
 if (!Object.values) {
@@ -104,6 +107,150 @@ if (!Function.prototype.call) {
     }
     return ret;
   };
+}
+
+
+
+//added in IE 5.5, not in 5.0, PF hand made by me, not copied
+(function () {
+  var cbCache;
+  if (!Function.prototype.apply) {
+    /* a PF I saw, used eval('string') to pass .arguments var arg, to make a
+    one time use function, that is unlimited args for IE w/o .call()/apply()
+    for perf/sanity, just hardwire to 3 args, the max used by all other PFs
+    calling .call
+     */
+    cbCache = [];
+    Function.prototype.apply = function (obj, args) {
+      var fn = this;
+      var fnCb;
+      var result;
+      var cbBodyArr;
+      var i;
+      var args_length = args.length;
+      var randomProp;
+      /*
+      if(typeof fn !== "function") {
+      throw new Error('Invalid function provided for binding.');
+      }
+       */
+      if (!(fnCb = cbCache[args_length])) {
+        cbBodyArr = [];
+        if (args_length) {
+          for (i = 0; i < args_length; i++) {
+            cbBodyArr[i] = "a[" + i + "]";
+          }
+        }
+        fnCb = cbCache[args_length] = eval("(function(){return function(f,a){return f(" + cbBodyArr.join(",") + ")}})();");
+      }
+ //null is object in JS, but no props
+      if (obj && typeof obj === 'object') {
+        randomProp = "f" + Math.random();
+        while (obj[randomProp] !== undefined) {
+          randomProp = "f" + Math.random();
+        }
+        obj[randomProp] = fnCb;
+        /* disabled, perf, wire bytes, not SPA
+        try { //anti-leak
+        */
+        result = obj[randomProp](fn, args);
+        /*
+        } catch (e) {
+          delete obj[randomProp];
+          throw e;
+        }
+        */
+        delete obj[randomProp];
+      } else {
+        result = fnCb(fn, args)
+      }
+      return result;
+    };
+  };
+})();
+
+/* IE 5.0 doesn't take a function as arg 2 to .replace(), 5.5 and up OKAY
+from https://gist.github.com/mojavelinux/2cebc5fd0d2139715f7723f31ba5bfdd
+but modded, IE 5.0 returns "function() {return blah}"
+new browsers return "" aka false
+IE 5.0 re.exec() is broken if //g flag, .lastIndex is not used for next call
+https://groups.google.com/g/comp.lang.javascript/c/UeozctwVUM8/m/T5joOtccBwoJ
+https://groups.google.com/g/microsoft.public.scripting.jscript/c/wd01ijxhKF4/m/MkXJ3QkAKzcJ
+
+and MS Jscript official doc for .exec()
+
+Example
+The following example illustrates the use of the exec method:
+
+function RegExpTest(){
+  var ver = Number(ScriptEngineMajorVersion() + "." + ScriptEngineMinorVersion())
+  if (ver >= 5.5){                 //Test JScript version.
+    var src = "The rain in Spain falls mainly in the plain.";
+    var re = /\w+/g;               //Create regular expression pattern.
+    var arr;
+    while ((arr = re.exec(src)) != null)
+       document.write(arr.index + "-" + arr.lastIndex + "\t" + arr);
+  }
+  else{
+    alert("You need a newer version of JScript for this to work");
+  }
+}
+
+so chop off the start of the string on each pass
+*/
+
+if (!!("a".replace(/a/,function(){return ""}))) {
+  String.prototype.replace = (function (native_method) {
+      return function (pattern, callback) {
+          if (typeof callback !== 'function') {
+              return native_method.call(this, pattern, callback);
+          }
+          var result = '',
+          source = String(this),
+          length = source.length,
+          lastIndex = 0,
+          index,
+          match,
+          ie50bugCutIndex = 0;
+          while (
+            //alert('cutidx'+source.slice(ie50bugCutIndex)),
+            (match = pattern.exec(source.slice(ie50bugCutIndex)))) {
+              index = match.index+ie50bugCutIndex;
+              //alert('pat.lI '+pattern.lastIndex+' gre.lI '+RegExp.lastIndex+' m.il '+ match.lastIndex+' m.idx '+match.index);
+              result += source.slice(lastIndex, index);
+              lastIndex = index + match[0].length;
+              match.push(index, source);
+              result += callback.apply(null, match);
+              if(pattern.lastIndex === void 0) {
+                ie50bugCutIndex = lastIndex; //IE 5.0 path
+              } else {
+                pattern.lastIndex = lastIndex; //untested
+              }
+              //IE 5.0 doesn't have .global, 5.5 yes, assume /g always on 5.0
+              if (typeof pattern.global === "boolean" && !pattern.global)
+                break;
+              if (lastIndex === index) {
+                  if (lastIndex === length)
+                    break;
+                  if(pattern.lastIndex === void 0) {
+                    ie50bugCutIndex = lastIndex;
+                  } else {
+                    pattern.lastIndex = lastIndex;
+                  }
+                  result += source.charAt(++lastIndex);
+              }
+          }
+          if (lastIndex < length)
+            result += source.slice(lastIndex, length);
+          return result;
+      }
+  }(String.prototype.replace));
+/* Test PF works, arg e is undef on native and PF
+  if ("A[B][B]C".replace(/\[(\w+)\]/g,function(a,b,c,d,e) {
+    alert('a '+a+' b '+b+' c '+c+' d '+d+' e '+e);
+    return "[X]"}) != "A[X][X]C")
+      alert("PF fail");
+*/
 }
 
 //sometimes just polyfills above needed, fetch exists

@@ -50,10 +50,10 @@ dumb.js : ../dumb.js
 	if not exist dumb.js cmd /c  mklink /h dumb.js ..\dumb.js
 
 1p.js : ../1p.js
-	cmd /c  mklink /h 1p.js ..\1p.js
+	cmd /c del 1p.js & mklink /h 1p.js ..\1p.js
 
 f.js : ../f.js
-	cmd /c mklink /h f.js ..\f.js
+	cmd /c del f.js & mklink /h f.js ..\f.js
 
 ../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
