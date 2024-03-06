@@ -486,21 +486,20 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
       }
     }
   }
-//run main body
-//args (nosvg, polyfill_no_inline_block_el_container, polyfillCDF_or_false)
-this.y && y(
-/* SVG test for IE */
-    is_ie
-    && !( document.implementation
-          && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
-        ) ? '.png' : 0,
 
+
+var nosvg =
+/* SVG test for IE, and ancient FFs (FF 3.5 tested has no svg) */
+  document.implementation
+  && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
+  ? 0 : '.png';
+var no_inline_block_container_fill =
     is_ie && !ua_IeGTE55 ? function (parentEl) {
         return parentEl.appendChild(document.createElement('table'))
         .appendChild(document.createElement('tbody'))
         .appendChild(document.createElement('tr'))
         .appendChild(document.createElement('td'));
-    } : 0,
+    } : 0;
 /*
 IE 6.0 has doc.CDF, IE 5.5 missing doc.CDF func (undef)
 but IE 5.0 has doc.CDF func, says "native" but that IE 5.0 doc.CDF func always
@@ -513,13 +512,66 @@ the method, for feature probing reasons, but still keep it as a reserved word
 in 5.5, so nobody can write polyfills, then MS fixed/turned it back on for
 IE 6.0
 */
+var no_CDF_fill =
     document.createDocumentFragment && (!is_ie || ua_IeGTE55) ? 0 : function () {
 /*IE 5.5 xfrag tag works, with appendChild, no prob, 5.0 throws
 "Error: Unexpected call to method or property access" in appendChild to tag xfrag
 switch to div, no render diff between docfrag and the div in doc tree*/
     return document.createElement('div');
+    };
+
+var oldOnLoad;
+
+//reinsert as.js if not-async compat browser didn't draw as.js already
+//setTimeout() and setInterval() crash IE 5.0 in Win95, AEL DOMContentLoaded
+//has limited support, in IE 5.0 window.onload sometimes chokes/nvr fires, b/c
+//img I/O or JSONP I/O random freezing (spinning earth until refresh or navigate)
+//onreadystatechange works in IE, not Opera, so just exec as.js again if it didnt
+//paint by now, b/c empty DOM body tag, during first no-async run of as.js
+
+function chk_as_js(fc,el) {
+  el = location.pathname;
+  //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
+  //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
+  if(el.charAt(el.length-1) == '/' || ~el.indexOf('/index')) {
+    el = document.body.lastChild;
+    while (el = el.previousSibling) { //last el is NEVER it
+      if(el.nodeName == "DIV"
+        && (fc = el.firstChild)
+        && fc.nodeType == 3 /*text node*/) {
+          /*NBSP, maybe test for "Y" if unicode vs legacy 1 byte problems, index.htm use \xA0 1 byte on wire */
+          if (fc.nodeValue.charCodeAt(/*0*/) == 160) {
+            //head elem
+            document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/as.js';
+          }
+          /* break loop early, perf reasons, no more DIVs to visit */
+          el = {};
+      }//end, found AS name div, any condition
     }
-);
+  }
+}
+
+//run main body
+//args (nosvg, polyfill_no_inline_block_el_container, polyfillCDF_or_false)
+if(this.y) {
+  chk_as_js();
+  y(nosvg,no_inline_block_container_fill,no_CDF_fill);
+} else {
+  //FF 3.5 has sync/blocking appendChild(<SCRIPT>) as a bug, f.js executes on
+  //ancient FF, BEFORE inline root index.htm <SCRIPT> executes
+  //ancient SF/IE/Opera always execute appendChild(<SCRIPT>) after root .htm
+  //inline script tags
+  //probably this FF bug https://bugzilla.mozilla.org/show_bug.cgi?id=543062
+  //so try y() one more time if y() missing, dumb.js and/or 1p.js do load
+  //f.js but legit never call y(), station selector .htm s dont have y()
+
+  oldOnLoad = this.onload;
+  this.onload = function(){
+    chk_as_js();
+    oldOnLoad && oldOnLoad();
+    this.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
+  };
+}
 })();
 
 /*

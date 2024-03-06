@@ -11,6 +11,7 @@ if (this.addEventListener && document.querySelector) {
 
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!this.fetch && !this.f) {
+    f=1;//anti double load f.js in index.htm
     head.appendChild(document.createElement("script")).src = '/f.js';
   }
 

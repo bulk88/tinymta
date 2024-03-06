@@ -28,6 +28,7 @@
   }
 
 if(this.addEventListener) {
+  //skip f=1 and this.f test, no y() on 1p htms
   if (!this.fetch) {
     //IE 5.5 and 6.0 don't have document.head
     document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/f.js';

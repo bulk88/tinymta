@@ -46,11 +46,11 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
 function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
   // never optimize to .parentNode.innerText, not FF1-FF44 compat, all other yes
-  return new Response("(function(e){e=document.getElementById('n');e.parentNode.replaceChild(document.createTextNode(" + JSON
-  .stringify(str) + "),e)})()", {
+  return new Response('!function(e,i){if(e=document.body){for(e=e.lastChild;e=e.previousSibling;)if("DIV"==e.nodeName&&(i=e.firstChild)&&3==i.nodeType){e.replaceChild(document.createTextNode(' + JSON
+  .stringify(str) + '),i);return}}}();', {
       headers: {
         "content-type": "text/javascript",
-        "cache-control":"no-cache, no-transform",
+        "cache-control":"no-cache",
         ...etag
       }
     })
@@ -414,7 +414,7 @@ else if (pathname_callback === "/routes.js") {
     asn: 676
   };
   var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"'+ip+'.'+cf.asn+'"';
+  var etag = 'W/"Z'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }
