@@ -27,7 +27,7 @@
     };
   }
 
-if(window.addEventListener) {
+if(this.addEventListener) {
   if (!this.fetch) {
     //IE 5.5 and 6.0 don't have document.head
     document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/f.js';
@@ -84,7 +84,7 @@ if(window.addEventListener) {
       }
     }
   }
-  window.addEventListener('touchstart', preload, {passive: true});
-  window.addEventListener('mousedown', preload, {passive: true});
+  addEventListener('touchstart', preload, {passive: true});
+  addEventListener('mousedown', preload, {passive: true});
 }
 })();

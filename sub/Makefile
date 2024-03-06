@@ -2,7 +2,7 @@
 
 .PHONY: all package
 
-stop.htm : routes.txt ../insertcolors.pl f.js dumb.js
+stop.htm : routes.txt ../insertcolors.pl f.js
 	perl ../insertcolors.pl "SUB" "$@"
 
 stop_.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
@@ -45,9 +45,6 @@ plan2.htm : plan.htm
 ../docs/plan.js : plan.js
 	copy /y plan.js "$@"
 	uglifyjs -c -m toplevel -m eval --keep-fnames --ie "$@" -o "$@"
-
-dumb.js : ../dumb.js
-	if not exist dumb.js cmd /c  mklink /h dumb.js ..\dumb.js
 
 1p.js : ../1p.js
 	cmd /c del 1p.js & mklink /h 1p.js ..\1p.js

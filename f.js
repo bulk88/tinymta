@@ -176,6 +176,7 @@ new browsers return "" aka false
 IE 5.0 re.exec() is broken if //g flag, .lastIndex is not used for next call
 https://groups.google.com/g/comp.lang.javascript/c/UeozctwVUM8/m/T5joOtccBwoJ
 https://groups.google.com/g/microsoft.public.scripting.jscript/c/wd01ijxhKF4/m/MkXJ3QkAKzcJ
+https://web.archive.org/web/20240304170652/https://www.cnblogs.com/encounter/archive/2006/03/20/2188706.html
 
 and MS Jscript official doc for .exec()
 
@@ -431,7 +432,8 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                   ;
                 scriptElem.onerror = function (e) {
                   alert("JSONP network error")
-                  scriptElem.parentElement.removeChild(scriptElem);
+                  //never use .parentElement, not old IE or old FF compat
+                  scriptElem.parentNode.removeChild(scriptElem);
                   /* ,1 is window.jsonpCB anti-leak */
                   call_f_then_cb(/*http status*/ 0, 1);
                 };
@@ -449,7 +451,7 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                   appendChild/removeChild is done syncronously,
                   Opera/Chrome/FF/Safari don't mind rapid sync
                   appendChild/removeChild, but IE cancels the load */
-                  scriptElem.parentElement.removeChild(scriptElem);
+                  scriptElem.parentNode.removeChild(scriptElem);
                   /* ,1 is window.jsonpCB anti-leak */
                   call_f_then_cb(r.http_code, 1);
                   /* g_jtcb is not set/json() never called if != 200

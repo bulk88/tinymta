@@ -5,10 +5,9 @@
    have one to test with
 */
 (function(){
-//IE 5.5 and 6.0 don't have document.head
-var head = document.documentElement.firstChild, newLinkArr = [], el, newEl;
-
 if (this.addEventListener && document.querySelector) {
+  //IE 8-10 has AEL/QS but not document.head
+  var head = document.documentElement.firstChild, el, newEl;
 
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!this.fetch && !this.f) {
@@ -75,6 +74,7 @@ if (this.addEventListener && document.querySelector) {
 
   function kph(e_realkey) {
     switch (e_realkey.keyCode) {
+/*
       case 38: //up arrow
         e_realkey = 'Up';
         break;
@@ -93,6 +93,7 @@ if (this.addEventListener && document.querySelector) {
       case 8: //C button
         e_realkey = 'Backspace';
         break;
+*/
       case 49: //asci 1
         e_realkey = 1;
         break;
@@ -140,16 +141,19 @@ if (this.addEventListener && document.querySelector) {
       case 32: //asci SPACE ZTE Chrome
         e_realkey = 0;
         break;
+/*
       case 190: //asci period
       case 46: //asci peroid
         e_realkey = '*';
         break;
+*/
       default:
         e_realkey = null;
     }
     //note table above can be used by 3rd parties for something else
     //I only need 0-9, not a map app or game
-    if (typeof e_realkey === 'number') {
+    //gz 978 to 971 chg, +x===x vs typeof x === 'number'
+    if (+e_realkey===e_realkey) {
       e_realkey = document.querySelector('[accesskey="' + e_realkey + '"]');
       //avoid err console noise for "called method click on undef"
       e_realkey && e_realkey.click()
@@ -158,7 +162,6 @@ if (this.addEventListener && document.querySelector) {
   //FF3.0 throws exception "not enough arguments" if #3 missing
   addEventListener('keyup', kph, 0);
   addEventListener('keypress', kph, 0);
-}//end block if (this.addEventListener && document.querySelector) {
 
 
 /*
@@ -175,26 +178,33 @@ PC       C46, S11.1,            FF 39-70 >=115, no IE
 DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't)
 */
 
-if (newLinkArr.pop) { //IE 5.0 no pop, 5.5 yes
-  for (el = head.firstChild; el = el.nextElementSibling; /*empty*/) {
-    if (el.nodeName === 'LINK') {
-      //link tag, its rel/href attrs, all 3 defined HTML 3.02, dont use .getAttribute()
+  el = head.firstChild;
+  while (el) {
+  //link tag, its rel/href attrs, all 3 defined HTML 3.02, dont use .getAttribute()
+  //don't test el.nodeName === 'LINK', to save wire bytes
+  //upper case chars esp bad for GZ, undef === "str" good enough and perf enough (vs ==)
       if (el.rel === 'preconnect') {
-        newLinkArr.push(newEl = document.createElement('link'));
+        newEl = document.createElement('link');
         newEl.rel = 'dns-prefetch';
         newEl.href = el.href;
+        head.appendChild(newEl);
       }
       //link preload as=document unimplimented and console warns on Chrome.
       //as=script testing shows FF 115 double downloads, BAD
       //but C109 does preload as=script static tag in index.htm
-      //does cache for navigates to stations.htm, but C will probably break one day
-      //and double download
-      //B/c I cant test modern SF, and very old browsers aand SF 17 have .appcache
-      //don't bother with fallback navigate prefetches
-    }
-  }
-  while (el = newLinkArr.pop())
-    head.appendChild(el);
-}
+      //AND DOES CACHE for navigates to stations.htm, but Chrome will probably
+      //break one day like FF and double download for cache purity/security,
+      //B/C Chrome 109 (obv FF too) for <script> vs fetch() the req headers are
+      //"sec-fetch-dest: script" vs "sec-fetch-dest: empty"
+      //"sec-fetch-mode: no-cors" vs "sec-fetch-mode: cors"
+      //even tho BOTH are "sec-fetch-site: same-origin"
 
+      //B/c I cant test modern SF, and very old browsers and SF 17 have .appcache
+      //don't bother with any fallback navigate prefetches strategies
+
+      //SF 3.1 has AEL/QS but no NES and no DNS-PF, old SF will
+      //quietly die here, no exceptions thrown
+    el = el.nextElementSibling;
+  }
+}//end block if (this.addEventListener && document.querySelector) {
 })();
