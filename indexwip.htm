@@ -45,6 +45,115 @@ Do you have a<br>
 //localStorage.setItem("fav", "document.body.appendChild(document.createElement('div')).appendChild(document.createTextNode('FFF'))");
 try{eval(localStorage.getItem("fav"))} catch (e) {}
 
+function draw_fav(config, replaceEl) {
+  var e2,
+  d = document.createElement('div'),
+  e = d.appendChild(document.createElement('label'));
+  (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
+  e2.checked = config[1];
+  e.appendChild(document.createTextNode("<3"));
+  e = d.appendChild(document.createElement('label'));
+  (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
+  e2.checked = config[2];
+  e.appendChild(document.createTextNode("Tm "));
+  e = 0;
+  if (!config[1])
+    e = "History off";
+  else if (config.length == 3) {
+    e = "No history yet";
+  } else
+    e = 0;
+  if (e) {
+    d.appendChild(document.createTextNode(e));
+  } else {
+    for (i = 3; i < 9 && (e = config[i]); i++) {
+      (e2 = d.appendChild(document.createElement('a'))).href = (e[1].charAt() == 'r' ? "/rstop.htm#" : "/stop.htm#") + e[1].slice(1);
+      e2.appendChild(document.createTextNode(e[0]));
+      d.appendChild(document.createTextNode(" "));
+    }
+  }
+  if (replaceEl) {
+    replaceEl.parentNode.replaceChild(d, replaceEl);
+    extend_fav();
+  } else {
+    document.body.appendChild(d);
+  }
+}
+
+//draw_fav(read_fav());
+
+function read_fav() {
+  var c = localStorage.getItem("fav");
+  if (!c) {
+    //version, keep hist, realtime (unimplemented), sta#1, sta#2
+    localStorage.setItem("fav", '(function (e,t){var d,a=document.createElement("div"),p=a.appendChild(document.createElement("label"));if((d=p.appendChild(document.createElement("input"))).type="checkbox",d.checked=e[1],p.appendChild(document.createTextNode("<3")),(d=(p=a.appendChild(document.createElement("label"))).appendChild(document.createElement("input"))).type="checkbox",d.checked=e[2],p.appendChild(document.createTextNode("Tm ")),p=0,p=e[1]?3==e.length?"No history yet":0:"History off")a.appendChild(document.createTextNode(p));else for(i=3;i<9&&(p=e[i]);i++)(d=a.appendChild(document.createElement("a"))).href=("r"==p[1].charAt()?"/rstop.htm#":"/stop.htm#")+p[1].slice(1),d.appendChild(document.createTextNode(p[0])),a.appendChild(document.createTextNode(" "));t?(t.parentNode.replaceChild(a,t),extend_fav()):document.body.appendChild(a)})([0,1,0])');
+    return [0,1,0];
+  } else {
+    c = c.slice(c.lastIndexOf('([')+1,c.length-1);
+    return JSON.parse(c);
+  }
+}
+function store_fav(config) {
+  var oC = localStorage.getItem("fav");
+  oC = oC.slice(0, oC.lastIndexOf('([')+1);
+  localStorage.setItem("fav", oC+JSON.stringify(config)+')');
+}
+
+//add event handers to checkmarks, so less draw code in LS
+function extend_fav(fc, el, divEl) {
+  el = location.pathname;
+  //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
+  //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
+  if (el.charAt(el.length - 1) == '/' || ~el.indexOf('/index')) {
+    el = document.body.lastChild;
+    while (el) { //last el is NEVER it
+      //alert(el.innerHTML);
+      if (el.nodeName == "DIV"
+         && (fc = el.firstChild)
+         && fc.nodeName == "LABEL") {
+        divEl = el;
+        window.addEventListener('pageshow', function (event){
+          if (event.persisted) {
+            draw_fav(read_fav(), divEl);
+          }
+        },{once:true});
+        fc.firstChild.onchange = function (evt) {
+          //debugger;
+          var c = read_fav(),
+          e = evt.target,
+          f = e.checked;
+          c[1] = f ? 1 : 0;
+          if (!f) {
+            c[2] = 0;
+            c.length = 3;
+          }
+          store_fav(c);
+          draw_fav(read_fav(), divEl);
+        };
+
+        fc.nextSibling.firstChild.onchange = function (evt) {
+          var c = read_fav(),
+          e = evt.target,
+          f = e.checked;
+          c[2] = f ? 1 : 0;
+          store_fav(c);
+          draw_fav(read_fav(), divEl);
+        };
+        /* break loop early, perf reasons, no more DIVs to visit */
+        el = {};
+      } //end, found the DIV
+      //anti-run away
+      else if (el.nodeName == "A") {
+        el = {};
+      }
+      el = el.previousSibling
+    }
+  }
+}
+
+//extend_fav() will be outside the JS code in LS one day
+extend_fav();
+
 
 //gz 1021 "document.", gz 1019 "doc." everywhere
 var doc = document;

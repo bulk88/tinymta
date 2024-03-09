@@ -185,9 +185,58 @@ function y() {
       w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
     }
     document.body.innerHTML += h+w;
+    
+    var c = read_fav();
+    var fav_url = "r"+stacode;
+    var found;
+    if(c[1]) {
+      for (n=3; n < c.length; n++) {
+        i = c[n];
+        if(i[1] == fav_url) {
+          i[2]++;//boost view count
+          validate_fav_order(c,n);
+          found = 1;
+          break;
+        }
+      }
+      if(!found) {
+        //add to end, unless full, if full wipe last sta
+        c[c.length == 9 ? 8 : c.length]=[s[stacode],fav_url,1];
+      }
+      store_fav(c);
+    }//fav enabled
+
+    function validate_fav_order(c,i) {
+      var tempEL;
+      if(i > 3) {
+        if(c[i][2] > c[i-1][2]) {
+          tempEl = c[i-1];
+          c[i-1] = c[i];
+          c[i] = tempEl;
+        }
+      }
+    }
 }
 
 } //end y aka getStop
+
+
+function read_fav() {
+  var c = localStorage.getItem("fav");
+  if (!c) {
+    //version, keep hist, realtime (unimplemented), sta#1, sta#2
+    localStorage.setItem("fav", "([0,1,0])");
+    return [0,1,0];
+  } else {
+    c = c.slice(c.lastIndexOf('([')+1,c.length-1);
+    return JSON.parse(c);
+  }
+}
+function store_fav(config) {
+  var oC = localStorage.getItem("fav");
+  oC = oC.slice(0, oC.lastIndexOf('([')+1);
+  localStorage.setItem("fav", oC+JSON.stringify(config)+')');
+}
 
 //Saf 3 and Opera 10 have AEL but not SS
 if(window.addEventListener && window.sessionStorage) {
