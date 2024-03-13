@@ -4,16 +4,17 @@ this.draw_fav=function(config, draw_fav_fn, replaceEl, extend_fav) {
   e = d.appendChild(document.createElement('label'));
   (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
   e2.checked = config[1];
-        v = e.appendChild(document.createElement('font'));
-        v.color='red';
-        v.appendChild(document.createTextNode(
-//"<3"
+  v = e.appendChild(document.createElement('font'));
+  v.color='red';
+  v.appendChild(document.createTextNode(
+  //heart
   "\u2764"
   ));
   e = d.appendChild(document.createElement('label'));
   (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
   //secret save RT flag, thru 1st flag history clear sequence by user
   e2.checked = config[1] && config[2];
+  //hourglass
   e.appendChild(document.createTextNode("\u231B "));
   if (!config[1])
     e = "History off";
@@ -39,7 +40,6 @@ this.draw_fav=function(config, draw_fav_fn, replaceEl, extend_fav) {
     extend_fav(d);
   } else {
     document.body.appendChild(d);
-  }//fav.js called from root and sub folders, add "/", maybe rmv at end
-//do not change next line, "}X,XfetchX(" is matched by "full" and "mini" fav.js
+  }
 }
 

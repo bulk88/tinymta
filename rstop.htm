@@ -186,7 +186,7 @@ function y() {
       w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
     }
     document.body.innerHTML += h+w;
-    (window.recordFavStopHit = window.recordFavStopHit || []).push(s[stacode], "r"+stacode);
+    (window.rF = window.rF || []).push(s[stacode], "r"+stacode);
     
 }
 

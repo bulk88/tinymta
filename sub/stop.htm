@@ -219,7 +219,7 @@ midnight of today, happens right after 1200AM */
 
     document.body.innerHTML += h;
 
-    (window.recordFavStopHit = window.recordFavStopHit || []).push(sta_name, "s"+location.hash.slice(1));
+    (window.rF = window.rF || []).push(sta_name, "s"+location.hash.slice(1));
 
 })});
 

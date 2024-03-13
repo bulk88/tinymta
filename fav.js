@@ -53,7 +53,7 @@ function extend_fav(divEl) {
     evt_div = evt_div.target;
     if (evt_div.checked) {
       //turn on both checkmarks, implied save history if want RT
-      c[1] = c[2] = 1;
+      c[2] = c[1] = 1;
     } else {
       c[2] = 0;
     }
@@ -105,13 +105,13 @@ function _recordFavStopHit(sta_name, fav_url) {
   delayedStaHits,
   i;
 
-  if(delayedStaHits = this.recordFavStopHit) {
+  if(delayedStaHits = this.rF) {
     for(i=0;i<delayedStaHits.length;i+=2) {
       _recordFavStopHit(delayedStaHits[i], delayedStaHits[i+1]);
     }
   }
   //fake the Array API so delayed and direct callers r simpler
-  this.recordFavStopHit = {push:_recordFavStopHit};
+  this.rF = {push:_recordFavStopHit};
 
 var pathname = location.pathname;
 //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
