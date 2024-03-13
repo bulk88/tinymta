@@ -13,5 +13,5 @@ die "bad starttag match" if $pos == -1;
 $pos += length("/*STARTINSERTDRAW*/\n");
 my $endpos = index($file,"\n/*ENDINSERTDRAW*/", $pos);
 die "bad endtag match" if $endpos == -1;
-substr($file,$pos, $endpos-$pos, $draw_fav);
+substr($file,$pos, $endpos-$pos, '"'.substr($draw_fav,15,length($draw_fav)-17).'"');
 write_file("fav.js", {binmode => ':utf8 :raw'}, $file);

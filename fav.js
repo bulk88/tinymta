@@ -96,11 +96,9 @@ function _recordFavStopHit(sta_name, fav_url) {
 
   var prefixFnStr =
 /*STARTINSERTDRAW*/
-"this.draw_fav=function(e,t,d,n){var c,a=document.createElement(\"div\"),o=a.appendChild(document.createElement(\"label\"));if((c=o.appendChild(document.createElement(\"input\"))).type=\"checkbox\",c.checked=e[1],(v=o.appendChild(document.createElement(\"font\"))).color=\"red\",v.appendChild(document.createTextNode(\"❤\")),(c=(o=a.appendChild(document.createElement(\"label\"))).appendChild(document.createElement(\"input\"))).type=\"checkbox\",c.checked=e[1]&&e[2],o.appendChild(document.createTextNode(\"⌛ \")),o=e[1]?3==e.length?\"No history yet\":0:\"History off\")a.appendChild(document.createTextNode(o));else for(i=3;i<9&&(o=e[i]);i++)(c=a.appendChild(document.createElement(\"a\"))).href=(\"r\"==o[1].charAt()?\"/rstop.htm#\":\"/stop.htm#\")+o[1].slice(1),c.appendChild(document.createTextNode(o[0])),a.appendChild(document.createTextNode(\" \"));(window.favDiv=a).draw_fav=t,d?(d.parentNode.replaceChild(a,d),n(a)):document.body.appendChild(a)};"
+"function(e,t,d,n){var c,a=document.createElement(\"div\"),o=a.appendChild(document.createElement(\"label\"));if((c=o.appendChild(document.createElement(\"input\"))).type=\"checkbox\",c.checked=e[1],(v=o.appendChild(document.createElement(\"font\"))).color=\"red\",v.appendChild(document.createTextNode(\"❤\")),(c=(o=a.appendChild(document.createElement(\"label\"))).appendChild(document.createElement(\"input\"))).type=\"checkbox\",c.checked=e[1]&&e[2],o.appendChild(document.createTextNode(\"⌛ \")),o=e[1]?3==e.length?\"No history yet\":0:\"History off\")a.appendChild(document.createTextNode(o));else for(i=3;i<9&&(o=e[i]);i++)(c=a.appendChild(document.createElement(\"a\"))).href=(\"r\"==o[1].charAt()?\"/rstop.htm#\":\"/stop.htm#\")+o[1].slice(1),c.appendChild(document.createTextNode(o[0])),a.appendChild(document.createTextNode(\" \"));(window.favDiv=a).draw_fav=t,d?(d.parentNode.replaceChild(a,d),n(a)):document.body.appendChild(a)}"
 /*ENDINSERTDRAW*/
   ,
-  prefixFnStrStart = prefixFnStr.indexOf('this.draw_fav=function(')+14,
-  prefixFnStr = prefixFnStr.slice(prefixFnStrStart, prefixFnStr.indexOf('};', prefixFnStrStart)+1),
   prefix = '(function(c){var f='+prefixFnStr+';f(c,f)})(',
   delayedStaHits,
   i;
