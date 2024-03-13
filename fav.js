@@ -125,6 +125,7 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
   };
   var checkDOMFn = function () {
     var config = read_fav();
+    var favDiv = this.favDiv;
     var prefixFn;
     var styleEl;
     var el;
@@ -134,8 +135,8 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
         //change to Function() for perf, low priority
         prefixFn = eval('('+prefixFnStr+')');
         //fav obj ver upgrade happpened
-        if (this.favDiv) {
-          prefixFn(config[1], prefixFn, this.favDiv, extend_fav);
+        if (favDiv) {
+          prefixFn(config[1], prefixFn, favDiv, extend_fav);
         }
         //virgin user/browser, draw favs very late first time ever
         else {
@@ -158,10 +159,10 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
         }
       } else {
         //remove fav div test eventually, this can only hit if syntax error in LS JS code
-        if(!this.favDiv) {
+        if(!favDiv) {
           alert('no div but saw fav draw code');
         }
-        else extend_fav(this.favDiv);
+        else extend_fav(favDiv);
       }
     }
   };
