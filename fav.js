@@ -33,31 +33,33 @@ function store_fav(config) {
 function extend_fav(divEl) {
   var fc;
   //first checkmark (left)
-  (fc = divEl.firstChild).firstChild.onchange = function (evt) {
-    var c = read_fav()[1],
-      e = evt.target,
-      //closure free design, get input from from misc globals
-      divEl = e.parentNode.parentNode,
-      f = e.checked;
-    c[1] = f ? 1 : 0;
-    if (!f) {
+  (fc = divEl.firstChild).firstChild.onchange = function (evt_div) {
+    var c = read_fav()[1];
+    evt_div = evt_div.target;
+    if (evt_div.checked) {
+      c[1] = 1;
+    } else {
+      c[1] = 0;
+      //wipe history
       c.length = 3;
     }
-    divEl.draw_fav(store_fav(c), divEl.draw_fav, divEl, extend_fav);
+    //closure free design, get input from from misc globals
+    evt_div = evt_div.parentNode.parentNode;
+    evt_div.draw_fav(store_fav(c), evt_div.draw_fav, evt_div, extend_fav);
   };
   //second checkmark (right)
-  fc.nextSibling.firstChild.onchange = function (evt) {
-    var c = read_fav()[1],
-      e = evt.target,
-      //closure free design, get input from from misc globals
-      divEl = e.parentNode.parentNode;
-    if (e.checked) {
+  fc.nextSibling.firstChild.onchange = function (evt_div) {
+    var c = read_fav()[1];
+    evt_div = evt_div.target;
+    if (evt_div.checked) {
       //turn on both checkmarks, implied save history if want RT
       c[1] = c[2] = 1;
     } else {
       c[2] = 0;
     }
-    divEl.draw_fav(store_fav(c), divEl.draw_fav, divEl, extend_fav);
+    //closure free design, get input from from misc globals
+    evt_div = evt_div.parentNode.parentNode;
+    evt_div.draw_fav(store_fav(c), evt_div.draw_fav, evt_div, extend_fav);
   };
 }
 function _recordFavStopHit(sta_name, fav_url) {
@@ -127,11 +129,10 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
     var config = read_fav();
     var favDiv = this.favDiv;
     var prefixFn;
-    var styleEl;
     var el;
     //LS global created new, defaults loaded in read_fav();
     if(config) { //false is too old/no LS browser
-      if (config[0]) {
+      if (config[0]) {//[0] is result flag from read_fav, it made/wiped the config
         //change to Function() for perf, low priority
         prefixFn = eval('('+prefixFnStr+')');
         //fav obj ver upgrade happpened
@@ -142,19 +143,13 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
         else {
           el = document.body.lastChild;
           while (el) { //last el is NEVER it
-            //alert(el.innerHTML);
             if (el.nodeName == "STYLE") {
-              styleEl = el;
               break;
             }
-            //anti-run away, maybe remove
-            else if (el.nodeName == "A") {
-              break;
-            el = el.previousElementSibling;
-            }
+            el = el.previousElementSibling; //eventually null
           }
-          if (styleEl) {
-            prefixFn(config[1], prefixFn, styleEl.parentNode.insertBefore(document.createElement('div'), styleEl));
+          if (el) {
+            prefixFn(config[1], prefixFn, el.parentNode.insertBefore(document.createElement('div'), el), extend_fav);
           }
         }
       } else {
@@ -162,7 +157,7 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
         if(!favDiv) {
           alert('no div but saw fav draw code');
         }
-        else extend_fav(favDiv);
+        else extend_fav(favDiv); //add checkmark event handlers, 99% time this branch
       }
     }
   };
@@ -170,8 +165,7 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
     checkDOMFn();
   else //defer the run
     this.x = checkDOMFn;
-}
-  
+}// if index.htm
 })();
 
 
