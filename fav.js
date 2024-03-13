@@ -11,12 +11,11 @@ function read_fav() {
       localStorage.setItem("fav", prefix + '[' + DRAW_VER() + ',1,0])');
       return [1,[DRAW_VER(), 1, 0]];
     } else {
-      c = c.slice(prefix.length, c.length - 1);
-      return [0,JSON.parse(c)];
+      return [0,JSON.parse(c.slice(prefix.length, c.length - 1))];
     }
   } catch (e) {
     //favs not supported on browser
-    return null;
+    return 0;
   }
 }
 
@@ -62,32 +61,33 @@ function extend_fav(divEl) {
   };
 }
 function _recordFavStopHit(sta_name, fav_url) {
-  function validate_fav_order(c,i) {
-    var tempEL;
-    if(i > 3) {
-      if(c[i][2] > c[i-1][2]) {
-        tempEl = c[i-1];
-        c[i-1] = c[i];
-        c[i] = tempEl;
-      }
-    }
-  }
+  var found;
+  var minus_1_sta;
   var c = read_fav();
-  if (c) {
-    var found;
-    if ((c=c[1])[1]) {
-      for (n = 3; n < c.length; n++) {
+  var c_len;
+  var n = 3;
+  if (c) { // if UA supports favs/LS
+    if ((c=c[1])[1]) {//if fav enabled
+      for (c_len = c.length; n < c_len; n++) {
         i = c[n];
         if (i[1] == fav_url) {
           i[2]++; //boost view count
-          validate_fav_order(c, n);
+          //resort stations
+          if(n > 3) { //if cur sta not first sta
+          //if hit count of cur sta higher than next higher sta in list
+            if(i[2] > (minus_1_sta = c[n-1])[2]) {
+              //swap stations, pushing cur up, and -1 down
+              c[n-1] = i;
+              c[n] = minus_1_sta;
+            }
+          }
           found = 1;
           break;
         }
-      }
+      }//end sta search loop
       if (!found) {
         //add to end, unless full, if full wipe last sta
-        c[c.length == 9 ? 8 : c.length] = [sta_name, fav_url, 1];
+        c[c_len == 9 ? 8 : c_len] = [sta_name, fav_url, 1];
       }
       store_fav(c);
     } //fav enabled
@@ -135,7 +135,7 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
         //change to Function() for perf, low priority
         prefixFn = eval('('+prefixFnStr+')');
         //fav obj ver upgrade happpened
-        if (favDiv) {
+        if (favDiv) { //dont de dup config[1], extra code bytes after mini
           prefixFn(config[1], prefixFn, favDiv, extend_fav);
         }
         //virgin user/browser, draw favs very late first time ever
