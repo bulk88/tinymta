@@ -221,27 +221,8 @@ midnight of today, happens right after 1200AM */
 
     (window.recordFavStopHit = window.recordFavStopHit || []).push(sta_name, "s"+location.hash.slice(1));
 
-
-
 })});
 
-}
-
-function read_fav() {
-  var c = localStorage.getItem("fav");
-  if (!c) {
-    //version, keep hist, realtime (unimplemented), sta#1, sta#2
-    localStorage.setItem("fav", "([0,1,0])");
-    return [0,1,0];
-  } else {
-    c = c.slice(c.lastIndexOf('([')+1,c.length-1);
-    return JSON.parse(c);
-  }
-}
-function store_fav(config) {
-  var oC = localStorage.getItem("fav");
-  oC = oC.slice(0, oC.lastIndexOf('([')+1);
-  localStorage.setItem("fav", oC+JSON.stringify(config)+')');
 }
 
 </script></html>

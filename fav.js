@@ -110,7 +110,7 @@ function _recordFavStopHit(sta_name, fav_url) {
       _recordFavStopHit(delayedStaHits[i], delayedStaHits[i+1]);
     }
   }
-  //fake Array API so delayed and direct callers r simpler
+  //fake the Array API so delayed and direct callers r simpler
   this.recordFavStopHit = {push:_recordFavStopHit};
 
 var pathname = location.pathname;
