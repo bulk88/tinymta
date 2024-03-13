@@ -115,51 +115,60 @@ var pathname = location.pathname;
 //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
 if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) {
-  window.addEventListener('pageshow', function (event_div){
+  window.onpageshow = function (event_div){
     if (event_div.persisted) {
       event_div = this.favDiv;
       if(event_div) {
         event_div.draw_fav(read_fav()[1],event_div.draw_fav, event_div, extend_fav);
       }
     }
-  });
-
-  var config = read_fav();
-  var prefixFn;
-  var styleEl;
-  var el;
-  //LS global created new, defaults loaded in read_fav();
-  if (config[0]) {
-    //change to Function() for perf, low priority
-    prefixFn = eval('('+prefixFnStr+')');
-    //fav obj ver upgrade happpened
-    if (this.favDiv) {
-      prefixFn(config[1], prefixFn, this.favDiv, extend_fav);
-    }
-    //virgin user/browser, draw favs very late first time ever
-    else {
-      el = document.body.lastChild;
-      while (el) { //last el is NEVER it
-        //alert(el.innerHTML);
-        if (el.nodeName == "STYLE") {
-          styleEl = el;
-          break;
+  };
+  var checkDOMFn = function () {
+    var config = read_fav();
+    var prefixFn;
+    var styleEl;
+    var el;
+    //LS global created new, defaults loaded in read_fav();
+    if(config) { //false is too old/no LS browser
+      if (config[0]) {
+        //change to Function() for perf, low priority
+        prefixFn = eval('('+prefixFnStr+')');
+        //fav obj ver upgrade happpened
+        if (this.favDiv) {
+          prefixFn(config[1], prefixFn, this.favDiv, extend_fav);
         }
-        //anti-run away, maybe remove
-        else if (el.nodeName == "A") {
-          break;
+        //virgin user/browser, draw favs very late first time ever
+        else {
+          el = document.body.lastChild;
+          while (el) { //last el is NEVER it
+            //alert(el.innerHTML);
+            if (el.nodeName == "STYLE") {
+              styleEl = el;
+              break;
+            }
+            //anti-run away, maybe remove
+            else if (el.nodeName == "A") {
+              break;
+            el = el.previousElementSibling;
+            }
+          }
+          if (styleEl) {
+            prefixFn(config[1], prefixFn, styleEl.parentNode.insertBefore(document.createElement('div'), styleEl));
+          }
         }
-        el = el.previousSibling;
-      }
-      if (styleEl) {
-        prefixFn(config[1], prefixFn, styleEl.parentNode.insertBefore(document.createElement('div'), styleEl));
+      } else {
+        //remove fav div test eventually, this can only hit if syntax error in LS JS code
+        if(!this.favDiv) {
+          alert('no div but saw fav draw code');
+        }
+        else extend_fav(this.favDiv);
       }
     }
-  } else {
-    //remove fav div test eventually, this can only hit if syntax error in LS JS code
-    if(!this.favDiv) alert('no div even tho LS draw code');
-    else extend_fav(this.favDiv);
-  }
+  };
+  if(document.body) //async script tags supported
+    checkDOMFn();
+  else //defer the run
+    this.x = checkDOMFn;
 }
   
 })();

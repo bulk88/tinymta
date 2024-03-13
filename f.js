@@ -556,6 +556,7 @@ function chk_as_js(fc,el) {
 if(this.y) {
   chk_as_js();
   y(nosvg,no_inline_block_container_fill,no_CDF_fill);
+  this.x && x();
 } else {
   //FF 3.5 has sync/blocking appendChild(<SCRIPT>) as a bug, f.js executes on
   //ancient FF, BEFORE inline root index.htm <SCRIPT> executes
@@ -570,6 +571,7 @@ if(this.y) {
     chk_as_js();
     oldOnLoad && oldOnLoad();
     this.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
+    this.x && x();
   };
 }
 })();
