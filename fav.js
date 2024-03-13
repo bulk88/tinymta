@@ -1,4 +1,4 @@
-this.draw_fav=function(config, draw_fav_fn, replaceEl) {
+this.draw_fav=function(config, draw_fav_fn, replaceEl, extend_fav) {
   var e2,
   d = document.createElement('div'),
   e = d.appendChild(document.createElement('label'));
@@ -40,12 +40,8 @@ this.draw_fav=function(config, draw_fav_fn, replaceEl) {
   } else {
     document.body.appendChild(d);
   }//fav.js called from root and sub folders, add "/", maybe rmv at end
-//do not change next line, "},fetch(" is matched by "full" and "mini" fav.js
+//do not change next line, "}X,XfetchX(" is matched by "full" and "mini" fav.js
 },fetch('/fav.js').then(function(r){r.text().then(function(r){
-
-var prefixFnStr;
-var prefix;
-
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav() {
   //bump if incompat fav obj in Tinymta new release
@@ -83,30 +79,29 @@ function extend_fav(divEl) {
   //first checkmark (left)
   (fc = divEl.firstChild).firstChild.onchange = function (evt) {
     var c = read_fav()[1],
-    e = evt.target,
-    //closure free design, get input from from misc globals
-    divEl = e.parentNode.parentNode;
-    f = e.checked;
+      e = evt.target,
+      //closure free design, get input from from misc globals
+      divEl = e.parentNode.parentNode,
+      f = e.checked;
     c[1] = f ? 1 : 0;
     if (!f) {
       c.length = 3;
     }
-    divEl.draw_fav(store_fav(c), divEl.draw_fav, divEl);
+    divEl.draw_fav(store_fav(c), divEl.draw_fav, divEl, extend_fav);
   };
   //second checkmark (right)
   fc.nextSibling.firstChild.onchange = function (evt) {
     var c = read_fav()[1],
-    e = evt.target,
-    //closure free design, get input from from misc globals
-    divEl = e.parentNode.parentNode;
-    f = e.checked;
-    if (f) {
+      e = evt.target,
+      //closure free design, get input from from misc globals
+      divEl = e.parentNode.parentNode;
+    if (e.checked) {
       //turn on both checkmarks, implied save history if want RT
       c[1] = c[2] = 1;
     } else {
       c[2] = 0;
     }
-    divEl.draw_fav(store_fav(c), divEl.draw_fav, divEl);
+    divEl.draw_fav(store_fav(c), divEl.draw_fav, divEl, extend_fav);
   };
 }
 function _recordFavStopHit(sta_name, fav_url) {
@@ -142,21 +137,20 @@ function _recordFavStopHit(sta_name, fav_url) {
   } //fav UA supported
 }
 
+  var prefixFnStr = r,
+  prefixFnStrStart = prefixFnStr.indexOf('this.draw_fav=function(')+14,
+  prefixFnStr = prefixFnStr.slice(prefixFnStrStart, prefixFnStr.indexOf('},fetch(', prefixFnStrStart)+1),
+  prefix = '(function(c){var f='+prefixFnStr+';f(c,f)})(',
+  delayedStaHits,
+  i;
 
-
-  var delayedHit, i;
-  prefixFnStr = r;
-  prefixFnStrStart = prefixFnStr.indexOf('this.draw_fav=function(')+14;
-  prefixFnStr = prefixFnStr.slice(prefixFnStrStart, prefixFnStr.indexOf('},fetch(', prefixFnStrStart)+1);
-  prefix = '(function(c){var f='+prefixFnStr+';f(c,f)})(';
-  if(delayedHit = this.recordFavStopHit) {
-    for(i=0;i<delayedHit.length;i+=2) {
-      _recordFavStopHit(delayedHit[i], delayedHit[i+1]);
+  if(delayedStaHits = this.recordFavStopHit) {
+    for(i=0;i<delayedStaHits.length;i+=2) {
+      _recordFavStopHit(delayedStaHits[i], delayedStaHits[i+1]);
     }
   }
   //fake Array API so delayed and direct callers r simpler
   this.recordFavStopHit = {push:_recordFavStopHit};
-//extend_fav() will be outside the JS code in LS one day
 
 var pathname = location.pathname;
 //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
@@ -166,7 +160,7 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
     if (event_div.persisted) {
       event_div = this.favDiv;
       if(event_div) {
-        event_div.draw_fav(read_fav()[1],event_div.draw_fav, event_div);
+        event_div.draw_fav(read_fav()[1],event_div.draw_fav, event_div, extend_fav);
       }
     }
   });
@@ -181,7 +175,7 @@ if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) 
     prefixFn = eval('('+prefixFnStr+')');
     //fav obj ver upgrade happpened
     if (this.favDiv) {
-      prefixFn(config[1], prefixFn, this.favDiv);
+      prefixFn(config[1], prefixFn, this.favDiv, extend_fav);
     }
     //virgin user/browser, draw favs very late first time ever
     else {

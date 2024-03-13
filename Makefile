@@ -160,5 +160,6 @@ gz: docs/index.htm.gz docs/status.htm.gz docs/rstop.htm.gz docs/rtrain.htm.gz
 gz: docs/stop.htm.gz docs/stations.htm.gz docs/li/stations.htm.gz
 gz: docs/mn/stations.htm.gz routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
+gz: docs/fav.js.gz docs/fav.js.gz.png
 
 
