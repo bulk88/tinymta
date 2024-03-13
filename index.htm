@@ -11,6 +11,7 @@
 <!-- already started -->
 <script async src=as.js></script>
 <script async src=dumb.js></script>
+<script async src=fav.js></script>
 <!-- routes.js takes a while to generate b/c its a CFW, so start it early -->
 <!-- it doesn't cause congestion on the wire b/c CFW latency, its also small -->
 <!-- vs MTA alerts file -->
@@ -41,9 +42,9 @@ Do you have a<br>
 <!-- div used by as.js, keep single NBSP!!! space in div, survives minify -->
 <div> </div>
 <script>
-//1029->1062
+//1029->1061 LS "f", 1062 for LS "fav"
 //localStorage.setItem("fav", "document.body.appendChild(document.createElement('div')).appendChild(document.createTextNode('FFF'))");
-try{eval(localStorage.getItem("fav"))} catch (e) {}
+try{eval(localStorage.getItem("fav"))} catch (err) {}
 
 
 //gz 1021 "document.", gz 1019 "doc." everywhere

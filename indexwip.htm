@@ -104,7 +104,7 @@ function extend_fav(fc, el, divEl) {
   el = location.pathname;
   //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
   //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
-  if (el.charAt(el.length - 1) == '/' || ~el.indexOf('/index')) {
+  if (el.charAt(el.length - 1) == '/' || !el.indexOf('/index')) {
     el = document.body.lastChild;
     while (el) { //last el is NEVER it
       //alert(el.innerHTML);

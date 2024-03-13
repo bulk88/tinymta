@@ -4,9 +4,11 @@
 <link href="//tiles1.tinymta.us.to" rel="preconnect">
 <link href="//tiles2.tinymta.us.to" rel="dns-prefetch">
 <link href="//tiles2.tinymta.us.to" rel="preconnect">
+<script async src="/fav.js"></script>
 <link href=tileMap.htm rel=prefetch>
 <meta name="mobileoptimized" content="0">
 <meta name="referrer" content="no-referrer">
+
 </head>
 <body>No javascript</body>
 <script type="text/javascript">
@@ -217,36 +219,9 @@ midnight of today, happens right after 1200AM */
 
     document.body.innerHTML += h;
 
-    var c = read_fav();
-    var fav_url = "s"+location.hash.slice(1);
-    var found;
-    if(c[1]) {
-      for (n=3; n < c.length; n++) {
-        i = c[n];
-        if(i[1] == fav_url) {
-          i[2]++;//boost view count
-          validate_fav_order(c,n);
-          found = 1;
-          break;
-        }
-      }
-      if(!found) {
-        //add to end, unless full, if full wipe last sta
-        c[c.length == 9 ? 8 : c.length]=[sta_name,fav_url,1];
-      }
-      store_fav(c);
-    }//fav enabled
+    (window.recordFavStopHit = window.recordFavStopHit || []).push(sta_name, "s"+location.hash.slice(1));
 
-    function validate_fav_order(c,i) {
-      var tempEL;
-      if(i > 3) {
-        if(c[i][2] > c[i-1][2]) {
-          tempEl = c[i-1];
-          c[i-1] = c[i];
-          c[i] = tempEl;
-        }
-      }
-    }
+
 
 })});
 

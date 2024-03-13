@@ -4,6 +4,7 @@
 <meta name="referrer" content="no-referrer">
 <link href="//backend-unified.mylirr.org" rel="dns-prefetch">
 <link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin>
+<script async src="/fav.js"></script>
 <link href=rtrain.htm rel=prefetch>
 <style>a.t:link{color: initial; text-decoration: initial}.b{text-decoration: underline}</style>
 </head>
@@ -185,37 +186,8 @@ function y() {
       w += i.status+'<br>'+noPTag(i.header)+'<br>'+(i.human_duration?i.human_duration+'<br>':'')+noPTag(i.text)+'<br><br>';
     }
     document.body.innerHTML += h+w;
+    (window.recordFavStopHit = window.recordFavStopHit || []).push(s[stacode], "r"+stacode);
     
-    var c = read_fav();
-    var fav_url = "r"+stacode;
-    var found;
-    if(c[1]) {
-      for (n=3; n < c.length; n++) {
-        i = c[n];
-        if(i[1] == fav_url) {
-          i[2]++;//boost view count
-          validate_fav_order(c,n);
-          found = 1;
-          break;
-        }
-      }
-      if(!found) {
-        //add to end, unless full, if full wipe last sta
-        c[c.length == 9 ? 8 : c.length]=[s[stacode],fav_url,1];
-      }
-      store_fav(c);
-    }//fav enabled
-
-    function validate_fav_order(c,i) {
-      var tempEL;
-      if(i > 3) {
-        if(c[i][2] > c[i-1][2]) {
-          tempEl = c[i-1];
-          c[i-1] = c[i];
-          c[i] = tempEl;
-        }
-      }
-    }
 }
 
 } //end y aka getStop
