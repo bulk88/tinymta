@@ -65,6 +65,11 @@ docs/f.js : f.js
 	copy /y f.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
+
+fav.js: draw_fav.js adj_fav.pl
+	uglifyjs -c -m toplevel -m eval "draw_fav.js" -o "draw_fav.min.js"
+	perl adj_fav.pl
+
 docs/fav.js : fav.js
 	copy /y fav.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
