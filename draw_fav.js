@@ -24,7 +24,7 @@ function parseIsoDatetime(dt,i) {
 function RTS (sta, span) {
   if(sta.charAt() == 'r') {
     sta = sta.slice(1);
-    fetch('//backend-unified.mylirr.org/arrivals/'+sta, {headers: {'accept-version': '3.0'}}, 'ra/'+sta).then(
+    fetch('//backend-unified.mylirr.org/arrivals/'+sta, {headers: {'accept-version': '3.0'}}).then(
     function (r) {
     r.status == 200 &&
     r.json().then(function (r /*r=resp*/) {
@@ -55,7 +55,7 @@ function RTS (sta, span) {
   }
   else {
   sta = sta.slice(1,4);
-  fetch('//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'+sta, {}, 'su/' + sta).then(
+  fetch('//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:'+sta).then(
     function (r) {
     r.status == 200 &&
     r.json().then(function (r/*r=resp*/) {

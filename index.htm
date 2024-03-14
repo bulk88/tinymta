@@ -54,7 +54,7 @@ var doc = document;
 //IE 5.5 and 6.0 don't have document.head
 var headElem = doc.documentElement.firstChild;
 function y (nosvg, mkWeatherCellContainerPF) {
-  fetch(headElem.children[2].href,{},'wea')
+  fetch(headElem.children[2].href)
   .then(function (r) {
   r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)

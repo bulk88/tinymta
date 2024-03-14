@@ -112,7 +112,7 @@ function minsAway(t) {
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
 function y() {
   document.body.innerHTML = t; /*t=top*/
-  fetch(url, {}, 'su/' + location.hash.slice(1, 4)).then(
+  fetch(url).then(
     function (r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)

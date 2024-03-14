@@ -37,6 +37,10 @@ const faviconStr = new Int8Array([-119, 80, 78, 71, 13, 10, 26, 10,
     68, -82, 66, 96, -126
   ]);
 
+//https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304
+//says include Content-Location, I am leaving it out
+const copy_res_headers = ["age", "cache-control", "date", "etag", "expires", "last-modified", "vary"];
+
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
 /*STARTINSERT*/
 var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"Cold Spring","0CT":"Cortlandt","0DF":"Dobbs Ferry","0DV":"Spuyten Duyvil","0GA":"Garrison","0GD":"Glenwood","0GY":"Greystone","0HB":"Highbridge-Employees","0HL":"Harlem-125 St","0HM":"Croton-Harmon","0HS":"Hastings-on-Hudson","0IV":"Irvington","0LU":"Ludlow","0MB":"Marble Hill","0MH":"Morris Heights","0MN":"Manitou","0NM":"New Hamburg","0NY":"Grand Central","0OS":"Ossining","0PE":"Peekskill","0PM":"Philipse Manor","0PO":"Poughkeepsie","0RV":"Riverdale","0SB":"Scarborough","0TT":"Tarrytown","0UH":"University Heights","0YK":"Yonkers","0YS":"Yankees-E 153 St","1AT":"Appalachian Trail","1BG":"Botanical Garden","1BH":"Bedford Hills","1BR":"Southeast","1BW":"Brewster","1BX":"Bronxville","1CF":"Croton Falls","1CQ":"Chappaqua","1CW":"Crestwood","1DO":"Dover Plains","1FO":"Fordham","1FW":"Fleetwood","1GO":"Goldens Bridge","1HA":"Hartsdale","1HN":"Hawthorne","1KA":"Katonah","1MK":"Mt Kisco","1ML":"Melrose","1MP":"Mt Pleasant","1MW":"Mt Vernon West","1NW":"North White Plains","1PA":"Patterson","1PV":"Pleasantville","1PW":"Pawling","1PY":"Purdy's","1SC":"Scarsdale","1TK":"Tuckahoe","1TM":"Tenmile River","1TR":"Tremont","1VA":"Valhalla","1WA":"Wassaic","1WF":"Wakefield","1WG":"Williams Bridge","1WI":"Harlem Valley-Wingdale","1WN":"Woodlawn","1WP":"White Plains","2BP":"Bridgeport","2CC":"Cos Cob","2DA":"Darien","2EN":"East Norwalk","2FF":"Fairfield","2FM":"Fairfield Metro","2GF":"Green's Farms","2GN":"Greenwich","2HS":"Harrison","2LA":"Larchmont","2MA":"Mamaroneck","2ME":"Mt Vernon East","2MI":"Milford","2NH":"New Haven","2NO":"Noroton Heights","2NR":"New Rochelle","2OG":"Old Greenwich","2PC":"Port Chester","2PH":"Pelham","2RO":"Rowayton","2RS":"Riverside","2RY":"Rye","2SM":"Stamford","2SN":"South Norwalk","2SP":"Southport","2SR":"Stratford","2SS":"New Haven-State St","2WH":"West Haven","2WP":"Westport","3GB":"Glenbrook","3NC":"New Canaan","3SD":"Springdale","3TH":"Talmadge Hill","4BE":"Bethel","4BV":"Branchville","4CA":"Cannondale","4DN":"Danbury","4M7":"Merritt 7","4RD":"Redding","4WI":"Wilton","5AN":"Ansonia","5BF":"Beacon Falls","5DB":"Derby-Shelton","5NG":"Naugatuck","5SY":"Seymour","5WB":"Waterbury","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BOL":"Bolands-Employees","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont Park","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Av","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","EMT":"Elmont-UBS Arena","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCT":"Grand Central","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HIL":"Hillside-Employees","HOL":"Hollis","HPA":"Hunterspoint Av","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Av","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic-Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Av","NBD":"Nassau Blvd","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank","_GC":"Grand Central"};
@@ -131,6 +135,71 @@ async function handleRequest(request, event) {
       }
     });
   }
+else if (pathname_callback==='/jsp') {
+  var headers = {}, str, str2, rheaders, i = 0;
+  pathname_callback = decodeURIComponent(url.searchParams.get('url'));
+  if(pathname_callback.startsWith('//')) {
+    pathname_callback = 'http:'+pathname_callback; //perf
+  }
+  str = new URL(pathname_callback);
+  //anti-abuse
+  if((str = str.host) === 'otp-mta-prod.camsys-apps.com'
+    || str === 'collector-otp-prod.camsys-apps.com'
+    || str === 'api.weather.com'
+    || str === 'backend-unified.mylirr.org') {
+    if(str = (rheaders = request.headers).get('if-none-match')) {
+      headers['if-none-match'] = str;
+    }
+    if(str = rheaders.get('if-modified-since')) {
+      headers['if-modified-since'] = str;
+    }
+    if(str = url.searchParams.get('headers')) {
+      //add anti-abuse header name checks against blacklist in CORS spec if 3rd party use
+      Object.assign(headers, JSON.parse(decodeURIComponent(str)));
+    }
+    resp = fetch(pathname_callback,{headers: headers});
+    //from express, but guarenteed JSONP no CORS
+    pathname_callback = (url.searchParams.get('callback') || '_xcallback').replace(/[^\[\]\w$.]/g, '');
+    pathname_callback = '/**/ typeof ' + pathname_callback + ' === \'function\' && ' + pathname_callback + '({http_code:';
+    headers = {
+      'content-type': 'text/javascript',
+      //from express
+      "x-content-type-options": 'nosniff',
+    };
+    resp = await resp;
+    //no-store and IE 6, script file downloaded over the wire
+    //but never executes, default to no-cache if server omits
+    headers['cache-control'] = (str = (rheaders = resp.headers).get('cache-control')) ? str : 'no-cache';
+    while(str = copy_res_headers[i++]) {
+      if(str2 = rheaders.get(str)) {
+        headers[str] = str2;
+      }
+    }
+    if(resp.status !== 304) {
+      str = resp.headers.get('content-type');
+      pathname_callback += resp.status + ',content_type:\'' + str + '\',contents:';
+      resp = await resp.text();
+      return new Response(pathname_callback
+        + (url.searchParams.get('type') !== 'text'
+          && str.startsWith('application/json')
+          // from express
+          ? resp.replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
+          : JSON.stringify(resp))
+        + '});'
+        , {headers: headers}
+      );
+    } else {
+      return new Response(null, {
+        status: 304,
+        headers: headers,
+      });
+    }
+  } else {
+    return new Response(null, {
+      status: 403
+    });
+  }
+}
 else if (pathname_callback.startsWith('/api/')) {
   var ct_pathnameroot = pathname_callback.substr(5,3);
   resp = fetch((ct_pathnameroot === 'su/' // 'li/' othr choice

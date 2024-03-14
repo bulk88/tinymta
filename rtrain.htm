@@ -93,7 +93,7 @@ function y() {
       //console.log('pickup ls');
     gotJson(ls.c, 1);
   } else {
-  fetch('//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', {headers: {'accept-version': '3.0'}}, 'rl/'+stacode).then(
+  fetch('//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', {headers: {'accept-version': '3.0'}}).then(
     function (r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)

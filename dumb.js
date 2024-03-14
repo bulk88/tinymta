@@ -31,7 +31,7 @@ if (this.addEventListener && document.querySelector) {
           headers: {
             'accept-version': '3.0'
           }
-        }, 'ra/'+stacode, 1).then(function (r) {
+        }, 1).then(function (r) {
           if (r.status == 200) {
             r.text().then(function (r) { //time pagetype stop contents
               sessionStorage.setItem('r', '{"t":' + Date.now() + ',"s":"' + stacode + '","c":' + r + '}');

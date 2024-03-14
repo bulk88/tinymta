@@ -257,8 +257,12 @@ if (!!("a".replace(/a/,function(){return ""}))) {
 //sometimes just polyfills above needed, fetch exists
 if (!window.fetch) {
 //alert(this); window obj TODO research if "window." can be removed and survive minify
-//arg 3 and 4 are private to this PF and non-spec Fetch API, but needed
-window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
+//arg 3 is private to this PF and non-spec Fetch API, but needed b/c
+//text() vs json() from caller, not known!!! until after status==200 delivered
+//to caller, and its too late for legacy XHR and legacy JSONP, to set
+//.resonseType or tell JSONP server to send a string not obj as .contents
+window.fetch = function (url, options_headers, want_not_json) {
+  options_headers && (options_headers = options_headers.headers);
   return {
     then: function (cb, addIMS /*arg 2 spec breaking, shud be reject cb*/) {
               var i_thisFunc;
@@ -283,9 +287,15 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 cb({
                   status: httpstatus,
                   json: function () {
+                    if(want_not_json) {
+                      throw "mismatch .json() vs .text() fetch hint";
+                    }
                     return content_fk_promise;
                   },
                   text: function () {
+                    if(!want_not_json) {
+                      throw "mismatch .json() vs .text() fetch hint";
+                    }
                     want_text = 1;
                     return content_fk_promise;
                   }
@@ -394,9 +404,9 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 */
                 x.setRequestHeader("accept", "application/json");
                 //add headers, LIRR specific
-                if(options && (options = options.headers)) {
-                  for(i_thisFunc in options) {
-                    x.setRequestHeader(i_thisFunc, options[i_thisFunc]);
+                if(options_headers) {
+                  for(i_thisFunc in options_headers) {
+                    x.setRequestHeader(i_thisFunc, options_headers[i_thisFunc]);
                   }
                 }
       /* don't use arguments.callee, b/c even tho Tinymta DOES NOT use "strict"
@@ -420,13 +430,25 @@ window.fetch = function (url, options, jsonp_url_path_postfix, want_not_json) {
                 if called twice fast, add mixer number so CBs dont clash
                 */
                 jsonpFnName = 'j'+((new Date().getTime())+(jsonpi++));
+                if(options_headers) {
+                  x = []; //JSON.stringify not avail old browsers
+                  for(i_thisFunc in options_headers) {
+                    x.push('"'+i_thisFunc+'":"'+options_headers[i_thisFunc]+'"');
+                    x = '{'+x.join(',')+'}';
+                  }
+                } else {
+                  x = 0;
+                }
                 scriptElem = document.createElement("script");
                 //note this WILL NOT RUN FROM 127.0.0.1 or file://
                 scriptElem.src =
 /*STARTDELETE*/
                   '//tinymta.us.to' +
 /*ENDDELETE*/
-                  '/api/'+jsonp_url_path_postfix+'?callback='+jsonpFnName
+                  '/jsp?url='+encodeURIComponent(url)
+                  +'&callback='+jsonpFnName
+                  +(x ? '&headers='+encodeURIComponent(x) : '')
+                  +(want_not_json ? '&type=text' : '')
 //doesnt seem to be needed on old IEs
 //                  +'&a='+((new Date().getTime())+0)
                   ;

@@ -65,7 +65,7 @@ if (Object.values) {
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
 function y(/*unused args in PF mode, empty reg*/) {
-  fetch(url_alerts, {}, 'alt').then(function (r) {
+  fetch(url_alerts).then(function (r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
      :
