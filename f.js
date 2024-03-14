@@ -453,7 +453,7 @@ window.fetch = function (url, options_headers, want_not_json) {
 //                  +'&a='+((new Date().getTime())+0)
                   ;
                 scriptElem.onerror = function (e) {
-                  alert("JSONP network error")
+                  alert("JSONP network error "+(JSON && JSON.stringify ? JSON.stringify(e) :''));
                   //never use .parentElement, not old IE or old FF compat
                   scriptElem.parentNode.removeChild(scriptElem);
                   /* ,1 is window.jsonpCB anti-leak */

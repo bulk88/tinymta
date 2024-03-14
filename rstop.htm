@@ -86,7 +86,9 @@ function y() {
    var ls;
     /*ra = rail arrivals*/
   if(window.sessionStorage && (ls = sessionStorage.getItem('r'))
-      && (sessionStorage.removeItem('r'), ls = JSON.parse(ls))
+      && (sessionStorage.removeItem('r'),
+      //alert(ls),
+      ls = JSON.parse(ls))
     //window.name has latency problems, very fast physical clicks (mousedown/mouseup)
     //will cause window.name to be empty string in new page/double network I/O
     //stick to sessionStorage, Opera 10, oh well, its too old to need perf
