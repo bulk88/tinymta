@@ -1,28 +1,20 @@
 CACHE MANIFEST
-# v Thu Mar 14 19:01:26 2024
+# v Thu Mar 14 20:40:18 2024
 
 CACHE:
 /
-1p.js
 dumb.js
 fav.js
-favicon.ico
-index.htm
-li/stations.htm
-rstop.htm
-rstop_.htm
-mapTileBackground.png
-mn/stations.htm
-stations.htm
-stop.htm
-stop_.htm
-tileMap.htm
-transparentTile.gif
-zoom_in.png
-zoom_in_over.png
-zoom_out.png
-zoom_out_over.png
 status.htm
+stations.htm
+mn/stations.htm
+li/stations.htm
+1p.js
+stop.htm
+rstop.htm
+rtrain.htm
+favicon.ico
+f.js
 
 NETWORK:
 *

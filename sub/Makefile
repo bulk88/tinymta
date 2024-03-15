@@ -127,11 +127,21 @@ gtfs.zip :
 mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
+../docs/stop.appcache: ../docs/tileMap.htm ../docs/mapTileBackground.png
+../docs/stop.appcache: ../docs/transparentTile.gif ../docs/zoom_in.png
+../docs/stop.appcache: ../docs/zoom_in_over.png ../docs/zoom_out.png
+../docs/stop.appcache: ../docs/zoom_out_over.png
+	perl -e"use File::Slurp; \
+	my $$f = read_file('stop.appcache', { binmode => ':raw' }); \
+	$$f =~  s/# v .+/\"# v \".localtime()/e;\
+	write_file('stop.appcache', {binmode => ':raw'}, $$f);\
+	write_file('../docs/stop.appcache', {binmode => ':raw'}, $$f);"
+	git add ../docs/stop.appcache
+	git add stop.appcache
+
+
 all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm
-all: ../docs/rt.htm ../docs/js/rt.htm
-all: ../docs/tileMap.htm ../docs/mapTileBackground.png
-all: ../docs/transparentTile.gif ../docs/zoom_in.png ../docs/zoom_in_over.png
-all: ../docs/zoom_out.png ../docs/zoom_out_over.png
+all: ../docs/rt.htm ../docs/js/rt.htm ../docs/stop.appcache
 #all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
 #all: plan2.htm
