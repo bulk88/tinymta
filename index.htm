@@ -7,10 +7,6 @@
 <meta name=mobileoptimized content=0><meta name="referrer" content="no-referrer">
 <!-- preconnect Chrome 46/FF41-70 115-, preconnect Chrome 50/FF 85, inc both -->
 <link href="https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909" as="fetch" rel="preload" crossorigin>
-<!-- routes.js takes a while to generate b/c its a CFW, so start it early -->
-<!-- it doesn't cause congestion on the wire b/c CFW latency, its also small -->
-<!-- vs MTA alerts file -->
-<link href=routes.js as=script rel=preload>
 <!-- dont do preconnect fallback for weather, not worth wire bytes -->
 <!-- 1062 vs 1059 bytes gz local af rm weather PC tag -->
 <!-- 1059 vs 1047 bytes gz local af rm 2 dns-fetch tags -->

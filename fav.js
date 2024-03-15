@@ -104,21 +104,40 @@ function _recordFavStopHit(sta_name, fav_url) {
   //var prefixFnStr = 'function(e,t,d,n,a){return window.draw_fav(e,t,d,n,a)}';
 
   var prefix = '(function(c){var f='+prefixFnStr+';f(c,f)})(',
-  delayedStaHits,
+  delayedStaHits_head,
   i;
 
-  if(delayedStaHits = this.rF) {
-    for(i=0;i<delayedStaHits.length;i+=2) {
-      _recordFavStopHit(delayedStaHits[i], delayedStaHits[i+1]);
+  if(delayedStaHits_head = this.rF) {
+    for(i=0;i<delayedStaHits_head.length;i+=2) {
+      _recordFavStopHit(delayedStaHits_head[i], delayedStaHits_head[i+1]);
     }
   }
   //fake the Array API so delayed and direct callers r simpler
   this.rF = {push:_recordFavStopHit};
 
-var pathname = location.pathname;
+var pathname_newEl = location.pathname;
 //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
-if (pathname.charAt(pathname.length - 1) == '/' || !pathname.indexOf('/index')) {
+if (pathname_newEl.charAt(pathname_newEl.length - 1) == '/' || !pathname_newEl.indexOf('/index')) {
+  //not index.htm render critical files
+  delayedStaHits_head = document.documentElement.firstChild;
+/*
+routes.js takes a while to generate b/c its a CFW, so start it early
+it doesn't cause congestion on the wire b/c CFW latency, its also small
+vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
+*/
+  pathname_newEl = document.createElement('link');
+  pathname_newEl.rel = 'preload';
+  pathname_newEl.as = 'script';
+  pathname_newEl.href = 'routes.js';
+  delayedStaHits_head.appendChild(pathname_newEl);
+  pathname_newEl = document.createElement('link');
+  pathname_newEl.rel = 'prefetch';
+  pathname_newEl.href = 'stop.htm';
+  pathname_newEl = delayedStaHits_head.appendChild(pathname_newEl).cloneNode(0);
+  pathname_newEl.href = 'rstop.htm';
+  delayedStaHits_head.appendChild(pathname_newEl);
+
   window.onpageshow = function (event_div){
     if (event_div.persisted) {
       event_div = this.favDiv;
