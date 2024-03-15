@@ -1,3 +1,27 @@
+function log() {
+  var i = 0;
+  try {
+    console.log.apply(console, arguments);
+  } catch (e) {
+    try {
+      opera.postError.apply(opera, arguments);
+    } catch (e) {
+      e = '';
+      for(; i < arguments.length; i++)
+        e+=arguments[i]+ " ";
+    }
+  }
+}
+
+//FF 3.0 has sessionStorage but no JSON
+//rtrain/rstop touchstart/mousedown preloader
+if (!window.JSON) {
+//security irrel, native JSON faster than JS eval
+//according to articles online, but just use eval for
+//perf as a PF, we use JSONP/innerHTML, and loading a JSON parser
+//polyfill is abs insane in this micro-HTML site
+  window.JSON = {parse: function(str) { return eval('0,' + x)}};
+}
 /* 2 polyfills for status.htm
  fetch added Chrome 42, Array.forEach added way before
 */
@@ -75,14 +99,6 @@ if (!Date.prototype.toLocaleTimeString) {
     hours = hours % 12 || 12;
     return hours + ":" + minutes + ":" + seconds + " " + meridian;
   };
-}
-if(window.opera) {
-  if(!window.console) {
-    window.console = {};
-  }
-  if(!window.console.log) {
-    window.console.log = function (err) {opera.postError(err);};
-  }
 }
 
 (function(){
@@ -254,8 +270,34 @@ if (!!("a".replace(/a/,function(){return ""}))) {
 */
 }
 
+if (!window.encodeURIComponent)
+  (function () {
+
+    var hexchars = "0123456789ABCDEF";
+
+    function toHex(n) {
+      return hexchars.charAt(n >> 4) + hexchars.charAt(n & 0xF);
+    }
+
+    var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+    window.encodeURIComponent = function (s) {
+      var enc = "";
+      if (typeof s !== 'string') //catch undef
+        s = String(s);
+      for (var i = 0; i < s.length; i++) {
+        if (okURIchars.indexOf(s.charAt(i)) == -1)
+          enc += "%" + toHex(s.charCodeAt(i));
+        else
+          enc += s.charAt(i);
+      }
+      return enc;
+    };
+  })();
+
 //sometimes just polyfills above needed, fetch exists
 if (!window.fetch) {
+
 //alert(this); window obj TODO research if "window." can be removed and survive minify
 //arg 3 is private to this PF and non-spec Fetch API, but needed b/c
 //text() vs json() from caller, not known!!! until after status==200 delivered
@@ -377,11 +419,8 @@ window.fetch = function (url, options_headers, want_not_json) {
                         //most ancient, probably very old IE, ".responseText" from
                         //day 1 of XHR API
                         x = x.response || x.responseText;
-                        //security irrel, native JSON faster than JS eval
-                        //according to articles online, but just use eval for
-                        //perf, we use JSONP/innerHTML, and loading a JSON parser
-                        //polyfill is abs insane in this micro-HTML site
-                        g_jtcb(want_text || typeof(x) === 'object' ? x : window.JSON ? JSON.parse(x) : eval('0,' + x));
+                        //note JSON.parse might be a eval() PF
+                        g_jtcb(want_text || typeof(x) === 'object' ? x : JSON.parse(x));
                     }
 /* assume unreachable b/c user's 200 check in f_then_cb
    but if needed in future deliver junk (empty string or null)
@@ -460,7 +499,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                   call_f_then_cb(/*http status*/ 0, 1);
                 };
 //IE 5.5 and 6.0 don't have document.head
-                jsonp /*HEAD*/ = document.documentElement.firstChild;
+                jsonp /*HEAD*/ = dhead;
                 /*dont leak mem adding infinite JSONP script elements
                 this also MAYBE cancels last in-progress, maybe timing out,
                 JSONP fetch supposedly but testing shows, 2 "active" JSONP CBs
@@ -488,6 +527,43 @@ window.fetch = function (url, options_headers, want_not_json) {
     };
   };
 }//end fetch pf
+
+var dhead = document.documentElement.firstChild;
+//FF 3.0 no .children, FF 3.5 has .children and all IEs >=5 have it
+if(!dhead.children)
+  dhead.children = dhead.childNodes;
+
+//IE < 9, .childNodes .children are identical
+//our not-minified index.htm <head>, is full of comment nodes for IE < 9
+//and comment and text nodes for FF 3.0, so clean the <head> tag, so
+//index.htm can find .children[3].href (aka <LINK>) tag with positionally
+//https://www.sitepoint.com/removing-useless-nodes-from-the-dom/
+//https://quirksmode.org/dom/core/#t71 IE 5.5 has comments as type 1
+
+//always skip node 0 aka TITLE, bc IE
+if(dhead.children[1].nodeName.charCodeAt() < 65 /*A*/) {
+  (function(){
+    var e2;
+    var el = dhead.firstChild; //TITLE
+    while(el) {
+      e2 = el.nextSibling;
+      //IE 5.0 and 5.5 return type 1 for comments and ! as node name
+      //IE 6.0 returns 8 and #comment as node name (W3C correct)
+      //use !== 1 for perf as 1st check
+      //but it will only be true on >= IE 6 and FF 3.0
+      if(el.nodeType !== 1 ||
+      el.nodeName.charCodeAt() < 65 /*65 is A, will catch ! and #*/
+      ) {
+        dhead.removeChild(el);
+      }
+      el = e2;
+    }
+  })();
+}
+
+if(dhead.children[3].nodeName.charCodeAt() < 65 /*A*/) {
+  alert('c fail');
+}
 
   var jsonp, //must be not global
   jsonpi = 0,
