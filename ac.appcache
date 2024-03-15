@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v Thu Mar 14 20:40:18 2024
+# v Fri Mar 15 01:28:07 2024
 
 CACHE:
 /
@@ -16,5 +16,7 @@ rtrain.htm
 favicon.ico
 f.js
 
+#http://* is FF 3.5 fix bug 544462 590705
 NETWORK:
+http://*
 *
