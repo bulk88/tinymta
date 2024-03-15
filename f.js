@@ -1,17 +1,16 @@
-function log() {
-  var i = 0;
+window.log = function () {
   try {
     console.log.apply(console, arguments);
   } catch (e) {
     try {
       opera.postError.apply(opera, arguments);
     } catch (e) {
-      e = '';
-      for(; i < arguments.length; i++)
-        e+=arguments[i]+ " ";
+      for(var i = 0, s= ''; i < arguments.length; i++)
+        s+=arguments[i]+ " ";
+      alert(s);
     }
   }
-}
+};
 
 //FF 3.0 has sessionStorage but no JSON
 //rtrain/rstop touchstart/mousedown preloader
