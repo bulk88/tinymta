@@ -1,1 +1,1 @@
-http-server --cors -c1 -p80 -e htm .
+serve -n -l 80 .
