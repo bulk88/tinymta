@@ -87,15 +87,16 @@ function y() {
     /*ra = rail arrivals*/
   if(window.sessionStorage && (ls = sessionStorage.getItem('r'))
       && (sessionStorage.removeItem('r'),
-      //alert(ls),
-      ls = JSON.parse(ls))
+      //FF 3.5 has W3C/modern SS, FF 3.0 getItem returns strange objects with
+      //value: secure: only 2 keys, value: contains a string of our json
+      //https://humanwhocodes.com/blog/2009/07/21/introduction-to-sessionstorage/
+      (ls = JSON.parse(typeof ls === 'object' ? ls.value : ls)))
     //window.name has latency problems, very fast physical clicks (mousedown/mouseup)
     //will cause window.name to be empty string in new page/double network I/O
     //stick to sessionStorage, Opera 10, oh well, its too old to need perf
     //console.log(' read '+window.name.slice(0, 5)+' read ');
     //if((ls = window.name) && (window.name='',ls = JSON.parse(ls))
       && ls.s === stacode && Date.now()-ls.t < 3000) {
-      //console.log('pickup ls');
     gotJson(ls.c, 1);
   } else {
   fetch('//backend-unified.mylirr.org/arrivals/'+stacode, {headers: {'accept-version': '3.0'}}).then(

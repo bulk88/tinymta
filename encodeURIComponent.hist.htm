@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="http://gmpg.org/xfn/11">
+
+<title>UTF-8 Encoding for Old Browsers &#8211; WorldTimZone</title>
+<link rel="alternate" type="application/rss+xml" title="WorldTimZone &raquo; Feed" href="https://www.worldtimzone.com/feed/" />
+<link rel='stylesheet' id='wp-barefoot-css'  href='https://www.worldtimzone.com/wp-content/plugins/wp-barefoot/css/barefoot.min.css?ver=5.3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://www.worldtimzone.com/wp-includes/css/dist/block-library/style.min.css?ver=5.3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='wtz-2017-style-css'  href='https://www.worldtimzone.com/wp-content/themes/wtz-2017/style.css?ver=5.3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='wtz-2017-season-css'  href='https://www.worldtimzone.com/wp-content/themes/wtz-2017/season-winter.css?ver=5.3.2' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.worldtimzone.com/wp-content/plugins/wp-barefoot/js/barefoot.js?ver=5.3.2'></script>
+<link rel='https://api.w.org/' href='https://www.worldtimzone.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.worldtimzone.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.worldtimzone.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.3.2" />
+</head>
+
+<body class="hfeed">
+<div id="page" class="site">
+	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+	<header id="masthead" class="site-header" role="banner">
+	<div id="hdrback">
+		<div id="hdrmiddle">
+			<div id="hdrfront">
+				<div id="hdrlogo">
+		<div class="site-branding">
+			<div class="logo"><a href="https://www.worldtimzone.com/" rel="home"><img src="https://www.worldtimzone.com/wp-content/themes/wtz-2017/images/wtz-globe.svg" width="35" height="35"></a></div>
+							<p class="site-title"><a href="https://www.worldtimzone.com/" rel="home">WorldTimZone</a></p>
+							<p class="site-description">Tim’s own place on the world wide web.</p>
+					</div><!-- .site-branding -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+		<nav id="site-navigation" class="main-navigation" role="navigation">
+			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">Primary Menu</button>
+			<div id="primary-menu" class="menu"></div>
+		</nav><!-- #site-navigation -->
+
+	</header><!-- #masthead -->
+
+	<div id="content" class="site-content">
+	<nav role="navigation" aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs" itemprop="breadcrumb"><ul class="trail-items" itemscope itemtype="http://schema.org/BreadcrumbList"><meta name="numberOfItems" content="2" /><meta name="itemListOrder" content="Ascending" /><li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="trail-item trail-begin"><a href="https://www.worldtimzone.com/" rel="home" itemprop="item"><span itemprop="name">Home</span></a><meta itemprop="position" content="1" /></li><li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="trail-item trail-end"><a href="/res/" itemprop="item"><span itemprop="name">Resources</span></a><meta itemprop="position" content="2" /></li></ul></nav><div id="primary" class="content-area">
+<main id="main" class="site-main" role="main">
+
+<script language="JavaScript">
+<!--
+/* ***************************
+** Most of this code was kindly 
+** provided to me by
+** Andrew Clover (and at doxdesk dot com)
+** http://and.doxdesk.com/ 
+** in response to my plea in my blog at 
+** http://worldtimzone.com/blog/date/2002/09/24
+** It was unclear whether he created it.
+*/
+function utf8(wide) {
+  var c, s;
+  var enc = "";
+  var i = 0;
+  while(i<wide.length) {
+    c= wide.charCodeAt(i++);
+    // handle UTF-16 surrogates
+    if (c>=0xDC00 && c<0xE000) continue;
+    if (c>=0xD800 && c<0xDC00) {
+      if (i>=wide.length) continue;
+      s= wide.charCodeAt(i++);
+      if (s<0xDC00 || c>=0xDE00) continue;
+      c= ((c-0xD800)<<10)+(s-0xDC00)+0x10000;
+    }
+    // output value
+    if (c<0x80) enc += String.fromCharCode(c);
+    else if (c<0x800) enc += String.fromCharCode(0xC0+(c>>6),0x80+(c&0x3F));
+    else if (c<0x10000) enc += String.fromCharCode(0xE0+(c>>12),0x80+(c>>6&0x3F),0x80+(c&0x3F));
+    else enc += String.fromCharCode(0xF0+(c>>18),0x80+(c>>12&0x3F),0x80+(c>>6&0x3F),0x80+(c&0x3F));
+  }
+  return enc;
+}
+
+var hexchars = "0123456789ABCDEF";
+
+function toHex(n) {
+  return hexchars.charAt(n>>4)+hexchars.charAt(n & 0xF);
+}
+
+var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+function encodeURIComponentNew(s) {
+  var s = utf8(s);
+  var c;
+  var enc = "";
+  for (var i= 0; i<s.length; i++) {
+    if (okURIchars.indexOf(s.charAt(i))==-1)
+      enc += "%"+toHex(s.charCodeAt(i));
+    else
+      enc += s.charAt(i);
+  }
+  return enc;
+}
+
+function buildURL(fld)
+{
+	if (fld == "") return false;
+	var encodedField = "";
+	var s = fld;
+	if (typeof encodeURIComponent == "function")
+	{
+		// Use JavaScript built-in function
+		// IE 5.5+ and Netscape 6+ and Mozilla
+		encodedField = encodeURIComponent(s);
+	}
+	else 
+	{
+		// Need to mimic the JavaScript version
+		// Netscape 4 and IE 4 and IE 5.0
+		encodedField = encodeURIComponentNew(s);
+	}
+	alert ("New encoding: " + encodeURIComponentNew(fld) +
+		 "\n           escape(): " + escape(fld));
+	return true;
+}
+// -->
+</script>
+
+<h1>UTF-8 Encoding for Older Browsers</h1>
+
+<p>In working on a web-based application that needed to support Netscape Communicator 4.x+ and Microsoft Internet Explorer 5.x+, I discovered that the older versions of these browsers had <a href="http://worldtimzone.com/blog/date/2002/09/24">poor support</a> for UTF8 encoding. I needed to find a way to make form field entries URL-safe and also needed to support multiple languages. The JavaScript <code>escape()</code> function fixes ASCII characters that are not valid for use in URLs, but does not handle unicode characters well. To make matters worse, there were browser incompatibilities: using <code>escape()</code> in IE would generate a new string that looked like %u<i>nnnn</i>, where <i>n</i> is a hexadecimal digit. The correct encoding should follow RFC 2279 and be a set of hexadecimal digit pairs like %<i>nn</i>%<i>nn</i>. Netscape 4 would just treat the characters as ASCII, which would result in lost accents and umlauts.</p>
+
+<p>The <code>encodeURIComponent()</code> function introduced in IE5.5, Netscape 6, and Mozilla does exactly what is needed. However, since the function is unavailable in Netscape 4.x and IE5, a different solution is needed. All JavaScript strings are unicode, so I expected that it would be possible to properly encode them. Thankfully, <a href="http://www.doxdesk.com/">someone</a> saw my plea for help and sent me some helpful example code.</p>
+
+<h2>Demo</h2>
+
+<p>The following form uses either the built-in browser function <code>encodeURIComponent()</code> or a created one <code>encodeURIComponentNew()</code> to properly escape characters for use in the URL.</p>
+
+<form name="frm" onsubmit="return buildURL(document.frm.fld.value)">
+<p><label for="fld">Enter characters to test</label> <input type="text" name="fld" id="fld"> <input type="submit" value="Test"></p>
+</form>
+<script language="JavaScript">
+<!--
+document.frm.fld.focus();
+// -->
+</script>
+
+<p>The <code>encodeURIComponentNew()</code> function always encodes to UTF-8, regardless of the charset specified by the page. This may be desirable behavior, even for browsers that have a built-in function.</p>
+
+</main>
+</div>
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="search-2" class="widget widget_search"><form method="get" class="search-form" id="search-form" action="https://www.worldtimzone.com/">
+	<input type="search" class="search-field" name="s" id="s" /> 
+	<button type="submit" class="search-button">Go</button>
+</form>
+</section><section id="nav_menu-2" class="widget widget_nav_menu"><div class="menu-main-container"><ul id="menu-main" class="menu"><li id="menu-item-328" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-328"><a href="/about/">About</a></li>
+<li id="menu-item-329" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-329"><a href="/bookmarklets/">Bookmarklets</a></li>
+<li id="menu-item-330" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-330"><a href="/fun/">Fun and Games</a></li>
+<li id="menu-item-333" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-333"><a href="/projects/">Projects</a>
+<ul class="sub-menu">
+	<li id="menu-item-332" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-332"><a href="/railtrail/highbridge/">High Bridge History</a></li>
+	<li id="menu-item-331" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-331"><a href="/railtrail/">High Bridge Rail-Trail</a></li>
+</ul>
+</li>
+</ul></div></section><section id="calendar-2" class="widget widget_calendar"><div id="calendar_wrap" class="calendar_wrap"><table id="wp-calendar">
+	<caption>March 2024</caption>
+	<thead>
+	<tr>
+		<th scope="col" title="Sunday">S</th>
+		<th scope="col" title="Monday">M</th>
+		<th scope="col" title="Tuesday">T</th>
+		<th scope="col" title="Wednesday">W</th>
+		<th scope="col" title="Thursday">T</th>
+		<th scope="col" title="Friday">F</th>
+		<th scope="col" title="Saturday">S</th>
+	</tr>
+	</thead>
+
+	<tfoot>
+	<tr>
+		<td colspan="3" id="prev"><a href="https://www.worldtimzone.com/2018/02/">&laquo; Feb</a></td>
+		<td class="pad">&nbsp;</td>
+		<td colspan="3" id="next" class="pad">&nbsp;</td>
+	</tr>
+	</tfoot>
+
+	<tbody>
+	<tr>
+		<td colspan="5" class="pad">&nbsp;</td><td>1</td><td>2</td>
+	</tr>
+	<tr>
+		<td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
+	</tr>
+	<tr>
+		<td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td id="today">15</td><td>16</td>
+	</tr>
+	<tr>
+		<td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td>
+	</tr>
+	<tr>
+		<td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td>
+	</tr>
+	<tr>
+		<td>31</td>
+		<td class="pad" colspan="6">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table></div></section></aside><!-- #secondary -->
+
+	</div><!-- #content -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<nav id="footer-navigation" class="main-navigation" role="navigation">
+			<button class="menu-toggle" aria-controls="secondary-menu" aria-expanded="false">Secondary Menu</button>
+					</nav><!-- #footer-navigation -->
+
+		<div class="site-info">
+			<p class="foot"><small>&copy; 2000&#8211;2024 Tim Powell<br />All rights reserved.</small></p>
+		</div><!-- .site-info -->
+	</footer><!-- #colophon -->
+</div><!-- #page -->
+
+<script>
+  bf = new BareFoot();
+  bf.init();
+</script>
+<script type='text/javascript' src='https://www.worldtimzone.com/wp-content/themes/wtz-2017/js/navigation.js?ver=20151215'></script>
+<script type='text/javascript' src='https://www.worldtimzone.com/wp-content/themes/wtz-2017/js/skip-link-focus-fix.js?ver=20151215'></script>
+<script type='text/javascript' src='https://www.worldtimzone.com/wp-includes/js/wp-embed.min.js?ver=5.3.2'></script>
+
+</body>
+</html>

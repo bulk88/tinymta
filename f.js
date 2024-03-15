@@ -20,7 +20,7 @@ if (!window.JSON) {
 //according to articles online, but just use eval for
 //perf as a PF, we use JSONP/innerHTML, and loading a JSON parser
 //polyfill is abs insane in this micro-HTML site
-  window.JSON = {parse: function(str) { return eval('0,' + x)}};
+  window.JSON = {parse: function(str) { if(typeof str != 'string'){ throw 'bad type '+typeof str} return eval('0,' + str)}};
 }
 /* 2 polyfills for status.htm
  fetch added Chrome 42, Array.forEach added way before
@@ -298,6 +298,43 @@ if (!window.encodeURIComponent)
 //sometimes just polyfills above needed, fetch exists
 if (!window.fetch) {
 
+var dhead = document.documentElement.firstChild;
+//FF 3.0 no .children, FF 3.5 has .children and all IEs >=5 have it
+if(!dhead.children)
+  dhead.children = dhead.childNodes;
+
+//IE < 9, .childNodes .children are identical
+//our not-minified index.htm <head>, is full of comment nodes for IE < 9
+//and comment and text nodes for FF 3.0, so clean the <head> tag, so
+//index.htm can find .children[3].href (aka <LINK>) tag with positionally
+//https://www.sitepoint.com/removing-useless-nodes-from-the-dom/
+//https://quirksmode.org/dom/core/#t71 IE 5.5 has comments as type 1
+
+//always skip node 0 aka TITLE, bc IE
+if(dhead.children[1].nodeName.charCodeAt() < 65 /*A*/) {
+  (function(){
+    var e2;
+    var el = dhead.firstChild; //TITLE
+    while(el) {
+      e2 = el.nextSibling;
+      //IE 5.0 and 5.5 return type 1 for comments and ! as node name
+      //IE 6.0 returns 8 and #comment as node name (W3C correct)
+      //use !== 1 for perf as 1st check
+      //but it will only be true on >= IE 6 and FF 3.0
+      if(el.nodeType !== 1 ||
+      el.nodeName.charCodeAt() < 65 /*65 is A, will catch ! and #*/
+      ) {
+        dhead.removeChild(el);
+      }
+      el = e2;
+    }
+  })();
+}
+
+if(dhead.children[3].nodeName.charCodeAt() < 65 /*A*/) {
+  alert('c fail');
+}
+
 //alert(this); window obj TODO research if "window." can be removed and survive minify
 //arg 3 is private to this PF and non-spec Fetch API, but needed b/c
 //text() vs json() from caller, not known!!! until after status==200 delivered
@@ -527,43 +564,6 @@ window.fetch = function (url, options_headers, want_not_json) {
     };
   };
 }//end fetch pf
-
-var dhead = document.documentElement.firstChild;
-//FF 3.0 no .children, FF 3.5 has .children and all IEs >=5 have it
-if(!dhead.children)
-  dhead.children = dhead.childNodes;
-
-//IE < 9, .childNodes .children are identical
-//our not-minified index.htm <head>, is full of comment nodes for IE < 9
-//and comment and text nodes for FF 3.0, so clean the <head> tag, so
-//index.htm can find .children[3].href (aka <LINK>) tag with positionally
-//https://www.sitepoint.com/removing-useless-nodes-from-the-dom/
-//https://quirksmode.org/dom/core/#t71 IE 5.5 has comments as type 1
-
-//always skip node 0 aka TITLE, bc IE
-if(dhead.children[1].nodeName.charCodeAt() < 65 /*A*/) {
-  (function(){
-    var e2;
-    var el = dhead.firstChild; //TITLE
-    while(el) {
-      e2 = el.nextSibling;
-      //IE 5.0 and 5.5 return type 1 for comments and ! as node name
-      //IE 6.0 returns 8 and #comment as node name (W3C correct)
-      //use !== 1 for perf as 1st check
-      //but it will only be true on >= IE 6 and FF 3.0
-      if(el.nodeType !== 1 ||
-      el.nodeName.charCodeAt() < 65 /*65 is A, will catch ! and #*/
-      ) {
-        dhead.removeChild(el);
-      }
-      el = e2;
-    }
-  })();
-}
-
-if(dhead.children[3].nodeName.charCodeAt() < 65 /*A*/) {
-  alert('c fail');
-}
 
   var jsonp, //must be not global
   jsonpi = 0,
