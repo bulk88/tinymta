@@ -61,8 +61,9 @@ docs/1p.js : 1p.js
 	copy /y 1p.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
-docs/f.js : f.js
+docs/f.js : f.js adj_del.pl
 	copy /y f.js "$@"
+	perl adj_del.pl "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
 
