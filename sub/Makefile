@@ -1,6 +1,6 @@
   first: all
 
-.PHONY: all package
+.PHONY: all package gz
 
 stop.htm : routes.txt ../insertcolors.pl
 	perl ../insertcolors.pl "SUB" "$@"
@@ -101,6 +101,12 @@ package: ..\docs\stations.htm ..\docs\stop.htm ..\docs\stop_.htm
 	copy /y ..\docs\stop.htm "..\tinymta"
 	copy /y ..\docs\stop_.htm "..\tinymta"
 
+%.gz: %
+	del "$(subst /,\,$@)" & "C:\Program Files\7-Zip\7z" a -tgzip $@ $<
+
+%.gz.png: %.gz
+	gzthermal $< && move /y gzthermal-result.png $@
+
 clean :
 	del stop_.htm
 	del stations.htm
@@ -139,3 +145,6 @@ all: ../docs/stop_.htm ../docs/stop.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/stop.appcache
 #all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
 #all: plan2.htm
+
+gz: ../docs/stop.htm.gz.png ../docs/stations.htm.gz.png
+gz: ../docs/stop.htm.gz ../docs/stations.htm.gz

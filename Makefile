@@ -1,6 +1,6 @@
 first: all
 
-.PHONY: all MNRR LIRRMKF SUBMKF WEATHERICONS package gz
+.PHONY: all MNRR LIRRMKF SUBMKF MNRRgz LIRRMKFgz SUBMKFgz WEATHERICONS package gz
 
 docs/index.htm : index.htm minify_config.json sub/adj_tilepath.pl adj_emoji.pl
 	copy /y index.htm "$@"
@@ -114,6 +114,15 @@ LIRRMKF:
 SUBMKF:
 	cd sub && $(MAKE) all
 
+MNRRgz :
+	cd mn && $(MAKE) gz
+
+LIRRMKFgz:
+	cd li && $(MAKE) gz
+
+SUBMKFgz:
+	cd sub && $(MAKE) gz
+
 #make a standalone tinymta for copying to memcard in a smartphone for local running
 package: docs\index.htm
 	-mkdir "tinymta"
@@ -160,12 +169,9 @@ docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 all: docs/ac.appcache cloudflare_as_name.min.js
 
 gz: docs/index.htm.gz.png docs/status.htm.gz.png docs/rstop.htm.gz.png
-gz: docs/stop.htm.gz.png docs/stations.htm.gz.png docs/li/stations.htm.gz.png
-gz: docs/mn/stations.htm.gz.png docs/rstop.htm.gz.png
+gz: docs/rstop.htm.gz.png
 gz: docs/index.htm.gz docs/status.htm.gz docs/rstop.htm.gz docs/rtrain.htm.gz
-gz: docs/stop.htm.gz docs/stations.htm.gz docs/li/stations.htm.gz
-gz: docs/mn/stations.htm.gz routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
+gz: routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
-gz: docs/fav.js.gz docs/fav.js.gz.png
-
+gz: docs/fav.js.gz docs/fav.js.gz.png MNRRgz LIRRMKFgz SUBMKFgz
 

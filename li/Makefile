@@ -1,6 +1,6 @@
 first: all
 
-.PHONY: all clean
+.PHONY: all clean gz
 
 ../docs/li/stations.htm : stations.htm ../minify_config.json
 	-mkdir "../docs/li"
@@ -76,6 +76,12 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 
 grmp.pl : ../minify_config.json
 
+%.gz: %
+	del "$(subst /,\,$@)" & "C:\Program Files\7-Zip\7z" a -tgzip $@ $<
+
+%.gz.png: %.gz
+	gzthermal $< && move /y gzthermal-result.png $@
+
 clean :
 	del stations.js
 	del routedatafinal.pl
@@ -105,3 +111,4 @@ all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/rstop_.htm ../docs/rstop.htm ../docs/li/rt.htm
 all: ../docs/li/js/rt.htm ../docs/rtrain_.htm ../docs/rtrain.htm
 
+gz: ../docs/li/stations.htm.gz.png ../docs/li/stations.htm.gz
