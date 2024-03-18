@@ -455,10 +455,15 @@ with tab, exclude single colors 1718, 4819
 with tab, lc tab, exclude single colors 1714, 4819
 with tab, exclude single colors, LC at RTS 1714, 4819
 with tab, lc tab, exclude single colors, LC at RTS 1712, 4819
+
+indv rts int colors, no tab 1752, 6773
+with tab, int tab colors (50=x10+x2), 1707, 4816
+with tab, int tab colors, int idv rts, no single rt colors in tab (58=0+0x10+0x20+0x2+0x8),  1682, 4774
 */
       //0x1 LC colors in tab, 0x2 make tab, 0x4, LC colors at idv rts
       //0x8, dont add to tab single use colors
       //0x10 int tab, 0x20 int indv rts
+      //0x40 
       if(str & 0x2) {
         for (n=0; n<2; n++) {
           a2 = resp[n];
@@ -520,6 +525,9 @@ with tab, lc tab, exclude single colors, LC at RTS 1712, 4819
         }
       }
       resp = JSON.stringify(resp);
+      if(str&0x40) {
+        resp = resp.replace(/"([0-9A-Fa-f]{6})"/g, function(a,b) {return ("0X"+b);});
+      }
       //make JS obj literal notation, not JSON to save bytes, must eval() on client
       resp = '!function(E){E=this.R,this.R='+resp.replace(/null/g, '').replace(/,0,/g, ',,').replace(/[,0]+\]/g, ']')+',E&&E()}();';
     }
