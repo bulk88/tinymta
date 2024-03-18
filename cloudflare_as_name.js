@@ -426,6 +426,14 @@ else if (pathname_callback === "/routes.js") {
       }
     }
   }
+  function int_rt_arr (arr) {
+    var i;
+    for(i in arr) {
+      if(typeof arr[i][1] === 'string') {
+        arr[i][1] = parseInt(arr[i][1],16);
+      }
+    }
+  }
   var clientEtag = request.headers.get("if-none-match");
   if(clientEtag === routesEtag) {
     resp = '';
@@ -438,8 +446,19 @@ else if (pathname_callback === "/routes.js") {
       resp = resp.slice('!function(E){E=this.R,this.R='.length, -(',E&&E()}();'.length));
       resp = resp.replace(/,,/g, ',null,');
       resp = JSON.parse(resp);
+/*
+start b4 opts  basic 1767/1772 , 7281
+LC at rts, no tab, 1766, 7280
+with tab, 1734, 4861
+with tab lc tab, 1732, 4861
+with tab, exclude single colors 1718, 4819
+with tab, lc tab, exclude single colors 1714, 4819
+with tab, exclude single colors, LC at RTS 1714, 4819
+with tab, lc tab, exclude single colors, LC at RTS 1712, 4819
+*/
       //0x1 LC colors in tab, 0x2 make tab, 0x4, LC colors at idv rts
       //0x8, dont add to tab single use colors
+      //0x10 int tab, 0x20 int indv rts
       if(str & 0x2) {
         for (n=0; n<2; n++) {
           a2 = resp[n];
@@ -474,16 +493,30 @@ else if (pathname_callback === "/routes.js") {
           lc_rt_arr(resp[1]);
           lc_rt_arr(resp[2]);
         }
+        if(str&0x20) {
+          int_rt_arr(resp[1]);
+          int_rt_arr(resp[2]);
+        }
         if(str&0x1) {
           a2 = resp[0];
           for(i in a2) {
             a2[i] = a2[i].toLowerCase();
           }
         }
+        if(str&0x10) {
+          a2 = resp[0];
+          for(i in a2) {
+            a2[i] = parseInt(a2[i],16);
+          }
+        }
       } else {
         if(str&0x4) {
           lc_rt_arr(resp[0]);
           lc_rt_arr(resp[1]);
+        }
+        if(str&0x20) {
+          int_rt_arr(resp[0]);
+          int_rt_arr(resp[1]);
         }
       }
       resp = JSON.stringify(resp);
