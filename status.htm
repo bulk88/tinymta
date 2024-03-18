@@ -415,7 +415,7 @@ function emitRRStatus(name, lines) {
       }
       statusDetails = statusDetails.join('<hr>');
     }
-    lines[i] =  '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + (route[ROUTE_NAME()] ? route[ROUTE_NAME()] :  route[ROUTE_ID()].charAt(0) == 'B' && route[ROUTE_ID()].charAt(1) == 'X' ? "Bx"+route[ROUTE_ID()].substr(2):route[ROUTE_ID()]) + '</font>' + ' ' + status + (has_alert ? '</summary>' + statusDetails + '</details>' : '');
+    lines[i] =  '<hr>' + (has_alert ? '<details><summary>' : '') + '<font color=' + route[ROUTE_COLOR()] + '>' + (route[ROUTE_NAME()] ? route[ROUTE_NAME()] : route[ROUTE_ID()].indexOf("BX") ? route[ROUTE_ID()] : /*0=eq*/ "Bx"+route[ROUTE_ID()].slice(2)) + '</font>' + ' ' + status + (has_alert ? '</summary>' + statusDetails + '</details>' : '');
   }
   return '<hr>' + name + '<br>' +lines.join('');
 }
