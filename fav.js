@@ -31,34 +31,32 @@ function store_fav(config) {
 
 //add event handers to checkmarks, so less draw code in LS
 function extend_fav(divEl) {
-  var fc;
+  divEl = divEl.firstChild;
   //first checkmark (left)
-  (fc = divEl.firstChild).firstChild.onchange = function (evt_div) {
-    var c = read_fav()[1];
-    evt_div = evt_div.target;
-    if (evt_div.checked) {
-      c[1] = 1;
+  divEl.nextSibling.firstChild.onchange = divEl.firstChild.onchange = function (evt_div) {
+    var c = read_fav()[1],
+    chked = (evt_div = evt_div.target).checked;
+    evt_div = evt_div.parentNode;
+    if(evt_div.lastChild.color/*"red" or undef*/) {
+      //1st checkmark
+      if (chked) {
+        c[1] = 1;
+      } else {
+        c[1] = 0;
+        //wipe history
+        c.length = 3;
+      }
     } else {
-      c[1] = 0;
-      //wipe history
-      c.length = 3;
+      //2nd checkmark
+      if (chked) {
+        //turn on both checkmarks, implied save history if want RT
+        c[2] = c[1] = 1;
+      } else {
+        c[2] = 0;
+      }
     }
     //closure free design, get input from from misc globals
-    evt_div = evt_div.parentNode.parentNode;
-    evt_div.draw_fav(store_fav(c), evt_div.draw_fav, evt_div, extend_fav);
-  };
-  //second checkmark (right)
-  fc.nextSibling.firstChild.onchange = function (evt_div) {
-    var c = read_fav()[1];
-    evt_div = evt_div.target;
-    if (evt_div.checked) {
-      //turn on both checkmarks, implied save history if want RT
-      c[2] = c[1] = 1;
-    } else {
-      c[2] = 0;
-    }
-    //closure free design, get input from from misc globals
-    evt_div = evt_div.parentNode.parentNode;
+    evt_div = evt_div.parentNode;
     evt_div.draw_fav(store_fav(c), evt_div.draw_fav, evt_div, extend_fav);
   };
 }
@@ -98,7 +96,7 @@ function _recordFavStopHit(sta_name, fav_url) {
 
   var prefixFnStr =
 /*STARTINSERTDRAW*/
-"function(e,t,a,n,c){function o(e,f){\"r\"==e.charAt()?(e=e.slice(1),fetch(\"//backend-unified.mylirr.org/arrivals/\"+e,{headers:{\"accept-version\":\"3.0\"}}).then(function(e){200==e.status&&e.json().then(function(e){for(var t,a,n=[],c=[],o=0;o<e.arrivals.length&&o<4;o++)t=e.arrivals[o],a=new Date(1e3*(a=t.time)).toLocaleTimeString().replace(\":00 \",\" \").replace(\" PM\",\"P\").replace(\" AM\",\"A\")+\" \"+Math.ceil((a-(new Date).getTime()/1e3)/60)+\"m\"+((a=(a=t.status.otp)&&a/60|0)?0<a?\"-E\"+a:\"-L\"+-a:\"\")+\"-Tk\"+(t.track||\"?\")+\"-<font class=b color=\"+{HA:\"0039a6\",HH:\"006ec7\",PJ:\"006ec7\",BY:\"00985f\",HU:\"009b3a\",WH:\"00a1de\",OB:\"00af3f\",MK:\"00b2a9\",12:\"4d5357\",CI:\"4d5357\",11:\"60269e\",FR:\"6e3219\",RK:\"a626aa\",PW:\"c60c30\",HM:\"ce8e00\",DN:\"ee0034\",NC:\"ee0034\",NH:\"ee0034\",WB:\"ee0034\",LB:\"ff6319\"}[t.branch]+\">\"+(\"HM\"==(a=(a=(a=t.stops)[a.length-1]).charAt()<58?a.slice(1):a)?\"CH\":\"NYK\"==a?\"NYP\":a)+\"</font>\",(\"E\"==t.direction?c:n).push(a);f.innerHTML=c.concat(n).join(\",\")+\"&nbsp;\"})})):(e=e.slice(1,4),fetch(\"//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:\"+e).then(function(e){200==e.status&&e.json().then(function(e){var t,a,n,c,o,r,d,i=0,p={};if(e=e[0]){for(;n=e.groups[i++];)for(o=n.headsign,a=0;c=n.times[a++];)c.shortRouteName=n.route.shortName,c.timestamp>t&&(t=c.timestamp),(p[o]=p[o]||[]).push(c);for(i in p)p[i].sort(function(e,t){return e.departureFmt<t.departureFmt?-1:e.departureFmt>t.departureFmt?1:0});for(i in t=[],p)for(n=p[i],i=0;(c=n[i++])&&i<4;)t.push((\"1\"==c.directionId?\"S\":\"N\")+(r=c.shortRouteName,(d={4:\"00933c\",5:\"00933c\",\"5X\":\"00933c\",6:\"00933c\",\"6X\":\"00a65c\",A:\"2850ad\",C:\"2850ad\",E:\"2850ad\",G:\"6cbe45\",GS:\"6d6e71\",J:\"996633\",Z:\"996633\",L:\"a7a9ac\",7:\"b933ad\",\"7X\":\"b933ad\",1:\"ee352e\",2:\"ee352e\",3:\"ee352e\",N:\"fccc0a\",Q:\"fccc0a\",R:\"fccc0a\",W:\"fccc0a\",B:\"ff6319\",D:\"ff6319\",F:\"ff6319\",FX:\"ff6319\",M:\"ff6319\"}[(d=void 0)||r])?\"<font color=\"+d+\">\"+r+\"</font>\":r)+function(e,t){for(e=e.split(/[: T-]/),t=0;t<e.length;t++)e[t]=+e[t];return\"-\"+(0|Math.abs((new Date(e[0],e[1]-1,e[2],e[3]||0,e[4]||0,e[5]||0,0)-new Date)/1e3)/60)}(c.departureFmt))}f.innerHTML=t.join(\",\")+\"&nbsp;\"})}))}function r(e,t){setTimeout(function(){o(e,t)},0)}var d,p=document.createElement(\"div\"),f=p.appendChild(document.createElement(\"label\"));if((d=f.appendChild(document.createElement(\"input\"))).type=\"checkbox\",d.checked=e[1],(v=f.appendChild(document.createElement(\"font\"))).color=\"red\",v.appendChild(document.createTextNode(\"❤\")),(d=(f=p.appendChild(document.createElement(\"label\"))).appendChild(document.createElement(\"input\"))).type=\"checkbox\",d.checked=e[1]&&e[2],f.appendChild(document.createTextNode(\"⌛ \")),f=e[1]?3==e.length?\"No history yet\":0:\"History off\")p.appendChild(document.createTextNode(f));else for(i=3;i<9&&(f=e[i]);i++)(d=p.appendChild(document.createElement(\"a\"))).href=(\"r\"==f[1].charAt()?\"/rstop.htm#\":\"/stop.htm#\")+f[1].slice(1),d.appendChild(document.createTextNode(f[0])),p.appendChild(document.createTextNode(\" \")),e[2]&&((d=p.appendChild(document.createElement(\"span\"))).style.display=\"inline\",(c?r:o)(f[1],d));(window.favDiv=p).draw_fav=t,a?(a.parentNode.replaceChild(p,a),n(p)):document.body.appendChild(p)}"
+"function(e,t,a,n,c){function o(e,f){\"r\"==e.charAt()?(e=e.slice(1),fetch(\"//backend-unified.mylirr.org/arrivals/\"+e,{headers:{\"accept-version\":\"3.0\"}}).then(function(e){200==e.status&&e.json().then(function(e){var t,a,n,c=[],o=[];for(e=e.arrivals,a=0;a<e.length&&a<4;a++)t=e[a],n=new Date(1e3*(n=t.time)).toLocaleTimeString().replace(/:00 ([PA])M/,\"$1\")+\" \"+Math.ceil((n-(new Date).getTime()/1e3)/60)+\"m\"+((n=(n=t.status.otp)&&n/60|0)?0<n?\"-E\"+n:\"-L\"+-n:\"\")+\"-Tk\"+(t.track||\"?\")+\"-<font color=\"+{HA:\"0039a6\",HH:\"006ec7\",PJ:\"006ec7\",BY:\"00985f\",HU:\"009b3a\",WH:\"00a1de\",OB:\"00af3f\",MK:\"00b2a9\",12:\"4d5357\",CI:\"4d5357\",11:\"60269e\",FR:\"6e3219\",RK:\"a626aa\",PW:\"c60c30\",HM:\"ce8e00\",DN:\"ee0034\",NC:\"ee0034\",NH:\"ee0034\",WB:\"ee0034\",LB:\"ff6319\"}[t.branch]+\">\"+(\"HM\"==(n=(n=(n=t.stops)[n.length-1]).charAt()<58?n.slice(1):n)?\"CH\":\"NYK\"==n?\"NYP\":n)+\"</font>\",(\"E\"==t.direction?o:c).push(n);f.innerHTML=o.concat(c).join(\",\")+\"&nbsp;\"})})):(e=e.slice(1,4),fetch(\"//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:\"+e).then(function(e){200==e.status&&e.json().then(function(e){var t,a,n,c,o,r,d,i=0,p={};if(e=e[0]){for(;n=e.groups[i++];)for(o=n.headsign,a=0;c=n.times[a++];)c.shortRouteName=n.route.shortName,c.timestamp>t&&(t=c.timestamp),(p[o]=p[o]||[]).push(c);for(i in p)p[i].sort(function(e,t){return e.departureFmt<t.departureFmt?-1:e.departureFmt>t.departureFmt?1:0});for(i in t=[],p)for(n=p[i],i=0;(c=n[i++])&&i<4;)t.push((\"1\"==c.directionId?\"S\":\"N\")+(r=c.shortRouteName,d=void 0,(d={4:\"00933c\",5:\"00933c\",\"5X\":\"00933c\",6:\"00933c\",\"6X\":\"00a65c\",A:\"2850ad\",C:\"2850ad\",E:\"2850ad\",G:\"6cbe45\",GS:\"6d6e71\",J:\"996633\",Z:\"996633\",L:\"a7a9ac\",7:\"b933ad\",\"7X\":\"b933ad\",1:\"ee352e\",2:\"ee352e\",3:\"ee352e\",N:\"fccc0a\",Q:\"fccc0a\",R:\"fccc0a\",W:\"fccc0a\",B:\"ff6319\",D:\"ff6319\",F:\"ff6319\",FX:\"ff6319\",M:\"ff6319\"}[r])?\"<font color=\"+d+\">\"+r+\"</font>\":r)+function(e,t){for(e=e.split(/[: T-]/),t=0;t<e.length;t++)e[t]=+e[t];return\"-\"+(0|Math.abs((new Date(e[0],e[1]-1,e[2],e[3]||0,e[4]||0,e[5]||0,0)-new Date)/1e3)/60)}(c.departureFmt))}f.innerHTML=t.join(\",\")+\"&nbsp;\"})}))}function r(e,t){setTimeout(function(){o(e,t)},0)}var d,p=document.createElement(\"div\"),f=p.appendChild(document.createElement(\"label\"));if((d=f.appendChild(document.createElement(\"input\"))).type=\"checkbox\",d.checked=e[1],(v=f.appendChild(document.createElement(\"font\"))).color=\"red\",v.appendChild(document.createTextNode(\"❤\")),(d=(f=p.appendChild(document.createElement(\"label\"))).appendChild(document.createElement(\"input\"))).type=\"checkbox\",d.checked=e[1]&&e[2],f.appendChild(document.createTextNode(\"⌛ \")),f=e[1]?3==e.length?\"No history yet\":0:\"History off\")p.appendChild(document.createTextNode(f));else for(i=3;i<9&&(f=e[i]);i++)(d=p.appendChild(document.createElement(\"a\"))).href=(\"r\"==f[1].charAt()?\"rstop.htm#\":\"stop.htm#\")+f[1].slice(1),d.appendChild(document.createTextNode(f[0])),p.appendChild(document.createTextNode(\" \")),e[2]&&((d=p.appendChild(document.createElement(\"span\"))).style.display=\"inline\",(c?r:o)(f[1],d));(window.favDiv=p).draw_fav=t,a?(a.parentNode.replaceChild(p,a),n(p)):document.body.appendChild(p)}"
 /*ENDINSERTDRAW*/
 
   //var prefixFnStr = 'function(e,t,d,n,a){return window.draw_fav(e,t,d,n,a)}';
@@ -118,7 +116,7 @@ function _recordFavStopHit(sta_name, fav_url) {
 var pathname_newEl = location.pathname;
 //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
-if (pathname_newEl.charAt(pathname_newEl.length - 1) == '/' || !pathname_newEl.indexOf('/index')) {
+if (pathname_newEl.slice(-1) == '/' || !pathname_newEl.indexOf('/index')) {
   //not index.htm render critical files
   delayedStaHits_head = document.documentElement.firstChild;
 /*
