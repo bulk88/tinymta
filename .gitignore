@@ -4,10 +4,10 @@
 /docs/li/*.gz.png
 /docs/mn/*.gz
 /docs/mn/*.gz.png
-/docs/as.js
-/docs/routes.js
-as.js
-routes.js
+/docs/as.js*
+/docs/routes.js*
+as.js*
+routes.js*
 *.bak
 tinymta
 */gtfs.zip

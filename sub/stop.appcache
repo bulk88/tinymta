@@ -12,5 +12,6 @@ zoom_out_over.png
 
 #http://* is FF 3.5 fix bug 544462 590705
 NETWORK:
+https://*
 http://*
 *
