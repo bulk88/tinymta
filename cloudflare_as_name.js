@@ -124,7 +124,7 @@ function parseIsoDatetime(dt,i) {
 async function handleRequest(request, event) {
   var url = new URL(request.url)
     ,pathname_callback = url.pathname
-    ,resp;
+    ,resp, str;
   //console.log(pathname_callback);
   if (pathname_callback === '/favicon.ico') {
     return new Response(faviconStr, {
@@ -136,7 +136,7 @@ async function handleRequest(request, event) {
     });
   }
 else if (pathname_callback==='/jsp') {
-  var headers = {}, str, str2, rheaders, i = 0;
+  var headers = {}, str2, rheaders, i = 0;
   pathname_callback = decodeURIComponent(url.searchParams.get('url'));
   if(pathname_callback.startsWith('//')) {
     pathname_callback = 'http:'+pathname_callback; //perf
@@ -418,10 +418,82 @@ else if (pathname_callback.startsWith('/li/s/')) {
   }
 }
 else if (pathname_callback === "/routes.js") {
+  function lc_rt_arr (arr) {
+    var i;
+    for(i in arr) {
+      if(typeof arr[i][1] === 'string') {
+        arr[i][1] = arr[i][1].toLowerCase();
+      }
+    }
+  }
   var clientEtag = request.headers.get("if-none-match");
+  if(clientEtag === routesEtag) {
+    resp = '';
+  } else {
+    resp = gRoutes;
+    //0x2 color tab
+    if(str = url.searchParams.get('type')) {
+      var i, n, c, c_o = {}, c_a, a2;
+      str = str|0;
+      resp = resp.slice('!function(E){E=this.R,this.R='.length, -(',E&&E()}();'.length));
+      resp = resp.replace(/,,/g, ',null,');
+      resp = JSON.parse(resp);
+      //0x1 LC colors in tab, 0x2 make tab, 0x4, LC colors at idv rts
+      //0x8, dont add to tab single use colors
+      if(str & 0x2) {
+        for (n=0; n<2; n++) {
+          a2 = resp[n];
+            for (i in a2) {
+              c = a2[i][1];
+              c_o[c] ? c_o[c]++ : c_o[c] = 1;
+            }
+        }
+        //sort highest freq first, so 0 aka empty string, is most common, and single digit idx afterwards
+        c_a = Object.keys(c_o).sort(function (a, b) {
+          return c_o[b] - c_o[a];
+        });
+        //size experiment, dont idx single use colors
+        if(str & 0x8)
+          c_a = c_a.filter(function(e) {return c_o[e] > 1;});
+
+        for (n=0; n<2; n++) {
+          a2 = resp[n];
+          for (i in a2) {
+            c = a2[i][1];
+            //size experiment, dont idx single use colors
+            if((str & 0x8) && c_o[c] == 1) {
+              console.log('route: '+(a2[i][3] ? a2[i][3] : a2[i][0])+' has 1 use of its color '+c);
+            }
+            else {
+              a2[i][1] = c_a.indexOf(c);
+            }
+          }
+        }
+        resp.unshift(c_a);
+        if(str&0x4) {
+          lc_rt_arr(resp[1]);
+          lc_rt_arr(resp[2]);
+        }
+        if(str&0x1) {
+          a2 = resp[0];
+          for(i in a2) {
+            a2[i] = a2[i].toLowerCase();
+          }
+        }
+      } else {
+        if(str&0x4) {
+          lc_rt_arr(resp[0]);
+          lc_rt_arr(resp[1]);
+        }
+      }
+      resp = JSON.stringify(resp);
+      //make JS obj literal notation, not JSON to save bytes, must eval() on client
+      resp = '!function(E){E=this.R,this.R='+resp.replace(/null/g, '').replace(/,0,/g, ',,').replace(/[,0]+\]/g, ']')+',E&&E()}();';
+    }
+  }
 
   event.respondWith(new Response(
-      clientEtag === routesEtag ? '' : gRoutes, {
+      resp, {
       status: clientEtag === routesEtag ? 304 : 200,
       headers: {
         'content-type': 'text/javascript',
