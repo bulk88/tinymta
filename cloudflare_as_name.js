@@ -459,11 +459,14 @@ with tab, lc tab, exclude single colors, LC at RTS 1712, 4819
 indv rts int colors, no tab 1752, 6773
 with tab, int tab colors (50=x10+x2), 1707, 4816
 with tab, int tab colors, int idv rts, no single rt colors in tab (58=0+0x10+0x20+0x2+0x8),  1682, 4774
+
+no tab, raw hex ints everywhere 0x40=64 1778, 7280 BAD DATA
+with tab, no single RT colors in tab, HEX raw ints everywhgere 0+0x40+0x2+0x8=74, 1722, 4819 BAD DATA
 */
       //0x1 LC colors in tab, 0x2 make tab, 0x4, LC colors at idv rts
       //0x8, dont add to tab single use colors
       //0x10 int tab, 0x20 int indv rts
-      //0x40 
+      //0x40 raw hex JS ints everywhere
       if(str & 0x2) {
         for (n=0; n<2; n++) {
           a2 = resp[n];
@@ -526,7 +529,8 @@ with tab, int tab colors, int idv rts, no single rt colors in tab (58=0+0x10+0x2
       }
       resp = JSON.stringify(resp);
       if(str&0x40) {
-        resp = resp.replace(/"([0-9A-Fa-f]{6})"/g, function(a,b) {return ("0X"+b);});
+        //must use cap X, not LC x, zero LC x chars in rts data
+        resp = resp.replace(/"([0-9A-Fa-f]{6})"/g, function(a,b) {return "0X"+b.replace(/^0+/,'');});
       }
       //make JS obj literal notation, not JSON to save bytes, must eval() on client
       resp = '!function(E){E=this.R,this.R='+resp.replace(/null/g, '').replace(/,0,/g, ',,').replace(/[,0]+\]/g, ']')+',E&&E()}();';
