@@ -626,32 +626,34 @@ var oldOnLoad;
 //onreadystatechange works in IE, not Opera, so just exec as.js again if it didnt
 //paint by now, b/c empty DOM body tag, during first no-async run of as.js
 
-function chk_as_js(fc,el) {
-  el = location.pathname;
-  //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
-  //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
-  if(el.charAt(el.length-1) == '/' || ~el.indexOf('/index')) {
-    el = document.body.lastChild;
-    while (el = el.previousSibling) { //last el is NEVER it
-      if(el.nodeName == "DIV"
-        && (fc = el.firstChild)
-        && fc.nodeType == 3 /*text node*/) {
-          /*NBSP, maybe test for "Y" if unicode vs legacy 1 byte problems, index.htm use \xA0 1 byte on wire */
-          if (fc.nodeValue.charCodeAt(/*0*/) == 160) {
-            //head elem
-            document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/as.js';
-          }
-          /* break loop early, perf reasons, no more DIVs to visit */
-          el = {};
-      }//end, found AS name div, any condition
-    }
-  }
-}
+//OBSOLETE as.js can rerun itself if early fire now
+// function chk_as_js(fc,el) {
+  // throw 0; // UNUSED
+  // el = location.pathname;
+  // //match "/" "/docs/" and "/index" "/index.htm" "/index.html" etc
+  // //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
+  // if(el.charAt(el.length-1) == '/' || ~el.indexOf('/index')) {
+    // el = document.body.lastChild;
+    // while (el = el.previousSibling) { //last el is NEVER it
+      // if(el.nodeName == "DIV"
+        // && (fc = el.firstChild)
+        // && fc.nodeType == 3 /*text node*/) {
+          // /*NBSP, maybe test for "Y" if unicode vs legacy 1 byte problems, index.htm use \xA0 1 byte on wire */
+          // if (fc.nodeValue.charCodeAt(/*0*/) == 160) {
+            // //head elem
+            // document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/as.js';
+          // }
+          // /* break loop early, perf reasons, no more DIVs to visit */
+          // el = {};
+      // }//end, found AS name div, any condition
+    // }
+  // }
+// }
 
 //run main body
 //args (nosvg, polyfill_no_inline_block_el_container, polyfillCDF_or_false)
 if(this.y) {
-  chk_as_js();
+  //chk_as_js(); //obsolete
   y(nosvg,no_inline_block_container_fill,no_CDF_fill);
   this.x && x();
 } else {
@@ -665,7 +667,7 @@ if(this.y) {
 
   oldOnLoad = this.onload;
   this.onload = function(){
-    chk_as_js();
+    //chk_as_js(); //obsolete
     oldOnLoad && oldOnLoad();
     this.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
     this.x && x();

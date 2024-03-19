@@ -46,12 +46,48 @@ const copy_res_headers = ["age", "cache-control", "date", "etag", "expires", "la
 var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"Cold Spring","0CT":"Cortlandt","0DF":"Dobbs Ferry","0DV":"Spuyten Duyvil","0GA":"Garrison","0GD":"Glenwood","0GY":"Greystone","0HB":"Highbridge-Employees","0HL":"Harlem-125 St","0HM":"Croton-Harmon","0HS":"Hastings-on-Hudson","0IV":"Irvington","0LU":"Ludlow","0MB":"Marble Hill","0MH":"Morris Heights","0MN":"Manitou","0NM":"New Hamburg","0NY":"Grand Central","0OS":"Ossining","0PE":"Peekskill","0PM":"Philipse Manor","0PO":"Poughkeepsie","0RV":"Riverdale","0SB":"Scarborough","0TT":"Tarrytown","0UH":"University Heights","0YK":"Yonkers","0YS":"Yankees-E 153 St","1AT":"Appalachian Trail","1BG":"Botanical Garden","1BH":"Bedford Hills","1BR":"Southeast","1BW":"Brewster","1BX":"Bronxville","1CF":"Croton Falls","1CQ":"Chappaqua","1CW":"Crestwood","1DO":"Dover Plains","1FO":"Fordham","1FW":"Fleetwood","1GO":"Goldens Bridge","1HA":"Hartsdale","1HN":"Hawthorne","1KA":"Katonah","1MK":"Mt Kisco","1ML":"Melrose","1MP":"Mt Pleasant","1MW":"Mt Vernon West","1NW":"North White Plains","1PA":"Patterson","1PV":"Pleasantville","1PW":"Pawling","1PY":"Purdy's","1SC":"Scarsdale","1TK":"Tuckahoe","1TM":"Tenmile River","1TR":"Tremont","1VA":"Valhalla","1WA":"Wassaic","1WF":"Wakefield","1WG":"Williams Bridge","1WI":"Harlem Valley-Wingdale","1WN":"Woodlawn","1WP":"White Plains","2BP":"Bridgeport","2CC":"Cos Cob","2DA":"Darien","2EN":"East Norwalk","2FF":"Fairfield","2FM":"Fairfield Metro","2GF":"Green's Farms","2GN":"Greenwich","2HS":"Harrison","2LA":"Larchmont","2MA":"Mamaroneck","2ME":"Mt Vernon East","2MI":"Milford","2NH":"New Haven","2NO":"Noroton Heights","2NR":"New Rochelle","2OG":"Old Greenwich","2PC":"Port Chester","2PH":"Pelham","2RO":"Rowayton","2RS":"Riverside","2RY":"Rye","2SM":"Stamford","2SN":"South Norwalk","2SP":"Southport","2SR":"Stratford","2SS":"New Haven-State St","2WH":"West Haven","2WP":"Westport","3GB":"Glenbrook","3NC":"New Canaan","3SD":"Springdale","3TH":"Talmadge Hill","4BE":"Bethel","4BV":"Branchville","4CA":"Cannondale","4DN":"Danbury","4M7":"Merritt 7","4RD":"Redding","4WI":"Wilton","5AN":"Ansonia","5BF":"Beacon Falls","5DB":"Derby-Shelton","5NG":"Naugatuck","5SY":"Seymour","5WB":"Waterbury","ABT":"Albertson","ADL":"Auburndale","AGT":"Amagansett","ATL":"Atlantic Terminal","AVL":"Amityville","BDY":"Broadway","BHN":"Bridgehampton","BK":"Stony Brook","BMR":"Bellmore","BOL":"Bolands-Employees","BPG":"Bethpage","BPT":"Bellport","BRS":"Bellerose","BRT":"Belmont Park","BSD":"Bayside","BSR":"Bay Shore","BTA":"Babylon","BWD":"Brentwood","BWN":"Baldwin","CAV":"Centre Av","CHT":"Cedarhurst","CI":"Central Islip","CLP":"Country Life Press","CPG":"Copiague","CPL":"Carle Place","CSH":"Cold Spring Harbor","DGL":"Douglaston","DPK":"Deer Park","EHN":"East Hampton","EMT":"Elmont-UBS Arena","ENY":"East New York","ERY":"East Rockaway","EWN":"East Williston","FHL":"Forest Hills","FLS":"Flushing Main Street","FMD":"Farmingdale","FPK":"Floral Park","FPT":"Freeport","FRY":"Far Rockaway","GBN":"Gibson","GCT":"Grand Central","GCV":"Glen Cove","GCY":"Garden City","GHD":"Glen Head","GNK":"Great Neck","GPT":"Greenport","GRV":"Great River","GST":"Glen Street","GVL":"Greenvale","GWN":"Greenlawn","HBY":"Hampton Bays","HEM":"Hempstead","HGN":"Hempstead Gardens","HIL":"Hillside-Employees","HOL":"Hollis","HPA":"Hunterspoint Av","HUN":"Huntington","HVL":"Hicksville","HWT":"Hewlett","IPK":"Island Park","ISP":"Islip","IWD":"Inwood","JAM":"Jamaica","KGN":"Kew Gardens","KPK":"Kings Park","LBH":"Long Beach","LCE":"Lawrence","LHT":"Lindenhurst","LIC":"Long Island City","LMR":"Locust Manor","LNK":"Little Neck","LTN":"Laurelton","LVL":"Locust Valley","LVW":"Lakeview","LYN":"Lynbrook","MAK":"Mattituck","MAV":"Merillon Av","MFD":"Medford","MHL":"Murray Hill","MHT":"Manhasset","MIN":"Mineola","MPK":"Massapequa Park","MQA":"Massapequa","MRK":"Merrick","MSY":"Mastic-Shirley","MTK":"Montauk","MVN":"Malverne","NAV":"Nostrand Av","NBD":"Nassau Blvd","NHP":"New Hyde Park","NPT":"Northport","NYK":"Penn Station","OBY":"Oyster Bay","ODE":"Oceanside","ODL":"Oakdale","PDM":"Plandome","PGE":"Patchogue","PJN":"Port Jefferson","PLN":"Pinelawn","PWS":"Port Washington","QVG":"Queens Village","RHD":"Riverhead","RON":"Ronkonkoma","ROS":"Rosedale","RSN":"Roslyn","RVC":"Rockville Centre","SAB":"St. Albans","SCF":"Sea Cliff","SFD":"Seaford","SHD":"Southold","SHN":"Southampton","SJM":"St. James","SMR":"Stewart Manor","SPK":"Speonk","SSM":"Mets-Willets Point","STN":"Smithtown","SVL":"Sayville","SYT":"Syosset","VSM":"Valley Stream","WBY":"Westbury","WDD":"Woodside","WGH":"Wantagh","WHD":"West Hempstead","WHN":"Westhampton","WMR":"Woodmere","WWD":"Westwood","WYD":"Wyandanch","YPK":"Yaphank","_GC":"Grand Central"};
 /*ENDINSERT*/
 
+/*
+//src for as.js, I manually send thru mini
+//verified that addASname() is local var/not global, this a func exp, not func decl in JS
+!function addASname(isTM, e, i) {
+  if (e = document.body) {
+    //note pSib executes for body tag's last el/tag, but
+    //our empty div never last element
+    for (e = e.lastChild; e = e.previousSibling; )
+      if ("DIV" === e.nodeName && !e.firstChild) {
+        e.style.minHeight = '';
+        e.appendChild(document.createTextNode("Your ISP: 72.229.160.32 | AS12271 | US | arin | 2000-06-09 | TWC-12271-NYC, US"));
+        //let UA do batched paint cycles
+        setTimeout(function(divEl) {
+          try {
+//note actual height of AS Name div, is .1 to .9px bigger
+//clientHeight is rounded down upto .9999 px
+//my testing with devtools shows fav DIV does not move at all
+//during rmv minHeight+add Text Node even with minHeight being .1 px smaller than
+//final height of AS Name div
+//https://stackoverflow.com/questions/4106538/difference-between-offsetheight-and-clientheight
+            localStorage.setItem("as",divEl.clientHeight);
+          } catch (e) {
+          }
+        }, 100, e);
+        return
+      }
+  }
+  //1000/60 FPS, 16.66666 ms
+  isTM || setTimeout(addASname,10,1);
+}
+();
+
+*/
 /* ASN/ISP lookup cloudflare worker script */
 function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
   // never optimize to .parentNode.innerText, not FF1-FF44 compat, all other yes
-  return new Response('!function(e,i){if(e=document.body){for(e=e.lastChild;e=e.previousSibling;)if("DIV"==e.nodeName&&(i=e.firstChild)&&3==i.nodeType){e.replaceChild(document.createTextNode(' + JSON
-  .stringify(str) + '),i);return}}}();', {
+  return new Response(
+  '!function i(e,t,n){if(t=document.body){for(t=t.lastChild;t=t.previousSibling;)if("DIV"===t.nodeName&&!t.firstChild){t.style.minHeight="",t.appendChild(document.createTextNode('
+  +JSON
+  .stringify(str)+')),setTimeout(function(i){try{localStorage.setItem("as",i.clientHeight)}catch(e){}},100,t);return}}setTimeout(i,10,1)}();'
+  , {
       headers: {
         "content-type": "text/javascript",
         "cache-control":"no-cache",
@@ -579,7 +615,7 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
     asn: 676
   };
   var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"Z'+ip+'.'+cf.asn+'"';
+  var etag = 'W/"A'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }

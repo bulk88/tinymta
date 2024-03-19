@@ -1,4 +1,15 @@
 this.draw_fav=function(config, draw_fav_fn, replaceEl, extend_fav, isPageShowEvt) {
+//alot of closures in this func
+function postDrawArv(i/*cheaper than var SPACE*/) {
+  pendingFetch--;
+  //update cached height
+  if (!pendingFetch) {
+    d.style.minHeight = '';
+    if (localStorage.getItem('fh') != (i = d.clientHeight)) {
+      localStorage.setItem('fh', i);
+    }
+  }
+}
 function mkSubFontTag(text) {
   var c =
 /*STARTSUBCOLOR*/
@@ -51,7 +62,7 @@ function RTS (sta, span) {
         i.direction == 'E' ? h.push(l) : w.push(l);
     }
     span.innerHTML = h.concat(w).join(',')+"&nbsp;";
-    
+    postDrawArv();
 })});
   }
   else {
@@ -102,6 +113,7 @@ if (r = r[0]) {//if(r.length) { shorter alternative
 */
 
     span.innerHTML = h.join(',')+"&nbsp;";
+    postDrawArv();
     })})}}
     
   function doDelayedFetch (u,s) {
@@ -109,7 +121,8 @@ if (r = r[0]) {//if(r.length) { shorter alternative
   }
   var e2,
   d = document.createElement('div'),
-  e = d.appendChild(document.createElement('label'));
+  e = d.appendChild(document.createElement('label')),
+  pendingFetch = 0;
   (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
   e2.checked = config[1];
   v = e.appendChild(document.createElement('font'));
@@ -133,11 +146,16 @@ if (r = r[0]) {//if(r.length) { shorter alternative
   if (e) {
     d.appendChild(document.createTextNode(e));
   } else {
+    //if RT checking on, add cached minHeight so weather div doesn't jerk
+    if(config[2] && (e = localStorage.getItem('fh'))) {
+      d.style.minHeight = e+'px';
+    }
     for (i = 3; i < 9 && (e = config[i]); i++) {
       (e2 = d.appendChild(document.createElement('a'))).href = (e[1].charAt() == 'r' ? "rstop.htm#" : "stop.htm#") + e[1].slice(1);
       e2.appendChild(document.createTextNode(e[0]));
       d.appendChild(document.createTextNode(" "));
       if(config[2]) {
+        pendingFetch++;
         e2 = d.appendChild(document.createElement('span'));
         e2.style.display = 'inline';
 //Chrome 109 Win32, all fetch()es started from pageshow event hang as "pending" forever
@@ -154,7 +172,20 @@ if (r = r[0]) {//if(r.length) { shorter alternative
     replaceEl.parentNode.replaceChild(d, replaceEl);
     extend_fav(d);
   } else {
-    document.body.appendChild(d);
+    e = document.body;
+    //push cached height of AS Name div, to prevent layout shift/jerk of
+    //fav checkmarks and station list (which is a no I/O sync draw) if AS Name
+    //text happens to be 2 or 3 lines, wrapped, on mobile UAs
+    e2 = localStorage.getItem("as");
+    if (e2) {
+      for (v = e.lastChild; v = v.previousSibling; ) {
+        if ("DIV" === v.nodeName && !v.firstChild) {
+          v.style.minHeight = e2 + 'px';
+          break;
+        }
+      }
+    }
+    e.appendChild(d);
   }
 }
 
