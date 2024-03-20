@@ -1,6 +1,7 @@
 this.draw_fav=function(config, draw_fav_fn, replaceEl, extend_fav, isPageShowEvt) {
 //alot of closures in this func
-function postDrawArv(i/*cheaper than var SPACE*/) {
+function postDrawArv(span,arrHTMLLines,i/*cheaper than var SPACE*/) {
+  span.innerHTML = arrHTMLLines.join(',')+"&nbsp;";
   pendingFetch--;
   //update cached height
   if (!pendingFetch) {
@@ -61,8 +62,8 @@ function RTS (sta, span) {
         + "</font>";
         i.direction == 'E' ? h.push(l) : w.push(l);
     }
-    span.innerHTML = h.concat(w).join(',')+"&nbsp;";
-    postDrawArv();
+
+    postDrawArv(span,h.concat(w));
 })});
   }
   else {
@@ -112,8 +113,7 @@ if (r = r[0]) {//if(r.length) { shorter alternative
     h = ["station not found"];
 */
 
-    span.innerHTML = h.join(',')+"&nbsp;";
-    postDrawArv();
+    postDrawArv(span,h);
     })})}}
     
   function doDelayedFetch (u,s) {
