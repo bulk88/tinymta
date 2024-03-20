@@ -47,9 +47,9 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
 /*ENDINSERT*/
 
 /*
-//src for as.js, I manually send thru mini
+//src for as.js, I manually send thru mini, careful, do not let isTM var optimize away!!!!
 //verified that addASname() is local var/not global, this a func exp, not func decl in JS
-!function addASname(isTM, e, i) {
+!function addASname(isTM, e) {
   if (e = document.body) {
     //note pSib executes for body tag's last el/tag, but
     //our empty div never last element
@@ -70,13 +70,15 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
           } catch (e) {
           }
         }, 100, e);
-        return
+        return;
       }
   }
   //1000/60 FPS, 16.66666 ms
-  isTM || setTimeout(addASname,10,1);
+  if(!isTM) {
+    setTimeout(addASname,10,1);
+  }
 }
-();
+(1);
 
 */
 /* ASN/ISP lookup cloudflare worker script */
@@ -84,9 +86,9 @@ function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
   // never optimize to .parentNode.innerText, not FF1-FF44 compat, all other yes
   return new Response(
-  '!function i(e,t,n){if(t=document.body){for(t=t.lastChild;t=t.previousSibling;)if("DIV"===t.nodeName&&!t.firstChild){t.style.minHeight="",t.appendChild(document.createTextNode('
-  +JSON
-  .stringify(str)+')),setTimeout(function(i){try{localStorage.setItem("as",i.clientHeight)}catch(e){}},100,t);return}}setTimeout(i,10,1)}();'
+  '!function t(e,i){if(i=document.body){for(i=i.lastChild;i=i.previousSibling;)if("DIV"===i.nodeName&&!i.firstChild){i.style.minHeight="",i.appendChild(document.createTextNode('
+  +JSON.stringify(str)+
+  ')),setTimeout(function(e){try{localStorage.setItem("as",e.clientHeight)}catch(i){}},100,i);return}}e||setTimeout(t,10,1)}()'
   , {
       headers: {
         "content-type": "text/javascript",
@@ -615,7 +617,7 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
     asn: 676
   };
   var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"A'+ip+'.'+cf.asn+'"';
+  var etag = 'W/"B'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }
