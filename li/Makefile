@@ -112,3 +112,5 @@ all: ../docs/rstop_.htm ../docs/rstop.htm ../docs/li/rt.htm
 all: ../docs/li/js/rt.htm ../docs/rtrain_.htm ../docs/rtrain.htm
 
 gz: ../docs/li/stations.htm.gz.png ../docs/li/stations.htm.gz
+gz: ../docs/rstop.htm.gz ../docs/rtrain.htm.gz
+gz: ../docs/rstop.htm.gz.png ../docs/rtrain.htm.gz.png

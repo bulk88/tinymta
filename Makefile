@@ -168,9 +168,8 @@ docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 
 all: docs/ac.appcache cloudflare_as_name.min.js
 
-gz: docs/index.htm.gz.png docs/status.htm.gz.png docs/rstop.htm.gz.png
-gz: docs/rstop.htm.gz.png
-gz: docs/index.htm.gz docs/status.htm.gz docs/rstop.htm.gz docs/rtrain.htm.gz
+gz: docs/index.htm.gz.png docs/status.htm.gz.png
+gz: docs/index.htm.gz docs/status.htm.gz
 gz: routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
 gz: docs/fav.js.gz docs/fav.js.gz.png MNRRgz LIRRMKFgz SUBMKFgz
