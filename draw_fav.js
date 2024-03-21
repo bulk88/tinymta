@@ -160,7 +160,7 @@ if (r = r[0]) {//if(r.length) { shorter alternative
         e2.style.display = 'inline';
 //Chrome 109 Win32, all fetch()es started from pageshow event hang as "pending" forever
 //set a 0 ms timer to fix it, but don't do the timer, on initial page load (perf)
-        (isPageShowEvt ? doDelayedFetch : RTS)(e[1], e2);
+        (!this.fetch || isPageShowEvt ? doDelayedFetch : RTS)(e[1], e2);
       }
     }
   }
