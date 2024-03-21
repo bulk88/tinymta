@@ -181,7 +181,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
       }
     }
   };
-  if(document.body) //async script tags supported
+  if(document.body && this.fetch) //async script tags supported
     checkDOMFn();
   else //defer the run
     this.x = checkDOMFn;
