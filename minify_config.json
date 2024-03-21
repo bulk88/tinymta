@@ -12,7 +12,7 @@
     "ie": true,
     "mangle": {
       "eval": true,
-      "reserved": ["x", "y", "f", "R"],
+      "reserved": ["x", "y", "w", "f", "R"],
       "toplevel": true
     },
     "nameCache": {}
