@@ -656,6 +656,8 @@ if(this.y) {
   //chk_as_js(); //obsolete
   y(nosvg,no_inline_block_container_fill,no_CDF_fill);
   this.x && x();
+  //char w is freq exist code vs char z which is zero hits
+  this.w && w();
 } else {
   //FF 3.5 has sync/blocking appendChild(<SCRIPT>) as a bug, f.js executes on
   //ancient FF, BEFORE inline root index.htm <SCRIPT> executes
@@ -671,6 +673,8 @@ if(this.y) {
     oldOnLoad && oldOnLoad();
     this.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
     this.x && x();
+    //char w is freq exist code vs char z which is zero hits
+    this.w && w();
   };
 }
 })();
