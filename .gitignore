@@ -10,6 +10,7 @@ as.js*
 routes.js*
 *.bak
 tinymta
+node_modules
 */gtfs.zip
 */agency.txt
 */stops.txt

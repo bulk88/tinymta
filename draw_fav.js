@@ -123,8 +123,10 @@ if (r = r[0]) {//if(r.length) { shorter alternative
   d = document.createElement('div'),
   e = d.appendChild(document.createElement('label')),
   pendingFetch = 0;
-  (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
+  (e2 = document.createElement('input')).type = "checkbox";
   e2.checked = config[1];
+  //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
+  e.appendChild(e2);
   v = e.appendChild(document.createElement('font'));
   v.color='red';
   v.appendChild(document.createTextNode(
@@ -132,9 +134,11 @@ if (r = r[0]) {//if(r.length) { shorter alternative
   "\u2764"
   ));
   e = d.appendChild(document.createElement('label'));
-  (e2 = e.appendChild(document.createElement('input'))).type = "checkbox";
+  (e2 = document.createElement('input')).type = "checkbox";
   //secret save RT flag, thru 1st flag history clear sequence by user
   e2.checked = config[1] && config[2];
+  //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
+  e.appendChild(e2);
   //hourglass
   e.appendChild(document.createTextNode("\u231B "));
   if (!config[1])
