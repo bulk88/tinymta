@@ -154,7 +154,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
     if(config) { //false is too old/no LS browser
       if (config[0]) {//[0] is result flag from read_fav, it made/wiped the config
         //change to Function() for perf, low priority
-        prefixFn = eval('('+prefixFnStr+')');
+        prefixFn = eval('0,'+prefixFnStr);
         //fav obj ver upgrade happpened
         if (favDiv) { //dont de dup config[1], extra code bytes after mini
           prefixFn(config[1], prefixFn, favDiv, extend_fav);
