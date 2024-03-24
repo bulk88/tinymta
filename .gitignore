@@ -7,7 +7,6 @@
 /docs/as.js*
 /docs/routes.js*
 as.js*
-routes.js*
 *.bak
 tinymta
 node_modules
