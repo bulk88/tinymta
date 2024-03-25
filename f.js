@@ -19,7 +19,7 @@ if (!window.JSON) {
 //according to articles online, but just use eval for
 //perf as a PF, we use JSONP/innerHTML, and loading a JSON parser
 //polyfill is abs insane in this micro-HTML site
-  window.JSON = {parse: function(str) { if(typeof str != 'string'){ throw 'bad type '+typeof str} return eval('0,' + str)}};
+  window.JSON = {parse: function(str) {return (new Function("return " + str ))()}};
 }
 /* 2 polyfills for status.htm
  fetch added Chrome 42, Array.forEach added way before
