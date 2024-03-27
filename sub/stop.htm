@@ -225,5 +225,10 @@ midnight of today, happens right after 1200AM */
 
 }
 
-</script></html>
+</script>
+<script type="text/javascript">
+//IE 5.0 numeric obj literals are syntax error fix
+if(!this.y){eval(document.body.lastChild.previousSibling.text.replace(/([,{])(\d+):/g,'$1"$2":'))}
+</script>
+</html>
 
