@@ -88,4 +88,60 @@ if(this.addEventListener) {
   addEventListener('touchstart', preload, {passive: true});
   addEventListener('mousedown', preload, {passive: true});
 }
+
+//.SEMV() is IE only FN all vers
+if(this.ScriptEngineMajorVersion
+  && (
+    (ScriptEngineMajorVersion() < 5)
+    || (ScriptEngineMajorVersion() == 5 && ScriptEngineMinorVersion() < 5)
+  )) {
+  this.onload = function () {
+    //warning, d.anchors is ONLY name="#" hash nav elements, d.links correct
+    var arr = document.links, len = arr.length, i = 0
+      , el, pn, pnlen, needle, newpn;
+    for(;i<len;i++){
+      el = arr[i];
+      pn = el.pathname;
+      //match only 1 filename for perf reasons once path IDed, var needle
+      //deals with variable ".."s and "/"s
+      //fav sta feat in index.htm is only place with MORE THAN ONE unique
+      //not IE 5.0 compat <A></A> links, but IE 5.0 def not compat with
+      //fav feat, so optimize for perf (1 needle)
+      if (needle) {
+        if(pn === needle) {
+          el.pathname = newpn;
+        }
+      } else {
+//          status.htm
+//           rstop.htm
+//            stop.htm
+        pnlen = pn.length;
+        if(pnlen > 7) { //"stop.htm".length is 8
+          newpn = pn.charAt(pnlen-8);
+          //s in "stophtm" or "rstop.htm", counted from right
+          if(newpn === 's') {
+            //sometimes -9 outta bounds so charAt ret empty string
+            //note "!== -1" can't be factored out, indexOf's retval is dep on root dir prefix len
+            if(pn.charAt(pnlen-9) === 'r'
+               && pn.indexOf('rstop.htm', pnlen -  9 /*'rstop.htm'.length*/) !== -1) {
+              needle = pn;
+            } else if(pn.indexOf('stop.htm', pnlen - 8 /*'stop.htm'.length*/) !== -1) {
+              needle = pn;
+            }
+            //a in "status.htm"
+          } else if(newpn === 'a'
+                    && pn.indexOf('status.htm', pnlen - 10 /*'status.htm'.length*/) !== -1) {
+              needle = pn;
+          }
+
+          if(needle) {//IDC _.htm
+            el.pathname = newpn = pn.slice(0,-4)+'ie50.htm';
+          }
+        }
+      }
+    }
+    this.onload = null; //GC FWIW
+  };
+}
+
 })();

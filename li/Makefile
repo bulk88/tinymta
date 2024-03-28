@@ -56,29 +56,11 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 
 ../docs/rstopie50.htm : ../docs/rstop.htm
 	perl -e"use File::Slurp; \
-	my $$f = read_file('$<', { binmode => ':raw' }); \
-	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
-	my $$bn = '$(<F)'; \
-	if($$bn =~ /_\.htm$$/) { \
-	  $$bn = substr($$bn,0,-5); \
-	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
-	} else { \
-	  $$bn = substr($$bn,0,-4); \
-	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
-	} write_file('$@', {binmode => ':raw'}, $$f);"
+	my $$f=read_file('$<',{binmode=>':raw'});$$f=~s/([,{])(\d+):/$$1\"$$2\":/gs;my $$bn='$(<F)';if($$bn=~/_\.htm$$/){$$bn=substr($$bn,0,-5);$$f=~s/$${bn}\.htm/$${bn}ie50\.htm/gs;}else{$$bn=substr($$bn,0,-4);$$f=~s/$${bn}_\.htm/$${bn}ie50_\.htm/gs;}write_file('$@',{binmode=>':raw'},$$f);"
 
 ../docs/rstopie50_.htm : ../docs/rstop_.htm
 	perl -e"use File::Slurp; \
-	my $$f = read_file('$<', { binmode => ':raw' }); \
-	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
-	my $$bn = '$(<F)'; \
-	if($$bn =~ /_\.htm$$/) { \
-	  $$bn = substr($$bn,0,-5); \
-	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
-	} else { \
-	  $$bn = substr($$bn,0,-4); \
-	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
-	} write_file('$@', {binmode => ':raw'}, $$f);"
+	my $$f=read_file('$<',{binmode=>':raw'});$$f=~s/([,{])(\d+):/$$1\"$$2\":/gs;my $$bn='$(<F)';if($$bn=~/_\.htm$$/){$$bn=substr($$bn,0,-5);$$f=~s/$${bn}\.htm/$${bn}ie50\.htm/gs;}else{$$bn=substr($$bn,0,-4);$$f=~s/$${bn}_\.htm/$${bn}ie50_\.htm/gs;}write_file('$@',{binmode=>':raw'},$$f);"
 
 ../rtrain_.htm : ../rtrain.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	copy /y "..\rtrain.htm" "$@"
