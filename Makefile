@@ -74,6 +74,9 @@ docs/f.js : f.js adj_del.pl
 	perl adj_del.pl "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
+draw_fav.js: insertcolors.pl li/routesmodded.txt sub/routes.txt
+	perl insertcolors.pl RAIL "$@" li/routesmodded.txt
+	perl insertcolors.pl SUB "$@" sub/routes.txt
 
 fav.js: draw_fav.js adj_fav.pl
 	uglifyjs -c -m toplevel -m eval "draw_fav.js" -o "draw_fav.min.js"

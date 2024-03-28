@@ -11,13 +11,14 @@ function postDrawArv(span,arrHTMLLines,i/*cheaper than var SPACE*/) {
     }
   }
 }
+
 function mkSubFontTag(text) {
-  var c =
-/*STARTSUBCOLOR*/
-{"4":"00933c","5":"00933c","5X":"00933c","6":"00933c","6X":"00a65c","A":"2850ad","C":"2850ad","E":"2850ad","G":"6cbe45","GS":"6d6e71","J":"996633","Z":"996633","L":"a7a9ac","7":"b933ad","7X":"b933ad","1":"ee352e","2":"ee352e","3":"ee352e","N":"fccc0a","Q":"fccc0a","R":"fccc0a","W":"fccc0a","B":"ff6319","D":"ff6319","F":"ff6319","FX":"ff6319","M":"ff6319"}
-/*ENDSUBCOLOR*/
-  [text];
-  return c ?'<font color='+c+'>'+text+'</font>':text;
+  var tag;
+  tag = colorRoutesSUB[text];
+  if(typeof tag !== 'string') {
+    tag = colorRoutesSUB[text] = colorStrsSUB[tag|0]; //undef to 0
+  }
+  return '<font color='+tag+'>'+text+'</font>';
 }
 
 /* mislabeled now */
@@ -40,7 +41,7 @@ function RTS (sta, span) {
     function (r) {
     r.status == 200 &&
     r.json().then(function (r /*r=resp*/) {
-    var i, n, l, w = [], h = [];
+    var i, n, l, branch, w = [], h = [];
     /*w=west, t=train, l=lineofhtml, h=html*/
     r = r.arrivals;
     /* DO NOT convert to for( in ) {}, because Array.prototype. PFs show up
@@ -54,11 +55,9 @@ function RTS (sta, span) {
         + ((l=i.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
         + '-Tk' + (i.track || '?')
         + "-<font color=" + (
-/*STARTRAILCOLOR*/
-{"HA":"0039a6","HH":"006ec7","PJ":"006ec7","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","12":"4d5357","CI":"4d5357","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","DN":"ee0034","NC":"ee0034","NH":"ee0034","WB":"ee0034","LB":"ff6319"}
-/*ENDRAILCOLOR*/
+          typeof (l = colorRoutesRAIL[branch = i.branch]) === 'string' ? l : (colorRoutesRAIL[branch] = colorStrsRAIL[l|0])
 //lower than 58 is a digit
-        )[i.branch] + ">" + ((l=((l=((l=i.stops)[l.length - 1])).charAt() < 58 ? l.slice(1) : l))=="HM"?"CH":l=="NYK"?"NYP":l)
+        ) + ">" + ((l=((l=((l=i.stops)[l.length - 1])).charAt() < 58 ? l.slice(1) : l))=="HM"?"CH":l=="NYK"?"NYP":l)
         + "</font>";
         i.direction == 'E' ? h.push(l) : w.push(l);
     }
@@ -119,6 +118,14 @@ if (r = r[0]) {//if(r.length) { shorter alternative
   function doDelayedFetch (u,s) {
     setTimeout(function () {RTS(u, s)},0);
   }
+/*STARTSUBCOLOR*/
+var colorStrsSUB = ["00933c","ff6319","fccc0a","2850ad","ee352e","6d6e71","b933ad","0078c6","996633"];
+var colorRoutesSUB = {/*"4":0,*//*"5":0,*//*"6X":0,*//*"5X":0,*//*"6":0,*/"FX":1,"D":1,"M":1,"F":1,"B":1,"W":2,"N":2,"R":2,"Q":2,"E":3,"C":3,"A":3,"2":4,"1":4,"3":4,"H":5,"GS":5,"FS":5,"7":6,"7X":6,"SI":7,"SIR":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
+/*ENDSUBCOLOR*/
+/*STARTRAILCOLOR*/
+var colorStrsRAIL = ["ee0034","006ec7","4d5357"];
+var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1,"CI":2,"12":2,"HA":"0039a6","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
+/*ENDRAILCOLOR*/
   var e2,
   d = document.createElement('div'),
   e = d.appendChild(document.createElement('label')),
