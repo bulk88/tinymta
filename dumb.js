@@ -213,10 +213,11 @@ DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't
 if(this.ScriptEngineMajorVersion
   && (
     (ScriptEngineMajorVersion() < 5)
-    || (ScriptEngineMajorVersion() == 5 && ScriptEngineMinorVersion() < 5)
+    || (ScriptEngineMajorVersion() === 5 && ScriptEngineMinorVersion() < 5)
   )) {
-  this.onload = function () {
+  onload = function () {
     //warning, d.anchors is ONLY name="#" hash nav elements, d.links correct
+    //cache arr.length b/c this a live node list/overhead
     var arr = document.links, len = arr.length, i = 0
       , el, pn, pnlen, needle, newpn;
     for(;i<len;i++){
@@ -228,39 +229,30 @@ if(this.ScriptEngineMajorVersion
       //not IE 5.0 compat <A></A> links, but IE 5.0 def not compat with
       //fav feat, so optimize for perf (1 needle)
       if (needle) {
-        if(pn === needle) {
+        if(needle === pn) {
           el.pathname = newpn;
         }
       } else {
-//          status.htm
-//           rstop.htm
-//            stop.htm
-        pnlen = pn.length;
-        if(pnlen > 7) { //"stop.htm".length is 8
-          newpn = pn.charAt(pnlen-8);
-          //s in "stophtm" or "rstop.htm", counted from right
-          if(newpn === 's') {
-            //sometimes -9 outta bounds so charAt ret empty string
-            //note "!== -1" can't be factored out, indexOf's retval is dep on root dir prefix len
-            if(pn.charAt(pnlen-9) === 'r'
-               && pn.indexOf('rstop.htm', pnlen -  9 /*'rstop.htm'.length*/) !== -1) {
-              needle = pn;
-            } else if(pn.indexOf('stop.htm', pnlen - 8 /*'stop.htm'.length*/) !== -1) {
-              needle = pn;
-            }
-            //a in "status.htm"
-          } else if(newpn === 'a'
-                    && pn.indexOf('status.htm', pnlen - 10 /*'status.htm'.length*/) !== -1) {
-              needle = pn;
-          }
-
-          if(needle) {//IDC _.htm
-            el.pathname = newpn = pn.slice(0,-4)+'ie50.htm';
-          }
+//      status.htm
+//       rstop.htm
+//        stop.htm
+//"stop.htm".length is 8, note for tags <a href=# name=RQ> and <a href=#7X>
+//el.pathname is NOT "" "/" but the full LONG URL bar file, can't optimize
+//for el.pathname.length
+        pnlen = pn.length-8;
+        newpn = pn.charAt(pnlen);
+        //"s" in "stop.htm" or "rstop.htm", counted from right, for code size,
+        //don't check the "r" in rstop or fully check "a" aka "status.htm"
+        //~.iF() is "!== -1", IDC abt _.htm urls, they arent used in sta pickers
+        if((newpn === 's' || newpn === 'a') && ~pn.indexOf(newpn === 's' ? "stop" : "atus", pnlen)) {
+           newpn = (needle = pn).slice(0,-4)+'ie50.htm';
+           // gz bytes 978 with 2nd "el.pathname = "
+           // vs 976 gz bytes with "i--" trick to rerun loop
+           i--;
         }
-      }
-    }
-    this.onload = null; //GC FWIW
+      }//no needle
+    }// el loop
+    onload = null; //GC FWIW
   };
 }
 
