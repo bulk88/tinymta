@@ -20,6 +20,32 @@ stop_.htm : stop.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
+../docs/stopie50.htm : ../docs/stop.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('$<', { binmode => ':raw' }); \
+	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
+	my $$bn = '$(<F)'; \
+	if($$bn =~ /_\.htm$$/) { \
+	  $$bn = substr($$bn,0,-5); \
+	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
+	} else { \
+	  $$bn = substr($$bn,0,-4); \
+	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
+	} write_file('$@', {binmode => ':raw'}, $$f);"
+
+../docs/stopie50_.htm : ../docs/stop_.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('$<', { binmode => ':raw' }); \
+	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
+	my $$bn = '$(<F)'; \
+	if($$bn =~ /_\.htm$$/) { \
+	  $$bn = substr($$bn,0,-5); \
+	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
+	} else { \
+	  $$bn = substr($$bn,0,-4); \
+	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
+	} write_file('$@', {binmode => ':raw'}, $$f);"
+
 ../docs/stations.htm : stations.htm ../minify_config.json
 	copy /y stations.htm "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
@@ -142,6 +168,7 @@ mini:
 
 all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm
+all: ../docs/stopie50.htm ../docs/stopie50_.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/stop.appcache
 #all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
 #all: plan2.htm

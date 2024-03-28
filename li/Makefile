@@ -54,6 +54,32 @@ stationsnojs.htm : gr3.pl routedatafinal.pl
 	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 	perl ../adj_postmini.pl "$@"
 
+../docs/rstopie50.htm : ../docs/rstop.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('$<', { binmode => ':raw' }); \
+	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
+	my $$bn = '$(<F)'; \
+	if($$bn =~ /_\.htm$$/) { \
+	  $$bn = substr($$bn,0,-5); \
+	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
+	} else { \
+	  $$bn = substr($$bn,0,-4); \
+	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
+	} write_file('$@', {binmode => ':raw'}, $$f);"
+
+../docs/rstopie50_.htm : ../docs/rstop_.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('$<', { binmode => ':raw' }); \
+	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
+	my $$bn = '$(<F)'; \
+	if($$bn =~ /_\.htm$$/) { \
+	  $$bn = substr($$bn,0,-5); \
+	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
+	} else { \
+	  $$bn = substr($$bn,0,-4); \
+	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
+	} write_file('$@', {binmode => ':raw'}, $$f);"
+
 ../rtrain_.htm : ../rtrain.htm ../minify_config.json ../adj_stoppath.pl ../adj_postmini.pl
 	copy /y "..\rtrain.htm" "$@"
 	perl ../adj_stoppath.pl "$@" 2
@@ -110,6 +136,7 @@ gtfs.zip :
 all: ../docs/li/stations.htm ../docs/li/stationsnojs.htm
 all: ../docs/rstop_.htm ../docs/rstop.htm ../docs/li/rt.htm
 all: ../docs/li/js/rt.htm ../docs/rtrain_.htm ../docs/rtrain.htm
+all: ../docs/rstopie50_.htm ../docs/rstopie50.htm
 
 gz: ../docs/li/stations.htm.gz.png ../docs/li/stations.htm.gz
 gz: ../docs/rstop.htm.gz ../docs/rtrain.htm.gz

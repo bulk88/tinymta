@@ -44,6 +44,32 @@ status_.htm : status.htm minify_config.json adj_stoppath.pl adj_postmini.pl
 docs/status_.htm : status_.htm
 	copy /y status_.htm "$@"
 
+docs/statusie50.htm : docs/status.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('$<', { binmode => ':raw' }); \
+	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
+	my $$bn = '$(<F)'; \
+	if($$bn =~ /_\.htm$$/) { \
+	  $$bn = substr($$bn,0,-5); \
+	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
+	} else { \
+	  $$bn = substr($$bn,0,-4); \
+	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
+	} write_file('$@', {binmode => ':raw'}, $$f);"
+
+docs/statusie50_.htm : docs/status_.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('$<', { binmode => ':raw' }); \
+	$$f =~  s/([,{])(\d+):/$$1\"$$2\":/gs; \
+	my $$bn = '$(<F)'; \
+	if($$bn =~ /_\.htm$$/) { \
+	  $$bn = substr($$bn,0,-5); \
+	  $$f =~  s/$${bn}\.htm/$${bn}ie50\.htm/gs; \
+	} else { \
+	  $$bn = substr($$bn,0,-4); \
+	  $$f =~  s/$${bn}_\.htm/$${bn}ie50_\.htm/gs; \
+	} write_file('$@', {binmode => ':raw'}, $$f);"
+
 docs/jsrdt.htm : jsrdt.htm
 	copy /y jsrdt.htm "$@"
 
@@ -156,6 +182,7 @@ docs/ac.appcache : docs/index.htm docs/404.html docs/favicon.ico
 docs/ac.appcache : docs/CNAME docs/abt.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
 docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm docs/status_.htm
+docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm
 docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js
 docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 	perl -e"use File::Slurp; \
