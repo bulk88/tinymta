@@ -86,13 +86,12 @@ try {
 
 
 //typ a .replace() CB, but manual call sometimes
-function mkSubFontTag(unused, route) {
-  var tag;
-  tag = colorRoutesSUB[route];
-  if(typeof tag !== 'string') {
-    tag = colorRoutesSUB[route] = colorStrsSUB[tag|0]; //undef to 0
+function mkSubFontTag(tag_unused, route) {
+  tag_unused = colorRoutesSUB[route];
+  if(typeof tag_unused !== 'string') {
+    tag_unused = colorRoutesSUB[route] = colorStrsSUB[tag_unused|0]; //undef to 0
   }
-  return '<font color='+tag+'>['+route+']</font>';
+  return '<font color='+tag_unused+'>['+route+']</font>';
 }
 
 /* from status.htm not rstop.htm, slighly bigger */
