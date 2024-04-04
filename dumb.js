@@ -74,6 +74,18 @@ if (this.addEventListener && document.querySelector) {
   addEventListener('mousedown', preload, {passive: true});
 
   function kph(e_realkey) {
+    e_realkey = [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,0,1,2,3,4,5,6,7,8,9,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9,,,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9][e_realkey.keyCode];
+
+    //gz 978 to 971 chg, +x===x vs typeof x === 'number'
+    if (+e_realkey===e_realkey) {
+      e_realkey = document.querySelector('[accesskey="' + e_realkey + '"]');
+      //avoid err console noise for "called method click on undef"
+      e_realkey && e_realkey.click()
+    }
+    return;
+//ODL CODE bigger wire format, optimized above
+    //note table below can be used by 3rd parties for something else
+    //I only need 0-9, not a map app or game
     switch (e_realkey.keyCode) {
 /*
       case 38: //up arrow
@@ -150,14 +162,6 @@ if (this.addEventListener && document.querySelector) {
 */
       default:
         e_realkey = null;
-    }
-    //note table above can be used by 3rd parties for something else
-    //I only need 0-9, not a map app or game
-    //gz 978 to 971 chg, +x===x vs typeof x === 'number'
-    if (+e_realkey===e_realkey) {
-      e_realkey = document.querySelector('[accesskey="' + e_realkey + '"]');
-      //avoid err console noise for "called method click on undef"
-      e_realkey && e_realkey.click()
     }
   }
   //FF3.0 throws exception "not enough arguments" if #3 missing

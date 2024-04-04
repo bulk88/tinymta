@@ -116,6 +116,12 @@ cloudflare_as_name.min.js : cloudflare_as_name.js
 #	terser -c -m toplevel -m "reserved=['routesEtag','gRoutes']" -m eval "$@" -o "$@"
 	terser -c -m toplevel -m eval "$@" -o "$@"
 
+routes.js :
+	perl -e"use File::Slurp;my $$file=read_file(\
+	'cloudflare_as_name.min.js',{binmode=>':raw'});\
+	$$file=~/='(var R;[^']+)'/;write_file('routes.js',{binmod =>':raw'},$$1)";
+
+
 MNRR :
 	cd mn && $(MAKE) all
 
