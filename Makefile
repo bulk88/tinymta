@@ -78,14 +78,23 @@ draw_fav.js: insertcolors.pl li/routesmodded.txt sub/routes.txt
 	perl insertcolors.pl RAIL "$@" li/routesmodded.txt
 	perl insertcolors.pl SUB "$@" sub/routes.txt
 
-fav.js: draw_fav.js adj_fav.pl
+draw_fav.min.js: draw_fav.js
 	uglifyjs -c -m toplevel -m eval "draw_fav.js" -o "draw_fav.min.js"
-	perl adj_fav.pl
+
+fav.js: draw_fav.min.js adj_fav.pl
+	perl adj_fav.pl "$@"
+
+ifav.js: draw_fav.min.js adj_fav.pl
+	perl adj_fav.pl "$@"
 
 docs/fav.js : fav.js
 	copy /y fav.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 #	uglifyjs -c inline=true,passes=2,unsafe -m toplevel -m eval "$@" -o "$@"
+
+docs/ifav.js : ifav.js
+	copy /y ifav.js "$@"
+	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
 docs/404.html : 404.html
 	copy /y 404.html "$@"
@@ -174,7 +183,7 @@ docs/ac.appcache : docs/CNAME docs/abt.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
 docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm docs/status_.htm
 docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm
-docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js
+docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js docs/ifav.js
 docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 	perl -e"use File::Slurp; \
 	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \
@@ -190,5 +199,6 @@ gz: docs/index.htm.gz.png docs/status.htm.gz.png
 gz: docs/index.htm.gz docs/status.htm.gz
 gz: routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
-gz: docs/fav.js.gz docs/fav.js.gz.png MNRRgz LIRRMKFgz SUBMKFgz
+gz: docs/fav.js.gz docs/fav.js.gz.png docs/ifav.js.gz docs/ifav.js.gz.png
+gz: MNRRgz LIRRMKFgz SUBMKFgz
 

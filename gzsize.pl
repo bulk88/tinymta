@@ -11,6 +11,7 @@ my @a = qw(
   routes.js
   ./docs/f.js
   ./docs/fav.js
+  ./docs/ifav.js
   ./docs/1p.js
   ./docs/dumb.js
 );

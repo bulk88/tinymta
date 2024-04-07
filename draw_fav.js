@@ -5,7 +5,7 @@ function postDrawArv(span,arrHTMLLines,i/*cheaper than var SPACE*/) {
   pendingFetch--;
   //update cached height
   if (!pendingFetch) {
-    d.style.minHeight = '';
+    d.style.minHeight = ''; 
     if (localStorage.getItem('fh') != (i = d.clientHeight)) {
       localStorage.setItem('fh', i);
     }
