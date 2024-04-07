@@ -132,22 +132,25 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
   pendingFetch = 0,
   v;
 
-  if(config[3] && !window.E) {
-    (function(){
-      var heart, hourglass, drop;
-      heart = document.createElement('img');
-      heart.src = "emoji_u2764.png";
-      (hourglass = heart.style).height = hourglass.width = '1em';
-      hourglass.verticalAlign = 'middle';
-      hourglass = heart.cloneNode(0);
-      hourglass.src = "emoji_u231b.svg"
-      drop = heart.cloneNode(0);
-      drop.src = "emoji_u1f4a7.png";
-    //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
-      window.E = function (idx) {
-        return idx == 2 ? heart : idx ? /*1*/ hourglass : /*0*/ drop.cloneNode(0);
-      };
-    })();
+  if(config[3]) {
+    if(!window.E) {
+      (function(){
+        //png files and svg are from https://github.com/googlefonts/noto-emoji
+        var heart, hourglass, drop;
+        heart = document.createElement('img');
+        heart.src = "emoji_u2764.png";
+        (hourglass = heart.style).height = hourglass.width = '1em';
+        hourglass.verticalAlign = 'middle';
+        hourglass = heart.cloneNode(0);
+        hourglass.src = "emoji_u231b.svg"
+        drop = heart.cloneNode(0);
+        drop.src = "emoji_u1f4a7.png";
+      //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
+        window.E = function (idx) {
+          return idx == 2 ? heart : idx ? /*1*/ hourglass : /*0*/ drop.cloneNode(0);
+        };
+      })();
+    }
   } else {
     window.E = 0; //stop f.js from trying to put the emj PF
   }

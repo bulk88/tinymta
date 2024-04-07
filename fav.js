@@ -1,9 +1,9 @@
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 40; };
-function DRAW_VER_STR() { return "40"; };
+function DRAW_VER() { return 42; };
+function DRAW_VER_STR() { return "42"; };
 function DRAW_VER_LEN() { return 2; };
-function PREFIX_LEN() { return 3763; };
+function PREFIX_LEN() { return 3762; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
