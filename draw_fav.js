@@ -134,6 +134,8 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
   e2.checked = config[1];
   //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
   e.appendChild(e2);
+  
+  //FIX ME var v is a global TODO
   v = e.appendChild(document.createElement('font'));
   v.color='red';
   v.appendChild(document.createTextNode(
