@@ -4,9 +4,9 @@ use strict;
 use File::Slurp;
 use Cpanel::JSON::XS;
 use Encode qw(encode);
-#use Devel::Peek;
+use Devel::Peek;
 
-my $encodelayers = ':utf8:raw';
+my $encodelayers = ':unix:encoding(UTF-8)';
 sub utf16length {
   #my $l =  length(encode('UTF-16LE', $_[0], Encode::FB_CROAK))/2;
   my $l =  length($_[0]);
@@ -20,8 +20,8 @@ my $draw_prefix = '(function(c){var f=';
 my $draw_postfix = ';this.fetch?f(c,f):(this.w=function(){f(c,f)})})(';
 my $coder = Cpanel::JSON::XS->new->canonical(1)->allow_nonref(1);
 my $file = read_file("fav.js", { binmode => $encodelayers } );
-#Dump($file);
 my $draw_fav = read_file("draw_fav.min.js", { binmode => $encodelayers } );
+#Dump($draw_fav);
 $draw_fav = $draw_prefix.substr($draw_fav,14,length($draw_fav)-15).$draw_postfix;
 my $draw_fav_escaped = $coder->encode($draw_fav);
 

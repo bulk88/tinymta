@@ -3,9 +3,9 @@
 function DRAW_VER() { return 3; };
 function DRAW_VER_STR() { return "3"; };
 function DRAW_VER_LEN() { return 1; };
-function PREFIX_LEN() { return 3493; };
+function PREFIX_LEN() { return 3489; };
 //returns array [createdNewFavsBool,favsConfig]
-function read_fav() {
+function read_fav(finish) {
   if(PREFIX_LEN() != prefix.length){alert('b l '+PREFIX_LEN()+' '+prefix.length)}
   try {
     //localStorage.removeItem("fav");
@@ -16,18 +16,18 @@ function read_fav() {
       //initial default/first ever!!! (cookie/LS clear) favs obj on particular user
       //version int, keep hist bool, realtime bool, sta#1, sta#2
       localStorage.setItem("fav", prefix + '[' + DRAW_VER() + ',1,0])');
-      return [1,[DRAW_VER(), 1, 0]];
+      finish([1,[DRAW_VER(), 1, 0]]);
     } else {
       l_prefix = c.slice(0,PREFIX_LEN());
       if(l_prefix !== prefix) {
         alert('bad')
       }
       prefix = l_prefix;
-      return [0,JSON.parse(c.slice(PREFIX_LEN()+0, c.length - 1))];
+      finish([0,JSON.parse(c.slice(PREFIX_LEN()+0, c.length - 1))]);
     }
   } catch (e) {
     //favs not supported on browser
-    return 0;
+    finish(0);
   }
 }
 
@@ -47,9 +47,11 @@ function extend_fav(divEl,left) {
   };
   //first checkmark (left), then right
   left.onchange = divEl.onchange = function (evt_div) {
-    var c = read_fav()[1],
+    evt_div = this;
+    read_fav(function(c) {
+    c = c[1];
     //IE 8 has arg undef, all other UAs have event obj
-    chked = (evt_div = this).checked;
+    var chked = evt_div.checked;
     evt_div = evt_div.parentNode;
     if(evt_div.lastChild.color/*"red" or undef*/) {
       //1st checkmark
@@ -73,12 +75,13 @@ function extend_fav(divEl,left) {
     //closure free design, get input from from misc globals
     evt_div = evt_div.parentNode;
     evt_div.draw_fav(store_fav(c), evt_div.draw_fav, evt_div, extend_fav);
-  };
+  }); //read_fav CB
+  };//onchange CB for checkboxes
 }
 function _recordFavStopHit(sta_name, fav_url) {
+  read_fav(function (c) {
   var found;
   var minus_1_sta;
-  var c = read_fav();
   var c_len;
   var n = 3;
   if (c) { // if UA supports favs/LS
@@ -107,6 +110,7 @@ function _recordFavStopHit(sta_name, fav_url) {
       store_fav(c);
     } //fav enabled
   } //fav UA supported
+  });//read_fav CB
 }
 
   var prefix =
@@ -153,12 +157,14 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
     if (event_div.persisted) {
       event_div = this.favDiv;
       if(event_div) {
-        event_div.draw_fav(read_fav()[1],event_div.draw_fav, event_div, extend_fav, 1);
+        read_fav(function(c){
+        event_div.draw_fav(c[1],event_div.draw_fav, event_div, extend_fav, 1);
+        });
       }
     }
   };
   var checkDOMFn = function () {
-    var config = read_fav();
+    read_fav(function(config) {
     var favDiv = this.favDiv;
     var prefixFn;
     var el;
@@ -194,7 +200,8 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
         else extend_fav(favDiv); //add checkmark event handlers, 99% time this branch
       }
     }
-  };
+  });//read_fav cb
+  };//dom loaded CB
   if(document.body && this.fetch) //async script tags supported
     checkDOMFn();
   else //defer the run
