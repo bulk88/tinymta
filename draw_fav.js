@@ -152,7 +152,7 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
   e.appendChild(document.createTextNode("\u231B "));
   if (!config[1])
     e = "History off";
-  else if (config.length == 3) {
+  else if (config.length == 4) {
     e = "No history yet";
   } else
     e = 0;
@@ -163,7 +163,7 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
     if(config[2] && (e = localStorage.getItem('fh'))) {
       d.style.minHeight = e+'px';
     }
-    for (i = 3; i < 9 && (e = config[i]); i++) {
+    for (i = 4; i < 10 && (e = config[i]); i++) {
       (e2 = d.appendChild(document.createElement('a'))).href = (e[1].charAt() == 'r' ? "rstop.htm#" : "stop.htm#") + e[1].slice(1);
       e2.appendChild(document.createTextNode(e[0]));
       d.appendChild(document.createTextNode(" "));

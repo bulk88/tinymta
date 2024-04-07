@@ -1,9 +1,9 @@
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 5; };
-function DRAW_VER_STR() { return "5"; };
-function DRAW_VER_LEN() { return 1; };
-function PREFIX_LEN() { return 3489; };
+function DRAW_VER() { return 11; };
+function DRAW_VER_STR() { return "11"; };
+function DRAW_VER_LEN() { return 2; };
+function PREFIX_LEN() { return 3490; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
@@ -11,7 +11,7 @@ function read_fav(finish) {
     //+1 is [
     if (!c || c.substr(PREFIX_LEN()+1,DRAW_VER_LEN()) !== DRAW_VER_STR()) {
       //initial default/first ever!!! (cookie/LS clear) favs obj on particular user
-      //global config array is, version int, keep hist bool, realtime bool, sta#1, sta#2
+      //global config array is, version int, keep hist bool, realtime bool, has emoji bool, sta#1, sta#2
       this.F = function (_prefix, config) {
         prefix = _prefix;
         finish(config);
@@ -56,7 +56,7 @@ function extend_fav(divEl,left) {
       } else {
         c[1] = 0;
         //wipe history
-        c.length = 3;
+        c.length = 4;
         //fav cached height
         localStorage.removeItem('fh');
       }
@@ -80,7 +80,7 @@ function _recordFavStopHit(sta_name, fav_url) {
   var found;
   var minus_1_sta;
   var c_len;
-  var n = 3;
+  var n = 4;
   if (c) { // if UA supports favs/LS
     if ((c=c[1])[1]) {//if fav enabled
       for (c_len = c.length; n < c_len; n++) {
@@ -88,7 +88,7 @@ function _recordFavStopHit(sta_name, fav_url) {
         if (i[1] == fav_url) {
           i[2]++; //boost view count
           //resort stations
-          if(n > 3) { //if cur sta not first sta
+          if(n > 4) { //if cur sta not first sta
           //if hit count of cur sta higher than next higher sta in list
             if(i[2] > (minus_1_sta = c[n-1])[2]) {
               //swap stations, pushing cur up, and -1 down
@@ -102,7 +102,7 @@ function _recordFavStopHit(sta_name, fav_url) {
       }//end sta search loop
       if (!found) {
         //add to end, unless full, if full wipe last sta
-        c[c_len == 9 ? 8 : c_len] = [sta_name, fav_url, 1];
+        c[c_len == 10 ? 9 : c_len] = [sta_name, fav_url, 1];
       }
       store_fav(c);
     } //fav enabled
