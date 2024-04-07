@@ -102,6 +102,15 @@ docs/404.html : 404.html
 docs/favicon.ico : favicon.ico
 	copy /y favicon.ico "$@"
 
+docs/emoji_u2764.png : emoji_u2764.png
+	copy /y emoji_u2764.png "$@"
+
+docs/emoji_u231b.svg : emoji_u231b.svg
+	copy /y emoji_u231b.svg "$@"
+
+docs/emoji_u1f4a7.png : emoji_u1f4a7.png
+	copy /y emoji_u1f4a7.png "$@"
+
 docs/CNAME : CNAME
 	copy /y CNAME "$@"
 
@@ -184,6 +193,7 @@ docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
 docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm docs/status_.htm
 docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm
 docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js docs/ifav.js
+docs/ac.appcache : docs/emoji_u2764.png docs/emoji_u231b.svg docs/emoji_u1f4a7.png
 docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 	perl -e"use File::Slurp; \
 	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \

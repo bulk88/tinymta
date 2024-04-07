@@ -106,17 +106,7 @@ meaningless for self closing BR tag
         e.appendChild(doc.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createTextNode(r.precipChance[i] + "%"));
-/*
-        v = e.appendChild(doc.createElement('font'));
-        v.color='#4ec1f5';
-        v.face="Wingdings";
-        v.appendChild(doc.createTextNode("S"));
-
-add color for older Windows, its ignored on android
-*/
-        v = e.appendChild(doc.createElement('font'));
-        v.color='#4ec1f5';
-        v.appendChild(doc.createTextNode("\ud83d\udca7"));
+        e.appendChild((this.E && this.E()) || doc.createTextNode("\ud83d\udca7"));
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createElement('img'))
         .src =

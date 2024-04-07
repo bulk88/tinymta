@@ -129,16 +129,34 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
   var e2,
   d = document.createElement('div'),
   e = d.appendChild(document.createElement('label')),
-  pendingFetch = 0;
+  pendingFetch = 0,
+  v;
+
+  if(config[3] && !window.E) {
+    (function(){
+      var heart, hourglass, drop;
+      heart = document.createElement('img');
+      heart.src = "emoji_u2764.png";
+      (hourglass = heart.style).height = hourglass.width = '1em';
+      hourglass.verticalAlign = 'middle';
+      hourglass = heart.cloneNode(0);
+      hourglass.src = "emoji_u231b.svg"
+      drop = heart.cloneNode(0);
+      drop.src = "emoji_u1f4a7.png";
+    //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
+      window.E = function (idx) {
+        return idx == 2 ? heart : idx ? /*1*/ hourglass : /*0*/ drop.cloneNode(0);
+      };
+    })();
+  } else {
+    window.E = 0; //stop f.js from trying to put the emj PF
+  }
   (e2 = document.createElement('input')).type = "checkbox";
   e2.checked = config[1];
   //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
   e.appendChild(e2);
   
-  //FIX ME var v is a global TODO
-  v = e.appendChild(document.createElement('font'));
-  v.color='red';
-  v.appendChild(document.createTextNode(
+  e.appendChild((window.E && window.E(2)) || document.createTextNode(
   //heart
   "\u2764"
   ));
@@ -149,7 +167,7 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
   //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
   e.appendChild(e2);
   //hourglass
-  e.appendChild(document.createTextNode("\u231B "));
+  e.appendChild((window.E && window.E(1)) || document.createTextNode("\u231B "));
   if (!config[1])
     e = "History off";
   else if (config.length == 4) {

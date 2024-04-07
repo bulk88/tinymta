@@ -1,9 +1,9 @@
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 11; };
-function DRAW_VER_STR() { return "11"; };
+function DRAW_VER() { return 40; };
+function DRAW_VER_STR() { return "40"; };
 function DRAW_VER_LEN() { return 2; };
-function PREFIX_LEN() { return 3490; };
+function PREFIX_LEN() { return 3763; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
@@ -49,7 +49,7 @@ function extend_fav(divEl,left) {
     //IE 8 has arg undef, all other UAs have event obj
     var chked = evt_div.checked;
     evt_div = evt_div.parentNode;
-    if(evt_div.lastChild.color/*"red" or undef*/) {
+    if(evt_div === evt_div.parentNode.firstChild) {
       //1st checkmark
       if (chked) {
         c[1] = 1;

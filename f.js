@@ -294,6 +294,18 @@ if (!window.encodeURIComponent)
     };
   })();
 
+if (!window.E && window.E !== 0) {
+  (function () {
+    var e2, drop = document.createElement('img');
+    drop.src = "emoji_u1f4a7.png";
+    (e2 = drop.style).height = e2.width = '1em';
+    e2.verticalAlign = 'middle';
+    //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
+    window.E = function () {
+      return drop.cloneNode(0);
+    };
+  })();
+}
 //sometimes just polyfills above needed, fetch exists
 if (!window.fetch) {
 
