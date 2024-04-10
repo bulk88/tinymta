@@ -191,7 +191,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
   var e, e2, i,
   d = document.createElement('div');
 
-//if this a re-drawm recycle checkmark el's for perf
+//if this a re-draw, recycle checkmark tags for perf
   d.appendChild(heart).firstChild.checked = config[1];
 //RT flag is secretly saved, even tho thru 1st flag (heart) the history
 //was cleared by user

@@ -22,7 +22,7 @@ my $coder = Cpanel::JSON::XS->new->canonical(1)->allow_nonref(1);
 my $file = read_file($ARGV[0], { binmode => $encodelayers } );
 my $draw_fav = read_file("draw_fav.min.js", { binmode => $encodelayers } );
 #Dump($draw_fav);
-$draw_fav = $draw_prefix.substr($draw_fav,14,length($draw_fav)-15).$draw_postfix;
+$draw_fav = $draw_prefix.substr($draw_fav,17,length($draw_fav)-18).$draw_postfix;
 my $draw_fav_escaped = $coder->encode($draw_fav);
 
 my $ver;

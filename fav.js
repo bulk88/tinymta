@@ -2,15 +2,15 @@ var L;//async race CB fav.js vs inline wea script
 
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 53; };
-function DRAW_VER_STR() { return "53"; };
+function DRAW_VER() { return 62; };
+function DRAW_VER_STR() { return "62"; };
 function DRAW_VER_LEN() { return 2; };
-function PREFIX_LEN() { return 3658; };
+function PREFIX_LEN() { return 3655; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
     var c = localStorage.getItem("fav");
-    if (0) {
+    if (1) {
       //+1 is [
       if (!c || c.substr(PREFIX_LEN() + 1, DRAW_VER_LEN()) !== DRAW_VER_STR()) {
         //initial default/first ever!!! (cookie/LS clear) favs obj on particular user
@@ -199,8 +199,8 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
     if(config) { //false is too old/no LS browser
       if (config[0]) {//[0] is result flag from read_fav, it made/wiped the config
         prefixFn = new Function(
-        /*args  */ prefix.slice(28,prefix.indexOf(')',28)).split(','),
-        /*fnbody*/ prefix.slice(39,prefix.lastIndexOf(';')-1) //for } rmv
+        /*args  */ prefix.slice(10, prefix.indexOf(")", 10)).split(","),
+        /*fnbody*/ prefix.slice(15,prefix.lastIndexOf('}'))
         );
         //fav obj ver upgrade happpened
         if (favDiv) { //dont de dup config[1], extra code bytes after mini
