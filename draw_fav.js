@@ -1,14 +1,14 @@
 this.draw_fav_ld=function(config, insertFDivFn) {
 //alot of closures in this func
-function postDrawArv(span,arrHTMLLines,i/*cheaper than var SPACE*/) {
-  span.innerHTML = arrHTMLLines.join(',')+"&nbsp;";
+function postDrawArv(span,arrHTMLLines_height) {
+  span.innerHTML = arrHTMLLines_height.join(',')+"&nbsp;";
   pendingFetch--; //private global
   //update cached height
   if (!pendingFetch) {
     //.pN is UI attached fav div
     (span = span.parentNode).style.minHeight = '';
-    if (localStorage.getItem('fh') != (i = span.clientHeight)) {
-      localStorage.setItem('fh', i);
+    if (localStorage.getItem('fh') != (arrHTMLLines_height = span.clientHeight)) {
+      localStorage.setItem('fh', arrHTMLLines_height);
     }
   }
 }
@@ -114,7 +114,8 @@ if (r = r[0]) {//if(r.length) { shorter alternative
 
     postDrawArv(span,h);
     })})}}
-    
+
+//delayTypeCode_fn_arr is int 2, or bool false
 function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
   if(delayTypeCode_fn_arr-1) {//is 2, pagevis evt chrome bug
     setTimeout(RTS,0,sta,span);
@@ -137,17 +138,8 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
   }// is f.js
 }
 
-var pendingFetch;
-/*STARTSUBCOLOR*/
-var colorStrsSUB = ["00933c","ff6319","fccc0a","2850ad","ee352e","6d6e71","b933ad","0078c6","996633"];
-var colorRoutesSUB = {/*"4":0,*//*"5":0,*//*"6X":0,*//*"5X":0,*//*"6":0,*/"FX":1,"D":1,"M":1,"F":1,"B":1,"W":2,"N":2,"R":2,"Q":2,"E":3,"C":3,"A":3,"2":4,"1":4,"3":4,"H":5,"GS":5,"FS":5,"7":6,"7X":6,"SI":7,"SIR":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
-/*ENDSUBCOLOR*/
-/*STARTRAILCOLOR*/
-var colorStrsRAIL = ["ee0034","006ec7","4d5357"];
-var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1,"CI":2,"12":2,"HA":"0039a6","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
-/*ENDRAILCOLOR*/
-
-var heart = document.createElement('label'),
+var pendingFetch,
+    heart = document.createElement('label'),
     hourglass = heart.appendChild(document.createElement('input'));
 //IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
 //short var reuse
@@ -155,38 +147,45 @@ hourglass.type = "checkbox";
 hourglass = heart.cloneNode(1);
 //"any emoji config" templates now done
 //now add colored emoji setting specific el's
-(function(){
-  var l_heart, l_hourglass, l_drop;
   if(config[3]) {
     //png files and svg are from https://github.com/googlefonts/noto-emoji
-    l_heart = document.createElement('img');
-    l_heart.src = "ht.png";
+    //THIS USED TO BE A IIFE/CLOSURE, BUT UGLIFY JS UNROLLED/INLINED IT
+    //AND NEVER REFERENCED/USED THE VARS AGAIN, UGLY BUT SAVES BYTES
+    //b4
+    //docs/fav.js          uc  1962 gz  950
+    //docs/ifav.js         uc  3933 gz 2079
+
+    //af
+    //docs/fav.js          uc  1962 gz  952
+    //docs/ifav.js         uc  3927 gz 2075
+    colorStrsSUB /*l_heart*/ = document.createElement('img');
+    colorStrsSUB /*l_heart*/.src = "ht.png";
     //add CSS for sizing
-    (l_hourglass = l_heart.style).height = l_hourglass.width = '1em';
-    l_hourglass.verticalAlign = 'middle';
-    l_hourglass = l_heart.cloneNode(0);
-    l_hourglass.src = "hg.svg"
-    l_drop = l_heart.cloneNode(0);
-    l_drop.src = "dp.png";
+    (colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.style).height = colorRoutesSUB /*l_hourglass*/.width = '1em';
+    colorRoutesSUB /*l_hourglass*/.verticalAlign = 'middle';
+    colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.cloneNode(0);
+    colorRoutesSUB /*l_hourglass*/.src = "hg.svg"
+    colorStrsRAIL /*l_drop*/ = colorStrsSUB /*l_heart*/.cloneNode(0);
+    colorStrsRAIL /*l_drop*/.src = "dp.png";
   } else {//use native emoji
-    //heart
-    l_heart = document.createTextNode("\u2764");
+    //heart, fe0f req for FF 115 to be red
+    colorStrsSUB /*l_heart*/ = document.createTextNode("\u2764\ufe0f");
     //hourglass
-    l_hourglass = document.createTextNode("\u231B ");
+    colorRoutesSUB /*l_hourglass*/ = document.createTextNode("\u231B ");
     //stop f.js from later trying to put the emoji PF
-    l_drop = 0;
+    colorStrsRAIL /*l_drop*/ = 0;
   }
-  heart.appendChild(l_heart);
-  hourglass.appendChild(l_hourglass);
-  window.E = l_drop;
-})();
+  heart.appendChild(colorStrsSUB /*l_heart*/);
+  hourglass.appendChild(colorRoutesSUB /*l_hourglass*/);
+  window.E = colorStrsRAIL /*l_drop*/;
 
 
 //first run, probably eval() LS (2nd arg undef)
 //but cud be a ver change or virgin no LS draw with 2nd arg
-//3rd arg is wait for f.js to run the fetch()es if any
-draw_fav(config,insertFDivFn, this.fetch ? 0 : 1);
+//3rd arg is wait/defer for f.js to run the fetch()es if any
+draw_fav(config,insertFDivFn, !this.fetch);
 
+//fetchDelayTypeCode is bool true/false, or INT 2 (page vis chrome bug)
 function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
   var e, e2, i,
   d = document.createElement('div');
@@ -197,18 +196,12 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
 //was cleared by user
   d.appendChild(hourglass).firstChild.checked = config[1] && config[2];
 
-  if (!config[1])
-    e = "History off";
-  else if (config.length == 4) {
-    e = "No history yet";
-  } else
-    e = 0;
-  if (e) {
-    d.appendChild(document.createTextNode(e));
+//private global, note pndFet gbl set even if no ft will happen, to save code
+  if (!(pendingFetch = config.length-4)) {
+    d.appendChild(document.createTextNode(config[1] ? "No history yet" : "History off"));
   } else {
     //if RT checking on, add cached minHeight so weather div doesn't jerk
     if(config[2]) {
-      pendingFetch = config.length-4; //private global
       if(e = localStorage.getItem('fh')) {
         d.style.minHeight = e+'px';
       }
@@ -242,7 +235,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
     if (e2) {
       for (i = e.lastChild; i = i.previousSibling; /*empty*/) {
         if ("DIV" === i.nodeName) {
-          i.style.minHeight = e2 + 'px';
+          i.style.minHeight = e2;
           break;
         }
       }
@@ -250,6 +243,17 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
     e.appendChild(d);
   }
 }//end function draw_fav()
+
+//initialize after draw_fav call
+/*STARTSUBCOLOR*/
+var colorStrsSUB = ["00933c","ff6319","fccc0a","2850ad","ee352e","6d6e71","b933ad","0078c6","996633"];
+var colorRoutesSUB = {/*"4":0,*//*"5":0,*//*"6X":0,*//*"5X":0,*//*"6":0,*/"FX":1,"D":1,"M":1,"F":1,"B":1,"W":2,"N":2,"R":2,"Q":2,"E":3,"C":3,"A":3,"2":4,"1":4,"3":4,"H":5,"GS":5,"FS":5,"7":6,"7X":6,"SI":7,"SIR":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
+/*ENDSUBCOLOR*/
+/*STARTRAILCOLOR*/
+var colorStrsRAIL = ["ee0034","006ec7","4d5357"];
+var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1,"CI":2,"12":2,"HA":"0039a6","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
+/*ENDRAILCOLOR*/
+
 }
 
 

@@ -73,6 +73,7 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       v, //val
       img_ext = nosvg ? nosvg : '.svg',
       br = doc.createElement('br'),
+      drop = this.E || doc.createTextNode("\ud83d\udca7"),
       i = 0;
       /*hardcode 24 hr in a day to save wire*/
       for (; i < 24; i++) {
@@ -109,7 +110,7 @@ meaningless for self closing BR tag
         e.appendChild(doc.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createTextNode(r.precipChance[i] + "%"));
-        e.appendChild((this.E && this.E.cloneNode(0)) || doc.createTextNode("\ud83d\udca7"));
+        e.appendChild(drop.cloneNode(0));
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createElement('img'))
         .src =

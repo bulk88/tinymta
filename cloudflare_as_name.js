@@ -43,7 +43,7 @@ var colorRoutesRAIL = {/*"WB":0,*//*"NC":0,*//*"DN":0,*//*"NH":0,*/"HH":1,"PJ":1
 //during rmv minHeight+add Text Node even with minHeight being .1 px smaller than
 //final height of AS Name div
 //https://stackoverflow.com/questions/4106538/difference-between-offsetheight-and-clientheight
-            localStorage.setItem("as",divEl.clientHeight);
+            localStorage.setItem("as",divEl.clientHeight + "px");
           } catch (e) {
           }
         }, 100, e);
@@ -63,7 +63,7 @@ function mkJSResp(str,etag) {
   return new Response(
   '!function t(e,i){if(i=document.body){for(i=i.lastChild;i=i.previousSibling;)if("DIV"===i.nodeName&&!i.firstChild){i.style.minHeight="",i.appendChild(document.createTextNode('
   +JSON.stringify(str)+
-  ')),setTimeout(function(e){try{localStorage.setItem("as",e.clientHeight)}catch(i){}},100,i);return}}setTimeout(t,e,e+10)}(10)'
+  ')),setTimeout(function(e){try{localStorage.setItem("as",e.clientHeight+"px")}catch(i){}},100,i);return}}setTimeout(t,e,e+10)}(10)'
   , {
       headers: {
         "content-type": "text/javascript",
@@ -580,7 +580,7 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
     asn: 676
   };
   var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"C'+ip+'.'+cf.asn+'"';
+  var etag = 'W/"D'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }
