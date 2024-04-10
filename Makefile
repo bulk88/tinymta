@@ -81,6 +81,12 @@ draw_fav.js: insertcolors.pl li/routesmodded.txt sub/routes.txt
 draw_fav.min.js: draw_fav.js
 	uglifyjs -c -m toplevel -m eval "draw_fav.js" -o "draw_fav.min.js"
 
+docs/draw_fav.js: draw_fav.min.js
+	copy /y draw_fav.min.js "$@"
+
+docs/as.js: as.js
+	copy /y as.js "$@"
+
 fav.js: draw_fav.min.js adj_fav.pl
 	perl adj_fav.pl "$@"
 
@@ -89,7 +95,7 @@ ifav.js: draw_fav.min.js adj_fav.pl
 
 docs/fav.js : fav.js
 	copy /y fav.js "$@"
-	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
+	uglifyjs -c -m toplevel -m eval -m reserved=['L'] "$@" -o "$@"
 #	uglifyjs -c inline=true,passes=2,unsafe -m toplevel -m eval "$@" -o "$@"
 
 docs/ifav.js : ifav.js
@@ -198,7 +204,7 @@ docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm docs/status_.htm
 docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm
 docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js docs/ifav.js
 docs/ac.appcache : docs/ht.png docs/hg.svg docs/dp.png
-docs/ac.appcache : docs/hg.png
+docs/ac.appcache : docs/hg.png docs/draw_fav.js docs/as.js
 docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 	perl -e"use File::Slurp; \
 	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \

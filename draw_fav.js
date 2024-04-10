@@ -1,20 +1,20 @@
-this.draw_fav=function(config, draw_fav_fn, replaceEl, extend_fav, isPageShowEvt) {
+this.draw_fav_ld=function(config, insertFDivFn) {
 //alot of closures in this func
 function postDrawArv(span,arrHTMLLines,i/*cheaper than var SPACE*/) {
   span.innerHTML = arrHTMLLines.join(',')+"&nbsp;";
-  pendingFetch--;
+  pendingFetch--; //private global
   //update cached height
   if (!pendingFetch) {
-    d.style.minHeight = ''; 
-    if (localStorage.getItem('fh') != (i = d.clientHeight)) {
+    //.pN is UI attached fav div
+    (span = span.parentNode).style.minHeight = '';
+    if (localStorage.getItem('fh') != (i = span.clientHeight)) {
       localStorage.setItem('fh', i);
     }
   }
 }
 
 function mkSubFontTag(text) {
-  var tag;
-  tag = colorRoutesSUB[text];
+  var tag = colorRoutesSUB[text];
   if(typeof tag !== 'string') {
     tag = colorRoutesSUB[text] = colorStrsSUB[tag|0]; //undef to 0
   }
@@ -115,9 +115,29 @@ if (r = r[0]) {//if(r.length) { shorter alternative
     postDrawArv(span,h);
     })})}}
     
-  function doDelayedFetch (u,s) {
-    setTimeout(function () {RTS(u, s)},0);
-  }
+function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
+  if(delayTypeCode_fn_arr-1) {//is 2, pagevis evt chrome bug
+    setTimeout(RTS,0,sta,span);
+  } else { //is f.js PF fetch()
+    delayTypeCode_fn_arr = this.w;
+    if(!delayTypeCode_fn_arr) {
+      delayTypeCode_fn_arr = this.w = function () {
+        //in CB from f.js load-ed, now can fetch()
+        for(var i=0;i<delayTypeCode_fn_arr.length;) {
+          RTS(delayTypeCode_fn_arr[i++],delayTypeCode_fn_arr[i++]);
+        }
+        //free memory/free span elements
+        this.w = undefined;
+      };
+      delayTypeCode_fn_arr.arr=[];
+    }
+    delayTypeCode_fn_arr=delayTypeCode_fn_arr.arr;
+    delayTypeCode_fn_arr[delayTypeCode_fn_arr.length] = sta;
+    delayTypeCode_fn_arr[delayTypeCode_fn_arr.length] = span;
+  }// is f.js
+}
+
+var pendingFetch;
 /*STARTSUBCOLOR*/
 var colorStrsSUB = ["00933c","ff6319","fccc0a","2850ad","ee352e","6d6e71","b933ad","0078c6","996633"];
 var colorRoutesSUB = {/*"4":0,*//*"5":0,*//*"6X":0,*//*"5X":0,*//*"6":0,*/"FX":1,"D":1,"M":1,"F":1,"B":1,"W":2,"N":2,"R":2,"Q":2,"E":3,"C":3,"A":3,"2":4,"1":4,"3":4,"H":5,"GS":5,"FS":5,"7":6,"7X":6,"SI":7,"SIR":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
@@ -126,51 +146,57 @@ var colorRoutesSUB = {/*"4":0,*//*"5":0,*//*"6X":0,*//*"5X":0,*//*"6":0,*/"FX":1
 var colorStrsRAIL = ["ee0034","006ec7","4d5357"];
 var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1,"CI":2,"12":2,"HA":"0039a6","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
 /*ENDRAILCOLOR*/
-  var e2,
-  d = document.createElement('div'),
-  e = d.appendChild(document.createElement('label')),
-  pendingFetch = 0,
-  v;
 
+var heart = document.createElement('label'),
+    hourglass = heart.appendChild(document.createElement('input'));
+//IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
+//short var reuse
+hourglass.type = "checkbox";
+hourglass = heart.cloneNode(1);
+//"any emoji config" templates now done
+//now add colored emoji setting specific el's
+(function(){
+  var l_heart, l_hourglass, l_drop;
   if(config[3]) {
-    if(!window.E) {
-      (function(){
-        //png files and svg are from https://github.com/googlefonts/noto-emoji
-        var heart, hourglass, drop;
-        heart = document.createElement('img');
-        heart.src = "ht.png";
-        (hourglass = heart.style).height = hourglass.width = '1em';
-        hourglass.verticalAlign = 'middle';
-        hourglass = heart.cloneNode(0);
-        hourglass.src = "hg.svg"
-        drop = heart.cloneNode(0);
-        drop.src = "dp.png";
-      //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
-        window.E = function (idx) {
-          return idx == 2 ? heart : idx ? /*1*/ hourglass : /*0*/ drop.cloneNode(0);
-        };
-      })();
-    }
-  } else {
-    window.E = 0; //stop f.js from trying to put the emj PF
+    //png files and svg are from https://github.com/googlefonts/noto-emoji
+    l_heart = document.createElement('img');
+    l_heart.src = "ht.png";
+    //add CSS for sizing
+    (l_hourglass = l_heart.style).height = l_hourglass.width = '1em';
+    l_hourglass.verticalAlign = 'middle';
+    l_hourglass = l_heart.cloneNode(0);
+    l_hourglass.src = "hg.svg"
+    l_drop = l_heart.cloneNode(0);
+    l_drop.src = "dp.png";
+  } else {//use native emoji
+    //heart
+    l_heart = document.createTextNode("\u2764");
+    //hourglass
+    l_hourglass = document.createTextNode("\u231B ");
+    //stop f.js from later trying to put the emoji PF
+    l_drop = 0;
   }
-  (e2 = document.createElement('input')).type = "checkbox";
-  e2.checked = config[1];
-  //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
-  e.appendChild(e2);
-  
-  e.appendChild((window.E && window.E(2)) || document.createTextNode(
-  //heart
-  "\u2764"
-  ));
-  e = d.appendChild(document.createElement('label'));
-  (e2 = document.createElement('input')).type = "checkbox";
-  //secret save RT flag, thru 1st flag history clear sequence by user
-  e2.checked = config[1] && config[2];
-  //IE 8 does NOT allow changing .type after tree insert, don't optimize expr
-  e.appendChild(e2);
-  //hourglass
-  e.appendChild((window.E && window.E(1)) || document.createTextNode("\u231B "));
+  heart.appendChild(l_heart);
+  hourglass.appendChild(l_hourglass);
+  window.E = l_drop;
+})();
+
+
+//first run, probably eval() LS (2nd arg undef)
+//but cud be a ver change or virgin no LS draw with 2nd arg
+//3rd arg is wait for f.js to run the fetch()es if any
+draw_fav(config,insertFDivFn, this.fetch ? 0 : 1);
+
+function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
+  var e, e2, i,
+  d = document.createElement('div');
+
+//if this a re-drawm recycle checkmark el's for perf
+  d.appendChild(heart).firstChild.checked = config[1];
+//RT flag is secretly saved, even tho thru 1st flag (heart) the history
+//was cleared by user
+  d.appendChild(hourglass).firstChild.checked = config[1] && config[2];
+
   if (!config[1])
     e = "History off";
   else if (config.length == 4) {
@@ -181,30 +207,32 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
     d.appendChild(document.createTextNode(e));
   } else {
     //if RT checking on, add cached minHeight so weather div doesn't jerk
-    if(config[2] && (e = localStorage.getItem('fh'))) {
-      d.style.minHeight = e+'px';
+    if(config[2]) {
+      pendingFetch = config.length-4; //private global
+      if(e = localStorage.getItem('fh')) {
+        d.style.minHeight = e+'px';
+      }
     }
     for (i = 4; i < 10 && (e = config[i]); i++) {
+      //todo template A tag
       (e2 = d.appendChild(document.createElement('a'))).href = (e[1].charAt() == 'r' ? "rstop.htm#" : "stop.htm#") + e[1].slice(1);
       e2.appendChild(document.createTextNode(e[0]));
       d.appendChild(document.createTextNode(" "));
       if(config[2]) {
-        pendingFetch++;
         e2 = d.appendChild(document.createElement('span'));
         e2.style.display = 'inline';
 //Chrome 109 Win32, all fetch()es started from pageshow event hang as "pending" forever
 //set a 0 ms timer to fix it, but don't do the timer, on initial page load (perf)
-        (isPageShowEvt ? doDelayedFetch : RTS)(e[1], e2);
+        (fetchDelayTypeCode ? doDelayedFetch : RTS)(e[1], e2, fetchDelayTypeCode);
       }
-    }
+    }//end for
   }
-  //todo copy checkbox FNs if possible
+
   //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
   window.favDiv = d;
-  d.draw_fav = draw_fav_fn;
-  if (replaceEl) {
-    replaceEl.parentNode.replaceChild(d, replaceEl);
-    extend_fav(d);
+  d.draw_fav = draw_fav;
+  if (insertFDivFn) { //not first LS eval() but some other kind of draw from other code
+    insertFDivFn(d);
   } else {
     e = document.body;
     //push cached height of AS Name div, to prevent layout shift/jerk of
@@ -212,15 +240,16 @@ var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1
     //text happens to be 2 or 3 lines, wrapped, on mobile UAs
     e2 = localStorage.getItem("as");
     if (e2) {
-      for (v = e.lastChild; v = v.previousSibling; ) {
-        if ("DIV" === v.nodeName && !v.firstChild) {
-          v.style.minHeight = e2 + 'px';
+      for (i = e.lastChild; i = i.previousSibling; /*empty*/) {
+        if ("DIV" === i.nodeName) {
+          i.style.minHeight = e2 + 'px';
           break;
         }
       }
     }
     e.appendChild(d);
   }
+}//end function draw_fav()
 }
 
 

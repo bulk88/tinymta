@@ -1,4 +1,5 @@
 {
+  "XXXXcomment": "y,w,x are CBs f.js load, f anti f.js tag double ld, R routes.js JSP, F ifav.js JSP, E drop emoji el obj, L index.htm DOM mostly loaded CB",
   "collapseBooleanAttributes": true,
   "collapseWhitespace": true,
   "html5": true,
@@ -12,7 +13,7 @@
     "ie": true,
     "mangle": {
       "eval": true,
-      "reserved": ["x", "y", "w", "f", "R", "F", "E"],
+      "reserved": ["x", "y", "w", "f", "R", "F", "E", "L"],
       "toplevel": true
     },
     "nameCache": {}

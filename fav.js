@@ -1,25 +1,47 @@
+var L;//async race CB fav.js vs inline wea script
+
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 44; };
-function DRAW_VER_STR() { return "44"; };
+function DRAW_VER() { return 53; };
+function DRAW_VER_STR() { return "53"; };
 function DRAW_VER_LEN() { return 2; };
-function PREFIX_LEN() { return 3734; };
+function PREFIX_LEN() { return 3658; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
     var c = localStorage.getItem("fav");
-    //+1 is [
-    if (!c || c.substr(PREFIX_LEN()+1,DRAW_VER_LEN()) !== DRAW_VER_STR()) {
-      //initial default/first ever!!! (cookie/LS clear) favs obj on particular user
-      //global config array is, version int, keep hist bool, realtime bool, has emoji bool, sta#1, sta#2
-      this.F = function (_prefix, config) {
-        prefix = _prefix;
-        finish(config);
-      };
-      document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/ifav.js';
+    if (0) {
+      //+1 is [
+      if (!c || c.substr(PREFIX_LEN() + 1, DRAW_VER_LEN()) !== DRAW_VER_STR()) {
+        //initial default/first ever!!! (cookie/LS clear) favs obj on particular user
+        //global config array is, version int, keep hist bool, realtime bool, has emoji bool, sta#1, sta#2
+        this.F = function (_prefix, config) {
+          prefix = _prefix;
+          finish(config);
+        };
+        document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/ifav.js';
+      } else {
+        prefix = c.slice(0, PREFIX_LEN() + 0);
+        finish([0, JSON.parse(c.slice(PREFIX_LEN() + 0, c.length - 1))]);
+      }
     } else {
-      prefix = c.slice(0,PREFIX_LEN()+0);
-      finish([0,JSON.parse(c.slice(PREFIX_LEN()+0, c.length - 1))]);
+      //debugging only branch
+      prefix = '(function(c){var f=function(e,t){return window.draw_fav_ld(e,t)};f(c)})(';
+      if (!c || c.indexOf(prefix) != 0) {
+        var dont_have_clr_emoji;
+        var ctx = document.createElement("canvas");
+        try {
+          ctx = ctx.getContext("2d");
+          ctx.canvas.width = ctx.canvas.height = 1;
+          ctx.fillText("\ud83d\udca7", -4, 4);
+          dont_have_clr_emoji = ctx.getImageData(0, 0, 1, 1).data[2]; //RGBA, [2] is blue
+        } catch (e) {}
+        dont_have_clr_emoji = (!dont_have_clr_emoji) | 0;
+        localStorage.setItem("fav", prefix + '[' + '99999999' + ',1,0,' + dont_have_clr_emoji + '])');
+        finish([1, [99999999, 1, 0, dont_have_clr_emoji]]);
+      } else {
+        finish([0, JSON.parse(c.slice(prefix.length, c.length - 1))]);
+      }
     }
   } catch (e) {
     //favs not supported on browser
@@ -71,10 +93,16 @@ function extend_fav(divEl,left) {
     }
     //closure free design, get input from from misc globals
     evt_div = evt_div.parentNode;
-    evt_div.draw_fav(store_fav(c), evt_div.draw_fav, evt_div, extend_fav);
+    evt_div.draw_fav(
+      store_fav(c),
+      function(newFDiv) {
+        evt_div.parentNode.replaceChild(newFDiv, evt_div);
+      }
+    );
   }); //read_fav CB
   };//onchange CB for checkboxes
 }
+
 function _recordFavStopHit(sta_name, fav_url) {
   read_fav(function (c) {
   var found;
@@ -113,8 +141,6 @@ function _recordFavStopHit(sta_name, fav_url) {
   var prefix,
   delayedStaHits_head,
   i;
-  //debugging
-  //var prefix = '(function(c){var f=function(e,t,d,n,a){return window.draw_fav(e,t,d,n,a)};this.fetch?f(c,f):(this.w=function(){f(c,f)})})(';
   if(delayedStaHits_head = this.rF) {
     for(i=0;i<delayedStaHits_head.length;i+=2) {
       _recordFavStopHit(delayedStaHits_head[i], delayedStaHits_head[i+1]);
@@ -151,12 +177,20 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
       event_div = this.favDiv;
       if(event_div) {
         read_fav(function(c){
-        event_div.draw_fav(c[1],event_div.draw_fav, event_div, extend_fav, 1);
+          event_div.draw_fav(
+            c[1],
+            function(newFDiv) {
+              event_div.parentNode.replaceChild(newFDiv, event_div);
+              //RT Time refresh, no need to add evt handlers
+            },
+            2 //opt code, delay fetch with setTimeout, modern chrome bug
+          );
         });
       }
     }
   };
   var checkDOMFn = function () {
+    L=0;//maybe wipe this CB FN
     read_fav(function(config) {
     var favDiv = this.favDiv;
     var prefixFn;
@@ -170,7 +204,12 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
         );
         //fav obj ver upgrade happpened
         if (favDiv) { //dont de dup config[1], extra code bytes after mini
-          prefixFn(config[1], prefixFn, favDiv, extend_fav);
+          prefixFn(config[1], function(newFDiv) {
+            //draw first for UI latency, adding handlers can wait some MS
+            favDiv.parentNode.replaceChild(newFDiv, favDiv);
+            //add evt handlers, this a ver upgrade
+            extend_fav(newFDiv);
+          });
         }
         //virgin user/browser, draw favs very late first time ever
         else {
@@ -182,7 +221,12 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
             el = el.previousElementSibling; //eventually null
           }
           if (el) {
-            prefixFn(config[1], prefixFn, el.parentNode.insertBefore(document.createElement('div'), el), extend_fav);
+            prefixFn(config[1], function(newFDiv) {
+              //draw first for UI latency, adding handlers can wait some MS
+              el.parentNode.insertBefore(newFDiv, el);
+              //add evt handlers, this a virgin no LS draw
+              extend_fav(newFDiv);
+            });
           }
         }
       } else {
@@ -190,15 +234,23 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
         if(!favDiv) {
           alert('no div but saw fav draw code');
         }
-        else extend_fav(favDiv); //add checkmark event handlers, 99% time this branch
+        else
+          extend_fav(favDiv); //add checkmark event handlers, 99% time this branch
       }
     }
   });//read_fav cb
   };//dom loaded CB
-  if(document.body && this.fetch) //async script tags supported
+
+  if(
+    //document.body && is redundant, Safari 5.1.7 has FULL <BODY> dom tree built
+    //but DIDNT run inline script tags yet, just test for wea draw y() func instead
+    this.y
+  ) { //async script tags supported/have DOM
     checkDOMFn();
-  else //defer the run
-    this.x = checkDOMFn;
+  } else {//defer the run
+    L = checkDOMFn;
+  }
+
 }// if index.htm
 })();
 

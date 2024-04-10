@@ -16,8 +16,8 @@ sub utf16length {
   return $l;
 }
 
-my $draw_prefix = '(function(c){var f=';
-my $draw_postfix = ';this.fetch?f(c,f):(this.w=function(){f(c,f)})})(';
+my $draw_prefix = '(';
+my $draw_postfix = ')(';
 my $coder = Cpanel::JSON::XS->new->canonical(1)->allow_nonref(1);
 my $file = read_file($ARGV[0], { binmode => $encodelayers } );
 my $draw_fav = read_file("draw_fav.min.js", { binmode => $encodelayers } );

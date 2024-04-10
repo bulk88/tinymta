@@ -294,16 +294,13 @@ if (!window.encodeURIComponent)
     };
   })();
 
-if (!window.E && window.E !== 0) {
+if (location.pathname == "/" && !window.E && window.E !== 0) {
   (function () {
-    var e2, drop = document.createElement('img');
+    var drop = window.E = document.createElement('img');
     drop.src = "dp.png";
-    (e2 = drop.style).height = e2.width = '1em';
-    e2.verticalAlign = 'middle';
-    //DO NOT USE this., this obj is sometimes a div b/c callers did divEl.draw_fav()
-    window.E = function () {
-      return drop.cloneNode(0);
-    };
+    drop = drop.style;
+    drop.height = drop.width = '1em';
+    drop.verticalAlign = 'middle';
   })();
 }
 //sometimes just polyfills above needed, fetch exists
