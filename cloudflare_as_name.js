@@ -14,13 +14,13 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
 /*ENDINSERT*/
 
 /*STARTSUBCOLOR*/
-var colorStrsSUB = ["ff6319","00933c","fccc0a","ee352e","2850ad","6d6e71","b933ad","996633","0078c6"];
-var colorRoutesSUB = {/*"F":0,*//*"B":0,*//*"D":0,*//*"FX":0,*//*"M":0,*/"6":1,"5X":1,"6X":1,"5":1,"4":1,"R":2,"N":2,"Q":2,"W":2,"1":3,"3":3,"2":3,"A":4,"C":4,"E":4,"H":5,"FS":5,"GS":5,"7":6,"7X":6,"Z":7,"J":7,"SIR":8,"SI":8,"G":"6cbe45","L":"a7a9ac"};
+var colorStrsSUB = ["ff6319","00933c","fccc0a","6d6e71","ee352e","286ded","0078c6","b933ad","996633"];
+var colorRoutesSUB = {/*"B":0,*//*"F":0,*//*"M":0,*//*"FX":0,*//*"D":0,*/"6X":1,"5X":1,"6":1,"5":1,"4":1,"W":2,"N":2,"R":2,"Q":2,"FS":3,"H":3,"GS":3,"3":4,"1":4,"2":4,"A":5,"E":5,"C":5,"SI":6,"SIR":6,"7":7,"7X":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
 /*ENDSUBCOLOR*/
 
 /*STARTRAILCOLOR*/
-var colorStrsRAIL = ["ee0034","006ec7","4d5357"];
-var colorRoutesRAIL = {/*"WB":0,*//*"NC":0,*//*"DN":0,*//*"NH":0,*/"HH":1,"PJ":1,"CI":2,"12":2,"HA":"0039a6","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
+var colorStrsRAIL = ["ee0034","4d5357","006ec7"];
+var colorRoutesRAIL = {/*"NC":0,*//*"DN":0,*//*"WB":0,*//*"NH":0,*/"12":1,"CI":1,"HH":2,"PJ":2,"BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","HA":"066afe","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
 /*ENDRAILCOLOR*/
 
 /*
@@ -1188,7 +1188,8 @@ function buildRailRoute (data_line) {
         /* id */
         route,
         /*color*/
-        railLine.color,
+        /* "0039A6", too dark switch to brighter */
+        railLine.color === "0039A6" ? "066AFE" : railLine.color,
         /* LI is more frequent, and == 0, null is rmv later*/
         /*agency*/
         !~railLine.id.indexOf('LI') ? AGENCY_MNR() : null,
@@ -1202,7 +1203,8 @@ function buildRailRoute (data_line) {
       /*id*/
       "Wassaic",
       /*color*/
-      "0039A6",
+      /* "0039A6", too dark switch to brighter */
+      "066AFE",
       /*agency*/
       AGENCY_MNR(),
       /*name*/

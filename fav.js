@@ -2,8 +2,8 @@ var L;//async race CB fav.js vs inline wea script
 
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 88; };
-function DRAW_VER_STR() { return "88"; };
+function DRAW_VER() { return 97; };
+function DRAW_VER_STR() { return "97"; };
 function DRAW_VER_LEN() { return 2; };
 function PREFIX_LEN() { return 3624; };
 //returns array [createdNewFavsBool,favsConfig]

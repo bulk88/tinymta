@@ -246,12 +246,12 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
 
 //initialize after draw_fav call
 /*STARTSUBCOLOR*/
-var colorStrsSUB = ["00933c","ff6319","fccc0a","2850ad","ee352e","6d6e71","b933ad","0078c6","996633"];
-var colorRoutesSUB = {/*"4":0,*//*"5":0,*//*"6X":0,*//*"5X":0,*//*"6":0,*/"FX":1,"D":1,"M":1,"F":1,"B":1,"W":2,"N":2,"R":2,"Q":2,"E":3,"C":3,"A":3,"2":4,"1":4,"3":4,"H":5,"GS":5,"FS":5,"7":6,"7X":6,"SI":7,"SIR":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
+var colorStrsSUB = ["00933c","ff6319","fccc0a","286ded","6d6e71","ee352e","0078c6","996633","b933ad"];
+var colorRoutesSUB = {/*"6":0,*//*"6X":0,*//*"5X":0,*//*"5":0,*//*"4":0,*/"B":1,"D":1,"F":1,"FX":1,"M":1,"R":2,"Q":2,"W":2,"N":2,"E":3,"A":3,"C":3,"GS":4,"FS":4,"H":4,"2":5,"1":5,"3":5,"SI":6,"SIR":6,"J":7,"Z":7,"7X":8,"7":8,"G":"6cbe45","L":"a7a9ac"};
 /*ENDSUBCOLOR*/
 /*STARTRAILCOLOR*/
 var colorStrsRAIL = ["ee0034","006ec7","4d5357"];
-var colorRoutesRAIL = {/*"DN":0,*//*"WB":0,*//*"NH":0,*//*"NC":0,*/"PJ":1,"HH":1,"CI":2,"12":2,"HA":"0039a6","BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
+var colorRoutesRAIL = {/*"WB":0,*//*"NC":0,*//*"NH":0,*//*"DN":0,*/"PJ":1,"HH":1,"CI":2,"12":2,"BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","HA":"066afe","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
 /*ENDRAILCOLOR*/
 
 }
