@@ -2,10 +2,10 @@ var L;//async race CB fav.js vs inline wea script
 
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 97; };
-function DRAW_VER_STR() { return "97"; };
+function DRAW_VER() { return 98; };
+function DRAW_VER_STR() { return "98"; };
 function DRAW_VER_LEN() { return 2; };
-function PREFIX_LEN() { return 3624; };
+function PREFIX_LEN() { return 3598; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
@@ -18,6 +18,7 @@ function read_fav(finish) {
         this.F = function (_prefix, config) {
           prefix = _prefix;
           finish(config);
+          this.F = 0;
         };
         document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/ifav.js';
       } else {
@@ -45,7 +46,7 @@ function read_fav(finish) {
     }
   } catch (e) {
     //favs not supported on browser
-    finish(0);
+    finish(/*0*/);
   }
 }
 
@@ -189,58 +190,25 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
       }
     }
   };
-  var checkDOMFn = function () {
-    L=0;//maybe wipe this CB FN
+  var checkDOMFn = function (fn) {
     read_fav(function(config) {
-    var favDiv = this.favDiv;
-    var prefixFn;
-    var el;
-    //LS global created new, defaults loaded in read_fav();
-    if(config) { //false is too old/no LS browser
-      if (config[0]) {//[0] is result flag from read_fav, it made/wiped the config
-        prefixFn = new Function(
-        /*args  */ prefix.slice(10, prefix.indexOf(")", 10)).split(","),
-        /*fnbody*/ prefix.slice(15,prefix.lastIndexOf('}'))
-        );
-        //fav obj ver upgrade happpened
-        if (favDiv) { //dont de dup config[1], extra code bytes after mini
-          prefixFn(config[1], function(newFDiv) {
-            //draw first for UI latency, adding handlers can wait some MS
-            favDiv.parentNode.replaceChild(newFDiv, favDiv);
-            //add evt handlers, this a ver upgrade
-            extend_fav(newFDiv);
-          });
-        }
-        //virgin user/browser, draw favs very late first time ever
-        else {
-          el = document.body.lastChild;
-          while (el) { //last el is NEVER it
-            if (el.nodeName == "STYLE") {
-              break;
-            }
-            el = el.previousElementSibling; //eventually null
+      var favDiv;
+      if(config) { //false is too old/no LS browser
+        if (favDiv = config[0]) {//[0] is result flag from read_fav, it made/wiped the config
+        //LS global created new, defaults loaded in read_fav();
+          extend_fav(favDiv);
+        } else {
+          //remove fav div test eventually, this can only hit if syntax error in LS JS code
+          if(!(favDiv = this.favDiv)) {
+            alert('no div but saw fav draw code');
           }
-          if (el) {
-            prefixFn(config[1], function(newFDiv) {
-              //draw first for UI latency, adding handlers can wait some MS
-              el.parentNode.insertBefore(newFDiv, el);
-              //add evt handlers, this a virgin no LS draw
-              extend_fav(newFDiv);
-            });
-          }
+          else
+            extend_fav(favDiv); //add checkmark event handlers, 99% time this branch
         }
-      } else {
-        //remove fav div test eventually, this can only hit if syntax error in LS JS code
-        if(!favDiv) {
-          alert('no div but saw fav draw code');
-        }
-        else
-          extend_fav(favDiv); //add checkmark event handlers, 99% time this branch
       }
-    }
-  });//read_fav cb
+    });//read_fav cb
+    return checkDOMFn.f = (checkDOMFn.f && checkDOMFn.f()); //maybe wipe this CB FN
   };//dom loaded CB
-
   if(
     //document.body && is redundant, Safari 5.1.7 has FULL <BODY> dom tree built
     //but DIDNT run inline script tags yet, just test for wea draw y() func instead
@@ -248,6 +216,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   ) { //async script tags supported/have DOM
     checkDOMFn();
   } else {//defer the run
+    checkDOMFn.f = L;
     L = checkDOMFn;
   }
 

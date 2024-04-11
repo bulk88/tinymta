@@ -209,7 +209,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
     for (i = 4; i < 10 && (e = config[i]); i++) {
       //todo template A tag
       (e2 = d.appendChild(document.createElement('a'))).href = (e[1].charAt() == 'r' ? "rstop.htm#" : "stop.htm#") + e[1].slice(1);
-      e2.appendChild(document.createTextNode(e[0]));
+      e2.textContent = e[0];
       d.appendChild(document.createTextNode(" "));
       if(config[2]) {
         e2 = d.appendChild(document.createElement('span'));
