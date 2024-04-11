@@ -86,6 +86,7 @@ docs/draw_fav.js: draw_fav.min.js
 
 docs/as.js: as.js
 	copy /y as.js "$@"
+	uglifyjs -c -m toplevel -m eval -m reserved=['L'] "$@" -o "$@"
 
 fav.js: draw_fav.min.js adj_fav.pl
 	perl adj_fav.pl "$@"
@@ -96,7 +97,6 @@ ifav.js: draw_fav.min.js adj_fav.pl
 docs/fav.js : fav.js
 	copy /y fav.js "$@"
 	uglifyjs -c -m toplevel -m eval -m reserved=['L'] "$@" -o "$@"
-#	uglifyjs -c inline=true,passes=2,unsafe -m toplevel -m eval "$@" -o "$@"
 
 docs/ifav.js : ifav.js
 	copy /y ifav.js "$@"
@@ -221,5 +221,6 @@ gz: docs/index.htm.gz docs/status.htm.gz
 gz: routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
 gz: docs/fav.js.gz docs/fav.js.gz.png docs/ifav.js.gz docs/ifav.js.gz.png
+gz: docs/as.js.gz docs/as.js.gz.png
 gz: MNRRgz LIRRMKFgz SUBMKFgz
 
