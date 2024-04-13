@@ -113,17 +113,17 @@ function y() {
   }
 
     function gotJson(r, /*r=resp*/ jsonp) {
-    var i, n, branch, w = "West<br>",
-        l, h = (new Date()).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
+    var i, n = 0, branch, w = "West<br>",
+        l, curTime = new Date(), h = curTime.toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[stacode] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
     /* DO NOT convert to for( in ) {}, because Array.prototype. PFs show up
        in the loop, and object.defineProperty unavail IE <= 8 */
-    for (n=0; n < r.arrivals.length; n++) {
+    for (curTime = curTime.getTime()/1000; n < r.arrivals.length; n++) {
         i = r.arrivals[n];
         //note to self, ceil is round up, |0 is round down
-        //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
+        //console.log('x'+Math.ceil((t.time - curTime) / 60)+'   '+(((t.time - curTime) / 60)|0));
         l = '<a class=t href=rtrain.htm#'+i.railroad+'_'+i.train_num+'>'+new Date((l=i.time) * 1000).toLocaleTimeString().replace(':00 ', ' ')
-        + '-Min ' + Math.ceil((l- (new Date().getTime()/1000)) / 60)
+        + '-Min ' + Math.ceil((l-curTime) / 60)
 /*
         } else if (!_.isUndefined(train.status.otp)) {
             const otpMin = Math.trunc(train.status.otp / 60)

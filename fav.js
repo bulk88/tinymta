@@ -2,8 +2,8 @@ var L;//async race CB fav.js vs inline wea script
 
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 98; };
-function DRAW_VER_STR() { return "98"; };
+function DRAW_VER() { return 99; };
+function DRAW_VER_STR() { return "99"; };
 function DRAW_VER_LEN() { return 2; };
 function PREFIX_LEN() { return 3598; };
 //returns array [createdNewFavsBool,favsConfig]
@@ -141,15 +141,8 @@ function _recordFavStopHit(sta_name, fav_url) {
 
   var prefix,
   delayedStaHits_head,
-  i,
-  newEl;
-  if(delayedStaHits_head = this.rF) {
-    for(i=0;i<delayedStaHits_head.length;i+=2) {
-      _recordFavStopHit(delayedStaHits_head[i], delayedStaHits_head[i+1]);
-    }
-  }
-  //fake the Array API so delayed and direct callers r simpler
-  this.rF = {push:_recordFavStopHit};
+  newEl_i;
+
 
 
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
@@ -161,17 +154,17 @@ routes.js takes a while to generate b/c its a CFW, so start it early
 it doesn't cause congestion on the wire b/c CFW latency, its also small
 vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 */
-  newEl = document.createElement('link');
-  newEl.rel = 'preload';
-  newEl.as = 'script';
-  newEl.href = 'routes.js';
-  delayedStaHits_head.appendChild(newEl);
-  newEl = document.createElement('link');
-  newEl.rel = 'prefetch';
-  newEl.href = 'stop.htm';
-  newEl = delayedStaHits_head.appendChild(newEl).cloneNode(0);
-  newEl.href = 'rstop.htm';
-  delayedStaHits_head.appendChild(newEl);
+  newEl_i = document.createElement('link');
+  newEl_i.rel = 'preload';
+  newEl_i.as = 'script';
+  newEl_i.href = 'routes.js';
+  delayedStaHits_head.appendChild(newEl_i);
+  newEl_i = document.createElement('link');
+  newEl_i.rel = 'prefetch';
+  newEl_i.href = 'stop.htm';
+  newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
+  newEl_i.href = 'rstop.htm';
+  delayedStaHits_head.appendChild(newEl_i);
 
   window.onpageshow = function (event_div){
     if (event_div.persisted) {
@@ -221,6 +214,15 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   }
 
 }// if index.htm
+else {
+  if(delayedStaHits_head = this.rF) {
+    for(newEl_i=0;newEl_i<delayedStaHits_head.length;newEl_i+=2) {
+      _recordFavStopHit(delayedStaHits_head[newEl_i], delayedStaHits_head[newEl_i+1]);
+    }
+  }
+  //fake the Array API so delayed and direct callers r simpler
+  this.rF = {push:_recordFavStopHit};
+}
 })();
 
 

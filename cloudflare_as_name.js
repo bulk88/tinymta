@@ -4,6 +4,8 @@ let v8start;
 
 let textEnc = new TextEncoder();
 
+let curTime;
+
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304
 //says include Content-Location, I am leaving it out
 const copy_res_headers = ["age", "cache-control", "date", "etag", "expires", "last-modified", "vary"];
@@ -122,10 +124,11 @@ function parseIsoDatetime(dt,i) {
     dt = dt.split(/[: T-]/);
     for(i in dt)
         dt[i] = parseFloat(dt[i]);
-    //return //modified by bulk88 to be mins away instead of parse
-    return 'Min '+Math.floor(Math.abs((
+    //return //modified by bulk88 to be mins away instead of parse, Math.floor->0|
+    //factoring out Math.abs to x < 0 ? -x : x primative increased gz 4 bytes
+    return 'Min '+(0|(Math.abs((
         new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
-        - (new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })))) / 1e3) / 60);
+        - curTime) / 1e3) / 60));
 }
 
 /**
@@ -260,7 +263,7 @@ else if (pathname_callback.startsWith('/s/')) {
         h += new Date(hotkey_timestamp*1000).toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
           + " via CFW<br>"
           + 'CurSta:' + r.stop.name + "<br>";
-
+        curTime = (new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })));
         for (i in o) { //object keys
           h += '<a accesskey='+(hotkey_timestamp=hotkeys.shift())+' name='+hotkey_timestamp+' href=#'+hotkey_timestamp+'>'+i+"</a><br>";
           //route is dir really
@@ -354,13 +357,13 @@ else if (pathname_callback.startsWith('/li/s/')) {
     resp = await resp;
     if (resp.status == 200) {
       var r = await resp.json();
-      var i, t, l, branch; /*t=train, l=lineofhtml, h=html*/
-      for (i = 0; i < r.arrivals.length; i++) {
+      var i = 0, t, l, branch; /*t=train, l=lineofhtml, h=html*/
+      for (curTime = new Date(new Date().toLocaleString()) / 1000; i < r.arrivals.length; i++) {
         t = r.arrivals[i];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = new Date((l = t.time) * 1000).toLocaleTimeString('en-US', { timeZone: 'America/New_York' }).replace(':00 ', ' ') +
-          '-Min ' + Math.ceil((l - (new Date(new Date().toLocaleString()) / 1000)) / 60)
+          '-Min ' + Math.ceil((l-curTime) / 60)
 /*
         } else if (!_.isUndefined(train.status.otp)) {
             const otpMin = Math.trunc(train.status.otp / 60)

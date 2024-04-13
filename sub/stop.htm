@@ -20,6 +20,7 @@ var colorRoutesSUB = {/*"B":0,*//*"F":0,*//*"D":0,*//*"M":0,*//*"FX":0,*/"4":1,"
 /*ENDSUBCOLOR*/
 
 var url;
+var curTime;
 
 /* var t is "top" as in top of body (header) */
 var t = location.hash;
@@ -100,7 +101,7 @@ function parseIsoDatetime(dt,i) {
     //factoring out Math.abs to x < 0 ? -x : x primative increased gz 4 bytes
     return 'Min '+(0|(Math.abs((
         new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
-        - (new Date)) / 1e3) / 60));
+        - curTime) / 1e3) / 60));
 }
 
 /* MTA orig algo
@@ -165,6 +166,7 @@ if (r = r[0]) {//if(r.length) { shorter alternative
 
     h = (new Date(h*1000)).toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS') + "<br>" +
         'Cur Sta: ' + (sta_name = r.stop.name) + "<br>";
+    curTime = Date.now();
     for (i in o) { //object keys
         h += i + "<br>";
         //route is dir really

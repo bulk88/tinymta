@@ -31,7 +31,7 @@ function parseIsoDatetime(dt,i) {
     //factoring out Math.abs to x < 0 ? -x : x primative increased gz 4 bytes
     return '-'+(0|(Math.abs((
         new Date(dt[0], dt[1] - 1, dt[2], dt[3] || 0, dt[4] || 0, dt[5] || 0, 0)
-        - (new Date)) / 1e3) / 60));
+        - curTime) / 1e3) / 60));
 }
 
 function RTS (sta, span) {
@@ -41,17 +41,17 @@ function RTS (sta, span) {
     function (r) {
     r.status == 200 &&
     r.json().then(function (r /*r=resp*/) {
-    var i, n, l, branch, w = [], h = [];
+    var i, n = 0, l, branch, w = [], h = [], curTime = Date.now()/1000;
     /*w=west, t=train, l=lineofhtml, h=html*/
     r = r.arrivals;
     /* DO NOT convert to for( in ) {}, because Array.prototype. PFs show up
        in the loop, and object.defineProperty unavail IE <= 8 */
-    for (n=0; n < r.length && n < 4; n++) {
+    for (; n < r.length && n < 4; n++) {
         i = r[n];
         //note to self, ceil is round up, |0 is round down
         //console.log('x'+Math.ceil((t.time - ((new Date().getTime()/1000))) / 60)+'   '+(((t.time - ((new Date().getTime()/1000))) / 60)|0));
         l = new Date((l=i.time) * 1000).toLocaleTimeString().replace(/:00 ([PA])M/, '$1')
-        + " " +Math.ceil((l- (new Date().getTime()/1000)) / 60)+'m'
+        + " " +Math.ceil((l-curTime) / 60)+'m'
         + ((l=i.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
         + '-Tk' + (i.track || '?')
         + "-<font color=" + (
@@ -95,6 +95,7 @@ if (r = r[0]) {//if(r.length) { shorter alternative
         });
 
     h = [];
+    curTime = Date.now();
     for (i in o) { //object keys
         //route is dir really
         route = o[i];
@@ -138,7 +139,8 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
   }// is f.js
 }
 
-var pendingFetch,
+var curTime,
+    pendingFetch,
     heart = document.createElement('label'),
     hourglass = heart.appendChild(document.createElement('input'));
 //IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
