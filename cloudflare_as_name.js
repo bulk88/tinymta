@@ -379,7 +379,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
         + ((l=t.status.otp) && (l=(l/60)|0) ? (l > 0 ? '-E'+l : '-L'+-l):'')
         + '-Tk' + (t.track || '?')
         + "-<font color=" + (
-          typeof (l = colorRoutesRAIL[branch = i.branch]) === 'string' ? l : (colorRoutesRAIL[branch] = colorStrsRAIL[l|0])
+          typeof (l = colorRoutesRAIL[branch = t.branch]) === 'string' ? l : (colorRoutesRAIL[branch] = colorStrsRAIL[l|0])
         )+ ">" + s[(l=t.stops)[l.length - 1]]
         + "</font>"+(t.peak_code == 'O'?'':'-Pk')+"<br>"; //A or P are peak
         t.direction == 'E' ? h += l : w += l;
