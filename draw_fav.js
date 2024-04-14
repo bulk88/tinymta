@@ -139,16 +139,21 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
   }// is f.js
 }
 
-var curTime,
+var wholeTime = performance.now(),
     pendingFetch,
     heart = document.createElement('label'),
-    hourglass = heart.appendChild(document.createElement('input'));
+    mdLbl = performance.now(),
+    hourglass = heart.appendChild(document.createElement('input')),
+    mdIn = performance.now(),
+    curTime, aTime, TITime, CNTime, CITime, srcTime, src2Time, ST1, ST2, CNITime, CNI2Time;
 //IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
 //short var reuse
 hourglass.type = "checkbox";
+CNTime = performance.now();
 hourglass = heart.cloneNode(1);
 //"any emoji config" templates now done
 //now add colored emoji setting specific el's
+TITime = performance.now();
   if(config[3]) {
     //png files and svg are from https://github.com/googlefonts/noto-emoji
     //THIS USED TO BE A IIFE/CLOSURE, BUT UGLIFY JS UNROLLED/INLINED IT
@@ -161,14 +166,22 @@ hourglass = heart.cloneNode(1);
     //docs/fav.js          uc  1962 gz  952
     //docs/ifav.js         uc  3927 gz 2075
     colorStrsSUB /*l_heart*/ = document.createElement('img');
-    colorStrsSUB /*l_heart*/.src = "ht.png";
+    CITime = performance.now();
     //add CSS for sizing
-    (colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.style).height = colorRoutesSUB /*l_hourglass*/.width = '1em';
+    (colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.style).height = '1em';
+    colorRoutesSUB /*l_hourglass*/.width = '1em';
+    ST1 = performance.now();
     colorRoutesSUB /*l_hourglass*/.verticalAlign = 'middle';
+    ST2 = performance.now();
     colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.cloneNode(0);
+    CNITime = performance.now();
     colorRoutesSUB /*l_hourglass*/.src = "hg.svg"
+    srcTime = performance.now();
     colorStrsRAIL /*l_drop*/ = colorStrsSUB /*l_heart*/.cloneNode(0);
+    CNI2Time = performance.now();
     colorStrsRAIL /*l_drop*/.src = "dp.png";
+    src2Time = performance.now();
+    colorStrsSUB /*l_heart*/.src = "ht.png";
   } else {//use native emoji
     //heart, fe0f req for FF 115 to be red
     colorStrsSUB /*l_heart*/ = document.createTextNode("\u2764\ufe0f");
@@ -177,9 +190,35 @@ hourglass = heart.cloneNode(1);
     //stop f.js from later trying to put the emoji PF
     colorStrsRAIL /*l_drop*/ = 0;
   }
+  aTime = performance.now();
   heart.appendChild(colorStrsSUB /*l_heart*/);
   hourglass.appendChild(colorRoutesSUB /*l_hourglass*/);
   window.E = colorStrsRAIL /*l_drop*/;
+  curTime = performance.now();
+  console.log('emj md Lbl '+(mdLbl-wholeTime));
+  console.log('emj md In '+(mdIn-mdLbl));
+  console.log('emj set In tp '+(CNTime-mdIn));
+  console.log('emj crt 1st lbl n chk '+(CNTime-wholeTime));
+  console.log('emj chkbx CN() alone '+(TITime-CNTime));
+  console.log('emj crt chkbxs '+(TITime-wholeTime));
+  console.log('emj I CE '+(CITime-TITime));
+  console.log('emj I Sty 1 '+(ST1-CITime));
+  console.log('emj I Sty 2 '+(ST2-ST1));
+  console.log('emj I CN '+(CNITime-ST2));
+  console.log('emj I src '+(srcTime-CNITime));
+  console.log('emj I CN 2 '+(CNI2Time-srcTime));
+  console.log('emj I src 2 '+(src2Time-CNI2Time));
+  console.log('emj I or T crt '+(aTime-TITime));
+  console.log('emj asn g '+(curTime-aTime));
+  console.log('emj whole ld '+(curTime-wholeTime));
+
+  aTime = performance.now();
+  var unusedEL = document.createElement('label'), unNew;
+  wholeTime = performance.now();
+  unNew = unusedEL.cloneNode(0);
+  curTime = performance.now();
+  console.log('emj lbl CE() '+(wholeTime-aTime));
+  console.log('emj lbl CN() shallow '+(curTime-wholeTime));
 
 
 //first run, probably eval() LS (2nd arg undef)

@@ -1,0 +1,156 @@
+!!! Chk commit history for purpose of this file !!!
+
+NO LS/VIRGIN UA, C109 Win32, note all DOM CE() and prop sets fast!!!
+fav ld 8.379999995231628
+(index):1 WI ld 0.019999980926513672
+(index):1 BR ld 0.004999995231628418
+(index):1 DT ld 0
+(index):1 BD AC0.04999995231628418
+VM456:3 emj md Lbl 0.05000007152557373
+VM456:3 emj md In 0.07999992370605469
+VM456:3 emj set In tp 0.040000081062316895
+VM456:3 emj crt 1st lbl n chk 0.1700000762939453
+VM456:3 emj chkbx CN() alone 0.02499997615814209
+VM456:3 emj crt chkbxs 0.1950000524520874
+VM456:3 emj I or T crt 0.21500003337860107
+VM456:3 emj asn g 0.019999980926513672
+VM456:3 emj whole ld 0.43000006675720215
+VM456:3 emj lbl CE() 0.04499995708465576
+VM456:3 emj lbl CN() shallow 0.009999990463256836
+
+LS eval()/old user, C109 Win32, massive penalty for 1st ever doc.cE(), but none after
+VM33:1 emj md Lbl 0.14499998092651367
+VM33:1 emj md In 0.05000007152557373
+VM33:1 emj set In tp 0.09499990940093994
+VM33:1 emj crt 1st lbl n chk 0.28999996185302734
+VM33:1 emj chkbx CN() alone 0.020000100135803223
+VM33:1 emj crt chkbxs 0.31000006198883057
+VM33:1 emj I or T crt 1.1049998998641968
+VM33:1 emj asn g 0.020000100135803223
+VM33:1 emj whole ld 1.4350000619888306
+VM33:1 emj lbl CE() 0.014999985694885254
+VM33:1 emj lbl CN() shallow 0
+(index):1 fav ld 4.414999961853027
+(index):1 WI ld 0.1549999713897705
+(index):1 BR ld 0.009999990463256836
+(index):1 DT ld 0.19000005722045898
+(index):1 BD AC0.09000003337860107
+
+B4 opt
+
+FF 115 Win32, FORCED Img Emoji for tested
+emj md Lbl 0.3291482334067837 line 52 > eval:1:2640
+emj md In 0.15080824177314867 line 52 > eval:1:2673
+emj set In tp 0.010273040992714755 line 52 > eval:1:2705
+emj crt 1st lbl n chk 0.4902295161726471 line 52 > eval:1:2741
+emj chkbx CN() alone 0.011094884272139893 line 52 > eval:1:2785
+emj crt chkbxs 0.501324400444787 line 52 > eval:1:2828
+emj I CE 0.11423621583907106 line 52 > eval:1:2865
+emj I src 0.5226923257096274 line 52 > eval:1:2896
+emj I Sty 1 1.4357602091426855 line 52 > eval:1:2928
+emj I Sty 2 0.007396589514755192 line 52 > eval:1:2962
+emj I CN 0.11135976436109729 line 52 > eval:1:2996
+emj I src 2 0.43187864333397386 line 52 > eval:1:3027
+emj I or T crt 2.9952078318377175 line 52 > eval:1:3061
+emj asn g 0.04479045872825793 line 52 > eval:1:3098
+emj whole ld 3.5413226910107625 line 52 > eval:1:3130
+emj lbl CE() 0.01232764919126339 line 52 > eval:1:3273
+emj lbl CN() shallow 0.004931059676508198 line 52 > eval:1:3308
+fav ld 9.10807814414639 localhost:53:9
+WI ld 0.11793451059645577 localhost:129:15
+BR ld 0.00452013803680984 localhost:130:15
+DT ld 0.15245192833197052 localhost:131:15
+BD AC0.3813352816497968
+
+C109 Win32, nat bc OS Img Emoji
+VM65:1 emj md Lbl 0.23000001907348633
+VM65:1 emj md In 0.07499992847442627
+VM65:1 emj set In tp 0.125
+VM65:1 emj crt 1st lbl n chk 0.4299999475479126
+VM65:1 emj chkbx CN() alone 0.019999980926513672
+VM65:1 emj crt chkbxs 0.44999992847442627
+VM65:1 emj I CE 0.04500007629394531
+VM65:1 emj I src 0.5149999856948853
+VM65:1 emj I Sty 1 0.09500002861022949
+VM65:1 emj I Sty 2 0.019999980926513672
+VM65:1 emj I CN 0.21999990940093994
+VM65:1 emj I src 2 0.36500000953674316
+VM65:1 emj I or T crt 1.7549999952316284
+VM65:1 emj asn g 0.03000009059906006
+VM65:1 emj whole ld 2.2350000143051147
+VM65:1 emj lbl CE() 0.009999990463256836
+VM65:1 emj lbl CN() shallow 0.004999995231628418
+(index):1 fav ld 9.679999947547913
+(index):1 WI ld 0.1400001049041748
+(index):1 BR ld 0
+(index):1 DT ld 0.12999999523162842
+(index):1 BD AC0.07499992847442627
+
+
+Thoughts:
+-Note MAYBE for FF .width = .height = str UNOPTIMZED and causes a CSS layout/slowness on .height GETTER()
+-FF CE() and CN() of <IMG> no time diff
+-C109 CN() VERY HEAVY DIFF vs CE()
+-.src = heavy in BOTH
+
+Fix attempts:
+-dont CN() a <IMG> with .src ALREADY SET
+  +assume browser skips cloning/refcounting HTTP Cache/IO/render bitmap img canvas
+  -SUCCESS FF, HUGE SUCCESS C109
+-don't GET()/chain style.width = style.height
+  +b/c CSS Layout/paint (hypo) runs to "read" style prop after "set" style prop
+  -FAIL no chg to SLOW FF, no chg fast Chrome
+-don't set .src a SECOND time
+  +browser (hypo) doesn't need to free resources from ORIG FIRST .src URL
+  -HUGE SUCCESS FF, medium/SOME SUCCESS C109
+
+!!!!NEW FF
+emj md Lbl 0.21737754740597381 line 1 > eval:1:2668
+emj md In 0.08136248466234974 line 1 > eval:1:2701
+emj set In tp 0.00821843279418033 line 1 > eval:1:2733
+emj crt 1st lbl n chk 0.3069584648625039 line 1 > eval:1:2769
+emj chkbx CN() alone 0.009040276073591258 line 1 > eval:1:2813
+emj crt chkbxs 0.31599874093609515 line 1 > eval:1:2856
+emj I CE 0.09122460401535193 line 1 > eval:1:2893
+emj I Sty 1 1.3420700752890724 line 1 > eval:1:2924
+emj I Sty 2 0.006985667875042623 line 1 > eval:1:2958
+emj I CN 0.009862119353016396 line 1 > eval:1:2992
+emj I src 0.1051959397654656 line 1 > eval:1:3023
+emj I CN 2 0.004520138036795629 line 1 > eval:1:3055
+emj I src 2 0.04848875348564263 line 1 > eval:1:3088
+emj I or T crt 1.6506722267103981 line 1 > eval:1:3122
+emj asn g 0.030408201338460117 line 1 > eval:1:3159
+emj whole ld 1.9970791689849534 line 1 > eval:1:3191
+emj lbl CE() 0.01684778722805902 line 1 > eval:1:3334
+emj lbl CN() shallow 0.006574746235330053 line 1 > eval:1:3369
+fav ld 9.696928853849144 tinymta.com:1:1316
+WI ld 0.09821027189039455 tinymta.com:1:2197
+BR ld 0.013971335750085245 tinymta.com:1:2241
+DT ld 0.07848603318439018 tinymta.com:1:2269
+BD AC0.3862663413262908
+
+new C109
+
+VM517:1 emj md Lbl 0.13499999046325684
+VM517:1 emj md In 0.04999995231628418
+VM517:1 emj set In tp 0.09000003337860107
+VM517:1 emj crt 1st lbl n chk 0.2749999761581421
+VM517:1 emj chkbx CN() alone 0.014999985694885254
+VM517:1 emj crt chkbxs 0.28999996185302734
+VM517:1 emj I CE 0.029999971389770508
+VM517:1 emj I Sty 1 0.05500006675720215
+VM517:1 emj I Sty 2 0.034999966621398926
+VM517:1 emj I CN 0.019999980926513672
+VM517:1 emj I src 0.38999998569488525
+VM517:1 emj I CN 2 0.010000109672546387
+VM517:1 emj I src 2 0.2549999952316284
+VM517:1 emj I or T crt 1.0299999713897705
+VM517:1 emj asn g 0.020000100135803223
+VM517:1 emj whole ld 1.340000033378601
+VM517:1 emj lbl CE() 0.009999990463256836
+VM517:1 emj lbl CN() shallow 0.004999995231628418
+(index):1 fav ld 13.510000109672546
+(index):1 WI ld 0.09500002861022949
+(index):1 BR ld 0
+(index):1 DT ld 0.10000002384185791
+(index):1 BD AC0.060000061988830566

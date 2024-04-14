@@ -48,8 +48,9 @@ Do you have a<br>
 //localStorage.setItem("fav", "document.body.appendChild(document.createElement('div')).appendChild(document.createTextNode('FFF'))");
 //localStorage.removeItem("fav");
 //debugger;
+var CT = performance.now();
 try{eval(localStorage.getItem("fav"))} catch (err) {}
-
+console.log('fav ld '+(performance.now()-CT));
 
 var L;//async race CB fav.js vs inline wea script
 //gz 1021 "document.", gz 1019 "doc." everywhere
@@ -74,7 +75,8 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       img_ext = nosvg ? nosvg : '.svg',
       br = doc.createElement('br'),
       drop = this.E || doc.createTextNode("\ud83d\udca7"),
-      i = 0;
+      i = 0,
+      DT1, DT2, BR1, BR2;
       /*hardcode 24 hr in a day to save wire*/
       for (; i < 24; i++) {
 /*no inline-block for IE 5.0, inline-block 5.5 up.
@@ -108,10 +110,15 @@ meaningless for self closing BR tag
 */
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createTextNode(r.temperature[i] + "F"));
+        BR1 = performance.now();
         e.appendChild(br.cloneNode(0));
+        BR2 = performance.now();
         e.appendChild(doc.createTextNode(r.precipChance[i] + "%"));
+        DT1 = performance.now();
         e.appendChild(drop.cloneNode(0));
+        DT2 = performance.now();
         e.appendChild(br.cloneNode(0));
+        CT = performance.now();
         e.appendChild(doc.createElement('img'))
         .src =
 /*STARTINSERTPATH*/
@@ -119,7 +126,12 @@ meaningless for self closing BR tag
 /*ENDINSERTPATH*/
           +r.iconCode[i] + img_ext;
       }
+      console.log('WI ld '+(performance.now()-CT));
+      console.log('BR ld '+(BR2-BR1));
+      console.log('DT ld '+(DT2-DT1));
+      CT = performance.now();
       doc.body.appendChild(frag);
+      console.log('BD AC'+(performance.now()-CT));
     }); //json cb
   }); //end fetch CB
 };
