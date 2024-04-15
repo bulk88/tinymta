@@ -1,15 +1,21 @@
 this.draw_fav_ld=function(config, insertFDivFn) {
 //alot of closures in this func
-function postDrawArv(span,arrHTMLLines_height) {
-  span.innerHTML = arrHTMLLines_height.join(',')+"&nbsp;";
+function postDrawArv(span,arrHTMLLines) {
+  span.innerHTML = arrHTMLLines.join(',')+"&nbsp;";
   pendingFetch--; //private global
   //update cached height
   if (!pendingFetch) {
     //.pN is UI attached fav div
     (span = span.parentNode).style.minHeight = '';
-    if (localStorage.getItem('fh') != (arrHTMLLines_height = span.clientHeight)) {
-      localStorage.setItem('fh', arrHTMLLines_height);
-    }
+    //defer call to span.clientHeight until next paint cycle by UA to prevent sync paint
+    //requestIdleCallback is C47, FF55, no SF in 2024
+    //requestAnimationFrame no pfx is C24, FF23, SF 6.1
+    //fetch is C42, FF 39, SF 10.1 (will then have PF for requestAnimationFrame)
+    (this.requestIdleCallback || requestAnimationFrame)(function (ch) {
+      if (localStorage.getItem('fh') != (ch = span.clientHeight)) {
+        localStorage.setItem('fh', ch);
+      }
+    });
   }
 }
 

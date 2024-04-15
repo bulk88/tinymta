@@ -21,6 +21,19 @@ if (!window.JSON) {
 //polyfill is abs insane in this micro-HTML site
   window.JSON = {parse: function(str) {return (new Function("return " + str ))()}};
 }
+
+if(!window.requestAnimationFrame) {
+  window.requestAnimationFrame =
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function(callback){
+      window.setTimeout(callback, 40); //1000/30fps=33 ms
+    }
+  ;
+}
+
 /* 2 polyfills for status.htm
  fetch added Chrome 42, Array.forEach added way before
 */
@@ -297,10 +310,9 @@ if (!window.encodeURIComponent)
 if (location.pathname == "/" && !window.E && window.E !== 0) {
   (function () {
     var drop = window.E = document.createElement('img');
+    //see draw_fav.js for reasoning of sA() vs .style
+    drop.setAttribute("style","height:1em;width:1em;vertical-align:middle;");
     drop.src = "dp.png";
-    drop = drop.style;
-    drop.height = drop.width = '1em';
-    drop.verticalAlign = 'middle';
   })();
 }
 //sometimes just polyfills above needed, fetch exists
