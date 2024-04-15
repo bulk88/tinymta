@@ -37,8 +37,8 @@ var R;
       if ("DIV" === e.nodeName && !e.firstChild) {
         e.style.minHeight = '';
         e.appendChild(document.createTextNode("Your ISP: 72.229.160.32 | AS12271 | US | arin | 2000-06-09 | TWC-12271-NYC, US"));
-        //let UA do batched paint cycles
-        setTimeout(function(divEl) {
+        //let UA do batched paint cycles, 1000/30fps=33 ms
+        (this.requestIdleCallback || this.requestAnimationFrame || function(callback){setTimeout(callback, 40)})(function() {
           try {
 //note actual height of AS Name div, is .1 to .9px bigger
 //clientHeight is rounded down upto .9999 px
@@ -46,10 +46,10 @@ var R;
 //during rmv minHeight+add Text Node even with minHeight being .1 px smaller than
 //final height of AS Name div
 //https://stackoverflow.com/questions/4106538/difference-between-offsetheight-and-clientheight
-            localStorage.setItem("as",divEl.clientHeight + "px");
-          } catch (e) {
+            localStorage.setItem("as",e.clientHeight + "px");
+          } catch (err) {
           }
-        }, 100, e);
+        });
         //wipe mem
         return;
       }
@@ -65,9 +65,9 @@ function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
   // never optimize to .parentNode.innerText, not FF1-FF44 compat, all other yes
   return new Response(
-  'var R;!function e(){if(this.y){for(var i=document.body.lastChild;i=i.previousSibling;)if("DIV"===i.nodeName&&!i.firstChild){i.style.minHeight="",i.appendChild(document.createTextNode('
+  'var R;!function e(){if(this.y){for(var t=document.body.lastChild;t=t.previousSibling;)if("DIV"===t.nodeName&&!t.firstChild)return t.style.minHeight="",t.appendChild(document.createTextNode('
   +JSON.stringify(str)+
-  ')),setTimeout(function(e){try{localStorage.setItem("as",e.clientHeight+"px")}catch(i){}},100,i);return}}else R=e}()'
+  ')),void(this.requestIdleCallback||this.requestAnimationFrame||function(e){setTimeout(e,40)})(function(){try{localStorage.setItem("as",t.clientHeight+"px")}catch(e){}})}else R=e}()'
   , {
       headers: {
         "content-type": "text/javascript",
@@ -585,7 +585,7 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
     asn: 676
   };
   var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"E'+ip+'.'+cf.asn+'"';
+  var etag = 'W/"G'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }

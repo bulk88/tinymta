@@ -86,7 +86,7 @@ docs/draw_fav.js: draw_fav.min.js
 
 docs/as.js: as.js
 	copy /y as.js "$@"
-	uglifyjs -c -m toplevel -m eval -m reserved=['L'] "$@" -o "$@"
+	uglifyjs -c -m toplevel -m eval -m reserved=['L','R'] "$@" -o "$@"
 
 fav.js: draw_fav.min.js adj_fav.pl
 	perl adj_fav.pl "$@"
