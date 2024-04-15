@@ -141,8 +141,9 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
 
 var curTime,
     pendingFetch,
-    heart = document.createElement('label'),
-    hourglass = heart.appendChild(document.createElement('input'));
+    doc = document,
+    heart = doc.createElement('label'),
+    hourglass = heart.appendChild(doc.createElement('input'));
 //IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
 //short var reuse
 hourglass.type = "checkbox";
@@ -160,7 +161,7 @@ hourglass = heart.cloneNode(1);
     //af
     //docs/fav.js          uc  1962 gz  952
     //docs/ifav.js         uc  3927 gz 2075
-    colorStrsRAIL /*l_drop*/ = document.createElement('img');
+    colorStrsRAIL /*l_drop*/ = doc.createElement('img');
     //do NOT set .src before cloneNode(0), benchmarked faster, chk notes in .txt
 
     //add CSS for sizing, NOTE sA("style","") benchmarked as 1-3 ms faster vs
@@ -185,9 +186,9 @@ hourglass = heart.cloneNode(1);
     //stop f.js from later trying to put the emoji PF
     colorStrsRAIL /*l_drop*/ = 0;
     //heart, fe0f req for FF 115 to be red
-    colorStrsSUB /*l_heart*/ = document.createTextNode("\u2764\ufe0f");
+    colorStrsSUB /*l_heart*/ = doc.createTextNode("\u2764\ufe0f");
     //hourglass
-    colorRoutesSUB /*l_hourglass*/ = document.createTextNode("\u231B ");
+    colorRoutesSUB /*l_hourglass*/ = doc.createTextNode("\u231B ");
   }
   heart.appendChild(colorStrsSUB /*l_heart*/);
   hourglass.appendChild(colorRoutesSUB /*l_hourglass*/);
@@ -202,7 +203,7 @@ draw_fav(config,insertFDivFn, !this.fetch);
 //fetchDelayTypeCode is bool true/false, or INT 2 (page vis chrome bug)
 function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
   var e, e2, i,
-  d = document.createElement('div');
+  d = doc.createElement('div');
 
 //if this a re-draw, recycle checkmark tags for perf
   d.appendChild(heart).firstChild.checked = config[1];
@@ -212,7 +213,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
 
 //private global, note pndFet gbl set even if no ft will happen, to save code
   if (!(pendingFetch = config.length-4)) {
-    d.appendChild(document.createTextNode(config[1] ? "No history yet" : "History off"));
+    d.appendChild(doc.createTextNode(config[1] ? "No history yet" : "History off"));
   } else {
     //if RT checking on, add cached minHeight so weather div doesn't jerk
     if(config[2]) {
@@ -222,11 +223,11 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
     }
     for (i = 4; i < 10 && (e = config[i]); i++) {
       //todo template A tag
-      (e2 = d.appendChild(document.createElement('a'))).href = (e[1].charAt() == 'r' ? "rstop.htm#" : "stop.htm#") + e[1].slice(1);
+      (e2 = d.appendChild(doc.createElement('a'))).href = (e[1].charAt() == 'r' ? "rstop.htm#" : "stop.htm#") + e[1].slice(1);
       e2.textContent = e[0];
-      d.appendChild(document.createTextNode(" "));
+      d.appendChild(doc.createTextNode(" "));
       if(config[2]) {
-        e2 = d.appendChild(document.createElement('span'));
+        e2 = d.appendChild(doc.createElement('span'));
         e2.style.display = 'inline';
 //Chrome 109 Win32, all fetch()es started from pageshow event hang as "pending" forever
 //set a 0 ms timer to fix it, but don't do the timer, on initial page load (perf)
@@ -241,7 +242,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
   if (insertFDivFn) { //not first LS eval() but some other kind of draw from other code
     insertFDivFn(d);
   } else {
-    e = document.body;
+    e = doc.body;
     //push cached height of AS Name div, to prevent layout shift/jerk of
     //fav checkmarks and station list (which is a no I/O sync draw) if AS Name
     //text happens to be 2 or 3 lines, wrapped, on mobile UAs
