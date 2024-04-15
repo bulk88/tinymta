@@ -104,7 +104,7 @@ Fix attempts:
   +browser (hypo) doesn't need to free resources from ORIG FIRST .src URL
   -HUGE SUCCESS FF, medium/SOME SUCCESS C109
 
-!!!!NEW FF
+!!!!NEW FF 115
 emj md Lbl 0.21737754740597381 line 1 > eval:1:2668
 emj md In 0.08136248466234974 line 1 > eval:1:2701
 emj set In tp 0.00821843279418033 line 1 > eval:1:2733
@@ -154,3 +154,115 @@ VM517:1 emj lbl CN() shallow 0.004999995231628418
 (index):1 BR ld 0
 (index):1 DT ld 0.10000002384185791
 (index):1 BD AC0.060000061988830566
+
+OPTIMIZATON:
+  -setAttribute('style',"") vs .style
+
+RESULT:
+  -MASSIVE SUCCESS on FF 115
+    -FF STOPS doing sync CSS parsing/layout, 1-3 milliseconds saved!!
+  -some/limited SUCCESS on C109
+    -js method lookup overhead/thunking to .style C++ obj.class
+      and overhead in .style CSS JS class in C++ R/W to C++ DOM class
+ 
+b4 FF 115
+emj md Lbl 0.36489841606143614 line 1 > eval:1:2668
+emj md In 0.12450925683177161 line 1 > eval:1:2701
+emj set In tp 0.011916727551579243 line 1 > eval:1:2733
+emj crt 1st lbl n chk 0.501324400444787 line 1 > eval:1:2769
+emj chkbx CN() alone 0.014382257389797815 line 1 > eval:1:2813
+emj crt chkbxs 0.5157066578345848 line 1 > eval:1:2856
+emj I CE 0.2005297601779148 line 1 > eval:1:2893
+emj I Sty 1 2.562918266864017 line 1 > eval:1:2924
+emj I Sty 2 0.013971335750113667 line 1 > eval:1:2958
+emj I CN 0.013971335750085245 line 1 > eval:1:2992
+emj I src 0.7630814849393062 line 1 > eval:1:3023
+emj I CN 2 0.013149492470688529 line 1 > eval:1:3055
+emj I src 2 0.5465257808127433 line 1 > eval:1:3088
+emj I or T crt 4.561230200768108 line 1 > eval:1:3122
+emj asn g 0.04972151840476613 line 1 > eval:1:3159
+emj whole ld 5.126658377007459 line 1 > eval:1:3191
+emj lbl CE() 0.018080552147154094 line 1 > eval:1:3334
+emj lbl CN() shallow 0.007807511154481972 line 1 > eval:1:3369
+fav ld 13.774915206319633 tinymta.com:1:1316
+WI ld 0.09040276073591258 tinymta.com:1:2197
+BR ld 0.0024655298382754154 tinymta.com:1:2241
+DT ld 0.07437681678726449 tinymta.com:1:2269
+BD AC0.3459960206348569
+
+C109
+
+VM537:1 emj md Lbl 0.36500000953674316
+VM537:1 emj md In 0.06999993324279785
+VM537:1 emj set In tp 0.1400001049041748
+VM537:1 emj crt 1st lbl n chk 0.5750000476837158
+VM537:1 emj chkbx CN() alone 0.019999980926513672
+VM537:1 emj crt chkbxs 0.5950000286102295
+VM537:1 emj I CE 0.04999995231628418
+VM537:1 emj I Sty 1 0.10000002384185791
+VM537:1 emj I Sty 2 0.009999990463256836
+VM537:1 emj I CN 0.02499997615814209
+VM537:1 emj I src 0.05500006675720215
+VM537:1 emj I CN 2 0.004999995231628418
+VM537:1 emj I src 2 0.039999961853027344
+VM537:1 emj I or T crt 0.309999942779541
+VM537:1 emj asn g 0.014999985694885254
+VM537:1 emj whole ld 0.9199999570846558
+VM537:1 emj lbl CE() 0.014999985694885254
+VM537:1 emj lbl CN() shallow 0
+(index):1 fav ld 6.565000057220459
+(index):1 WI ld 0.034999966621398926
+(index):1 BR ld 0.004999995231628418
+(index):1 DT ld 0.20000004768371582
+(index):1 BD AC0.04999995231628418
+
+after
+
+FF115
+
+emj md Lbl 0.31353321109784815 line 1 > eval:1:2652
+emj md In 0.1417679656995432 line 1 > eval:1:2685
+emj set In tp 0.009451197713303827 line 1 > eval:1:2717
+emj crt 1st lbl n chk 0.4647523745106952 line 1 > eval:1:2753
+emj chkbx CN() alone 0.011094884272139893 line 1 > eval:1:2797
+emj crt chkbxs 0.47584725878283507 line 1 > eval:1:2840
+emj I CE 0.09410105549331149 line 1 > eval:1:2877
+emj I Sty 1 0.027531749860500554 line 1 > eval:1:2908
+emj I CN 0.005341981316206557 line 1 > eval:1:2942
+emj I src 0.10848331288315194 line 1 > eval:1:2973
+emj I CN 2 0.004520138036795629 line 1 > eval:1:3005
+emj I src 2 0.04889967512534099 line 1 > eval:1:3038
+emj I or T crt 0.3312028416053181 line 1 > eval:1:3072
+emj asn g 0.030408201338445906 line 1 > eval:1:3109
+emj whole ld 0.8374583017265991 line 1 > eval:1:3141
+emj lbl CE() 0.012738570830961748 line 1 > eval:1:3284
+emj lbl CN() shallow 0.004931059676522409 line 1 > eval:1:3319
+fav ld 7.587668077223682 tinymta.com:1:1316
+WI ld 0.056296264640110394 tinymta.com:1:2197
+BR ld 0.001643686558850277 tinymta.com:1:2241
+DT ld 0.0649256190740175 tinymta.com:1:2269
+BD AC0.38215712492922194
+
+C109
+emj md Lbl 0.1400001049041748
+VM566:1 emj md In 0.04499995708465576
+VM566:1 emj set In tp 0.10000002384185791
+VM566:1 emj crt 1st lbl n chk 0.2850000858306885
+VM566:1 emj chkbx CN() alone 0.014999985694885254
+VM566:1 emj crt chkbxs 0.30000007152557373
+VM566:1 emj I CE 0.019999980926513672
+VM566:1 emj I Sty 1 0.034999966621398926
+VM566:1 emj I CN 0
+VM566:1 emj I src 0.375
+VM566:1 emj I CN 2 0.009999990463256836
+VM566:1 emj I src 2 0.2250000238418579
+VM566:1 emj I or T crt 0.8799999952316284
+VM566:1 emj asn g 0.014999985694885254
+VM566:1 emj whole ld 1.1950000524520874
+VM566:1 emj lbl CE() 0.010000109672546387
+VM566:1 emj lbl CN() shallow 0.004999995231628418
+(index):1 fav ld 6.069999933242798
+(index):1 WI ld 0.09500002861022949
+(index):1 BR ld 0
+(index):1 DT ld 0.11500000953674316
+(index):1 BD AC0.06500005722045898

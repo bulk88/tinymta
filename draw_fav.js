@@ -145,7 +145,7 @@ var wholeTime = performance.now(),
     mdLbl = performance.now(),
     hourglass = heart.appendChild(document.createElement('input')),
     mdIn = performance.now(),
-    curTime, aTime, TITime, CNTime, CITime, srcTime, src2Time, ST1, ST2, CNITime, CNI2Time;
+    curTime, aTime, TITime, CNTime, CITime, srcTime, src2Time, ST1, CNITime, CNI2Time;
 //IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
 //short var reuse
 hourglass.type = "checkbox";
@@ -168,11 +168,8 @@ TITime = performance.now();
     colorStrsSUB /*l_heart*/ = document.createElement('img');
     CITime = performance.now();
     //add CSS for sizing
-    (colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.style).height = '1em';
-    colorRoutesSUB /*l_hourglass*/.width = '1em';
+    colorStrsSUB.setAttribute('style',"height:1em;width:1em;vertical-align:middle;");
     ST1 = performance.now();
-    colorRoutesSUB /*l_hourglass*/.verticalAlign = 'middle';
-    ST2 = performance.now();
     colorRoutesSUB /*l_hourglass*/ = colorStrsSUB /*l_heart*/.cloneNode(0);
     CNITime = performance.now();
     colorRoutesSUB /*l_hourglass*/.src = "hg.svg"
@@ -203,8 +200,7 @@ TITime = performance.now();
   console.log('emj crt chkbxs '+(TITime-wholeTime));
   console.log('emj I CE '+(CITime-TITime));
   console.log('emj I Sty 1 '+(ST1-CITime));
-  console.log('emj I Sty 2 '+(ST2-ST1));
-  console.log('emj I CN '+(CNITime-ST2));
+  console.log('emj I CN '+(CNITime-ST1));
   console.log('emj I src '+(srcTime-CNITime));
   console.log('emj I CN 2 '+(CNI2Time-srcTime));
   console.log('emj I src 2 '+(src2Time-CNI2Time));
