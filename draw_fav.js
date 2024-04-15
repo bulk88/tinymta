@@ -139,7 +139,7 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
   }// is f.js
 }
 
-var curTime,
+var curTime = performance.now(),
     pendingFetch,
     heart = document.createElement('label'),
     hourglass = heart.appendChild(document.createElement('input'));
@@ -188,6 +188,7 @@ hourglass = heart.cloneNode(1);
   heart.appendChild(colorStrsSUB /*l_heart*/);
   hourglass.appendChild(colorRoutesSUB /*l_hourglass*/);
   window.E = colorStrsRAIL /*l_drop*/;
+  console.log('emj whole ld '+(performance.now()-curTime));
 
 
 //first run, probably eval() LS (2nd arg undef)
