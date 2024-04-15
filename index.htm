@@ -48,9 +48,9 @@ Do you have a<br>
 //localStorage.setItem("fav", "document.body.appendChild(document.createElement('div')).appendChild(document.createTextNode('FFF'))");
 //localStorage.removeItem("fav");
 //debugger;
-var CT = performance.now();
+//var CT = performance.now();
 try{eval(localStorage.getItem("fav"))} catch (err) {}
-console.log('fav ld '+(performance.now()-CT));
+//console.log('fav ld '+(performance.now()-CT));
 
 var L;//async race CB fav.js vs inline wea script
 //gz 1021 "document.", gz 1019 "doc." everywhere
@@ -140,7 +140,7 @@ if (!this.f) {
     headElem.appendChild(doc.createElement("script")).src = 'f.js';
   }
 }
-//run CB from fav.js if needed
+//run DOM load CB from fav.js if needed (chains to as.js CB if needed)
 L=L&&L();
 </script>
 <!-- parse after script tag, weather rendering is async b/c IO -->

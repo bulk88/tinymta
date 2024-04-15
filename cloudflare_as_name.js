@@ -28,11 +28,12 @@ var colorRoutesRAIL = {/*"NC":0,*//*"DN":0,*//*"WB":0,*//*"NH":0,*/"12":1,"CI":1
 /*
 //src for as.js, I manually send thru mini, careful, do not let isTM var optimize away!!!!
 //verified that addASname() is local var/not global, this a func exp, not func decl in JS
-!function addASname(lastTM, e) {
-  if (e = document.body) {
+var R;
+!function addASname() {
+  if (this.y) {
     //note pSib executes for body tag's last el/tag, but
     //our empty div never last element
-    for (e = e.lastChild; e = e.previousSibling; )
+    for (var e = document.body.lastChild; e = e.previousSibling; )
       if ("DIV" === e.nodeName && !e.firstChild) {
         e.style.minHeight = '';
         e.appendChild(document.createTextNode("Your ISP: 72.229.160.32 | AS12271 | US | arin | 2000-06-09 | TWC-12271-NYC, US"));
@@ -49,13 +50,14 @@ var colorRoutesRAIL = {/*"NC":0,*//*"DN":0,*//*"WB":0,*//*"NH":0,*/"12":1,"CI":1
           } catch (e) {
           }
         }, 100, e);
+        //wipe mem
         return;
       }
+  } else {
+    R = addASname;
   }
-  //1000/60 FPS, 16.66666 ms
-  setTimeout(addASname,lastTM,lastTM+10);
-}
-(10);
+  //undef is returned per JS std
+}();
 
 */
 /* ASN/ISP lookup cloudflare worker script */
@@ -63,9 +65,9 @@ function mkJSResp(str,etag) {
   // escape/prevent double quotes code injection
   // never optimize to .parentNode.innerText, not FF1-FF44 compat, all other yes
   return new Response(
-  '!function t(e,i){if(i=document.body){for(i=i.lastChild;i=i.previousSibling;)if("DIV"===i.nodeName&&!i.firstChild){i.style.minHeight="",i.appendChild(document.createTextNode('
+  'var R;!function e(){if(this.y){for(var i=document.body.lastChild;i=i.previousSibling;)if("DIV"===i.nodeName&&!i.firstChild){i.style.minHeight="",i.appendChild(document.createTextNode('
   +JSON.stringify(str)+
-  ')),setTimeout(function(e){try{localStorage.setItem("as",e.clientHeight+"px")}catch(i){}},100,i);return}}setTimeout(t,e,e+10)}(10)'
+  ')),setTimeout(function(e){try{localStorage.setItem("as",e.clientHeight+"px")}catch(i){}},100,i);return}}else R=e}()'
   , {
       headers: {
         "content-type": "text/javascript",
@@ -583,7 +585,7 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
     asn: 676
   };
   var ip = request?.headers?.get('cf-connecting-ip') || '0.0.0.0';
-  var etag = 'W/"D'+ip+'.'+cf.asn+'"';
+  var etag = 'W/"E'+ip+'.'+cf.asn+'"';
   if(request?.headers?.get('if-none-match') == etag){
     return new Response(null, {status: 304});
   }

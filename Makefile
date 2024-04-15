@@ -96,7 +96,7 @@ ifav.js: draw_fav.min.js adj_fav.pl
 
 docs/fav.js : fav.js
 	copy /y fav.js "$@"
-	uglifyjs -c -m toplevel -m eval -m reserved=['L'] "$@" -o "$@"
+	uglifyjs -c -m toplevel -m eval -m reserved=['L','R'] "$@" -o "$@"
 
 docs/ifav.js : ifav.js
 	copy /y ifav.js "$@"

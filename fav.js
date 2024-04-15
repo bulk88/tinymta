@@ -1,11 +1,12 @@
+var R;//maybe as.js CB
 var L;//async race CB fav.js vs inline wea script
 
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 117; };
-function DRAW_VER_STR() { return "117"; };
+function DRAW_VER() { return 122; };
+function DRAW_VER_STR() { return "122"; };
 function DRAW_VER_LEN() { return 3; };
-function PREFIX_LEN() { return 3608; };
+function PREFIX_LEN() { return 3635; };
 //returns array [createdNewFavsBool,favsConfig]
 function read_fav(finish) {
   try {
@@ -184,6 +185,8 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
     }
   };
   var checkDOMFn = function (fn) {
+    //call as.js DOM load CB if needed, typ for no fav support UA
+    R=R&&R();
     read_fav(function(config) {
       var favDiv;
       if(config) { //false is too old/no LS browser
@@ -200,7 +203,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
         }
       }
     });//read_fav cb
-    return checkDOMFn.f = (checkDOMFn.f && checkDOMFn.f()); //maybe wipe this CB FN
+    return;
   };//dom loaded CB
   if(
     //document.body && is redundant, Safari 5.1.7 has FULL <BODY> dom tree built
@@ -209,7 +212,6 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   ) { //async script tags supported/have DOM
     checkDOMFn();
   } else {//defer the run
-    checkDOMFn.f = L;
     L = checkDOMFn;
   }
 

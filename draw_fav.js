@@ -145,7 +145,7 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
   }// is f.js
 }
 
-var curTime,
+var curTime = this.R,
     pendingFetch,
     doc = document,
     heart = doc.createElement('label'),
@@ -198,8 +198,12 @@ hourglass = heart.cloneNode(1);
   }
   heart.appendChild(colorStrsSUB /*l_heart*/);
   hourglass.appendChild(colorRoutesSUB /*l_hourglass*/);
-  window.E = colorStrsRAIL /*l_drop*/;
+  //set window. rain drop ctor/flag/el, false if using text emojis
+  this.E = colorStrsRAIL /*l_drop*/;
 
+  //maybe run as.js
+  this.R=curTime&&curTime();
+  curTime = !curTime;
 
 //first run, probably eval() LS (2nd arg undef)
 //but cud be a ver change or virgin no LS draw with 2nd arg
@@ -252,7 +256,8 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
     //push cached height of AS Name div, to prevent layout shift/jerk of
     //fav checkmarks and station list (which is a no I/O sync draw) if AS Name
     //text happens to be 2 or 3 lines, wrapped, on mobile UAs
-    e2 = localStorage.getItem("as");
+    //skip LS & loop if as.js already drew to screen
+    e2 = curTime && localStorage.getItem("as");
     if (e2) {
       for (i = e.lastChild; i = i.previousSibling; /*empty*/) {
         if ("DIV" === i.nodeName) {
