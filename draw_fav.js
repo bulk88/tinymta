@@ -140,8 +140,6 @@ function doDelayedFetch (sta, span, delayTypeCode_fn_arr) {
 }
 
 var curTime = performance.now(),
-    saorst = ((Date.now())%2)|0,
-    ST1, ST2,
     pendingFetch,
     heart = document.createElement('label'),
     hourglass = heart.appendChild(document.createElement('input'));
@@ -166,15 +164,13 @@ hourglass = heart.cloneNode(1);
     //do NOT set .src before cloneNode(0), benchmarked faster, chk notes in .txt
 
     //add CSS for sizing, NOTE sA("style","") benchmarked as 1-3 ms faster vs
-    //.style on forced <IMG> emj on FF115
+    //.style.height on forced <IMG> emj on FF115
     //and .03 to .05 ms faster on <IMG> emj C109
-    ST1 = performance.now();
-    if(saorst) {
+    //note .style = str is 1-2 ms on FF, sA('style') always fast on FF
+    //C109 .style = str is 0.05 or 0.06 ms, sA() is 0.02 to 0.03
+    //so sA() faster on both browsers
+
     colorStrsRAIL /*l_drop*/.setAttribute("style","height:1em;width:1em;vertical-align:middle;");
-    } else {
-    colorStrsRAIL /*l_drop*/.style = "height:1em;width:1em;vertical-align:middle;";
-    }
-    ST2 = performance.now();
     colorStrsSUB /*l_heart*/ = colorStrsRAIL /*l_drop*/.cloneNode(0);
     colorStrsSUB /*l_heart*/.src = "ht.png";
     colorRoutesSUB /*l_hourglass*/ = colorStrsRAIL /*l_drop*/.cloneNode(0);
@@ -196,7 +192,6 @@ hourglass = heart.cloneNode(1);
   heart.appendChild(colorStrsSUB /*l_heart*/);
   hourglass.appendChild(colorRoutesSUB /*l_hourglass*/);
   window.E = colorStrsRAIL /*l_drop*/;
-  console.log('emj SA vs ST '+ saorst+' '+(ST2-ST1));
   console.log('emj whole ld '+(performance.now()-curTime));
 
 
