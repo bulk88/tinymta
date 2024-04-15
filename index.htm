@@ -75,9 +75,7 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       img_ext = nosvg ? nosvg : '.svg',
       br = doc.createElement('br'),
       drop = this.E || doc.createTextNode("\ud83d\udca7"),
-      i = 0,
-      cnorce = ((Date.now())%2)|0,
-      DT = 0, DT1, DT2, WI = 0, WI1, WI2, LP1 = performance.now(), AC;
+      i = 0;
       /*hardcode 24 hr in a day to save wire*/
       for (; i < 24; i++) {
 /*no inline-block for IE 5.0, inline-block 5.5 up.
@@ -113,44 +111,23 @@ meaningless for self closing BR tag
         e.appendChild(doc.createTextNode(r.temperature[i] + "F"));
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createTextNode(r.precipChance[i] + "%"));
-        DT1 = performance.now();
-        if(cnorce) {
+//avg of ~50 pg loads, 1.X ms is cumulative (24 calls summed per pg load)
+//CE() is plus .src + setAttribute()
+//FF115 CE() 1.4670533846736797
+//      CN() 1.655915783189822
+//C109  CE() 2.156961555116267
+//      CN() 1.6185931681633636
+//optimize for Chrome since Chrome more popular
         e.appendChild(drop.cloneNode(0));
-         } else {
-         (v = e.appendChild(doc.createElement('img'))).setAttribute("style","height:1em;width:1em;vertical-align:middle;");
-          v.src = "dp.png";
-        }
-        DT2 = performance.now();
-        DT += (DT2-DT1);
         e.appendChild(br.cloneNode(0));
-        WI1 = performance.now();
         e.appendChild(doc.createElement('img'))
         .src =
 /*STARTINSERTPATH*/
           'w/'
 /*ENDINSERTPATH*/
           +r.iconCode[i] + img_ext;
-        WI2 = performance.now();
-        WI += (WI2-WI1);
       }
-      
       doc.body.appendChild(frag);
-      //AC = performance.now();
-      //alert('DT ld '+cnorce+' '+DT);
-      if (cnorce) {
-        v = localStorage.getItem('CNT');
-        if (!v)
-          v = DT;
-        localStorage.setItem('CNT', ((+v) + DT) / 2);
-      } else {
-        v = localStorage.getItem('CET');
-        if (!v)
-          v = DT;
-        localStorage.setItem('CET', ((+v) + DT) / 2);
-      }
-      //console.log('WI ld '+WI);
-      //console.log('LP ld '+(WI2-LP1));
-      //console.log('BD AC'+(AC-WI2));
     }); //json cb
   }); //end fetch CB
 };
