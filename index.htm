@@ -76,6 +76,7 @@ inside exactly 1 http 1.1 resp packet (1500 bytes)
       br = doc.createElement('br'),
       drop = this.E || doc.createTextNode("\ud83d\udca7"),
       i = 0,
+      cnorce = ((Date.now())%2)|0,
       DT = 0, DT1, DT2, WI = 0, WI1, WI2, LP1 = performance.now(), AC;
       /*hardcode 24 hr in a day to save wire*/
       for (; i < 24; i++) {
@@ -113,7 +114,12 @@ meaningless for self closing BR tag
         e.appendChild(br.cloneNode(0));
         e.appendChild(doc.createTextNode(r.precipChance[i] + "%"));
         DT1 = performance.now();
+        if(cnorce) {
         e.appendChild(drop.cloneNode(0));
+         } else {
+         (v = e.appendChild(doc.createElement('img'))).setAttribute("style","height:1em;width:1em;vertical-align:middle;");
+          v.src = "dp.png";
+        }
         DT2 = performance.now();
         DT += (DT2-DT1);
         e.appendChild(br.cloneNode(0));
@@ -129,11 +135,22 @@ meaningless for self closing BR tag
       }
       
       doc.body.appendChild(frag);
-      AC = performance.now();
-      console.log('DT ld '+DT);
-      console.log('WI ld '+WI);
-      console.log('LP ld '+(WI2-LP1));
-      console.log('BD AC'+(AC-WI2));
+      //AC = performance.now();
+      //alert('DT ld '+cnorce+' '+DT);
+      if (cnorce) {
+        v = localStorage.getItem('CNT');
+        if (!v)
+          v = DT;
+        localStorage.setItem('CNT', ((+v) + DT) / 2);
+      } else {
+        v = localStorage.getItem('CET');
+        if (!v)
+          v = DT;
+        localStorage.setItem('CET', ((+v) + DT) / 2);
+      }
+      //console.log('WI ld '+WI);
+      //console.log('LP ld '+(WI2-LP1));
+      //console.log('BD AC'+(AC-WI2));
     }); //json cb
   }); //end fetch CB
 };
