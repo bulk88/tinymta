@@ -155,7 +155,7 @@ if (this.addEventListener && document.querySelector) {
   });
   
 onpopstate = function (e) {
-  //debugger;
+  //debugger; 
   var el;
   e = e.state|0; //null if root/1st state/hist ent
   if(e === pageHistoryIdx || e >= pageHistory.length) //a refresh
