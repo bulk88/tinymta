@@ -26,6 +26,7 @@ if (this.addEventListener && document.querySelector) {
           && window.sessionStorage
           ) {
         stacode = stacode.slice(1);
+        console.log('s'+Date.now());
   /* race on old between f.js and mousedown/touchstart but IDC */
         fetch('//backend-unified.mylirr.org/arrivals/' + stacode, {
           headers: {

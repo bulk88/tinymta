@@ -113,6 +113,7 @@ function y() {
   }
 
     function gotJson(r, /*r=resp*/ jsonp) {
+    console.log('f'+Date.now());
     var i, n = 0, branch, w = "West<br>",
         l, curTime = new Date(), h = curTime.toLocaleTimeString('en-US')+(jsonp ? ' via JSONP' : ' via CORS')
         +'<br>Cur Sta: ' + s[stacode] + "<br>East<br>"; /*w=west, t=train, l=lineofhtml, h=html*/
