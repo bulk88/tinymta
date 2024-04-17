@@ -160,15 +160,15 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   newEl_i.as = 'script';
   newEl_i.href = 'routes.js';
   delayedStaHits_head.appendChild(newEl_i);
-  newEl_i = document.createElement('link');
-  newEl_i.rel = 'prefetch';
-  newEl_i.href = 'stop.htm';
-  newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
-  newEl_i.href = 'rstop.htm';
-  delayedStaHits_head.appendChild(newEl_i);
+  // newEl_i = document.createElement('link');
+  // newEl_i.rel = 'prefetch';
+  // newEl_i.href = 'stop.htm';
+  // newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
+  // newEl_i.href = 'rstop.htm';
+  // delayedStaHits_head.appendChild(newEl_i);
 
   window.onpageshow = function (event_div){
-    if (event_div.persisted) {
+    if (event_div.persisted && location.pathname == "/") {
       event_div = this.favDiv;
       if(event_div) {
         read_fav(function(c){
@@ -216,15 +216,16 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   }
 
 }// if index.htm
-else {
-  if(delayedStaHits_head = this.rF) {
-    for(newEl_i=0;newEl_i<delayedStaHits_head.length;newEl_i+=2) {
-      _recordFavStopHit(delayedStaHits_head[newEl_i], delayedStaHits_head[newEl_i+1]);
-    }
+
+//always add recordFav global, b/c SPA
+if(delayedStaHits_head = this.rF) {
+  for(newEl_i=0;newEl_i<delayedStaHits_head.length;newEl_i+=2) {
+    _recordFavStopHit(delayedStaHits_head[newEl_i], delayedStaHits_head[newEl_i+1]);
   }
-  //fake the Array API so delayed and direct callers r simpler
-  this.rF = {push:_recordFavStopHit};
 }
+//fake the Array API so delayed and direct callers r simpler
+this.rF = {push:_recordFavStopHit};
+
 })();
 
 

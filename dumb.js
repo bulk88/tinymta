@@ -8,6 +8,10 @@
 if (this.addEventListener && document.querySelector) {
   //IE 8-10 has AEL/QS but not document.head
   var head = document.documentElement.firstChild, el, newEl;
+  
+  var pageCache = {};
+  var pageHistory = [];
+  var pageHistoryIdx = 0;
 
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!this.fetch && !this.f) {
@@ -17,13 +21,19 @@ if (this.addEventListener && document.querySelector) {
 
   function preload(evt) {
     var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
+    
+    var str;
     evt = evt.target;
+    if (evt.nodeName === 'FONT') { //rstop.htm colored links
+      evt = evt.parentNode;
+    }
     if (evt.nodeName === 'A' && (isTouchStart || !evt.tmts)) {
       stacode = evt.hash;
       pathname = evt.pathname;
       if (pathname === '/rstop.htm'
           //Saf 3 and Opera 10 have AEL and QS but not SS
           && window.sessionStorage
+          ,0
           ) {
         stacode = stacode.slice(1);
         console.log('s'+Date.now());
@@ -47,8 +57,38 @@ if (this.addEventListener && document.querySelector) {
              */
             });
           }
-
         });
+      }
+      else if (pathname == '/rstop.htm' || pathname == '/rtrain.htm') {
+        var fResp;
+        var fCB2;
+        stacode = stacode.slice(1);
+        window.S = {t:Date.now(), s:stacode, f: function(cb){if(fResp){cb(fResp)} else {fCB2 = cb}}};
+  /* race on old between f.js and mousedown/touchstart but IDC */
+        console.log('s'+Date.now());
+        fetch( pathname == '/rstop.htm' ? '//backend-unified.mylirr.org/arrivals/' + stacode : '//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', {
+          headers: {
+            'accept-version': '3.0'
+          }
+        }).then(function(r){
+        if(fCB2) {fCB2(r)}
+        else {fResp = r}}
+        );
+        
+        if(spa = pageCache[pathname]) {
+          if(typeof (str = spa.style) === 'string') {
+            el = document.createElement('style');
+            el.textContent = str;
+            spa.style = el
+          }
+          if(typeof (str = spa.js) === 'string') {
+            eval(str);
+            spa.js = onhashchange;
+            onhashchange = null;
+          }
+        } else {
+          spaPrefetch(pathname);
+        }
         evt.tmts = isTouchStart;
       }//end of sessionStorage+fetch b/c LIRR requires
        //custom headers which native <link> prefetch is impossible
@@ -73,8 +113,92 @@ if (this.addEventListener && document.querySelector) {
   }
   addEventListener('touchstart', preload, {passive: true});
   addEventListener('mousedown', preload, {passive: true});
+  
+  addEventListener('click', function(e) {
+    var str, spa, el, evt = e.target, pathname;
+    if (evt.nodeName === 'FONT') { //rstop.htm colored links
+      evt = evt.parentNode;
+    }
+    if(evt.nodeName === "A" && ((pathname=evt.pathname)== '/rstop.htm' || pathname == '/rtrain.htm') && (spa=pageCache[pathname])) {
 
-  function kph(e_realkey) {
+      //debugger;
+      var histArr = pageHistory[pageHistoryIdx] || (pageHistory[pageHistoryIdx] = []);
+
+      if((el = document.documentElement.firstChild.getElementsByTagName('style')).length) {
+        el = el[0];
+        histArr[1] = el.parentNode.removeChild(el);
+      }
+      histArr[0] = document.documentElement.removeChild(document.body);
+      pageHistoryIdx++;
+      pageHistory.length = pageHistoryIdx; //GC Fwd entries
+      document.documentElement.appendChild(document.createElement('body'));
+      window.history.pushState(pageHistoryIdx,0,evt.href);
+      e.preventDefault();
+      spa = pageCache[pathname];
+      if(str = spa.style) {
+        if(typeof str === 'string') {
+          el = document.createElement('style');
+          el.textContent = str;
+          spa.style = el
+        }
+        document.documentElement.firstChild.appendChild(spa.style);
+      }
+      if(typeof (str = spa.js) === 'string') {
+        eval('!(function(){'+str+'})()');
+        spa.js = onhashchange;
+        onhashchange = null;
+      } else {
+        fn = spa.js;
+        fn();
+      }
+    }
+  });
+  
+onpopstate = function (e) {
+  //debugger;
+  var el;
+  e = e.state|0; //null if root/1st state/hist ent
+  if(e === pageHistoryIdx || e >= pageHistory.length) //a refresh
+    location.reload();
+  var s = pageHistory[pageHistoryIdx];
+  if(!s) {
+    pageHistory[pageHistoryIdx] = s = [];
+  }
+  if((el = document.documentElement.firstChild.getElementsByTagName('style')).length) {
+    el = el[0];
+    s[1] = el.parentNode.removeChild(el);
+  }
+  s[0] = document.documentElement.removeChild(document.body);
+  pageHistoryIdx = e;
+  s = pageHistory[e];
+  if(s[1]) {
+    document.documentElement.firstChild.appendChild(s[1]);
+  }
+  document.documentElement.appendChild(s[0]);
+  onpageshow && onpageshow({persisted:1});
+};
+
+//if != 200???
+function spaPrefetch(pathname) {
+  try {
+    fetch(pathname).then(function (r) {
+      r.text().then(function (r) {
+        var spa, start = r.indexOf('<script>');
+        if(start != -1) {
+          start += '<script>'.length;
+          spa = pageCache[pathname] = {js: r.slice(start, r.indexOf('</script>', start))};
+          if((start = r.indexOf('<style>')) != -1) {
+              start += '<style>'.length;
+              spa.style = r.slice(start, r.indexOf('</style>', start));
+          }
+        }
+      })
+    });
+  } catch (e) {}
+}
+
+
+function kph(e_realkey) {
     e_realkey = [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,0,1,2,3,4,5,6,7,8,9,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9,,,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9][e_realkey.keyCode];
 
     //gz 978 to 971 chg, +x===x vs typeof x === 'number'

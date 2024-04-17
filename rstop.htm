@@ -5,15 +5,14 @@
 <link href="//backend-unified.mylirr.org" rel="dns-prefetch">
 <link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin>
 <script async src="/fav.js"></script>
-<link href=rtrain.htm rel=prefetch>
+<script async src="/dumb.js"></script>
 <style>:root{color-scheme:light dark}a.t:link{color:initial;text-decoration:initial}.b{text-decoration:underline}</style>
 </head>
 <body>No javascript</body>
-<script type="text/javascript">
+<script>
 
 mangleIndex={name:"mangleIndex"};
 
-var stacode = location.hash;
 /* note sta codes 0NY (MNRR) GCT (LIRR) and _GC (Both) are all GCT,
    todo, make choice if show Both for both RRs*/
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
@@ -28,6 +27,12 @@ var colorRoutesRAIL = {/*"WB":0,*//*"NH":0,*//*"DN":0,*//*"NC":0,*/"CI":1,"12":1
 
 /* var t is "top" as in top of body (header) */
 var t;
+var stacode;
+if(!onpopstate) {
+  onpopstate = function () {location.reload()};
+}
+
+function onNewURL(){
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
    related to stop.htm because stop.htm is fetched from browser cache, sadly there
@@ -36,6 +41,7 @@ var t;
    for latency reasons on 2G networks, 200 always if .reload(1),
    304 typ if .reload(0)
 */
+stacode = location.hash;
 if(stacode.length > 1) {
     /* https://traintime.lirr.org/api/Departure?loc=CPL is one API from old MTA official LIRR Train Time app, no CORS headers, no cleartext
     https://backend.mylirr.org/arrivals/CPL is from https://www.mylirr.org/main?
@@ -67,6 +73,7 @@ if(stacode.length > 1) {
 
 if (t) {
   if (this.fetch) {
+  this.y = y;
     y/*getStop*/();
   } else {
     //IE 5.5 and 6.0 don't have document.head
@@ -75,6 +82,10 @@ if (t) {
 }
 else
     document.body.innerHTML = 'No station specified in url anchor.';
+}//end onNewURL
+
+onhashchange = onNewURL;
+location.pathname == '/rstop.htm' && onNewURL();
 
 function noPTag(str) {
   if(typeof str == 'string') {
@@ -89,8 +100,15 @@ function noPTag(str) {
 function y() {
   document.body.innerHTML = t; /*t=top*/
    var ls;
+   var fCB =     function (r) {
+    r.status != 200 ? //put != first for r.status gzip reasons
+    alert("error http status " + r.status)
+     :
+    r.json().then(gotJson)};
     /*ra = rail arrivals*/
-  if(window.sessionStorage && (ls = sessionStorage.getItem('r'))
+  if(
+  /*
+  window.sessionStorage && (ls = sessionStorage.getItem('r'))
       && (sessionStorage.removeItem('r'),
       //FF 3.5 has W3C/modern SS, FF 3.0 getItem returns strange objects with
       //value: secure: only 2 keys, value: contains a string of our json
@@ -101,15 +119,20 @@ function y() {
     //stick to sessionStorage, Opera 10, oh well, its too old to need perf
     //console.log(' read '+window.name.slice(0, 5)+' read ');
     //if((ls = window.name) && (window.name='',ls = JSON.parse(ls))
-      && ls.s === stacode && Date.now()-ls.t < 3000) {
+      && ls.s === stacode && Date.now()-ls.t < 3000
+      */
+      0
+      ) {
     gotJson(ls.c, 1);
+  } else if (ls = window.S) {
+    window.S = 0;
+    if(ls.s === stacode
+    //&& Date.now()-ls.t < 3000
+    ) {
+      ls.f(fCB);
+    }
   } else {
-  fetch('//backend-unified.mylirr.org/arrivals/'+stacode, {headers: {'accept-version': '3.0'}}).then(
-    function (r) {
-    r.status != 200 ? //put != first for r.status gzip reasons
-    alert("error http status " + r.status)
-     :
-    r.json().then(gotJson)});
+  fetch('//backend-unified.mylirr.org/arrivals/'+stacode, {headers: {'accept-version': '3.0'}}).then(fCB);
   }
 
     function gotJson(r, /*r=resp*/ jsonp) {
@@ -199,38 +222,6 @@ function y() {
 
 } //end y aka getStop
 
-//Saf 3 and Opera 10 have AEL but not SS
-if(window.addEventListener && window.sessionStorage) {
-  function preload(evt) {
-    var el, stacode, isTouchStart = evt.type === 'touchstart';
-    evt = evt.target;
-    //branch colored train tag
-    if (evt.nodeName === 'FONT' && evt.parentNode.nodeName === 'A') {
-      evt = evt.parentNode;
-    }
-    if ((evt.nodeName === 'A' ) && (isTouchStart || !evt.tmts)) {
-      if (evt.pathname === '/rtrain.htm') {
-        stacode = evt.hash.slice(1);
-  /* race on old between f.js and mousedown/touchstart but IDC */
-        fetch('//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE',
-        {
-          headers: {
-            'accept-version': '3.0'
-          }
-        }, 1).then(function (r) {
-          if (r.status == 200) {
-            r.text().then(function (r) {
-              //time stop contents, train IDs and station codes, are guarenteed unique, no need for category
-              sessionStorage.setItem('r', '{"t":' + Date.now() + ',"s":"' + stacode + '","c":' + r + '}');
-            });
-          }
-        });
-        evt.tmts = isTouchStart;
-      }
-    }
-  }
-  window.addEventListener('touchstart', preload, {passive: true});
-  window.addEventListener('mousedown', preload, {passive: true});
-}
+
 
 </script></html>
