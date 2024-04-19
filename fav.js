@@ -191,7 +191,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
     onpageshow = _onpageshow;
   }
   newEl_i = _onpageshow = 0; //GC
-  
+
   var checkDOMFn = function (fn) {
     //call as.js DOM load CB if needed, typ for no fav support UA
     R=R&&R();

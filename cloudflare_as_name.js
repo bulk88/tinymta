@@ -745,7 +745,7 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
 
         resp = JSON.stringify(resp);
         //make JS obj literal notation, not JSON to save bytes, must eval() on client
-        resp = 'var R;!function(E){E=R,R='+resp.replace(/null/g, '').replace(/,?\]/g,']')+',E&&E()}();';
+        resp = 'var R;!function(E,B){for(E=R,R='+resp.replace(/null/g, '').replace(/,?\]/g,']')+',E=document.documentElement.firstChild.lastChild;E;E=E.previousSibling)if((B=E.src)&&B.lastIndexOf("routes.js")===B.length-9){E.parentNode.removeChild(E);break}}();';
         //resp = resp.replace(/\[/, '[{"id":"TINYMTA:' + (new Date()).toString() + '","longName":"","mode":"BUS","color":"CAE4F1","agencyName":"","paramId":"AMK__42920","sortOrder":0,"routeType":3,"regionalFareCardAccepted":false},');
         etag = await crypto.subtle.digest('MD5', textEnc.encode(resp));
         //lock-hazard, update globals no promises

@@ -17,6 +17,10 @@ if (this.addEventListener && document.querySelector) {
   var curPathtype;
   var pagehideCB_1p;
   var onPGClosure;
+  //array is in pagetype nums
+  var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6]];
+  //can't expose tiles2 oh well
+  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', '//tiles1.tinymta.us.to', '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm'];
 
 function STATE_BODY() {
   return 0;
@@ -100,6 +104,9 @@ because window.name update speed unreliable, just always use SS
       if(pathname === location.pathname)
         return;
       switch(pathname) {
+        case '/tileMap.htm':
+          pathtype = 8;
+          break;
         case '/stations.htm':
           pathtype = 7;
           break;
@@ -186,6 +193,9 @@ because window.name update speed unreliable, just always use SS
       }
       */
       switch(pathname) {
+        case '/tileMap.htm':
+          pathtype = 8;
+          break;
         case '/stations.htm':
           pathtype = 7;
           break;
@@ -246,7 +256,7 @@ because window.name update speed unreliable, just always use SS
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         spa = pageCache[pathname];
         
-        if(spa.js) {
+        if(spa.js && pathtype !== 8) {
           histArr[STATE_BODY()] = htmlEl.appendChild(document.createElement('body'));
         } else if (!hashNavFlag) {
           histArr[STATE_BODY()] = htmlEl.appendChild(spa.body);
@@ -360,7 +370,32 @@ onpopstate = function (e) {
   el && el({persisted:1});
 };
 
-
+//delete these prefetch Els, the .htm was loaded and parsed into JS/DOM long ago
+//stop banging disk I/O or network I/O or the dom tree unneceserily
+function purgePreFetchHTML(pathname) {
+  (this.requestIdleCallback || this.requestAnimationFrame || function(callback){setTimeout(callback, 40)})(function(){
+    var i, spa, el, pnl = pathname.length, pN_str;
+    //spa.pf.href.lastIndexOf("/tileMap.htm") == (spa.pf.href.length-"/tileMap.htm".length)
+    for(i in pageCache) {
+      spa = pageCache[i];
+      if((el=spa.pf) && (pN_str=el.href).lastIndexOf(pathname) === (pN_str.length-pnl)) {
+        if(pN_str=el.parentNode) {
+          pN_str.removeChild(el);
+        }
+        delete spa.pf;
+      }
+    }
+    for(i = 0; i < pageHistory.length; i++) {
+      spa = pageHistory[i];
+      if((el=spa[STATE_PF()]) && (pN_str=el.href).lastIndexOf(pathname) === (pN_str.length-pnl)) {
+        if(pN_str=el.parentNode) {
+          pN_str.removeChild(el);
+        }
+        spa[STATE_PF()] = 0;
+      }
+    }
+  });
+}
 
 //if != 200???
 function spaPrefetch(pathname, pathtype) {
@@ -401,7 +436,28 @@ function spaPrefetch(pathname, pathtype) {
     fetch(pathname).then(function (r) {
       r.text().then(function (r) {
         var spa = {}, start, el, old_fn_y, old_pg_rel;
-        '<link href=//backend-unified.mylirr.org rel=preconnect crossorigin>'
+        //lazy inflate
+        if(old_pg_rel = preconPrefetElMap[pathtype]) {
+          start = old_pg_rel[0];
+          old_fn_y = preconPrefetEls[start];
+          if(old_fn_y.length) {
+            el = document.createElement("link");
+            el.href = old_fn_y;
+            el.rel = 'preconnect'
+            el.crossOrigin = 'anonymous';
+            old_fn_y = preconPrefetEls[start] = el;
+          }
+          spa.pc = old_fn_y;
+          start = old_pg_rel[1];
+          old_fn_y = preconPrefetEls[start];
+          if(old_fn_y.length) {
+            el = document.createElement("link");
+            el.href = old_fn_y;
+            el.rel = 'prefetch';
+            old_fn_y = preconPrefetEls[start] = el;
+          }
+          spa.pf = old_fn_y;
+        }
         if((start = r.indexOf('<style>')) != -1) {
               el = document.createElement('style');
               start += '<style>'.length;
@@ -418,6 +474,7 @@ function spaPrefetch(pathname, pathtype) {
             start += '<script>'.length;
             old_fn_y = y;
             old_pg_rel = window.onpageshow;
+            window.onpageshow = 0;
             Function(r.slice(start, r.indexOf('</script>', start)))();
             spa.js = onhashchange;
             spa.y = y;
@@ -427,33 +484,36 @@ function spaPrefetch(pathname, pathtype) {
             onhashchange = null;
           }
           pageCache[pathname] = spa;
+          purgePreFetchHTML(pathname);
         } else {
           start = document.createElement('html');
           start.innerHTML = r; //time me
-          el = start.firstChild.firstChild;
-          while (el) { //defect doesnt work for API stop viewers only 1p htm
-            old_fn_y = el.nextElementSibling;
-            if(el.nodeName == "LINK") {
-              if((old_pg_rel = el.rel) == 'preconnect') {
-                spa.pc = el.parentNode.removeChild(el);
-              } else if(old_pg_rel == 'prefetch') {
-                spa.pf = el.parentNode.removeChild(el);
-              }
-            }
-            el = old_fn_y;
+          el = spa.body = start.lastChild;
+          if(pathtype === 8) {
+            el.removeChild(el.lastElementChild);//unused in SPA SCRIPT
+            r = el.removeChild(el.firstElementChild).textContent;
+            old_fn_y = y;
+            Function(r)();
+            spa.js = onhashchange;
+            spa.y = y;
+            y = old_fn_y;
+            onhashchange = null;
           }
-          spa.body = start.lastChild;
           //1p.js already ran
-          if(fetch_js_all_cb)
+          if(fetch_js_all_cb) {
             pageCache[pathname] = spa;
+            purgePreFetchHTML(pathname);
           //wait for 1p.js before writing spa cache ent to global
-          else
+          }
+          else {
             fetch_js_all_cb = function() {
               pageCache[pathname] = spa;
+              purgePreFetchHTML(pathname);
             };
+          }
         }
-      })
-    });
+      });//.text() CB
+    }); //fet CB
   } catch (e) {}
 }
 
