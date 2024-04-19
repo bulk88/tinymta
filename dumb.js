@@ -16,6 +16,62 @@ if (this.addEventListener && document.querySelector) {
   var curHash = location.hash;
   var curPathtype;
   var pagehideCB_1p;
+  var onPGClosure;
+
+function STATE_BODY() {
+  return 0;
+}
+function STATE_STYLE() {
+  return 1;
+}
+function STATE_FNY() {
+  return 2;
+}
+function STATE_PATHHASH() {
+  return 3;
+}
+function STATE_PATHTYPE() {
+  return 4;
+}
+function STATE_PGSHOWFN() {
+  return 5;
+}
+function STATE_PC() {
+  return 6;
+}
+function STATE_PF() {
+  return 7;
+}
+        //save style, in body special case for /
+        
+        //TODO mk obj and array same time
+        pageHistory[STATE_STYLE()] = document.documentElement.lastChild.getElementsByTagName('style')[0];
+        //save BODY
+        pageHistory[STATE_BODY()] = document.body;
+        
+        pageHistory[STATE_PATHHASH()] = curPathname+curHash;
+        pageHistory[STATE_PATHTYPE()] = curPathtype = 4;
+        //async race fav.js vs dumb.js
+        if(el = window.onpageshow) {
+          pageHistory[STATE_PGSHOWFN()] = el;
+        } else {
+          onPGClosure = [pageHistory];
+          window.onpageshow = function (fn) {
+            onPGClosure[0][STATE_PGSHOWFN()] = fn;
+            onPGClosure[1].pg = fn;
+            window.onpageshow = fn;
+            onPGClosure = 0; //GC
+          };
+        }
+        pageHistory[STATE_FNY()] = y;
+
+        pageCache[curPathname] = {body:pageHistory[STATE_BODY()], style:pageHistory[STATE_STYLE()], pg: pageHistory[STATE_PGSHOWFN()]};
+        if(onPGClosure) {
+          onPGClosure[1] = pageCache[curPathname];
+        }
+        //mk global arr
+        pageHistory = [pageHistory];
+        window.history.pushState(pageHistoryIdx,0,location.href);
 
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!this.fetch && !this.f) {
@@ -27,6 +83,7 @@ if (this.addEventListener && document.querySelector) {
     var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
     var pathtype;
     var str;
+    var spa;
     evt = evt.target;
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
@@ -44,12 +101,15 @@ because window.name update speed unreliable, just always use SS
         return;
       switch(pathname) {
         case '/stations.htm':
-          pathtype = 6;
+          pathtype = 7;
           break;
         case '/mn/stations.htm':
-          pathtype = 5;
+          pathtype = 6;
           break;
         case '/li/stations.htm':
+          pathtype = 5;
+          break;
+        case '/':
           pathtype = 4;
           break;
         case '/stop.htm':
@@ -92,19 +152,8 @@ because window.name update speed unreliable, just always use SS
         }
         }
         //reload 1p.js I/O prob earlier
-        if(spa = pageCache[pathname] && (pathtype < 4 || typeof pagehideCB_1p !== "undefined")) {
-          if(typeof (str = spa.style) === 'string') {
-            el = document.createElement('style');
-            el.textContent = str;
-            spa.style = el
-          }
-          if(spa.js) {
-            if(typeof (str = spa.js) === 'string') {
-              eval(str);
-              spa.js = onhashchange;
-              onhashchange = null;
-            }
-          }
+        if((spa = pageCache[pathname]) && (pathtype < 5 || typeof pagehideCB_1p !== "undefined")) {
+          0;
         } else {
           spaPrefetch(pathname, pathtype);
         }
@@ -118,7 +167,7 @@ because window.name update speed unreliable, just always use SS
   addEventListener('click', function(e) {
     var htmlEl = document.documentElement;
     var head = htmlEl.firstChild;
-    var str, spa, el, evt = e.target, pathname, pathtype, histArr, hashNavFlag;
+    var str, spa, el, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn;
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
     }
@@ -138,12 +187,15 @@ because window.name update speed unreliable, just always use SS
       */
       switch(pathname) {
         case '/stations.htm':
-          pathtype = 6;
+          pathtype = 7;
           break;
         case '/mn/stations.htm':
-          pathtype = 5;
+          pathtype = 6;
           break;
         case '/li/stations.htm':
+          pathtype = 5;
+          break;
+        case '/':
           pathtype = 4;
           break;
         case '/stop.htm':
@@ -161,38 +213,48 @@ because window.name update speed unreliable, just always use SS
         default:
           return;
       }
-      if(spa=pageCache[pathname]) {
-        //debugger;
-        hashNavFlag = pathname === location.pathname && evt.hash != location.hash;
-        //if(hashNavFlag) { debugger }
-        histArr = pageHistory[pageHistoryIdx] || (pageHistory[pageHistoryIdx] = []);
 
-        if(curPathtype > 3 && pagehideCB_1p && curPathtype != pathtype) {
+      if(spa=pageCache[pathname]) {
+        hash = evt.hash;
+        hashNavFlag = pathname === location.pathname && hash != location.hash;
+
+        histArr = pageHistory[pageHistoryIdx];
+
+        if(curPathtype > 4 && pagehideCB_1p && curPathtype != pathtype) {
           pagehideCB_1p({}); //if(!evt.persisted) save scroll
         }
-        //save rmv STYLE
-        if((el = head.getElementsByTagName('style')).length) {
-          el = el[0];
-          histArr[1] = hashNavFlag ? el : head.removeChild(el);
+
+        //rmv STYLE
+        if(!hashNavFlag) {
+          if(el = histArr[STATE_STYLE()]) { //always HEAD except for / where its BODY
+            el.parentNode.removeChild(el);
+          }
+          if(el = histArr[STATE_PC()]) { //always HEAD
+            head.removeChild(el);
+          }
+          if(el = histArr[STATE_PF()]) { //always HEAD
+            head.removeChild(el);
+          }
         }
-        //save rmv BODY
-        el = htmlEl.lastChild;
-        histArr[0] = hashNavFlag ? el: htmlEl.removeChild(el);
-        
-        histArr[3] = location.pathname+location.hash;
-        histArr[4] = curPathtype; //bug / root is undef
+        //rmv BODY
+        hashNavFlag || htmlEl.removeChild(histArr[STATE_BODY()]);
+
+        //histArr[3] = location.pathname+location.hash;
+        //histArr[4] = curPathtype; //bug / root is undef
         pageHistoryIdx++;
-        pageHistory.length = pageHistoryIdx; //GC Fwd entries
+        histArr = pageHistory[pageHistoryIdx] = [];
+        pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         spa = pageCache[pathname];
+        
         if(spa.js) {
-          htmlEl.appendChild(document.createElement('body'));
+          histArr[STATE_BODY()] = htmlEl.appendChild(document.createElement('body'));
         } else if (!hashNavFlag) {
-          htmlEl.appendChild(spa.body)
+          histArr[STATE_BODY()] = htmlEl.appendChild(spa.body);
+        } else {
+          histArr[STATE_BODY()] = spa.body;
         }
-        curPathname = location.pathname;
-        curHash = location.hash;
-        curPathtype = pathtype;
         window.history.pushState(pageHistoryIdx,0,evt.href);
+
 
         //let A el hash nav event run if hash only even tho A el hash nav will
         //fire popstate event with evt.state as null, but curP and curH prevent
@@ -200,33 +262,38 @@ because window.name update speed unreliable, just always use SS
         if(!hashNavFlag) {
           e.preventDefault();
           if(str = spa.style) {
-            if(typeof str === 'string') {
-              el = document.createElement('style');
-              el.textContent = str;
-              spa.style = el
-            }
-            head.appendChild(spa.style);
+            histArr[STATE_STYLE()] = head.appendChild(str);
           }
-          if(spa.js) {
-            if(typeof (str = spa.js) === 'string') {
-              eval('!(function(){'+str+'})()');
-              spa.js = onhashchange;
-              onhashchange = null;
-            } else {
-              //this must be window. not a meth call
-              fn = spa.js;
-              fn();
-            }
+          if(str = spa.pc) {
+            histArr[STATE_PC()] = head.appendChild(str);
           }
+          if(str = spa.pf) {
+            histArr[STATE_PF()] = head.appendChild(str);
+          }
+          y = histArr[STATE_FNY()] = spa.y;
+          window.onpageshow = histArr[STATE_PGSHOWFN()] = spa.pg;
+          if(fn = spa.js) {
+             //this must be window. not a meth call
+             fn();
+          }
+          //dont use evt obj anymore, /li changes to /li/li after url chg
+          curPathname = pathname;
+          curHash = hash;
+          curPathtype = pathtype;
+        } else {
+          histArr[STATE_STYLE()] = spa.style;
+          histArr[STATE_PC()] = spa.pc;
+          histArr[STATE_PF()] = spa.pf;
         }
+        histArr[STATE_PATHHASH()] = pathname+hash;
+        histArr[STATE_PATHTYPE()] = pathtype;
+      } else {
+       console.log('on click no cache spa ent');
       }
     }
   });
   
 onpopstate = function (e) {
-  //debugger; 
-  var evt2 = e;
-  var ss;
   var el;
   var htmlEl = document.documentElement;
   var head = htmlEl.firstChild;
@@ -237,10 +304,6 @@ onpopstate = function (e) {
   if(curPathname == location.pathname && curHash != location.hash) {
     curPathname = location.pathname;
     curHash = location.hash;
-    //dont refresh navigate to a 1p .htm with wrong cached X,Y scroll
-    
-    //todo move to 1st SPA load/parse of 1p .htm???
-    sessionStorage.removeItem('1p'+location.pathname);
     console.log('spa leave 1');
     return;
   }
@@ -253,46 +316,51 @@ onpopstate = function (e) {
   }
 
   var s = pageHistory[pageHistoryIdx];
-  //back() clicked, cur page not in cache, save cur so forward() works
-  if(!s) {
-    pageHistory[pageHistoryIdx] = s = [];
-  }
 
   //load new from cache
   newState = pageHistory[e];
-  newPathtype = newState[4];
+  newPathtype = newState[STATE_PATHTYPE()];
+  curPathname = location.pathname;
+  curHash = location.hash;
 
-  if(curPathtype > 3 && pagehideCB_1p && curPathtype !== newPathtype) {
-    pagehideCB_1p({}); //if(!evt.persisted) save scroll
+  if(curPathtype > 4 && pagehideCB_1p && curPathtype !== newPathtype) {
+    pagehideCB_1p({}); //if(!evt.persisted) save scroll chrome bug
   }
 
+  //rmv old style tag if any
+  if(el = s[STATE_STYLE()]) {
+    el.parentNode.removeChild(el);
+  }
+  if(el = s[STATE_PC()]) {
+    head.removeChild(el);
+  }
+  if(el = s[STATE_PF()]) {
+    head.removeChild(el);
+  }
 
-  //save style tag if any
-  if((el = head.getElementsByTagName('style')).length) {
-    //assume 1 style el in HEAD
-    el = el[0];
-    s[1] = head.removeChild(el);
-  }
-  //save y() for fast refresh links that need globals
-  if(el = this.y) {
-    s[2] = el;
-  }
-  //save BODY dom tree
-  s[0] = htmlEl.removeChild(htmlEl.lastChild);
+  //rmv old BODY dom tree
+  htmlEl.removeChild(s[STATE_BODY()]);
   //set new page IDX to global
   pageHistoryIdx = e;
 
   curPathtype = newPathtype;
   //add style if any
-  if(el = newState[1]) {
+  if(el = newState[STATE_STYLE()]) {
     head.appendChild(el);
   }
-  if(el = newState[2]) {
-    this.y = el;
+  if(el = newState[STATE_PC()]) {
+    head.appendChild(el);
   }
-  htmlEl.appendChild(newState[0]);
-  onpageshow && onpageshow({persisted:1});
+  if(el = newState[STATE_PF()]) {
+    head.appendChild(el);
+  }
+  htmlEl.appendChild(newState[STATE_BODY()]);
+  y = newState[STATE_FNY()];
+  onpageshow = el = newState[STATE_PGSHOWFN()];
+  el && el({persisted:1});
 };
+
+
 
 //if != 200???
 function spaPrefetch(pathname, pathtype) {
@@ -332,10 +400,13 @@ function spaPrefetch(pathname, pathtype) {
     }
     fetch(pathname).then(function (r) {
       r.text().then(function (r) {
-        var spa = {}, start;
+        var spa = {}, start, el, old_fn_y, old_pg_rel;
+        '<link href=//backend-unified.mylirr.org rel=preconnect crossorigin>'
         if((start = r.indexOf('<style>')) != -1) {
+              el = document.createElement('style');
               start += '<style>'.length;
-              spa.style = r.slice(start, start = r.indexOf('</style>', start));
+              el.textContent = r.slice(start, start = r.indexOf('</style>', start));
+              spa.style = el
               start += 8;
         } else {
           start = 0;
@@ -345,12 +416,32 @@ function spaPrefetch(pathname, pathtype) {
           //status.htm don't exec inline SCRIPT in HEAD, that tag is for globals decl
           if((start = r.indexOf('<script>',start)) != -1) {
             start += '<script>'.length;
-            spa.js = r.slice(start, r.indexOf('</script>', start));
+            old_fn_y = y;
+            old_pg_rel = window.onpageshow;
+            Function(r.slice(start, r.indexOf('</script>', start)))();
+            spa.js = onhashchange;
+            spa.y = y;
+            spa.pg = window.onpageshow;
+            y = old_fn_y;
+            window.onpageshow = old_pg_rel;
+            onhashchange = null;
           }
           pageCache[pathname] = spa;
-        } else { //note API Design, above r "strings" temp to save CPU if no click, but below is a parse
+        } else {
           start = document.createElement('html');
           start.innerHTML = r; //time me
+          el = start.firstChild.firstChild;
+          while (el) { //defect doesnt work for API stop viewers only 1p htm
+            old_fn_y = el.nextElementSibling;
+            if(el.nodeName == "LINK") {
+              if((old_pg_rel = el.rel) == 'preconnect') {
+                spa.pc = el.parentNode.removeChild(el);
+              } else if(old_pg_rel == 'prefetch') {
+                spa.pf = el.parentNode.removeChild(el);
+              }
+            }
+            el = old_fn_y;
+          }
           spa.body = start.lastChild;
           //1p.js already ran
           if(fetch_js_all_cb)
@@ -358,7 +449,7 @@ function spaPrefetch(pathname, pathtype) {
           //wait for 1p.js before writing spa cache ent to global
           else
             fetch_js_all_cb = function() {
-              pageCache[pathname] = spa
+              pageCache[pathname] = spa;
             };
         }
       })

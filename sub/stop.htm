@@ -68,7 +68,6 @@ http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF
 
 if (url) {
   if (this.fetch) {
-    this.y = y;
     y/*getStop*/();
   } else {
     //IE 5.5 and 6.0 don't have document.head
@@ -78,6 +77,8 @@ if (url) {
 else
     document.body.innerHTML = 'No station specified in url anchor.';
 }//end onNewURL
+
+this.y = y;
 onhashchange = onNewURL;
 location.pathname == '/stop.htm' && onNewURL();
 

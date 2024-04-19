@@ -58,15 +58,17 @@ var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:
           +'\')">Slow</a>] <a href='+url_alerts+'>Raw</a><br>';
 var scriptElem;
 
+if(!onpopstate) {
+  onpopstate = function () {location.reload()};
+}
+
 function onNewURL(){
 /* reqs
 fetch C42, S10.1, FF 39,Op 29
 array.find C45, S7.1, FF25, OP 32
 object.values C50, S10.1, FF 47, OP 41
 */
-this.y = y;
 if (Object.values) {
-
   y/*getStop*/();
 } else {
 //IE 5.5 and 6.0 don't have document.head
@@ -74,6 +76,7 @@ if (Object.values) {
 }
 }//end onNewURL
 
+this.y = y;
 onhashchange = onNewURL;
 (location.pathname == '/status.htm' ||  location.pathname == '/status_.htm') && onNewURL();
 

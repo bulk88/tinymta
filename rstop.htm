@@ -73,7 +73,6 @@ if(stacode.length > 1) {
 
 if (t) {
   if (this.fetch) {
-  this.y = y;
     y/*getStop*/();
   } else {
     //IE 5.5 and 6.0 don't have document.head
@@ -84,6 +83,7 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 }//end onNewURL
 
+this.y = y;
 onhashchange = onNewURL;
 location.pathname == '/rstop.htm' && onNewURL();
 

@@ -167,8 +167,8 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   newEl_i.href = 'rstop.htm';
   delayedStaHits_head.appendChild(newEl_i);
 
-  window.onpageshow = function (event_div){
-    if (event_div.persisted && location.pathname == "/") {
+  var _onpageshow = function (event_div){
+    if (event_div.persisted) {
       event_div = this.favDiv;
       if(event_div) {
         read_fav(function(c){
@@ -184,6 +184,14 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
       }
     }
   };
+  //dumb.js SPA async race fav.js vs dumb.js
+  if(newEl_i = onpageshow) {
+    newEl_i(_onpageshow);
+  } else { //not SPA, or race win
+    onpageshow = _onpageshow;
+  }
+  newEl_i = _onpageshow = 0; //GC
+  
   var checkDOMFn = function (fn) {
     //call as.js DOM load CB if needed, typ for no fav support UA
     R=R&&R();

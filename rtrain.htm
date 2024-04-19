@@ -11,7 +11,6 @@
 
 mangleIndex={name:"mangleIndex"};
 
-var stacode = location.hash;
 /* note sta codes 0NY (MNRR) GCT (LIRR) and _GC (Both) are all GCT,
    todo, make choice if show Both for both RRs*/
 /*html-minifier will remove spaces and extra "s, DONT change tags, this station list is injected*/
@@ -72,7 +71,6 @@ if(stacode.length > 1) {
 
 if (t) {
   if (this.fetch) {
-    this.y = y;
     y/*getStop*/();
   } else {
     //IE 5.5 and 6.0 don't have document.head
@@ -83,6 +81,7 @@ else
     document.body.innerHTML = 'No station specified in url anchor.';
 }
 
+this.y = y;
 onhashchange = onNewURL;
 location.pathname == '/rtrain.htm' && onNewURL();
 
