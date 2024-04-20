@@ -58,8 +58,8 @@ var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:
           +'\')">Slow</a>] <a href='+url_alerts+'>Raw</a><br>';
 var scriptElem;
 
-if(!onpopstate) {
-  onpopstate = function () {location.reload()};
+if(!this.onpopstate) {
+  this.onpopstate = function (evt) {evt.state !== null && location.reload()};
 }
 
 function onNewURL(){
@@ -96,13 +96,11 @@ function y(ls /*unused args in PF mode, empty reg*/) {
         R = drawHTML;
     });
   }
-  if (ls = window.S) {
-    window.S = 0;
-    if(ls.s === location.hash.slice(1)
-    //&& Date.now()-ls.t < 3000
-    ) {
-      ls.f(fCB);
-    }
+  //todo # hash is a str const!!!
+  if ((ls = window.S) && ((window.S = 0),ls.s === location.hash.slice(1))
+      && (Date.now()-ls.t < 3000)
+  ) {
+    ls.f(fCB);
   } else {
     fetch(url_alerts).then(fCB);
   }

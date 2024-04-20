@@ -5,7 +5,7 @@
    have one to test with
 */
 (function(){
-if (this.addEventListener && document.querySelector) {
+if (history.pushState) {
   //IE 8-10 has AEL/QS but not document.head
   var head = document.documentElement.firstChild, el, newEl;
   
@@ -304,11 +304,15 @@ because window.name update speed unreliable, just always use SS
   });
   
 onpopstate = function (e) {
+  var evt = e;
   var el;
   var htmlEl = document.documentElement;
   var head = htmlEl.firstChild;
   var newState;
   var newPathtype;
+  if(e.state === null) {
+    return;
+  }
   e = e.state|0; //null if root/1st state/hist ent
   //hash only nav back or forwards
   if(curPathname == location.pathname && curHash != location.hash) {
@@ -323,6 +327,7 @@ onpopstate = function (e) {
   {
     console.log('spa leave 2');
     location.reload();
+    return;
   }
 
   var s = pageHistory[pageHistoryIdx];
@@ -433,7 +438,7 @@ function spaPrefetch(pathname, pathtype) {
         fetch_js_all_cb = 1;
       }
     }
-    fetch(pathname).then(function (r) {
+    fetch(pathname,{},1).then(function (r) {
       r.text().then(function (r) {
         var spa = {}, start, el, old_fn_y, old_pg_rel;
         //lazy inflate
@@ -474,7 +479,7 @@ function spaPrefetch(pathname, pathtype) {
             start += '<script>'.length;
             old_fn_y = y;
             old_pg_rel = window.onpageshow;
-            window.onpageshow = 0;
+            window.onpageshow = null;/*IE 11 doesnt like 0*/
             Function(r.slice(start, r.indexOf('</script>', start)))();
             spa.js = onhashchange;
             spa.y = y;
@@ -656,7 +661,7 @@ DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't
       //quietly die here, no exceptions thrown
     el = el.nextElementSibling;
   }
-}//end block if (this.addEventListener && document.querySelector) {
+}//end block if (this.pushState) {
 
 //.SEMV() is IE only FN all vers
 if(this.ScriptEngineMajorVersion

@@ -1,3 +1,5 @@
+*.gz
+*.gz.png
 /opera/*
 /include/*
 /sub/tileMap.js
@@ -15,6 +17,7 @@ as.js*
 *.bak
 tinymta
 node_modules
+include
 */gtfs.zip
 */agency.txt
 */stops.txt

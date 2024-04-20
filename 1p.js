@@ -103,16 +103,15 @@ if(/*this.addEventListener*/0) {
   //addEventListener('mousedown', preload, {passive: true});
 }
 
-if(!onpopstate) {(function (){
+if(!this.onpopstate) {(function (){
   var curPathname = location.pathname;
   var curHash = location.hash;
-  onpopstate = function () {
+  this.onpopstate = function (evt) {
     if(curPathname == location.pathname && curHash != location.hash) {
       sessionStorage.removeItem('1p'+location.pathname);
-      return;
-    } else {
+    } else if(evt.state !== null){
       location.reload();
-    };
+    }
   };
 })();
 }

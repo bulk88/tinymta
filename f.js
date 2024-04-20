@@ -376,7 +376,12 @@ window.fetch = function (url, options_headers, want_not_json) {
               var g_jtcb; //json or text CB
               var content_fk_promise = { //can't lift obj higher b/c closure
                   then: function(local_jtcb) {
-                    g_jtcb = local_jtcb;
+                    //have part 2 resp body already
+                    if(g_jtcb !== void 0) //arg 2 did use JSONP flag
+                      local_jtcb(g_jtcb,!!jsonpFnName);
+                    //save CB
+                    else
+                      g_jtcb = local_jtcb;
                   }
               };
               var want_text; /*.text() called instead of .json(), non-JSON content*/
@@ -419,7 +424,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                 never try a CORS request again.
                 Browsers without CORS like Opera 10, fail the XHR req, instantly, client
                 side, without network traffic.*/
-                if (jsonp)
+                if (jsonp && url.lastIndexOf('.htm') != url.length-4)
                   throw (0);
                 /*open() can fire errors events or throw exceptions*/
                 x.open('get', url, 1);
@@ -477,7 +482,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                       //fires RSC 4, status 0, and skips firing RSC 3, so
                       //don't do fallback to JSONP in RSC 3, but in RSC 4
                       i_thisFunc(cb);
-                    } else if (g_jtcb && x.status == 200) {
+                    } else if (x.status == 200) {
                         //unknown if XHR has JSON parse or not, we don't care
                         //.response is "newer" and native browser parsed
                         //by "responseType" if .RT implemented, otherwise fall back to
@@ -485,7 +490,12 @@ window.fetch = function (url, options_headers, want_not_json) {
                         //day 1 of XHR API
                         x = x.response || x.responseText;
                         //note JSON.parse might be a eval() PF
-                        g_jtcb(want_text || typeof(x) === 'object' ? x : JSON.parse(x));
+                        x = want_text || typeof(x) === 'object' ? x : JSON.parse(x);
+                        if(g_jtcb)
+                          g_jtcb(x);
+                        //very late or never then() part 2 CB registration
+                        else
+                          g_jtcb = x;
                     }
 /* assume unreachable b/c user's 200 check in f_then_cb
    but if needed in future deliver junk (empty string or null)
@@ -583,7 +593,11 @@ window.fetch = function (url, options_headers, want_not_json) {
                   /* g_jtcb is not set/json() never called if != 200
                   dont mk console noise, NOTE non-spec fetch API
                   JSON inflated obj passed even with text() instead of string */
-                  g_jtcb && g_jtcb(r.contents, 1 /*JSONP flag*/);
+                  if(g_jtcb)
+                    g_jtcb(r.contents, 1 /*JSONP flag*/);
+                  //very late or never then() part 2 CB registration
+                  else
+                    g_jtcb = r.contents;
                 };
                 jsonp.appendChild(scriptElem);
                 /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/

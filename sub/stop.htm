@@ -24,8 +24,8 @@ var url;
 var t;
 var curTime;
 
-if(!onpopstate) {
-  onpopstate = function () {location.reload()};
+if(!this.onpopstate) {
+  this.onpopstate = function (evt) {evt.state !== null && location.reload()};
 }
 
 function onNewURL(){
@@ -243,13 +243,10 @@ midnight of today, happens right after 1200AM */
 
 })} //end fCB
 
-  if (ls = window.S) {
-    window.S = 0;
-    if(ls.s === location.hash.slice(1)
-    //&& Date.now()-ls.t < 3000
-    ) {
-      ls.f(fCB);
-    }
+  if ((ls = window.S) && ((window.S = 0),ls.s === location.hash.slice(1))
+      && (Date.now()-ls.t < 3000)
+  ) {
+    ls.f(fCB);
   } else {
     fetch(url).then(fCB);
   }
