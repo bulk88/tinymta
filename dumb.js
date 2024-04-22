@@ -7,81 +7,71 @@
 (function(){
 if (history.pushState) {
   //IE 8-10 has AEL/QS but not document.head
-  var head = document.documentElement.firstChild, el, newEl;
+  var el, newEl;
+  var htmlEl = document.documentElement;
+  var head = htmlEl.firstChild;
+
   
   var pageCache = {};
-  var pageHistory = [];
+  var pageHistory;
   var pageHistoryIdx = 0;
   var curPathname = location.pathname;
   var curHash = location.hash;
-  var curPathtype;
+  var curPathtype = 4;
   var pagehideCB_1p;
-  var onPGClosure;
+
   //array is in pagetype nums
   var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6]];
   //can't expose tiles2 oh well
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', '//tiles1.tinymta.us.to', '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm'];
+  var genericStyle = document.createElement('style');
+  var genericBody = document.createElement('body');
+  var genericDarkMStyle;
+  var genericPC;
+  var genericPF;
 
-function STATE_BODY() {
+function STATE_PFHTMCACHE() {
   return 0;
 }
-function STATE_STYLE() {
+function STATE_BODY() {
   return 1;
 }
-function STATE_FNY() {
+function STATE_PATHHASH() {
   return 2;
 }
-function STATE_PATHHASH() {
+function STATE_PATHTYPE() {
   return 3;
 }
-function STATE_PATHTYPE() {
-  return 4;
-}
-function STATE_PGSHOWFN() {
-  return 5;
-}
-function STATE_PC() {
-  return 6;
-}
-function STATE_PF() {
-  return 7;
-}
-        //save style, in body special case for /
-        
-        //TODO mk obj and array same time
-        pageHistory[STATE_STYLE()] = document.documentElement.lastChild.getElementsByTagName('style')[0];
-        //save BODY
-        pageHistory[STATE_BODY()] = document.body;
-        
-        pageHistory[STATE_PATHHASH()] = curPathname+curHash;
-        pageHistory[STATE_PATHTYPE()] = curPathtype = 4;
-        //async race fav.js vs dumb.js
-        if(el = window.onpageshow) {
-          pageHistory[STATE_PGSHOWFN()] = el;
-        } else {
-          onPGClosure = [pageHistory];
-          window.onpageshow = function (fn) {
-            onPGClosure[0][STATE_PGSHOWFN()] = fn;
-            onPGClosure[1].pg = fn;
-            window.onpageshow = fn;
-            onPGClosure = 0; //GC
-          };
-        }
-        pageHistory[STATE_FNY()] = y;
-
-        pageCache[curPathname] = {body:pageHistory[STATE_BODY()], style:pageHistory[STATE_STYLE()], pg: pageHistory[STATE_PGSHOWFN()]};
-        if(onPGClosure) {
-          onPGClosure[1] = pageCache[curPathname];
-        }
-        //mk global arr
-        pageHistory = [pageHistory];
-        window.history.pushState(pageHistoryIdx,0,location.href);
-
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!this.fetch && !this.f) {
     f=1;//anti double load f.js in index.htm
     head.appendChild(document.createElement("script")).src = '/f.js';
   }
+
+(function(){
+  var el_fn = head.querySelector('link[rel="preconnect"]');
+  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: y, pc: el_fn};
+  var state = [spa, spa.body, curPathname+curHash, curPathtype];
+
+  (genericPC = el_fn.cloneNode(0)).removeAttribute('href');
+  (genericPF = head.querySelector('link[rel="prefetch"]').cloneNode(0)).removeAttribute('href');
+
+  if(el_fn = window.onpageshow) {
+    spa.pg = el_fn;
+  } else {
+    //fav.js delayed exec
+    window.onpageshow = function (fn) {
+      spa.pg = fn;
+      window.onpageshow = fn;
+    };
+  }
+
+  pageCache[curPathname] = spa;
+  //mk global arr
+  pageHistory = [state];
+  if(history.state !== pageHistoryIdx)
+    history.pushState(pageHistoryIdx,0,location.href);
+})();
 
   function preload(evt) {
     var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
@@ -155,11 +145,11 @@ because window.name update speed unreliable, just always use SS
         if(pathtype === 2) {
           //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
           R = 0;
-          document.documentElement.firstChild.appendChild(document.createElement('script')).src = "routes.js";
+          head.appendChild(document.createElement('script')).src = "routes.js";
         }
         }
-        //reload 1p.js I/O prob earlier
-        if((spa = pageCache[pathname]) && (pathtype < 5 || typeof pagehideCB_1p !== "undefined")) {
+        //reload 1p.js if need, was I/O prob earlier
+        if((spa = pageCache[pathname]) && (!spa.p1 || typeof pagehideCB_1p !== "undefined")) {
           0;
         } else {
           spaPrefetch(pathname, pathtype);
@@ -174,24 +164,12 @@ because window.name update speed unreliable, just always use SS
   addEventListener('click', function(e) {
     var htmlEl = document.documentElement;
     var head = htmlEl.firstChild;
-    var str, spa, el, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn;
+    var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn;
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
     }
     if(evt.nodeName === "A") {
       pathname = evt.pathname;
-      /*
-      if(pathname === location.pathname && evt.hash != location.hash && pageHistory[pageHistoryIdx] && pageHistory[pageHistoryIdx][0] == document.body) {
-        debugger;
-        //hash only change, dup all saved info from last new state change (hash or fake nav irrel)
-        histArr = pageHistory[pageHistoryIdx];
-        pageHistoryIdx++;
-        pageHistory[pageHistoryIdx] = histArr;
-        pageHistory.length = pageHistoryIdx; //GC Fwd entries
-        window.history.pushState(pageHistoryIdx,0,evt.href);
-        return;
-      }
-      */
       switch(pathname) {
         case '/tileMap.htm':
           pathtype = 8;
@@ -230,40 +208,49 @@ because window.name update speed unreliable, just always use SS
 
         histArr = pageHistory[pageHistoryIdx];
 
-        if(curPathtype > 4 && pagehideCB_1p && curPathtype != pathtype) {
+        oldspa = histArr[STATE_PFHTMCACHE()];
+
+        if(oldspa.p1 && pagehideCB_1p && curPathtype !== pathtype) {
           pagehideCB_1p({}); //if(!evt.persisted) save scroll
         }
 
-        //rmv STYLE
+        //rmv STYLE todo, do after body swap
         if(!hashNavFlag) {
-          if(el = histArr[STATE_STYLE()]) { //always HEAD except for / where its BODY
-            el.parentNode.removeChild(el);
+          //remove body first so no repaint attempt by browser after
+          //STYLE removed
+          htmlEl.removeChild(histArr[STATE_BODY()]);
+
+          if((el = oldspa.style) !== (el2 = spa.style)) {
+            if(el)
+              head.removeChild(el);
+            if(el2)
+              head.appendChild(el2);
           }
-          if(el = histArr[STATE_PC()]) { //always HEAD
-            head.removeChild(el);
+          if((el = oldspa.pc) !== (el2 = spa.pc)) {
+            if(el)
+              head.removeChild(el);
+            if(el2)
+              head.appendChild(el2);
           }
-          if(el = histArr[STATE_PF()]) { //always HEAD
-            head.removeChild(el);
+          if((el = oldspa.pf) !== (el2 = spa.pf)) {
+            if(el)
+              head.removeChild(el);
+            if(el2)
+              head.appendChild(el2);
           }
         }
-        //rmv BODY
-        hashNavFlag || htmlEl.removeChild(histArr[STATE_BODY()]);
-
-        //histArr[3] = location.pathname+location.hash;
-        //histArr[4] = curPathtype; //bug / root is undef
         pageHistoryIdx++;
         histArr = pageHistory[pageHistoryIdx] = [];
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
-        spa = pageCache[pathname];
         
-        if(spa.js && pathtype !== 8) {
-          histArr[STATE_BODY()] = htmlEl.appendChild(document.createElement('body'));
+        if(!spa.body) {//add new empty BODY
+          histArr[STATE_BODY()] = htmlEl.appendChild(genericBody.cloneNode(0));
         } else if (!hashNavFlag) {
           histArr[STATE_BODY()] = htmlEl.appendChild(spa.body);
         } else {
           histArr[STATE_BODY()] = spa.body;
         }
-        window.history.pushState(pageHistoryIdx,0,evt.href);
+        history.pushState(pageHistoryIdx,0,evt.href);
 
 
         //let A el hash nav event run if hash only even tho A el hash nav will
@@ -271,17 +258,9 @@ because window.name update speed unreliable, just always use SS
         //popstate CB from changing UI state
         if(!hashNavFlag) {
           e.preventDefault();
-          if(str = spa.style) {
-            histArr[STATE_STYLE()] = head.appendChild(str);
-          }
-          if(str = spa.pc) {
-            histArr[STATE_PC()] = head.appendChild(str);
-          }
-          if(str = spa.pf) {
-            histArr[STATE_PF()] = head.appendChild(str);
-          }
-          y = histArr[STATE_FNY()] = spa.y;
-          window.onpageshow = histArr[STATE_PGSHOWFN()] = spa.pg;
+
+          y = spa.y;
+          window.onpageshow = spa.pg;
           if(fn = spa.js) {
              //this must be window. not a meth call
              fn();
@@ -290,11 +269,8 @@ because window.name update speed unreliable, just always use SS
           curPathname = pathname;
           curHash = hash;
           curPathtype = pathtype;
-        } else {
-          histArr[STATE_STYLE()] = spa.style;
-          histArr[STATE_PC()] = spa.pc;
-          histArr[STATE_PF()] = spa.pf;
         }
+        histArr[STATE_PFHTMCACHE()] = spa;
         histArr[STATE_PATHHASH()] = pathname+hash;
         histArr[STATE_PATHTYPE()] = pathtype;
       } else {
@@ -306,14 +282,16 @@ because window.name update speed unreliable, just always use SS
 onpopstate = function (e) {
   var evt = e;
   var el;
-  var htmlEl = document.documentElement;
-  var head = htmlEl.firstChild;
+  var el2;
   var newState;
   var newPathtype;
-  if(e.state === null) {
+  //null if errors/problems, very old safari always calls oPS with
+  //null on "onload" new page
+  e = e.state;
+  if(e === null) {
     return;
   }
-  e = e.state|0; //null if root/1st state/hist ent
+
   //hash only nav back or forwards
   if(curPathname == location.pathname && curHash != location.hash) {
     curPathname = location.pathname;
@@ -331,47 +309,48 @@ onpopstate = function (e) {
   }
 
   var s = pageHistory[pageHistoryIdx];
+  var oldspa = s[STATE_PFHTMCACHE()];
 
   //load new from cache
   newState = pageHistory[e];
   newPathtype = newState[STATE_PATHTYPE()];
   curPathname = location.pathname;
   curHash = location.hash;
+  var spa = newState[STATE_PFHTMCACHE()];
 
-  if(curPathtype > 4 && pagehideCB_1p && curPathtype !== newPathtype) {
+  if(oldspa.p1 && pagehideCB_1p && curPathtype !== newPathtype) {
     pagehideCB_1p({}); //if(!evt.persisted) save scroll chrome bug
-  }
-
-  //rmv old style tag if any
-  if(el = s[STATE_STYLE()]) {
-    el.parentNode.removeChild(el);
-  }
-  if(el = s[STATE_PC()]) {
-    head.removeChild(el);
-  }
-  if(el = s[STATE_PF()]) {
-    head.removeChild(el);
   }
 
   //rmv old BODY dom tree
   htmlEl.removeChild(s[STATE_BODY()]);
+  if((el = oldspa.style) !== (el2 = spa.style)) {
+    if(el)
+      head.removeChild(el);
+    if(el2)
+      head.appendChild(el2);
+  }
+  if((el = oldspa.pc) !== (el2 = spa.pc)) {
+    if(el)
+      head.removeChild(el);
+    if(el2)
+      head.appendChild(el2);
+  }
+  if((el = oldspa.pf) !== (el2 = spa.pf)) {
+    if(el)
+      head.removeChild(el);
+    if(el2)
+      head.appendChild(el2);
+  }
+
   //set new page IDX to global
   pageHistoryIdx = e;
 
   curPathtype = newPathtype;
-  //add style if any
-  if(el = newState[STATE_STYLE()]) {
-    head.appendChild(el);
-  }
-  if(el = newState[STATE_PC()]) {
-    head.appendChild(el);
-  }
-  if(el = newState[STATE_PF()]) {
-    head.appendChild(el);
-  }
+
   htmlEl.appendChild(newState[STATE_BODY()]);
-  y = newState[STATE_FNY()];
-  onpageshow = el = newState[STATE_PGSHOWFN()];
+  y = spa.y;
+  onpageshow = el = spa.pg;
   el && el({persisted:1});
 };
 
@@ -390,36 +369,34 @@ function purgePreFetchHTML(pathname) {
         delete spa.pf;
       }
     }
-    for(i = 0; i < pageHistory.length; i++) {
-      spa = pageHistory[i];
-      if((el=spa[STATE_PF()]) && (pN_str=el.href).lastIndexOf(pathname) === (pN_str.length-pnl)) {
-        if(pN_str=el.parentNode) {
-          pN_str.removeChild(el);
-        }
-        spa[STATE_PF()] = 0;
-      }
-    }
   });
 }
 
 //if != 200???
 function spaPrefetch(pathname, pathtype) {
-  var el, old_onpagehide, evt_cb_setter, fetch_js_all_cb, head;
+  var el, evt_cb_setter, is1pjs, fetch_js_all_cb, head;
   
   try {
     //get 1p.js for Chrome scroll restore bug, we can't find out if bad UA until
     //1p.js executes, todo, stations.htm prob preloaded to disk already
     //but 1p.js isnt, so start this I/O first if needed
-    if (pathtype > 3) {
+    
+    if (pathname.indexOf('/stations') != -1) {
+      is1pjs = 1;
       if (typeof pagehideCB_1p === "undefined") {
         //win.pushS C5 FF4, O11.5, SF5, IE10
         //pagehide C4 FF6, O15, SF5, IE 11
         //must guard for UAs no win.onpagehide evt
-        old_onpagehide = this.onpagehide;
-        this.onpagehide = evt_cb_setter = function (evt_cb) {
-          pagehideCB_1p = evt_cb;
+        onpopstate.o /*one*/ = evt_cb_setter = function (evt_cb,err) {
+          if(err) {
+            //retry I/O eventually
+            head.removeChild(el);
+          } else {
+            //dont let undef cause reloads if UA not chrome
+            pagehideCB_1p = evt_cb ? evt_cb : 0;
+          }
           el.onerror = 0; //GC fn
-          this.onpagehide = old_onpagehide;
+          onpopstate.o = 0;
           if(fetch_js_all_cb)
             fetch_js_all_cb();
           else
@@ -428,9 +405,8 @@ function spaPrefetch(pathname, pathtype) {
         head = document.documentElement.firstChild;
         el = document.createElement('script');
         el.onerror = function () { //anti-UI-freeze
-        //retry I/O eventually, use closure incase global corruption
-          evt_cb_setter(undefined);
-          head.removeChild(el);
+        //retry I/O eventually
+          evt_cb_setter(0,1);
         };
         el.src = "1p.js";
         head.appendChild(el);
@@ -438,84 +414,98 @@ function spaPrefetch(pathname, pathtype) {
         fetch_js_all_cb = 1;
       }
     }
+    //arg 3 private API want text resp
     fetch(pathname,{},1).then(function (r) {
       r.text().then(function (r) {
-        var spa = {}, start, el, old_fn_y, old_pg_rel;
-        //lazy inflate
+        // .p1 for grep
+        var spa = {p1: is1pjs}, start, startScript, scriptEnd, el, old_fn_y, old_pg_rel;
+        //lazy inflate el s
         if(old_pg_rel = preconPrefetElMap[pathtype]) {
           start = old_pg_rel[0];
           old_fn_y = preconPrefetEls[start];
           if(old_fn_y.length) {
-            el = document.createElement("link");
+            el = genericPC.cloneNode(0);
             el.href = old_fn_y;
-            el.rel = 'preconnect'
-            el.crossOrigin = 'anonymous';
             old_fn_y = preconPrefetEls[start] = el;
           }
           spa.pc = old_fn_y;
           start = old_pg_rel[1];
           old_fn_y = preconPrefetEls[start];
           if(old_fn_y.length) {
-            el = document.createElement("link");
+            el = genericPF.cloneNode(0);
             el.href = old_fn_y;
-            el.rel = 'prefetch';
             old_fn_y = preconPrefetEls[start] = el;
           }
           spa.pf = old_fn_y;
         }
         if((start = r.indexOf('<style>')) != -1) {
-              el = document.createElement('style');
-              start += '<style>'.length;
-              el.textContent = r.slice(start, start = r.indexOf('</style>', start));
-              spa.style = el
-              start += 8;
+          start += '<style>'.length;
+          old_fn_y = r.slice(start, start = r.indexOf('</style>', start));
+          start += 8;
+          el = 0;
+          //de dup common STYLE el for perf
+          if(old_fn_y == ":root{color-scheme:light dark}") {
+            el = genericDarkMStyle;
+            if(!el)
+              old_pg_rel = 1;
+          }
+          if(!el) {
+            el = genericStyle.cloneNode(0);//perf
+            el.textContent = old_fn_y;
+            if(old_pg_rel) {
+              genericDarkMStyle = el;
+            }
+          }
+          spa.style = el;
         } else {
           start = 0;
         }
-        //mk sure 100% JS no HTML "web page"
-        if(start && (start = r.indexOf('No javascript', start)) != -1) {
-          //status.htm don't exec inline SCRIPT in HEAD, that tag is for globals decl
-          if((start = r.indexOf('<script>',start)) != -1) {
-            start += '<script>'.length;
-            old_fn_y = y;
-            old_pg_rel = window.onpageshow;
-            window.onpageshow = null;/*IE 11 doesnt like 0*/
-            Function(r.slice(start, r.indexOf('</script>', start)))();
-            spa.js = onhashchange;
-            spa.y = y;
-            spa.pg = window.onpageshow;
-            y = old_fn_y;
-            window.onpageshow = old_pg_rel;
-            onhashchange = null;
+        //status.htm don't exec inline SCRIPT in HEAD, that tag is for globals decl
+        //STYLE parse advs var start to almost end of HEAD/start of BODY
+        if((scriptStart = r.indexOf('<script>',start)) != -1) {
+          old_fn_y = y;
+          old_pg_rel = window.onpageshow;
+          window.onpageshow = null;/*IE 11 doesnt like 0*/
+          scriptEnd = r.indexOf('</script>', scriptStart+'<script>'.length);
+          Function(r.slice(scriptStart+'<script>'.length, scriptEnd))();
+          spa.js = onhashchange;
+          spa.y = y;
+          spa.pg = window.onpageshow;
+          y = old_fn_y;
+          window.onpageshow = old_pg_rel;
+          onhashchange = null;
+        }
+        //dont parse an html BODY if this .htm is bodyless API viewer
+        if(r.indexOf('No javascript', start) == -1) {
+          //don't send large script TAG thru HTM parser
+          //also skips 98% of HEAD contents, by starting after STYLE
+          //unclosed </head> in not-mini sent thru innerHTML but no diff
+          //htm parsers deal with unclosed tags on the regular
+          if(scriptStart != -1) {
+            r = r.slice(start,scriptStart)
+                +r.slice(scriptEnd+'</script>'.length);
+          } else {
+            r = r.slice(start);
           }
+          //can't do bodyEl.innerHTML = , tileMap has BODY attrs
+          el = document.createElement('html');
+          el.innerHTML = r; //time me
+          //extract body
+          spa.body = el = el.lastElementChild;
+          //tileMap.htm has unused unexec ed el at end
+          if((r=el.lastElementChild).nodeName == 'SCRIPT') {
+            el.removeChild(r);
+          }
+        }
+        if(!is1pjs || fetch_js_all_cb) {
           pageCache[pathname] = spa;
           purgePreFetchHTML(pathname);
+        //wait for 1p.js before writing spa cache ent to global
         } else {
-          start = document.createElement('html');
-          start.innerHTML = r; //time me
-          el = spa.body = start.lastChild;
-          if(pathtype === 8) {
-            el.removeChild(el.lastElementChild);//unused in SPA SCRIPT
-            r = el.removeChild(el.firstElementChild).textContent;
-            old_fn_y = y;
-            Function(r)();
-            spa.js = onhashchange;
-            spa.y = y;
-            y = old_fn_y;
-            onhashchange = null;
-          }
-          //1p.js already ran
-          if(fetch_js_all_cb) {
+          fetch_js_all_cb = function() {
             pageCache[pathname] = spa;
             purgePreFetchHTML(pathname);
-          //wait for 1p.js before writing spa cache ent to global
-          }
-          else {
-            fetch_js_all_cb = function() {
-              pageCache[pathname] = spa;
-              purgePreFetchHTML(pathname);
-            };
-          }
+          };
         }
       });//.text() CB
     }); //fet CB

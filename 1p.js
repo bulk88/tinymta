@@ -28,11 +28,9 @@
         }));
       }
     };
-  } else {
-    _onpagehide = 0;
   }
   //SPA preloader CB
-  if (ver = this.onpagehide) {
+  if ((ver = this.onpopstate) && (ver = ver.o)) {
     ver(_onpagehide);
   } else if (_onpagehide) { //is buggy scroll restore chrome
     onpagehide = _onpagehide;
