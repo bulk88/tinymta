@@ -155,5 +155,5 @@ all: ../docs/rt.htm ../docs/js/rt.htm ../docs/stop.appcache
 #all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
 #all: plan2.htm
 
-gz: ../docs/stop.htm.gz.png ../docs/stations.htm.gz.png
-gz: ../docs/stop.htm.gz ../docs/stations.htm.gz
+gz: ../docs/stop.htm.gz.png ../docs/stations.htm.gz.png ../docs/tileMap.htm.gz.png
+gz: ../docs/stop.htm.gz ../docs/stations.htm.gz ../docs/tileMap.htm.gz
