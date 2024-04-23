@@ -17,13 +17,14 @@ if (history.pushState) {
   var pageHistoryIdx = 0;
   var curPathname = location.pathname;
   var curHash = location.hash;
+  var _origin = location.origin;
   var curPathtype = getPathType(location.pathname);
   var curPCEl;
   var curPFEl;
   var pagehideCB_1p;
 
   //array is in pagetype nums
-  var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9]];
+  var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9],[]];
   //can't expose tiles2 oh well
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/mapTileBackground.png','/zoom_out.png','/zoom_in.png','/transparentTile.gif']];
   var genericStyle = document.createElement('style');
@@ -52,7 +53,7 @@ function STATE_PATHTYPE() {
 
 (function(){
   var el
-  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: y};
+  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: this.y};
   var state = [spa, spa.body, curPathname+curHash, curPathtype];
   var i, arr = head.querySelectorAll('link[rel="preconnect"]');
   var div;
@@ -109,7 +110,7 @@ function STATE_PATHTYPE() {
 })();
 
 
-function  getPathType(pathname) {
+function getPathType(pathname) {
   var pathtype;
   switch(pathname) {
     case '/tileMap.htm':
@@ -140,7 +141,8 @@ function  getPathType(pathname) {
       pathtype = 0;
       break;
     default:
-      return;
+      pathtype = 9;
+      break;
   }
   return pathtype;
 }
@@ -155,11 +157,12 @@ function  getPathType(pathname) {
       evt = evt.parentNode;
     }
     if (evt.nodeName === 'A' && (isTouchStart || !evt.tmts)) {
+      if(evt.origin !== _origin)
+        return;
       stacode = evt.hash;
       pathname = evt.pathname;
       //IE 11 fix, no initial /
-      pathname = (pathname.charAt(0) == "/") ? pathname : "/" +
- pathname;
+      pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
 /* REMOVED CODE notes
 use SS sessionStorage, window.name+fetch on modern chrome, often doesn't
 update window.name, causing 2 network HTTP GET I/Os, if I do very
@@ -170,6 +173,12 @@ because window.name update speed unreliable, just always use SS
     if(pathname === location.pathname)
       return;
 
+    //IE 11 fix, no initial /
+    pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
+    if(pathname.length >= ('/jsrdt.htm'.length)
+      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-('/jsrdt.htm'.length)))){
+      evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
+    }
     pathtype = getPathType(pathname);
       var fResp;
       var fCB2;
@@ -218,40 +227,16 @@ because window.name update speed unreliable, just always use SS
       evt = evt.parentNode;
     }
     if(evt.nodeName === "A") {
+      if(evt.origin !== _origin)
+        return;
       pathname = evt.pathname;
-      //IE 11 fix, no initial /
-      pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
-      switch(pathname) {
-        case '/tileMap.htm':
-          pathtype = 8;
-          break;
-        case '/stations.htm':
-          pathtype = 7;
-          break;
-        case '/mn/stations.htm':
-          pathtype = 6;
-          break;
-        case '/li/stations.htm':
-          pathtype = 5;
-          break;
-        case '/':
-          pathtype = 4;
-          break;
-        case '/stop.htm':
-          pathtype = 3;
-          break;
-        case '/status.htm':
-          pathtype = 2;
-          break;
-        case '/rstop.htm':
-          pathtype = 1;
-          break;
-        case '/rtrain.htm':
-          pathtype = 0;
-          break;
-        default:
-          return;
-      }
+    //IE 11 fix, no initial /
+    pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
+    if(pathname.length >= ('/jsrdt.htm'.length)
+      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-('/jsrdt.htm'.length)))){
+      evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
+    }
+    pathtype = getPathType(pathname);
 
       if(spa=pageCache[pathname]) {
         hash = evt.hash;
@@ -319,6 +304,7 @@ because window.name update speed unreliable, just always use SS
         } else {
           histArr[STATE_BODY()] = spa.body;
         }
+
         history.pushState(pageHistoryIdx,0,evt.href);
 
 
