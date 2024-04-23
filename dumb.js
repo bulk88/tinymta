@@ -17,7 +17,7 @@ if (history.pushState) {
   var pageHistoryIdx = 0;
   var curPathname = location.pathname;
   var curHash = location.hash;
-  var curPathtype = 4;
+  var curPathtype = getPathType(location.pathname);
   var curPCEl;
   var curPFEl;
   var pagehideCB_1p;
@@ -25,7 +25,7 @@ if (history.pushState) {
   //array is in pagetype nums
   var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9]];
   //can't expose tiles2 oh well
-  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/mapTileBackground.png','/zoom_out.png','/zoom_in.png','transparentTile.gif']];
+  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/mapTileBackground.png','/zoom_out.png','/zoom_in.png','/transparentTile.gif']];
   var genericStyle = document.createElement('style');
   var genericBody = document.createElement('body');
   var genericDarkMStyle;
@@ -108,8 +108,45 @@ function STATE_PATHTYPE() {
     history.pushState(pageHistoryIdx,0,location.href);
 })();
 
+
+function  getPathType(pathname) {
+  var pathtype;
+  switch(pathname) {
+    case '/tileMap.htm':
+      pathtype = 8;
+      break;
+    case '/stations.htm':
+      pathtype = 7;
+      break;
+    case '/mn/stations.htm':
+      pathtype = 6;
+      break;
+    case '/li/stations.htm':
+      pathtype = 5;
+      break;
+    case '/':
+      pathtype = 4;
+      break;
+    case '/stop.htm':
+      pathtype = 3;
+      break;
+    case '/status.htm':
+      pathtype = 2;
+      break;
+    case '/rstop.htm':
+      pathtype = 1;
+      break;
+    case '/rtrain.htm':
+      pathtype = 0;
+      break;
+    default:
+      return;
+  }
+  return pathtype;
+}
   function preload(evt) {
     var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
+    var preren;
     var pathtype;
     var str;
     var spa;
@@ -120,53 +157,26 @@ function STATE_PATHTYPE() {
     if (evt.nodeName === 'A' && (isTouchStart || !evt.tmts)) {
       stacode = evt.hash;
       pathname = evt.pathname;
+      //IE 11 fix, no initial /
+      pathname = (pathname.charAt(0) == "/") ? pathname : "/" +
+ pathname;
 /* REMOVED CODE notes
 use SS sessionStorage, window.name+fetch on modern chrome, often doesn't
 update window.name, causing 2 network HTTP GET I/Os, if I do very
 fast mousedown/mouseup click, it does work on "slow" clicks, but
 because window.name update speed unreliable, just always use SS
 */
-      if(pathname === location.pathname)
-        return;
-      switch(pathname) {
-        case '/tileMap.htm':
-          pathtype = 8;
-          break;
-        case '/stations.htm':
-          pathtype = 7;
-          break;
-        case '/mn/stations.htm':
-          pathtype = 6;
-          break;
-        case '/li/stations.htm':
-          pathtype = 5;
-          break;
-        case '/':
-          pathtype = 4;
-          break;
-        case '/stop.htm':
-          pathtype = 3;
-          break;
-        case '/status.htm':
-          pathtype = 2;
-          break;
-        case '/rstop.htm':
-          pathtype = 1;
-          break;
-        case '/rtrain.htm':
-          pathtype = 0;
-          break;
-        default:
-          return;
-      }
-      if (1) {
-        var fResp;
-        var fCB2;
-        if(pathtype < 4) {
+
+    if(pathname === location.pathname)
+      return;
+
+    pathtype = getPathType(pathname);
+      var fResp;
+      var fCB2;
+      if(pathtype < 4) {
         stacode = stacode.slice(1);
         window.S = {t:Date.now(), s:stacode, f: function(cb){if(fResp){cb(fResp)} else {fCB2 = cb}}};
   /* race on old between f.js and mousedown/touchstart but IDC */
-        console.log('s'+Date.now());
         fetch(
           pathtype === 3 ? '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + stacode.slice(0, 3)
           : pathtype === 2 ? '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP'
@@ -182,29 +192,35 @@ because window.name update speed unreliable, just always use SS
           R = 0;
           head.appendChild(document.createElement('script')).src = "routes.js";
         }
-        }
-        //reload 1p.js if need, was I/O prob earlier
-        if((spa = pageCache[pathname]) && (!spa.p1 || typeof pagehideCB_1p !== "undefined")) {
-          0;
-        } else {
-          spaPrefetch(pathname, pathtype);
-        }
-        evt.tmts = isTouchStart;
       }
+      //preren tilemap
+      if(pathtype === 8) {
+        preren = function (spa) {
+          window.S = {t:Date.now(), s:stacode, pt: pathtype, pr: spa.body};
+          spa.js(spa.body,stacode);
+        }
+      }
+      //reload 1p.js if need, was I/O prob earlier
+      if((spa = pageCache[pathname]) && (!spa.p1 || typeof pagehideCB_1p !== "undefined")) {
+        preren && preren(spa);
+      } else {
+        spaPrefetch(pathname, pathtype, preren);
+      }
+      evt.tmts = isTouchStart;
     }
   }
   addEventListener('touchstart', preload, {passive: true});
   addEventListener('mousedown', preload, {passive: true});
   
   addEventListener('click', function(e) {
-    var htmlEl = document.documentElement;
-    var head = htmlEl.firstChild;
-    var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn;
+    var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn, ls, prerenBody;
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
     }
     if(evt.nodeName === "A") {
       pathname = evt.pathname;
+      //IE 11 fix, no initial /
+      pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
       switch(pathname) {
         case '/tileMap.htm':
           pathtype = 8;
@@ -249,7 +265,6 @@ because window.name update speed unreliable, just always use SS
           pagehideCB_1p({}); //if(!evt.persisted) save scroll
         }
 
-        //rmv STYLE todo, do after body swap
         if(!hashNavFlag) {
           //remove body first so no repaint attempt by browser after
           //STYLE removed
@@ -276,12 +291,28 @@ because window.name update speed unreliable, just always use SS
         }
         pageHistoryIdx++;
         histArr = pageHistory[pageHistoryIdx] = [];
-        //special GC/free images CB to tileMap.htm, if tM.htm wants a gc evt
 
-        (el = this.T) && (el = el.GC) && el();
+
+        ls = window.S; //inflight prerender maybe
+        if(ls && ls.pr) {
+          window.S = 0;
+          if(ls.pt === pathtype && ls.s === hash
+            && (Date.now()-ls.t < 3000)
+          ) {
+            prerenBody = ls.pr;
+          }
+        }
+
+        //special GC/free images CB to tileMap.htm, if tM.htm wants a gc evt
+        //add type 8 protect eventually
+        if(!prerenBody) {
+          (el = this.T) && (el = el.GC) && el();
+        }
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         
-        if(!spa.body) {//add new empty BODY
+        if(prerenBody) {
+          histArr[STATE_BODY()] = htmlEl.appendChild(prerenBody);
+        } else if(!spa.body) {//add new empty BODY
           histArr[STATE_BODY()] = htmlEl.appendChild(genericBody.cloneNode(0));
         } else if (!hashNavFlag) {
           histArr[STATE_BODY()] = htmlEl.appendChild(spa.body);
@@ -299,7 +330,8 @@ because window.name update speed unreliable, just always use SS
 
           y = spa.y;
           window.onpageshow = spa.pg;
-          if(fn = spa.js) {
+
+          if((fn = spa.js) && !prerenBody) {
              //this must be window. not a meth call
              fn();
           }
@@ -330,6 +362,8 @@ onpopstate = function (e) {
   var el2;
   var newState;
   var newPathtype;
+  var newPathname = location.pathname;
+  var newHash = location.hash;
   //null if errors/problems, very old safari always calls oPS with
   //null on "onload" new page
   e = e.state;
@@ -339,9 +373,8 @@ onpopstate = function (e) {
   }
 
   //hash only nav back or forwards
-  if(curPathname == location.pathname && curHash != location.hash) {
-    curPathname = location.pathname;
-    curHash = location.hash;
+  if(curPathname == newPathname && curHash != newHash) {;
+    curHash = newHash;
     console.log('spa leave 1');
     return;
   }
@@ -360,8 +393,8 @@ onpopstate = function (e) {
   //load new from cache
   newState = pageHistory[e];
   newPathtype = newState[STATE_PATHTYPE()];
-  curPathname = location.pathname;
-  curHash = location.hash;
+  curPathname = newPathname;
+  curHash = newHash;
   var spa = newState[STATE_PFHTMCACHE()];
 
   if(oldspa.p1 && pagehideCB_1p && curPathtype !== newPathtype) {
@@ -481,12 +514,11 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
       div.appendChild(el);
     }
   }
-  preconPrefetEls[strArrIdx] = div;
-  return div;
+  return preconPrefetEls[strArrIdx] = div;
 }
 
 //if != 200???
-function spaPrefetch(pathname, pathtype) {
+function spaPrefetch(pathname, pathtype, finish) {
   var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, is1pjs, fetch_js_all_cb;
   var parentPathname = curPathname;
   var parentPathtype = curPathtype;
@@ -565,7 +597,6 @@ function spaPrefetch(pathname, pathtype) {
       r.text().then(function (r) {
         // .p1 for grep
         var start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
-        //lazy inflate el s
 
         if((start = r.indexOf('<style>')) != -1) {
           start += '<style>'.length;
@@ -636,11 +667,13 @@ function spaPrefetch(pathname, pathtype) {
         }
         if(!is1pjs || fetch_js_all_cb) {
           pageCache[pathname] = spa;
+          finish && finish(spa);
           purgePreFetchHTML(parentPathname,pathname,parentPathtype);
         //wait for 1p.js before writing spa cache ent to global
         } else {
           fetch_js_all_cb = function() {
             pageCache[pathname] = spa;
+            finish && finish(spa);
             purgePreFetchHTML(parentPathname,pathname,parentPathtype);
           };
         }
