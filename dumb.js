@@ -241,6 +241,9 @@ because window.name update speed unreliable, just always use SS
         }
         pageHistoryIdx++;
         histArr = pageHistory[pageHistoryIdx] = [];
+        //special GC/free images CB to tileMap.htm, if tM.htm wants a gc evt
+
+        (el = this.T) && (el = el.GC) && el();
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         
         if(!spa.body) {//add new empty BODY
@@ -418,7 +421,7 @@ function spaPrefetch(pathname, pathtype) {
     fetch(pathname,{},1).then(function (r) {
       r.text().then(function (r) {
         // .p1 for grep
-        var spa = {p1: is1pjs}, start, startScript, scriptEnd, el, old_fn_y, old_pg_rel;
+        var spa = {p1: is1pjs}, start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
         //lazy inflate el s
         if(old_pg_rel = preconPrefetElMap[pathtype]) {
           start = old_pg_rel[0];
@@ -468,7 +471,11 @@ function spaPrefetch(pathname, pathtype) {
           window.onpageshow = null;/*IE 11 doesnt like 0*/
           scriptEnd = r.indexOf('</script>', scriptStart+'<script>'.length);
           Function(r.slice(scriptStart+'<script>'.length, scriptEnd))();
-          spa.js = onhashchange;
+          //tmp var
+          el = spa.js = onhashchange;
+          if(haveBodyElCB = el.body) {
+            delete el.body; //anti-leak, el is really onDrawURL() fn obj
+          }
           spa.y = y;
           spa.pg = window.onpageshow;
           y = old_fn_y;
@@ -492,10 +499,14 @@ function spaPrefetch(pathname, pathtype) {
           el.innerHTML = r; //time me
           //extract body
           spa.body = el = el.lastElementChild;
+          if(haveBodyElCB) {
+            haveBodyElCB(el);
+          }
           //tileMap.htm has unused unexec ed el at end
           if((r=el.lastElementChild).nodeName == 'SCRIPT') {
             el.removeChild(r);
           }
+
         }
         if(!is1pjs || fetch_js_all_cb) {
           pageCache[pathname] = spa;
