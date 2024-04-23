@@ -18,12 +18,14 @@ if (history.pushState) {
   var curPathname = location.pathname;
   var curHash = location.hash;
   var curPathtype = 4;
+  var curPCEl;
+  var curPFEl;
   var pagehideCB_1p;
 
   //array is in pagetype nums
-  var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6]];
+  var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9]];
   //can't expose tiles2 oh well
-  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', '//tiles1.tinymta.us.to', '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm'];
+  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/mapTileBackground.png','/zoom_out.png','/zoom_in.png','transparentTile.gif']];
   var genericStyle = document.createElement('style');
   var genericBody = document.createElement('body');
   var genericDarkMStyle;
@@ -49,12 +51,45 @@ function STATE_PATHTYPE() {
   }
 
 (function(){
-  var el_fn = head.querySelector('link[rel="preconnect"]');
-  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: y, pc: el_fn};
+  var el
+  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: y};
   var state = [spa, spa.body, curPathname+curHash, curPathtype];
+  var i, arr = head.querySelectorAll('link[rel="preconnect"]');
+  var div;
+  if(arr.length) {
+    if(arr.length > 1) {
+      div = document.createElement('div');
+      for(i=0;i<arr.length;i++) {
+        div.appendChild(arr[i]);
+      }
+      head.appendChild(div);
+    } else {
+      div = arr[0];
+    }
+    curPCEl = preconPrefetEls[preconPrefetElMap[curPathtype][0]] = spa.pc = div;
+    
+    div = curPCEl.nodeName === 'DIV' ? curPCEl.firstChild : curPCEl;
 
-  (genericPC = el_fn.cloneNode(0)).removeAttribute('href');
-  (genericPF = head.querySelector('link[rel="prefetch"]').cloneNode(0)).removeAttribute('href');
+    (genericPC = div.cloneNode(0)).removeAttribute('href');
+  } else alert('bug');
+
+  arr = head.querySelectorAll('link[rel="prefetch"]')
+  if(arr.length) {
+    if(arr.length > 1) {
+      div = document.createElement('div');
+      for(i=0;i<arr.length;i++) {
+        div.appendChild(arr[i]);
+      }
+      head.appendChild(div);
+    } else {
+      div = arr[0];
+    }
+    curPCEl = preconPrefetEls[preconPrefetElMap[curPathtype][1]] = spa.pf = div;
+    
+    div = curPCEl.nodeName === 'DIV' ? curPCEl.firstChild : curPCEl;
+    ;
+    (genericPF = div.cloneNode(0)).removeAttribute('href');
+  } else alert('bug');
 
   if(el_fn = window.onpageshow) {
     spa.pg = el_fn;
@@ -226,16 +261,16 @@ because window.name update speed unreliable, just always use SS
             if(el2)
               head.appendChild(el2);
           }
-          if((el = oldspa.pc) !== (el2 = spa.pc)) {
-            if(el)
-              head.removeChild(el);
-            if(el2)
+          if(curPCEl !== (el2 = spa.pc)) {
+            if(curPCEl)
+              head.removeChild(curPCEl);
+            if(curPCEl = el2)
               head.appendChild(el2);
           }
-          if((el = oldspa.pf) !== (el2 = spa.pf)) {
-            if(el)
-              head.removeChild(el);
-            if(el2)
+          if(curPFEl !== (el2 = spa.pf)) {
+            if(curPFEl)
+              head.removeChild(curPFEl);
+            if(curPFEl = el2)
               head.appendChild(el2);
           }
         }
@@ -272,6 +307,13 @@ because window.name update speed unreliable, just always use SS
           curPathname = pathname;
           curHash = hash;
           curPathtype = pathtype;
+          //tileMap has images
+          if(pathtype == 8 && spa.pf) {
+            purgePreFetchHTML(pathname, '/mapTileBackground.png', 8);
+            purgePreFetchHTML(pathname, '/zoom_out.png', 8);
+            purgePreFetchHTML(pathname, '/zoom_in.png', 8);
+            purgePreFetchHTML(pathname, '/transparentTile.gif', 8);
+          }
         }
         histArr[STATE_PFHTMCACHE()] = spa;
         histArr[STATE_PATHHASH()] = pathname+hash;
@@ -291,6 +333,7 @@ onpopstate = function (e) {
   //null if errors/problems, very old safari always calls oPS with
   //null on "onload" new page
   e = e.state;
+
   if(e === null) {
     return;
   }
@@ -333,16 +376,16 @@ onpopstate = function (e) {
     if(el2)
       head.appendChild(el2);
   }
-  if((el = oldspa.pc) !== (el2 = spa.pc)) {
-    if(el)
-      head.removeChild(el);
-    if(el2)
+  if(curPCEl !== (el2 = spa.pc)) {
+    if(curPCEl)
+      head.removeChild(curPCEl);
+    if(curPCEl = el2)
       head.appendChild(el2);
   }
-  if((el = oldspa.pf) !== (el2 = spa.pf)) {
-    if(el)
-      head.removeChild(el);
-    if(el2)
+  if(curPFEl !== (el2 = spa.pf)) {
+    if(curPFEl)
+      head.removeChild(curPFEl);
+    if(curPFEl = el2)
       head.appendChild(el2);
   }
 
@@ -359,25 +402,94 @@ onpopstate = function (e) {
 
 //delete these prefetch Els, the .htm was loaded and parsed into JS/DOM long ago
 //stop banging disk I/O or network I/O or the dom tree unneceserily
-function purgePreFetchHTML(pathname) {
+function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
+
   (this.requestIdleCallback || this.requestAnimationFrame || function(callback){setTimeout(callback, 40)})(function(){
-    var i, spa, el, pnl = pathname.length, pN_str;
-    //spa.pf.href.lastIndexOf("/tileMap.htm") == (spa.pf.href.length-"/tileMap.htm".length)
-    for(i in pageCache) {
-      spa = pageCache[i];
-      if((el=spa.pf) && (pN_str=el.href).lastIndexOf(pathname) === (pN_str.length-pnl)) {
-        if(pN_str=el.parentNode) {
-          pN_str.removeChild(el);
+
+     var pf, pn, el, el2;
+     var origin_len = location.origin.length;
+     var href;
+
+      var spa = pageCache[parentPathname];
+      if(pf=spa.pf) {
+        if(pf.nodeName === 'DIV') {
+          el = pf.firstChild;
+          while(el) {
+           el2 = el.nextElementSibling;
+            href = el.href.slice(origin_len);
+            if(href == pathname) {
+              pf.removeChild(el);
+              break;
+            }
+            el = el2;
+          }
+          if(!pf.firstChild) {
+           if(pn = pf.parentNode) {
+              pn.removeChild(pf);
+            }
+            delete spa.pf;
+            if(curPFEl === pf) {
+              curPFEl = null;
+            }
+            preconPrefetEls[preconPrefetElMap[pFIdxToFree][1]] = null;
+          }
+        } else {
+          href = pf.href.slice(origin_len);
+          if(href == pathname) {
+            if(pn = pf.parentNode) {
+              pn.removeChild(pf);
+            }
+            delete spa.pf;
+            if(curPFEl === pf) {
+              curPFEl = null;
+            }
+            preconPrefetEls[preconPrefetElMap[pFIdxToFree][1]] = null;
+          }
         }
-        delete spa.pf;
       }
-    }
   });
+}
+
+function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
+  var
+  i,
+  el,
+  div,
+  href,
+  hrefSuffix,
+  strArr = preconPrefetEls[strArrIdx];
+
+  if (typeof strArr == "string") {
+    div = (linkType ? genericPF : genericPC).cloneNode(0); ;
+    hrefSuffix = strArr.slice(-4);
+    if(hrefSuffix == '.png' || hrefSuffix == '.gif') {
+      div.rel = 'preload';
+      div.as = 'image';
+    }
+    div.href = strArr;
+  } else {
+    div = document.createElement('div');
+    for (i = 0; i < strArr.length; i++) {
+      el = (linkType ? genericPF : genericPC).cloneNode(0);
+      href = strArr[i];
+      hrefSuffix = href.slice(-4);
+      if(hrefSuffix == '.png' || hrefSuffix == '.gif') {
+        el.rel = 'preload';
+        el.as = 'image';
+      }
+      el.href = href;
+      div.appendChild(el);
+    }
+  }
+  preconPrefetEls[strArrIdx] = div;
+  return div;
 }
 
 //if != 200???
 function spaPrefetch(pathname, pathtype) {
-  var el, evt_cb_setter, is1pjs, fetch_js_all_cb, head;
+  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, is1pjs, fetch_js_all_cb;
+  var parentPathname = curPathname;
+  var parentPathtype = curPathtype;
   
   try {
     //get 1p.js for Chrome scroll restore bug, we can't find out if bad UA until
@@ -385,7 +497,7 @@ function spaPrefetch(pathname, pathtype) {
     //but 1p.js isnt, so start this I/O first if needed
     
     if (pathname.indexOf('/stations') != -1) {
-      is1pjs = 1;
+      spa.p1 = is1pjs = 1;
       if (typeof pagehideCB_1p === "undefined") {
         //win.pushS C5 FF4, O11.5, SF5, IE10
         //pagehide C4 FF6, O15, SF5, IE 11
@@ -417,30 +529,44 @@ function spaPrefetch(pathname, pathtype) {
         fetch_js_all_cb = 1;
       }
     }
+
+        if(pCpFArr = preconPrefetElMap[pathtype]) {
+
+          //LINK preconnect
+          pCpFIdx = pCpFArr[0];
+          pCpFEl = preconPrefetEls[pCpFIdx];
+          if(pCpFEl && pCpFEl.length) {
+            pCpFEl = inflateLinkElsPcPF(pCpFIdx,0);
+          }
+          spa.pc = pCpFEl;
+          if(pCpFEl) {
+            if(curPCEl)
+              head.removeChild(curPCEl);
+            curPCEl = head.appendChild(pCpFEl);
+          }
+
+          //LINK prefetch
+          pCpFIdx = pCpFArr[1];
+          pCpFEl = preconPrefetEls[pCpFIdx];
+          if(pCpFEl && pCpFEl.length) {
+            pFIdxToFree = pCpFIdx;
+            pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
+          }
+          spa.pf = pCpFEl;
+          if(pCpFEl) {
+            if(curPFEl)
+              head.removeChild(curPFEl);
+            curPFEl = head.appendChild(pCpFEl);
+          }
+        }
+        
     //arg 3 private API want text resp
     fetch(pathname,{},1).then(function (r) {
       r.text().then(function (r) {
         // .p1 for grep
-        var spa = {p1: is1pjs}, start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
+        var start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
         //lazy inflate el s
-        if(old_pg_rel = preconPrefetElMap[pathtype]) {
-          start = old_pg_rel[0];
-          old_fn_y = preconPrefetEls[start];
-          if(old_fn_y.length) {
-            el = genericPC.cloneNode(0);
-            el.href = old_fn_y;
-            old_fn_y = preconPrefetEls[start] = el;
-          }
-          spa.pc = old_fn_y;
-          start = old_pg_rel[1];
-          old_fn_y = preconPrefetEls[start];
-          if(old_fn_y.length) {
-            el = genericPF.cloneNode(0);
-            el.href = old_fn_y;
-            old_fn_y = preconPrefetEls[start] = el;
-          }
-          spa.pf = old_fn_y;
-        }
+
         if((start = r.indexOf('<style>')) != -1) {
           start += '<style>'.length;
           old_fn_y = r.slice(start, start = r.indexOf('</style>', start));
@@ -510,12 +636,12 @@ function spaPrefetch(pathname, pathtype) {
         }
         if(!is1pjs || fetch_js_all_cb) {
           pageCache[pathname] = spa;
-          purgePreFetchHTML(pathname);
+          purgePreFetchHTML(parentPathname,pathname,parentPathtype);
         //wait for 1p.js before writing spa cache ent to global
         } else {
           fetch_js_all_cb = function() {
             pageCache[pathname] = spa;
-            purgePreFetchHTML(pathname);
+            purgePreFetchHTML(parentPathname,pathname,parentPathtype);
           };
         }
       });//.text() CB
