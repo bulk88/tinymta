@@ -405,14 +405,10 @@ function setImgSrc(elem, x, y) {
   ) + tilePath + (zoomLevel+14) + "_" + (elem.className = x + "_" + y) + ".png"
 }
 
-//this must be before the img tags before for IE5 or else exception fires
-//IE 5 calls showImage syncronously if tile is disk cached before rest of
-//root doc is parsed
-_exports.showImage = function (e)
-{
-tilesNotHidden = 1;
-e.style.visibility = "visible"
-};
+function showImage(/*evt*/) {
+  tilesNotHidden = 1; //this is IMG obj
+  this.style.visibility = "visible"
+}
 
 //IE5 wants this event handler before the element, its fired instantly
 //even if no drag if mouse in viewport, minor exception doesnt dreak
@@ -447,15 +443,22 @@ _exports.mapmousemove = function (i /*element really*/) {
 };
 
 function initializeDocumentObjects(maybeDetachedBodyEl_arr) {
- var i=0;
- //can't use document.getElementById("customAlert")
- //per spec gEBI returns null if detached body/div/el
- customAlertEl = maybeDetachedBodyEl_arr.querySelector('div#customAlert');
+ var imgEl,i=0;
+
+ //if SPA mode can't use document.getElementById("customAlert")
+ //per spec gEBI returns null if detached body/div/el, and prerender
+ //feature has a detached BODY and other els, but for IE 8 and older
+ //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
+ customAlertEl = maybeDetachedBodyEl_arr.querySelector ?
+  maybeDetachedBodyEl_arr.querySelector("div#customAlert")
+  : document.getElementById("customAlert");
+
  //last 2 image elems in this array are zoom buttons, ignore them
  maybeDetachedBodyEl_arr = maybeDetachedBodyEl_arr.getElementsByTagName('img');
  for(; i<25; i++)
  {
-  aStyle[i] = (aElement[i] = maybeDetachedBodyEl_arr[i]).style;
+  (imgEl = aElement[i] = maybeDetachedBodyEl_arr[i]).onload = showImage;
+  aStyle[i] = imgEl.style;
  }
 
  /* 2021 factor out
@@ -635,62 +638,62 @@ if(this.onpopstate){
 <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
 <!-- id="mapContainer"  -->
  <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dotted;border-color: Fuchsia -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: double;border-color: Fuchsia -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dashed;border-color: Fuchsia -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: groove;border-color: Fuchsia -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: solid;border-color: Fuchsia -->
 
 
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dotted;border-color: lime -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: double;border-color: lime -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dashed;border-color: lime -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: groove;border-color: lime -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: solid;border-color: lime -->
 
 
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dotted;border-color: cyan -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: double;border-color: cyan -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dashed;border-color: cyan -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: groove;border-color: cyan -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: solid;border-color: cyan -->
 
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dotted;border-color: yellow -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: double;border-color: yellow -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dashed;border-color: yellow -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: groove;border-color: yellow -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: solid;border-color: yellow -->
 
 
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dotted;border-color: red -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: double;border-color: red -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: dashed;border-color: red -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: groove;border-color: red -->
- <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+ <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
 <!-- border-style: solid;border-color: red -->
 
 
@@ -704,9 +707,12 @@ if(this.onpopstate){
 </div>
 
 <script>
-if(!onpopstate) {
-  onpopstate = function (evt) {evt.state !== null && location.reload()};
-
+//not a SPA, SPA loader doesn't exec 2nd script tag
+if (!this.onpopstate) {
+  if (this.onpopstate === null)
+    onpopstate = function (evt) {
+      evt.state !== null && location.reload()
+    };
   initializeDocumentObjects(document.body);
   onNewURL();
 }

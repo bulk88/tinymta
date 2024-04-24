@@ -1,5 +1,5 @@
 {
-  "XXXXcomment": "y,w,x are CBs f.js load, f anti f.js tag double ld, R routes.js JSP/index.htm as.js DOM loaded, F ifav.js JSP, E drop emoji el obj, L index.htm DOM loaded call fav.js CB, S push state inflight req",
+  "XXXXcomment": "y,w,x are CBs f.js load, f anti f.js tag double ld, R routes.js JSP/index.htm as.js DOM loaded, F ifav.js JSP, E drop emoji el obj, L index.htm DOM loaded call fav.js CB, S push state inflight req, T obj with gbl fncs for tileMap.htm on*=, bc this. aka <IMG>.y prop 'y'!!! temp overrides window.y in on*= htm attrs hndlrs ",
   "collapseBooleanAttributes": true,
   "collapseWhitespace": true,
   "html5": true,
@@ -13,7 +13,7 @@
     "ie": true,
     "mangle": {
       "eval": true,
-      "reserved": ["x", "y", "w", "f", "R", "F", "E", "L", "S"],
+      "reserved": ["x", "y", "w", "f", "R", "F", "E", "L", "S", "T"],
       "toplevel": true
     },
     "nameCache": {}
