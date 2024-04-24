@@ -54,10 +54,10 @@ plan2.htm : plan.htm
 	copy /y plan.js "$@"
 	uglifyjs -c -m toplevel -m eval --keep-fnames --ie "$@" -o "$@"
 
-../docs/tileMap.htm : tileMap.htm ../minify_config.json adj_tilepath.pl
+../docs/tileMap.htm : tileMap.htm tileMap_minify_config.json adj_tilepath.pl
 	copy /y tileMap.htm "$@"
 	perl adj_tilepath.pl "$@"
-	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+	html-minifier.cmd --no-include-auto-generated-tags -c tileMap_minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
 ../docs/mapTileBackground.png : $(@F)
 	copy /y $(@F) "$@"
@@ -101,6 +101,9 @@ nmap_stations.json: nmap_gen1.js
 #	perl nmap_gen2.pl
 
 grmp.pl : ../minify_config.json
+
+tileMap_minify_config.json: ../minify_config.json tM_mk_minify_cfg.pl
+	perl tM_mk_minify_cfg.pl ../minify_config.json tileMap_minify_config.json
 
 #make a standalone tinymta for copying to memcard in a smartphone for local running
 package: ..\docs\stations.htm ..\docs\stop.htm ..\docs\stop_.htm

@@ -4,13 +4,25 @@
 <link href="//tiles1.tinymta.us.to" rel="preconnect">
 <link href="//tiles2.tinymta.us.to" rel="dns-prefetch">
 <link href="//tiles2.tinymta.us.to" rel="preconnect">
+<!-- biggest most visible to least -->
+<link rel="preload" href="mapTileBackground.png" as="image">
+<link rel="preload" href="zoom_out.png" as="image">
+<link rel="preload" href="zoom_in.png" as="image">
+<link rel="preload" href="transparentTile.gif" as="image">
 <meta name="viewport" content="width=device-width">
 <meta name="referrer" content="no-referrer">
 <title>The Weekender</title>
 <style>:root{color-scheme:light dark}</style>
 </head>
-<script language="javascript" type="text/javascript">
 
+<!--
+unused 2021 factor out body tag attr
+
+
+ -->
+<body onmousedown="T.hideCustomAlert()"
+style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
+<script>
 // Neighborhood Map Dimensions
 /* removed/inlined
 var mapImgDimensions = {
@@ -60,13 +72,14 @@ S1: "1500,1500"
 };
 */
 
-
+var hideCustomAlert;
 var tilePath
 var initialX
 var initialY
 var mapWidth
 var mapHeight
 var tileDirectory
+var tilesNotHidden
 var mapDrag = false
 
 var centerPixX
@@ -74,6 +87,7 @@ var centerPixY
 var startXY
 var xDownStart = [];
 var yDownStart = [];
+var customAlertEl;
 var alertTimer;
 
 //set the initial map settings
@@ -86,7 +100,13 @@ var defaultCenterY
 var aStyle = new Array()
 var aElement = new Array()
 
-function centerOnStation(stationLocInfo) {
+
+var _exports = {/*GC:0 prop GC (free unused tiles) is not mangled*/};
+
+
+function onNewURL(body, hash) {
+_exports.GC = freeImagesTiles;
+var stationLocInfo = (hash || location.hash).slice(1);
 var stationLoc = "'V7Y:((Pt+'J,]m'O;J`&s,.d&EXM3'F1jS&)Jc;'Klcj'E0L?(Q?&9'QS_)'l3V?'A&cr/H2UV'3>dh(4CoR(j/.I%%)2;%7I2R&*;yy&nO<b's_f.&+;3F&^uZJ%9w{p'Xf]k(QjlB)5t[d%[Tlv&F]-P'I<P*(7y??(-sU/&7`]f'%rUa%^/co%dW;9&NrPR'>GAW%ig;{'t_'k(+@d9%k,R*%y:Cv&dn6?'e1I+(SAl5&HM6X'cq'g(d5Z'(8;{O&s11O&-DB1(`Aoj%k+T;'(Kmw(T^]'%p;R,&M]1m&/v*n'J-(-'?_iA%U-Fn'{0VF&IfVx&ZUWK'e5EU&8x7n(:la<&Wv4y'ge%`(m5pW%U.B/&/s@u'J)3H&maMS'xWA-'a;BV)9mfV%H9()(YhS3'S+.8)%0/j'GLTy)2+/j%IO7[&LD0Q(^Ja0'ocTh&NZyf%Vq1l%n2yW'nbw;&-A1d([/]n&2%;y&ta?8((3uZ%?5U{)-pBf&eq{N&]E.L&+OXR'n7XZ'*PI`&h:N((g%^,&m`dw'5nBg%^0u;'k/-U')yqU'CA@-%TX>d(I)0I%ykUu&s{F`'stR8(O;PR(9U:D(XVhB'u`%C&e]>R('vZ)'@9oY&HO'<&.{oJ%6qwJ(eNrP&(L1Z(0QB>&i++d%tIcp%tC-0&J&*a&:glr&?wZ`'[FNL'6q-W(*g:K)@PKb&pgE0)5t3m'nd^;&YRa`)5vch'Nb`d(%]ah(V;/+(<-9q(rD8)'b@Bl&TX3N%^0wq)6Kx5&squ4&8y5E%AeE1)&K9J(5^B@'9;xr'=,hb({F'I&[kd:&/r8S'X:(q&V_/0%Fq]q(j[;2'B>g<%m^LZ(d3[Q'oQx8&,*.)&o:Fj)5rX{(KX,M)=^Cu(J?xk'VvI4&T-FC'O7(C%VG]%'%opa(K[{?'O9db%2wDc&5*`T'-XF+(FK::%3Rmc)5s2;(XRK1'r-`T&tHPh&?JqJ(wR]i(4BTU'Qgjn&heus%t.aK%-)+A)+WBZ')cfn(+?a(&6EV<%;<1F'aA=.',DQ8).1I3'oMy8&yT-t&IeXt%-)R3(d3{-(Coi=(j]Pf&^MQW'w@3{%Sh+*(/3BM'2ey*(LqaW'4,Gk(]b]aJb21+;[B?+:V]vW6JI[b8;NSN4n),g2Z-cv-l+T:(:n)5,&&a]*P-@S0O6Al<k0mN>^gHg@=d]lA`s,v1[/gXC6m4X(rJ4v'C[>S34t[lDF{?54a2D_6abk:8_a,:2r_m&EU2qqG>Lj+HwXF5JSxwbLKP(?N7FY&:CmCq<yFF5>BFN:@9rSlAP2{?C:eF:;`T{gGBC:XF>66NGi/Z5J_ZiNKg]dSL['DDMV0xgNOvfIFo>vqI4aU?Oo:ogQ@&F]43wZ:F53_IG`-.0L]ZB5NAes?Ouc3DI21*0JZMj?4w3O56q<8?8hh=q:JB6N;D2y0QUy^IRc5uSK{*HII,xY0SQFr:Te*O0S*[.lV/CKSEVO`0LaQPlW<U1qFpZiqU'A,]V4RCgW3QU:U>W8DWvb:]Vwc3SU'AmDS)Cn]N:(ogW8`qbJk?YqKe0GSL[+_qXP9sbQN<CXX3j^+UpymSOX)DNI&SrvQ1mB]S5%,]VoyFNTj;;:G;vX:Pm&-&QrLDSEY.s+TZeKX8laWb:OTB+;V>KD<qaoq>LiZ]@D@`:B+(tqCktS5OK0WIDqF-&NC.qNR,y-:Px]lIRQ3v:NC1']Qu-;lS>-w]+hqBX-_0-I)Ks,+.wwJX'TCm@'+&rE(5[Xc&ZTQr(E2m'&)M0w&B)'X'?2mc'xRw<''1LA'd1'i&[,d''{tG+(OgVQ%y@>m%o:T/&TlgL&DUk'&Cj)m&:&QF';AS+&,+Kr(Xk`7(QXSV&&G5J&KS=A(5Zfu(Bk*[(]arF&,)UJ(c2<5&,*N,(0PU7'pma7(J>ki(BU4-(9RtA'b.8N'&X&2'JnbP),o<)'1d&k(aUsh(+?5B(s]u((3*QG'JTf>'NK)p&i(t6&/tFV&_dy3'm_P_'2'VP&OMk^&Oyx-'.vn&&iQRq&`NoH%^^I=&V_t<&/Hp&&SBN&&ErJ5'6v,9%)tT2'o9fK%YeZ/'MGcN&Rl8a'vyI*'WM6t(KYI8'C@a*'3*/b'1Q*w''w_j'M[UN'CUje';l3)'Xix/(:oMu&8^v=&]{`X'-pJ]'4o{U'&si>&q+N3&e5?x&U3cN&B?Bj%^b(n%Jj{2%8c.=%o%-y(e3,_(_NA=(Xfb?(RV6-(?ww.(.1su(%ZSq(nLIp'i*Kj'^cB='J@K'";
   //5 printable bytes holds 1 32 bit station bitfield
   if((stationLocInfo = (stationLocInfo|0) * 5) < stationLoc.length) {
@@ -163,7 +183,6 @@ function recenterMap(x,y)
 
 function loadNewMap()
 {
-hideImageTiles() 
 centerPixX = initialX
 centerPixY = initialY
 loadMap()
@@ -179,8 +198,21 @@ function showImageTiles()
 }
 */
 
+function freeImagesTiles() {
+  (this.requestIdleCallback || this.requestAnimationFrame || function (callback) {
+    setTimeout(callback, 40)
+  })(function () {
+    //free this func from global space flag/CB
+    _exports.GC = 0;
+    hideImageTiles();
+    for (var k = 0; k < 25; k++) {
+      aElement[k].src = "";
+    }
+  });
+}
 function hideImageTiles()
 {
+ tilesNotHidden = 0;
  for(var k=0; k<25; k++)
  {
  aStyle[k].visibility = "hidden"
@@ -294,7 +326,10 @@ function getNumberOfTiles(totalPix)
 
 function loadMap()
 {
- hideImageTiles()
+  //virgin no SPA page load, or SPA GC jps, the tiles are already hidden
+  //so skip the loop
+  if(tilesNotHidden)
+    hideImageTiles();
 
 //function getCenterTile(pY,pX)
 //{
@@ -373,15 +408,16 @@ function setImgSrc(elem, x, y) {
 //this must be before the img tags before for IE5 or else exception fires
 //IE 5 calls showImage syncronously if tile is disk cached before rest of
 //root doc is parsed
-function showImage(e)
+_exports.showImage = function (e)
 {
+tilesNotHidden = 1;
 e.style.visibility = "visible"
-}
+};
 
 //IE5 wants this event handler before the element, its fired instantly
 //even if no drag if mouse in viewport, minor exception doesnt dreak
 //anything, drag works, but get rid of the status bar exception log msg
-function mapmousemove(i /*element really*/) {
+_exports.mapmousemove = function (i /*element really*/) {
     if(!mapDrag)
     {
     return;
@@ -408,154 +444,48 @@ function mapmousemove(i /*element really*/) {
         aStyle[i].top = (yDownStart[i] + curY) + "px"
     }
 
-}
+};
 
-</script>
-
-<!--
-unused 2021 factor out body tag attr
-
- -->
-<body onmousedown="hideCustomAlert()"
-style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
-
-<!-- id="mapApplication" -->
-<div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-<!-- id="mapContainer"  -->
- <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: Fuchsia -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: Fuchsia -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: Fuchsia -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: Fuchsia -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: Fuchsia -->
-
-
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: lime -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: lime -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: lime -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: lime -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: lime -->
-
-
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: cyan -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: cyan -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: cyan -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: cyan -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: cyan -->
-
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: yellow -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: yellow -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: yellow -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: yellow -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: yellow -->
-
-
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: red -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: red -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: red -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: red -->
- <img onload="showImage(this)" style="z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: red -->
-
-
- <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="mapmousedown(event)" onmousemove="mapmousemove(event)" onmouseup="mapmouseup()" onmouseout="mapmouseup()" ontouchstart="mapmousedown(event)" ontouchmove="mapmousemove(event)" ontouchend="mapmouseup()" ontouchcancel="mapmouseup()"></div>
- <img src="zoom_out.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" onmouseover="menuImageOver(this)" onmouseout="menuImageOut(this)" onclick="zoom(-1)">
- <img src="zoom_in.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" onmouseover="menuImageOver(this)" onmouseout="menuImageOut(this)" onclick="zoom(1)">
-
-<div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
- </div>
-</div>
-
-
-</body>
-<script language="javascript" type="text/javascript">
-(function(){
-//OLD function initializeDocumentObjects() {
+function initializeDocumentObjects(maybeDetachedBodyEl_arr) {
+ var i=0;
+ //can't use document.getElementById("customAlert")
+ //per spec gEBI returns null if detached body/div/el
+ customAlertEl = maybeDetachedBodyEl_arr.querySelector('div#customAlert');
  //last 2 image elems in this array are zoom buttons, ignore them
- var imgarr = document.getElementsByTagName('img'), i=0;
+ maybeDetachedBodyEl_arr = maybeDetachedBodyEl_arr.getElementsByTagName('img');
  for(; i<25; i++)
  {
- aStyle[i] = (aElement[i] = imgarr[i]).style;
+  aStyle[i] = (aElement[i] = maybeDetachedBodyEl_arr[i]).style;
  }
 
  /* 2021 factor out
  centerPixX = defaultCenterX
  centerPixY = defaultCenterY
  */
-//END initializeDocumentObjects
-
-(onhashchange =
-//OLD function loadFromQueryString() {
-// browser cache friendly hash argument
-function () {
-  var stationLoc = window.location.hash.slice(1), gy, ft;
-  if(!stationLoc) {
-    if (gy = window.location.search) {
-      gy = gy.slice(1).split("&");
-      for (i = 0; i < gy.length; i++) {
-        ft = gy[i].split("=");
-        if (ft[0] == "staID") {
-          stationLoc = ft[1];
-          break;
-        }
-      }
-    }
-  }
-  centerOnStation(stationLoc);
 }
-)();
 
-parent.neighborhoodMapLoaded = true;
-})();
-</script>
-<script>
-function showCustomAlert(text)
+function showCustomAlert (text)
 {
-var element = document.getElementById("customAlert");
-element.innerHTML = text
-element.style.display = "inline"
+customAlertEl.textContent = text
+customAlertEl.style.display = "inline"
 clearTimeout(alertTimer)
 alertTimer = setTimeout(hideCustomAlert,3000)
 }
 
-function hideCustomAlert()
+_exports.hideCustomAlert = hideCustomAlert = function ()
 {
 clearTimeout(alertTimer)
-document.getElementById("customAlert").style.display = "none"
-}
+customAlertEl.style.display = "none"
+};
 
-function menuImageOver(elem) {
+_exports.menuImageOver = function (elem) {
     elem.src = elem.src.replace('.png','_over.png');
-}
-function menuImageOut(elem) {
+};
+_exports.menuImageOut = function (elem) {
     elem.src = elem.src.replace('_over.png', '.png');
-}
+};
 
-function zoom(i)
+_exports.zoom = function (i)
 {
   hideCustomAlert()
   var currentCenter = getCurrentCenter();
@@ -567,7 +497,6 @@ function zoom(i)
  {
  if(zoomLevel > 1 /* minZoom */)
  {
-  hideImageTiles()
   zoomLevel = zoomLevel - 1
   newCenterX = parseInt(currentCenterX/2)
   newCenterY = parseInt(currentCenterY/2)
@@ -581,7 +510,6 @@ function zoom(i)
  {
  if(zoomLevel < 2 /* maxZoom */)
  {
-  hideImageTiles()
   zoomLevel = zoomLevel + 1
   newCenterX = currentCenterX*2
   newCenterY = currentCenterY*2
@@ -594,7 +522,7 @@ function zoom(i)
  centerPixX = newCenterX
  centerPixY = newCenterY
  loadMap()
-}
+};
 
 function getPosition(e) {
     e = e || window.event;
@@ -622,7 +550,7 @@ function getPosition(e) {
     return cursor;
 }
 
-function mapmousedown(i /*element really*/) {
+_exports.mapmousedown = function (i /*element really*/) {
 
   hideCustomAlert()
   mapDrag = true
@@ -633,7 +561,7 @@ function mapmousedown(i /*element really*/) {
   yDownStart[i] = parseInt(aStyle[i].top);
 }
 
-function mapmouseup()
+_exports.mapmouseup = function ()
 {
 
   var arr = getCurrentCenter();
@@ -691,6 +619,97 @@ function mapmouseup()
  }
 
 }
+//note using "window.y.foo()" specically token "y" is unworkable
+//b/c in SPA mode, a DETACHED DISCONNECED OFFSCREEN <IMG> can fire onload=()
+//but SPA swapper, already switched out window.y global
+//so DETACHED DISCONNECED OFFSCREEN <IMG> throws an exception, just make a global
+//for SPA mode that keeps the tM.htm global funcs around 24/7 as a fix
+this.T = _exports;
+if(this.onpopstate){
+  onNewURL.body = initializeDocumentObjects;
+  onhashchange = onNewURL;
+}
 
 </script>
+<!-- id="mapApplication" -->
+<div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+<!-- id="mapContainer"  -->
+ <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dotted;border-color: Fuchsia -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: double;border-color: Fuchsia -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dashed;border-color: Fuchsia -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: groove;border-color: Fuchsia -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: solid;border-color: Fuchsia -->
+
+
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dotted;border-color: lime -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: double;border-color: lime -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dashed;border-color: lime -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: groove;border-color: lime -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: solid;border-color: lime -->
+
+
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dotted;border-color: cyan -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: double;border-color: cyan -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dashed;border-color: cyan -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: groove;border-color: cyan -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: solid;border-color: cyan -->
+
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dotted;border-color: yellow -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: double;border-color: yellow -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dashed;border-color: yellow -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: groove;border-color: yellow -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: solid;border-color: yellow -->
+
+
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dotted;border-color: red -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: double;border-color: red -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: dashed;border-color: red -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: groove;border-color: red -->
+ <img onload="T.showImage(this)" style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+<!-- border-style: solid;border-color: red -->
+
+
+ <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
+ <img src="zoom_out.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" onmouseover="T.menuImageOver(this)" onmouseout="T.menuImageOut(this)" onclick="T.zoom(-1)">
+ <img src="zoom_in.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" onmouseover="T.menuImageOver(this)" onmouseout="T.menuImageOut(this)" onclick="T.zoom(1)">
+
+<div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+ </div>
+</div>
+</div>
+
+<script>
+if(!onpopstate) {
+  onpopstate = function (evt) {evt.state !== null && location.reload()};
+
+  initializeDocumentObjects(document.body);
+  onNewURL();
+}
+</script>
+</body>
 </html>
