@@ -1,27 +1,21 @@
 <html>
 <head>
-<link href="//tiles1.tinymta.us.to" rel="dns-prefetch">
-<link href="//tiles1.tinymta.us.to" rel="preconnect">
-<link href="//tiles2.tinymta.us.to" rel="dns-prefetch">
-<link href="//tiles2.tinymta.us.to" rel="preconnect">
-<!-- biggest most visible to least -->
-<link rel="preload" href="mapTileBackground.png" as="image">
-<link rel="preload" href="zoom_out.png" as="image">
-<link rel="preload" href="zoom_in.png" as="image">
-<link rel="preload" href="transparentTile.gif" as="image">
-<meta name="viewport" content="width=device-width">
-<meta name="referrer" content="no-referrer">
-<title>The Weekender</title>
-<style>:root{color-scheme:light dark}</style>
+  <link href="//tiles1.tinymta.us.to" rel="dns-prefetch">
+  <link href="//tiles1.tinymta.us.to" rel="preconnect">
+  <link href="//tiles2.tinymta.us.to" rel="dns-prefetch">
+  <link href="//tiles2.tinymta.us.to" rel="preconnect">
+  <!-- biggest most visible to least -->
+  <link rel="preload" href="mapTileBackground.png" as="image">
+  <link rel="preload" href="zoom_out.png" as="image">
+  <link rel="preload" href="zoom_in.png" as="image">
+  <link rel="preload" href="transparentTile.gif" as="image">
+  <meta name="viewport" content="width=device-width">
+  <meta name="referrer" content="no-referrer">
+  <title>The Weekender</title>
+  <style>:root{color-scheme:light dark}</style>
 </head>
-
-<!--
-unused 2021 factor out body tag attr
-
-
- -->
 <body style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
-<script>
+  <script>
 // Neighborhood Map Dimensions
 /* removed/inlined
 var mapImgDimensions = {
@@ -472,91 +466,79 @@ if (this.onpopstate) {
   onNewURL.body = initializeDocumentObjects;
   onhashchange = onNewURL;
 }
-</script>
-<!-- id="mapApplication" -->
-<div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-<!-- id="mapContainer"  -->
- <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
- <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: Fuchsia -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: Fuchsia -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: Fuchsia -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: Fuchsia -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: Fuchsia -->
-
-
- <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: lime -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: lime -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: lime -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: lime -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: lime -->
-
-
- <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: cyan -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: cyan -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: cyan -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: cyan -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: cyan -->
-
- <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: yellow -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: yellow -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: yellow -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: yellow -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: yellow -->
-
-
- <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dotted;border-color: red -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: double;border-color: red -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: dashed;border-color: red -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: groove;border-color: red -->
- <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
-<!-- border-style: solid;border-color: red -->
-
-
- <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
-
- <img style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
- <!-- skip id="zi" for zoom in to save code bytes -->
- <img style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
-
-<div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
- </div>
-</div>
-</div>
-
-<script>
-//not a SPA, SPA loader doesn't exec 2nd script tag
-if (!this.onpopstate) {
-  if (this.onpopstate === null)
-    onpopstate = function (evt) {
-      evt.state !== null && location.reload()
-    };
-  initializeDocumentObjects(document.body);
-  onNewURL(0,location.hash);
-}
-</script>
+  </script>
+  <!-- id="mapApplication" -->
+  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+    <!-- id="mapContainer"  -->
+    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dotted;border-color: Fuchsia -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: double;border-color: Fuchsia -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dashed;border-color: Fuchsia -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: groove;border-color: Fuchsia -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: solid;border-color: Fuchsia -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dotted;border-color: lime -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: double;border-color: lime -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dashed;border-color: lime -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: groove;border-color: lime -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: solid;border-color: lime -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dotted;border-color: cyan -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: double;border-color: cyan -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dashed;border-color: cyan -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: groove;border-color: cyan -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: solid;border-color: cyan -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dotted;border-color: yellow -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: double;border-color: yellow -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dashed;border-color: yellow -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: groove;border-color: yellow -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: solid;border-color: yellow -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dotted;border-color: red -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: double;border-color: red -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: dashed;border-color: red -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: groove;border-color: red -->
+      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <!-- border-style: solid;border-color: red -->
+      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
+      <img style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
+      <!-- skip id="zi" for zoom in to save code bytes -->
+      <img style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
+      <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+      </div>
+    </div>
+  </div>
+  <script>
+    //not a SPA, SPA loader doesn't exec 2nd script tag
+    if (!this.onpopstate) {
+      if (this.onpopstate === null)
+        onpopstate = function (evt) {
+          evt.state !== null && location.reload()
+        };
+      initializeDocumentObjects(document.body);
+      onNewURL(0,location.hash);
+    }
+  </script>
 </body>
 </html>
