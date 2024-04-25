@@ -269,7 +269,7 @@ function showImage(/*evt*/) {
 //IE5 wants this event handler before the element, its fired instantly
 //even if no drag if mouse in viewport, minor exception doesnt dreak
 //anything, drag works, but get rid of the status bar exception log msg
-_exports.mapmousemove = function (i /*element really*/) {
+function mapmousemove (i /*element really*/) {
   if (!mapDrag) {
     return;
   }
@@ -293,21 +293,19 @@ _exports.mapmousemove = function (i /*element really*/) {
       aStyle[i].top = (yDownStart[i] + curY) + "px";
   }
 
-};
+}
 
 //in SPA mode body El is usually detached
 //on navigate its reg "attached" document.body
 function initializeDocumentObjects(detachedBody_zoomInImg) {
   var imgEl,
-  i = 0;
-
-  //if SPA mode can't use document.getElementById("customAlert")
-  //per spec gEBI returns null if detached body/div/el, and prerender
-  //feature has a detached BODY and other els, but for IE 8 and older
-  //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
-  customAlertEl = detachedBody_zoomInImg.querySelector ?
-    detachedBody_zoomInImg.querySelector("div#customAlert")
-     : document.getElementById("customAlert");
+  i = 0,
+  pfNextElementSibling = detachedBody_zoomInImg.firstChild.nodeType !== 1 && function (el, nextFlag) {
+  do {
+    el = el[nextFlag ? 'nextSibling' : 'previousSibling'];
+  } while (el && el.nodeType !== 1);
+  return el;
+};
 
   detachedBody_zoomInImg.onmousedown = hideCustomAlert;
 
@@ -317,16 +315,36 @@ function initializeDocumentObjects(detachedBody_zoomInImg) {
     (imgEl = aElement[i] = detachedBody_zoomInImg[i]).onload = showImage;
     aStyle[i] = imgEl.style;
   }
-  imgEl = detachedBody_zoomInImg[25];
-  detachedBody_zoomInImg = detachedBody_zoomInImg[26];
-
-  detachedBody_zoomInImg.onmouseover = imgEl.onmouseover = function (/*evt*/) {
+  (imgEl = detachedBody_zoomInImg[25]).onmouseover = (detachedBody_zoomInImg = detachedBody_zoomInImg[26]).onmouseover = function (/*evt*/) {
     this.src = this.src.replace('.png', '_over.png');
   };
-  detachedBody_zoomInImg.onmouseout = imgEl.onmouseout = function (/*evt*/) {
+  imgEl.onmouseout = detachedBody_zoomInImg.onmouseout = function (/*evt*/) {
     this.src = this.src.replace('_over.png', '.png');
   };
   detachedBody_zoomInImg.onclick = imgEl.onclick = zoom;
+  
+  //use el.nS is MINIFIED ALL UAs or el.nS for old IE (no text nodes test above)
+  //other wise use the PF which supports !!!no el.nES UAs
+  customAlertEl = (pfNextElementSibling && pfNextElementSibling(detachedBody_zoomInImg,1)) || detachedBody_zoomInImg.nextSibling;
+
+  //DIV with transparentTile.gif
+  imgEl = (pfNextElementSibling &&  pfNextElementSibling(imgEl)) || pfNextElementSibling.previousSibling;
+  imgEl.onmousedown = mapmousedown;
+  imgEl.ontouchstart = mapmousedown;
+  imgEl.onmousemove = mapmousemove;
+  imgEl.ontouchmove = mapmousemove;
+  imgEl.onmouseup = mapmouseup;
+  imgEl.onmouseout = mapmouseup;
+  imgEl.ontouchend = mapmouseup;
+  imgEl.ontouchcancel = mapmouseup;
+
+  //if SPA mode can't use document.getElementById("customAlert")
+  //per spec gEBI returns null if detached body/div/el, and prerender
+  //feature has a detached BODY and other els, but for IE 8 and older
+  //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
+  //customAlertEl = detachedBody_zoomInImg.querySelector ?
+  //  detachedBody_zoomInImg.querySelector("div#customAlert")
+  //   : document.getElementById("customAlert");
 
   /* 2021 factor out
   centerPixX = defaultCenterX
@@ -398,7 +416,7 @@ function getPosition(e) {
   return cursor;
 }
 
-_exports.mapmousedown = function (i /*element really*/) {
+function mapmousedown (i /*element really*/) {
 
   hideCustomAlert();
   mapDrag = true;
@@ -409,7 +427,7 @@ _exports.mapmousedown = function (i /*element really*/) {
     yDownStart[i] = parseInt(aStyle[i].top);
 }
 
-_exports.mapmouseup = function () {
+function mapmouseup () {
 
   var arr = getCurrentCenter();
   var x;
@@ -456,6 +474,7 @@ _exports.mapmouseup = function () {
   }
 
 }
+
 //note using "window.y.foo()" specically token "y" is unworkable
 //b/c in SPA mode, a DETACHED DISCONNECED OFFSCREEN <IMG> can fire onload=()
 //but SPA swapper, already switched out window.y global
@@ -521,11 +540,12 @@ if (this.onpopstate) {
       <!-- border-style: groove;border-color: red -->
       <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: red -->
-      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
+      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);"></div>
       <img style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
       <!-- skip id="zi" for zoom in to save code bytes -->
       <img style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
-      <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+      <!-- rmved id="customAlert", not needed anymore -->
+      <div style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
       </div>
     </div>
   </div>
