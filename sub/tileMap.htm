@@ -74,8 +74,6 @@ S1: "1500,1500"
 
 var hideCustomAlert;
 var tilePath
-var initialX
-var initialY
 var mapWidth
 var mapHeight
 var tileDirectory
@@ -166,37 +164,12 @@ var stationLoc = "'V7Y:((Pt+'J,]m'O;J`&s,.d&EXM3'F1jS&)Jc;'Klcj'E0L?(Q?&9'QS_)'l
     tilePath = "neighborhoodMaps/" + tileDirectory + "/"
 
 //}
-//old function recenterMap(x,y)
-        initialX = xCoor_value
-        initialY = yCoor_i
-        loadNewMap()
-    }
-}
-/* 2021 factor out
-function recenterMap(x,y)
-{
-    initialX = x
-    initialY = y
-    loadNewMap() 
-}
-*/
 
-function loadNewMap()
-{
-centerPixX = initialX
-centerPixY = initialY
-loadMap()
+    centerPixX = xCoor_value;
+    centerPixY = yCoor_i;
+    loadMap();
+  }
 }
-
-/* 2021 factor out
-function showImageTiles()
-{
- for(var k=0; k<25; k++)
- {
- aStyle[k].visibility = "visible"
- }
-}
-*/
 
 function freeImagesTiles() {
   (this.requestIdleCallback || this.requestAnimationFrame || function (callback) {
@@ -389,13 +362,6 @@ function loadMap()
  }
 }
 
-/* unused 2021 factor out
-function initLoad()
-{
-  loadMap()
-}
-*/
-
 function setImgSrc(elem, x, y) {
   var shard = (x*y) % 3;
   elem.src = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
@@ -471,12 +437,7 @@ function initializeDocumentObjects(detachedBody_zoomInImg) {
   detachedBody_zoomInImg.onmouseout = imgEl.onmouseout = function (/*evt*/) {
     this.src = this.src.replace('_over.png', '.png');
   };
-  imgEl.onclick = function (evt) {
-    zoom(-1);
-  };
-  detachedBody_zoomInImg.onclick = function (evt) {
-    zoom(1);
-  };
+  detachedBody_zoomInImg.onclick = imgEl.onclick = zoom;
 
   /* 2021 factor out
   centerPixX = defaultCenterX
@@ -484,14 +445,14 @@ function initializeDocumentObjects(detachedBody_zoomInImg) {
    */
 
   //fn zoom() closure scoped
-  function zoom(i) {
+  function zoom(/*evt*/) {
     hideCustomAlert();
     var currentCenter = getCurrentCenter();
     var currentCenterX = currentCenter[0];
     var currentCenterY = currentCenter[1];
     var newCenterX;
     var newCenterY;
-    if (i == -1) {
+    if (this.id == "zo") { //zoom out
       if (zoomLevel > 1 /* minZoom */) {
         zoomLevel = zoomLevel - 1;
         newCenterX = parseInt(currentCenterX / 2);
@@ -500,7 +461,7 @@ function initializeDocumentObjects(detachedBody_zoomInImg) {
         return showCustomAlert("This is the lowest zoom level");
       }
     }
-    if (i == 1) {
+    else { //zoom in
       if (zoomLevel < 2 /* maxZoom */) {
         zoomLevel = zoomLevel + 1;
         newCenterX = currentCenterX * 2;
@@ -699,8 +660,10 @@ if(this.onpopstate){
 
 
  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
- <img src="zoom_out.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0">
- <img src="zoom_in.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0">
+
+ <img style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
+ <!-- skip id="zi" for zoom in to save code bytes -->
+ <img style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
 
 <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
  </div>
