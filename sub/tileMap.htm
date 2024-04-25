@@ -289,6 +289,7 @@ function showImage(/*evt*/) {
 //on navigate its reg "attached" document.body
 function initializeDocumentObjects(detachedBodyEl) {
   var imgEl,
+  imgArr_el,
   i = 0,
       //IE 5.0 and 5.5 return type 1 for comments and ! as node name
       //IE 6.0 returns 8 and #comment as node name (W3C correct)
@@ -385,9 +386,17 @@ var delayedMouseMoveEvt;
   } //end fn zoom()
 
   function showCustomAlert(text) {
+    var h = detachedBodyEl.clientHeight;
+    var w = detachedBodyEl.clientWidth;
+    var s = customAlertEl.style;
     //cAE and aT globals
     (pfSetTextContent && pfSetTextContent(text)) || (customAlertEl.textContent = text);
-    customAlertEl.style.display = "inline";
+    s.display = "inline";
+
+    //vh and vh not avail on legacy UAs
+    s.top = ((((h>630?630:h)-(50+50+3+3+21))/2)|0);
+    s.left = ((((w>630?630:w)-300)/2)|0);
+
     //this fn showCustomAlert() so rare called
     //just skip if(alertTimer) {clearTimeout(alertTimer)} for code size
     clearTimeout(alertTimer);
@@ -602,11 +611,11 @@ if (this.onpopstate) {
       <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: red -->
       <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);"></div>
-      <img style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
+      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
       <!-- skip id="zi" for zoom in to save code bytes -->
-      <img style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
+      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
       <!-- rmved id="customAlert", not needed anymore -->
-      <div style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+      <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
       </div>
     </div>
   </div>
