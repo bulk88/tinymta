@@ -442,53 +442,44 @@ _exports.mapmousemove = function (i /*element really*/) {
 
 };
 
-function initializeDocumentObjects(maybeDetachedBodyEl_arr) {
+//in SPA mode body El is usually detached
+//on navigate its reg "attached" document.body
+function initializeDocumentObjects(detachedBody_zoomInImg) {
  var imgEl,i=0;
 
  //if SPA mode can't use document.getElementById("customAlert")
  //per spec gEBI returns null if detached body/div/el, and prerender
  //feature has a detached BODY and other els, but for IE 8 and older
  //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
- customAlertEl = maybeDetachedBodyEl_arr.querySelector ?
-  maybeDetachedBodyEl_arr.querySelector("div#customAlert")
+ customAlertEl = detachedBody_zoomInImg.querySelector ?
+  detachedBody_zoomInImg.querySelector("div#customAlert")
   : document.getElementById("customAlert");
 
  //last 2 image elems in this array are zoom buttons, ignore them
- maybeDetachedBodyEl_arr = maybeDetachedBodyEl_arr.getElementsByTagName('img');
+ detachedBody_zoomInImg = detachedBody_zoomInImg.getElementsByTagName('img');
  for(; i<25; i++)
  {
-  (imgEl = aElement[i] = maybeDetachedBodyEl_arr[i]).onload = showImage;
+  (imgEl = aElement[i] = detachedBody_zoomInImg[i]).onload = showImage;
   aStyle[i] = imgEl.style;
  }
+ imgEl = detachedBody_zoomInImg[25];
+ detachedBody_zoomInImg = detachedBody_zoomInImg[26];
+  detachedBody_zoomInImg.onmouseover = imgEl.onmouseover = function (/*evt*/) {
+    this.src = this.src.replace('.png','_over.png');
+  };
+  detachedBody_zoomInImg.onmouseout = imgEl.onmouseout = function (/*evt*/) {
+    this.src = this.src.replace('_over.png', '.png');
+  };
+ imgEl.onclick = function(/*evt*/) {zoom(-1)};
+ detachedBody_zoomInImg.onclick = function(/*evt*/) {zoom(1)};
 
  /* 2021 factor out
  centerPixX = defaultCenterX
  centerPixY = defaultCenterY
  */
-}
 
-function showCustomAlert (text)
-{
-customAlertEl.textContent = text
-customAlertEl.style.display = "inline"
-clearTimeout(alertTimer)
-alertTimer = setTimeout(hideCustomAlert,3000)
-}
-
-_exports.hideCustomAlert = hideCustomAlert = function ()
-{
-clearTimeout(alertTimer)
-customAlertEl.style.display = "none"
-};
-
-_exports.menuImageOver = function (elem) {
-    elem.src = elem.src.replace('.png','_over.png');
-};
-_exports.menuImageOut = function (elem) {
-    elem.src = elem.src.replace('_over.png', '.png');
-};
-
-_exports.zoom = function (i)
+//fn zoom() closure scoped
+function zoom (i)
 {
   hideCustomAlert()
   var currentCenter = getCurrentCenter();
@@ -525,6 +516,21 @@ _exports.zoom = function (i)
  centerPixX = newCenterX
  centerPixY = newCenterY
  loadMap()
+}//end fn zoom()
+
+function showCustomAlert (text)
+{
+customAlertEl.textContent = text
+customAlertEl.style.display = "inline"
+clearTimeout(alertTimer)
+alertTimer = setTimeout(hideCustomAlert,3000)
+}
+}
+
+_exports.hideCustomAlert = hideCustomAlert = function ()
+{
+clearTimeout(alertTimer)
+customAlertEl.style.display = "none"
 };
 
 function getPosition(e) {
@@ -697,9 +703,9 @@ if(this.onpopstate){
 <!-- border-style: solid;border-color: red -->
 
 
- <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; background-image:url(transparentTile.gif); -moz-user-select: none; -webkit-user-select: none;" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
- <img src="zoom_out.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" onmouseover="T.menuImageOver(this)" onmouseout="T.menuImageOut(this)" onclick="T.zoom(-1)">
- <img src="zoom_in.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" onmouseover="T.menuImageOver(this)" onmouseout="T.menuImageOut(this)" onclick="T.zoom(1)">
+ <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);" onmousedown="T.mapmousedown(event)" onmousemove="T.mapmousemove(event)" onmouseup="T.mapmouseup()" onmouseout="T.mapmouseup()" ontouchstart="T.mapmousedown(event)" ontouchmove="T.mapmousemove(event)" ontouchend="T.mapmouseup()" ontouchcancel="T.mapmouseup()"></div>
+ <img src="zoom_out.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0">
+ <img src="zoom_in.png" style="display:inline;cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0">
 
 <div id="customAlert" style="display:none; position:absolute; top:240px; left:165px; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
  </div>
