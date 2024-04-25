@@ -209,9 +209,9 @@ function hideImageTiles() {
 
 function getCurrentCenter() {
   //formerly 12 == document.getElementById("a22");
-  var arr = aElement[12].className.split("_");
+  var el = aElement[12];
   var style = aStyle[12];
-  return [(arr[0] * 256) + (315 - parseInt(style.left)), (arr[1] * 256) + (315 - parseInt(style.top))];
+  return [(el.tX * 256) + (315 - parseInt(style.left)), (el.tY * 256) + (315 - parseInt(style.top))];
 }
 
 function getRemainderPix(totalPix) {
@@ -275,7 +275,7 @@ function setImgSrc(elem, x, y) {
 /*STARTINSERTPATH*/
     "../docs/"
 /*ENDINSERTPATH*/
-  ) + tilePath + (zoomLevel + 14) + "_" + (elem.className = x + "_" + y) + ".png";
+  ) + tilePath + (zoomLevel + 14) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
 }
 
 function showImage(/*evt*/) {
@@ -452,6 +452,8 @@ var delayedMouseMoveEvt;
     var arr = getCurrentCenter();
     var x;
     var y;
+    var left;
+    var top;
     var styleObj;
     var elem;
     var i = 0;
@@ -461,31 +463,30 @@ var delayedMouseMoveEvt;
     for (; i < 25; i++) {
       styleObj = aStyle[i];
       elem = aElement[i];
-      arr = elem.className.split("_");
-      //cast to number "5"+"5" goes wrong
-      x = arr[0] * 1;
-      y = arr[1] * 1;
-      if (parseInt(styleObj.left) > 630) {
+      x = elem.tX;
+      y = elem.tY;
+      left = parseInt(styleObj.left);
+      if (left > 630) {
         x = x - 5;
         y = y;
-        styleObj.left = (parseInt(styleObj.left) - 1280) + "px";
+        styleObj.left = (left - 1280) + "px";
         styleObj.visibility = "hidden";
-      } else if (parseInt(styleObj.left) * (-1) > 256) {
+      } else if (left * (-1) > 256) {
         x = x + 5;
         y = y;
-        styleObj.left = (parseInt(styleObj.left) + 1280) + "px";
+        styleObj.left = (left + 1280) + "px";
         styleObj.visibility = "hidden";
       }
-
-      if (parseInt(styleObj.top) > 630) {
+      top = parseInt(styleObj.top);
+      if (top > 630) {
         x = x;
         y = y - 5;
-        styleObj.top = (parseInt(styleObj.top) - 1280) + "px";
+        styleObj.top = (top - 1280) + "px";
         styleObj.visibility = "hidden";
-      } else if (parseInt(styleObj.top) * (-1) > 256) {
+      } else if (top * (-1) > 256) {
         x = x;
         y = y + 5;
-        styleObj.top = (parseInt(styleObj.top) + 1280) + "px";
+        styleObj.top = (top + 1280) + "px";
         styleObj.visibility = "hidden";
       }
       if (styleObj.visibility == "hidden") {
