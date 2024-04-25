@@ -214,9 +214,11 @@ function getCurrentCenter() {
   return [(el.tX * 256) + (315 - parseInt(style.left)), (el.tY * 256) + (315 - parseInt(style.top))];
 }
 
+/* inlined
 function getRemainderPix(totalPix) {
   return totalPix % 256;
 }
+*/
 
 function getNumberOfTiles(totalPix) {
   var remainderPix = totalPix % 256;
@@ -233,40 +235,40 @@ function loadMap() {
   //function getCenterTile(pY,pX)
   //{
   // old name numberOfRow
-  var nameX = getNumberOfTiles(centerPixX);
+  var nameX_topShift = getNumberOfTiles(centerPixX);
   //old name numberOfColumns
-  var nameY = getNumberOfTiles(centerPixY);
+  var nameY_leftShift = getNumberOfTiles(centerPixY);
   //}
   //resetTileCells(128 - getRemainderPix(centerPixY), 128 - getRemainderPix(centerPixX));
   //}
-  var topShift = 128 - getRemainderPix(centerPixY);
-  var leftShift = 128 - getRemainderPix(centerPixX);
 
   //function resetTileCells(topShift,leftShift)
   //{
   var k;
   var k_adj;
 
-  nameX = [nameX - 2, nameX - 1, nameX, nameX + 1, nameX + 2];
-  nameY = [nameY - 2, nameY - 1, nameY, nameY + 1, nameY + 2];
+  nameX_topShift = [nameX_topShift - 2, nameX_topShift - 1, nameX_topShift, nameX_topShift + 1, nameX_topShift + 2];
+  nameY_leftShift = [nameY_leftShift - 2, nameY_leftShift - 1, nameY_leftShift, nameY_leftShift + 1, nameY_leftShift + 2];
 
   //prefer loading center tiles over outer or hidden tiles, domain sharding is other idea
   for (k = 0; k < 25; k++) {
     k_adj = tileSrcSetOrderArr[k];
-    setImgSrc(aElement[k_adj], nameX[k_adj % 5], nameY[(k_adj / 5) | 0]);
+    setImgSrc(aElement[k_adj], nameX_topShift[k_adj % 5], nameY_leftShift[(k_adj / 5) | 0]);
   }
 
+  nameX_topShift = 128 - /*getRemainderPix*/(centerPixY % 256);
+  nameY_leftShift = 128 - /*getRemainderPix*/(centerPixX % 256);
   //on navigate IMG.style.top/.left undef, on redraw has old values that are tossed
-  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = ((-325)+leftShift)/*+"px"*/;
-  aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = ((-325)+topShift)/*+"px"*/;
-  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = ((-69)+leftShift)/*+"px"*/;
-  aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = ((-69)+topShift)/*+"px"*/;
-  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = ((187)+leftShift)/*+"px"*/;
-  aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = ((187)+topShift)/*+"px"*/;
-  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = ((443)+leftShift)/*+"px"*/;
-  aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = ((443)+topShift)/*+"px"*/;
-  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = ((699)+leftShift)/*+"px"*/;
-  aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = ((699)+topShift)/*+"px"*/;
+  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = ((-325)+nameY_leftShift)/*+"px"*/;
+  aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = ((-325)+nameX_topShift)/*+"px"*/;
+  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = ((-69)+nameY_leftShift)/*+"px"*/;
+  aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = ((-69)+nameX_topShift)/*+"px"*/;
+  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = ((187)+nameY_leftShift)/*+"px"*/;
+  aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = ((187)+nameX_topShift)/*+"px"*/;
+  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = ((443)+nameY_leftShift)/*+"px"*/;
+  aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = ((443)+nameX_topShift)/*+"px"*/;
+  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = ((699)+nameY_leftShift)/*+"px"*/;
+  aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = ((699)+nameX_topShift)/*+"px"*/;
 }
 
 function setImgSrc(elem, x, y) {
@@ -363,16 +365,16 @@ var delayedMouseMoveEvt;
 
     //zoom out=zo, zoom in IMG el has no id attr (byte savings)
     if (this.id/* == "zo"*/) {
-      if (zoomLevel > 1 /* minZoom */) {
-        zoomLevel = zoomLevel - 1;
+      if (zoomLevel == 2 /* minZoom */) {
+        zoomLevel = 1;
         centerPixX = /*newCenterX =*/ parseInt(currentCenterX / 2);
         centerPixY = /*newCenterY =*/ parseInt(currentCenterY / 2);
       } else {
         return showCustomAlert("This is the lowest zoom level");
       }
     } else { //zoom in
-      if (zoomLevel < 2 /* maxZoom */) {
-        zoomLevel = zoomLevel + 1;
+      if (zoomLevel == 1 /* maxZoom */) {
+        zoomLevel = 2;
         centerPixX = /*newCenterX =*/ currentCenterX * 2;
         centerPixY = /*newCenterY =*/ currentCenterY * 2;
       } else {
@@ -430,9 +432,9 @@ var delayedMouseMoveEvt;
       for (i = 0; i < 25; i++) {
         curCenterX = aStyle[i];
         if(updateX)
-          curCenterX.left = (xDownStart[i] + curX) + "px";
+          curCenterX.left = (xDownStart[i] + curX)/*+"px"*/;
         if(updateY)
-          curCenterX.top = (yDownStart[i] + curY) + "px";
+          curCenterX.top = (yDownStart[i] + curY)/*+"px"*/;
       }
     }
     //de-bounce all onMMs until next rAF() frame or 33 ms timer
@@ -456,11 +458,13 @@ var delayedMouseMoveEvt;
     var top;
     var styleObj;
     var elem;
+    var hideFlag;
     var i = 0;
     mapDrag = false;
     centerPixX = arr[0];
     centerPixY = arr[1];
     for (; i < 25; i++) {
+      hideFlag = 0;
       styleObj = aStyle[i];
       elem = aElement[i];
       x = elem.tX;
@@ -468,28 +472,25 @@ var delayedMouseMoveEvt;
       left = parseInt(styleObj.left);
       if (left > 630) {
         x = x - 5;
-        y = y;
-        styleObj.left = (left - 1280) + "px";
-        styleObj.visibility = "hidden";
+        styleObj.left = (left - 1280)/*+"px"*/;
+        hideFlag = 1;
       } else if (left * (-1) > 256) {
         x = x + 5;
-        y = y;
-        styleObj.left = (left + 1280) + "px";
-        styleObj.visibility = "hidden";
+        styleObj.left = (left + 1280)/*+"px"*/;
+        hideFlag = 1;
       }
       top = parseInt(styleObj.top);
       if (top > 630) {
-        x = x;
         y = y - 5;
-        styleObj.top = (top - 1280) + "px";
-        styleObj.visibility = "hidden";
+        styleObj.top = (top - 1280)/*+"px"*/;
+        hideFlag = 1;
       } else if (top * (-1) > 256) {
-        x = x;
         y = y + 5;
-        styleObj.top = (top + 1280) + "px";
-        styleObj.visibility = "hidden";
+        styleObj.top = (top + 1280)/*+"px"*/;
+        hideFlag = 1;
       }
-      if (styleObj.visibility == "hidden") {
+      if (hideFlag) {
+        styleObj.visibility = "hidden";
         setImgSrc(elem, x, y);
       }
     }
@@ -513,8 +514,9 @@ var delayedMouseMoveEvt;
   function getPosition(e/*evt*/) {
     var cursor = {};
     if (e.targetTouches) {
-      cursor.x = Math.round(e.targetTouches[0].pageX);
-      cursor.y = Math.round(e.targetTouches[0].pageY);
+      e = e.targetTouches[0];
+      cursor.x = Math.round(e.pageX);
+      cursor.y = Math.round(e.pageY);
       /* disabled from SO sample to allow pinch zoom by browser
       and DOM drag
       e.preventDefault();
