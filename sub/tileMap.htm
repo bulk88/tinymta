@@ -445,86 +445,81 @@ _exports.mapmousemove = function (i /*element really*/) {
 //in SPA mode body El is usually detached
 //on navigate its reg "attached" document.body
 function initializeDocumentObjects(detachedBody_zoomInImg) {
- var imgEl,i=0;
+  var imgEl,
+  i = 0;
 
- //if SPA mode can't use document.getElementById("customAlert")
- //per spec gEBI returns null if detached body/div/el, and prerender
- //feature has a detached BODY and other els, but for IE 8 and older
- //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
- customAlertEl = detachedBody_zoomInImg.querySelector ?
-  detachedBody_zoomInImg.querySelector("div#customAlert")
-  : document.getElementById("customAlert");
+  //if SPA mode can't use document.getElementById("customAlert")
+  //per spec gEBI returns null if detached body/div/el, and prerender
+  //feature has a detached BODY and other els, but for IE 8 and older
+  //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
+  customAlertEl = detachedBody_zoomInImg.querySelector ?
+    detachedBody_zoomInImg.querySelector("div#customAlert")
+     : document.getElementById("customAlert");
 
- //last 2 image elems in this array are zoom buttons, ignore them
- detachedBody_zoomInImg = detachedBody_zoomInImg.getElementsByTagName('img');
- for(; i<25; i++)
- {
-  (imgEl = aElement[i] = detachedBody_zoomInImg[i]).onload = showImage;
-  aStyle[i] = imgEl.style;
- }
- imgEl = detachedBody_zoomInImg[25];
- detachedBody_zoomInImg = detachedBody_zoomInImg[26];
+  //last 2 image elems in this array are zoom buttons, ignore them
+  detachedBody_zoomInImg = detachedBody_zoomInImg.getElementsByTagName('img');
+  for (; i < 25; i++) {
+    (imgEl = aElement[i] = detachedBody_zoomInImg[i]).onload = showImage;
+    aStyle[i] = imgEl.style;
+  }
+  imgEl = detachedBody_zoomInImg[25];
+  detachedBody_zoomInImg = detachedBody_zoomInImg[26];
+
   detachedBody_zoomInImg.onmouseover = imgEl.onmouseover = function (/*evt*/) {
-    this.src = this.src.replace('.png','_over.png');
+    this.src = this.src.replace('.png', '_over.png');
   };
   detachedBody_zoomInImg.onmouseout = imgEl.onmouseout = function (/*evt*/) {
     this.src = this.src.replace('_over.png', '.png');
   };
- imgEl.onclick = function(/*evt*/) {zoom(-1)};
- detachedBody_zoomInImg.onclick = function(/*evt*/) {zoom(1)};
+  imgEl.onclick = function (evt) {
+    zoom(-1);
+  };
+  detachedBody_zoomInImg.onclick = function (evt) {
+    zoom(1);
+  };
 
- /* 2021 factor out
- centerPixX = defaultCenterX
- centerPixY = defaultCenterY
- */
+  /* 2021 factor out
+  centerPixX = defaultCenterX
+  centerPixY = defaultCenterY
+   */
 
-//fn zoom() closure scoped
-function zoom (i)
-{
-  hideCustomAlert()
-  var currentCenter = getCurrentCenter();
-  var currentCenterX = currentCenter[0]
-  var currentCenterY = currentCenter[1]
-  var newCenterX
-  var newCenterY
- if(i == -1)
- {
- if(zoomLevel > 1 /* minZoom */)
- {
-  zoomLevel = zoomLevel - 1
-  newCenterX = parseInt(currentCenterX/2)
-  newCenterY = parseInt(currentCenterY/2)
+  //fn zoom() closure scoped
+  function zoom(i) {
+    hideCustomAlert();
+    var currentCenter = getCurrentCenter();
+    var currentCenterX = currentCenter[0];
+    var currentCenterY = currentCenter[1];
+    var newCenterX;
+    var newCenterY;
+    if (i == -1) {
+      if (zoomLevel > 1 /* minZoom */) {
+        zoomLevel = zoomLevel - 1;
+        newCenterX = parseInt(currentCenterX / 2);
+        newCenterY = parseInt(currentCenterY / 2);
+      } else {
+        return showCustomAlert("This is the lowest zoom level");
+      }
+    }
+    if (i == 1) {
+      if (zoomLevel < 2 /* maxZoom */) {
+        zoomLevel = zoomLevel + 1;
+        newCenterX = currentCenterX * 2;
+        newCenterY = currentCenterY * 2;
+      } else {
+        return showCustomAlert("This is the highest zoom level");
+      }
+    }
+    centerPixX = newCenterX;
+    centerPixY = newCenterY;
+    loadMap();
+  } //end fn zoom()
+
+  function showCustomAlert(text) {
+    customAlertEl.textContent = text;
+    customAlertEl.style.display = "inline";
+    clearTimeout(alertTimer);
+    alertTimer = setTimeout(hideCustomAlert, 3000);
   }
-  else
-  {
-     return showCustomAlert("This is the lowest zoom level")
-  }
- }
- if(i == 1)
- {
- if(zoomLevel < 2 /* maxZoom */)
- {
-  zoomLevel = zoomLevel + 1
-  newCenterX = currentCenterX*2
-  newCenterY = currentCenterY*2
- }
- else
- {
-  return showCustomAlert("This is the highest zoom level")
- }
- }
- centerPixX = newCenterX
- centerPixY = newCenterY
- loadMap()
-}//end fn zoom()
-
-function showCustomAlert (text)
-{
-customAlertEl.textContent = text
-customAlertEl.style.display = "inline"
-clearTimeout(alertTimer)
-alertTimer = setTimeout(hideCustomAlert,3000)
-}
 }
 
 _exports.hideCustomAlert = hideCustomAlert = function ()
