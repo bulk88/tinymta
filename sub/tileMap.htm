@@ -90,6 +90,8 @@ var aElement = new Array();
 
 var _exports = { /*GC:0 prop GC (free unused tiles) is not mangled*/
 };
+//image tile load order
+var tileSrcSetOrderArr = [12, 7, 17, 11, 13, 6, 8, 16, 18, 0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24];
 
 //arg stationLocInfo is mandatory "#123" type str from ".hash" (undef/null not allowed)
 function onNewURL(body, stationLocInfo) {
@@ -221,33 +223,28 @@ function loadMap() {
   //function resetTileCells(topShift,leftShift)
   //{
   var k;
-  //image tile load order
-  var s0 = [12, 7, 17, 11, 13, 6, 8, 16, 18, 0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24];
   var k_adj;
 
   nameX = [nameX - 2, nameX - 1, nameX, nameX + 1, nameX + 2];
   nameY = [nameY - 2, nameY - 1, nameY, nameY + 1, nameY + 2];
 
-
-
   //prefer loading center tiles over outer or hidden tiles, domain sharding is other idea
   for (k = 0; k < 25; k++) {
-    k_adj = s0[k];
+    k_adj = tileSrcSetOrderArr[k];
     setImgSrc(aElement[k_adj], nameX[k_adj % 5], nameY[(k_adj / 5) | 0]);
   }
 
-//TODO, re dund, top left set in static HTML then here to default, then in loop to custom
-  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = "-325px";
-  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = "-69px";
-  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = "187px";
-  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = "443px";
-  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = "699px";
-
-  for (k = 0; k < 25; k++) {
-    s0 = aStyle[k];
-    s0.top = (parseInt(s0.top) + topShift) + "px";
-    s0.left = (parseInt(s0.left) + leftShift) + "px";
-  }
+  //on navigate IMG.style.top/.left undef, on redraw has old values that are tossed
+  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = ((-325)+leftShift)+"px";
+  aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = ((-325)+topShift)+"px";
+  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = ((-69)+leftShift)+"px";
+  aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = ((-69)+topShift)+"px";
+  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = ((187)+leftShift)+"px";
+  aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = ((187)+topShift)+"px";
+  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = ((443)+leftShift)+"px";
+  aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = ((443)+topShift)+"px";
+  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = ((699)+leftShift)+"px";
+  aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = ((699)+topShift)+"px";
 }
 
 function setImgSrc(elem, x, y) {
@@ -348,6 +345,7 @@ var alertTimer;
   } //end fn zoom()
 
   function showCustomAlert(text) {
+    //cAE and aT globals
     customAlertEl.textContent = text;
     customAlertEl.style.display = "inline";
     //this fn showCustomAlert() so rare called
@@ -363,7 +361,7 @@ var alertTimer;
     }
   }
 
-  function mapmousemove (i /*element really*/) {
+  function mapmousemove (i /*evt really*/) {
     if (!mapDrag) {
       return;
     }
@@ -386,7 +384,6 @@ var alertTimer;
       for (i = 0; i < 25; i++)
         aStyle[i].top = (yDownStart[i] + curY) + "px";
     }
-
   }
   function mapmouseup (/*evt*/) {
 
@@ -424,8 +421,8 @@ var alertTimer;
         styleObj.top = (parseInt(styleObj.top) - 1280) + "px";
         styleObj.visibility = "hidden";
       } else if (parseInt(styleObj.top) * (-1) > 256) {
-        x = x
-          y = y + 5;
+        x = x;
+        y = y + 5;
         styleObj.top = (parseInt(styleObj.top) + 1280) + "px";
         styleObj.visibility = "hidden";
       }
@@ -433,49 +430,44 @@ var alertTimer;
         setImgSrc(elem, x, y);
       }
     }
-
   }
 
-  function mapmousedown (evt) {
-
+  function mapmousedown (evt_i) {
     hideCustomAlert();
     mapDrag = true;
-    startXY = getPosition(evt);
-    for (i = 0; i < 25; i++)
-      xDownStart[i] = parseInt(aStyle[i].left);
-    for (i = 0; i < 25; i++)
-      yDownStart[i] = parseInt(aStyle[i].top);
+    startXY = getPosition(evt_i);
+    for (evt_i = 0; evt_i < 25; evt_i++) {
+      //todo rmv reading style obj
+      xDownStart[evt_i] = parseInt(aStyle[evt_i].left);
+      yDownStart[evt_i] = parseInt(aStyle[evt_i].top);
+    }
+  }
+  function getPosition(e/*evt*/) {
+    var cursor = {};
+    if (e.targetTouches) {
+      cursor.x = Math.round(e.targetTouches[0].pageX);
+      cursor.y = Math.round(e.targetTouches[0].pageY);
+      /* disabled from SO sample to allow pinch zoom by browser
+      and DOM drag
+      e.preventDefault();
+       */
+    } else if (e.pageX || e.pageY) {
+      cursor.x = e.pageX;
+      cursor.y = e.pageY;
+    } else {
+      var de = document.documentElement;
+      var b = document.body;
+      cursor.x = e.clientX +
+        (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
+      cursor.y = e.clientY +
+        (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
+    }
+    return cursor;
   }
 
-}
+}// END function initializeDocumentObjects()
 
-function getPosition(e/*evt*/) {
-  var cursor = {};
-  if (e.targetTouches) {
-    cursor.x = Math.round(e.targetTouches[0].pageX);
-    cursor.y = Math.round(e.targetTouches[0].pageY);
-    /* disabled from SO sample to allow pinch zoom by browser
-    and DOM drag
-    e.preventDefault();
-     */
-  } else if (e.pageX || e.pageY) {
-    cursor.x = e.pageX;
-    cursor.y = e.pageY;
-  } else {
-    var de = document.documentElement;
-    var b = document.body;
-    cursor.x = e.clientX +
-      (de.scrollLeft || b.scrollLeft) - (de.clientLeft || 0);
-    cursor.y = e.clientY +
-      (de.scrollTop || b.scrollTop) - (de.clientTop || 0);
-  }
-  return cursor;
-}
-
-
-
-
-
+//REMOVED CODE, window.T empty now except for T.GC()
 //note using "window.y.foo()" specically token "y" is unworkable
 //b/c in SPA mode, a DETACHED DISCONNECED OFFSCREEN <IMG> can fire onload=()
 //but SPA swapper, already switched out window.y global
@@ -491,55 +483,55 @@ if (this.onpopstate) {
   <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
     <!-- id="mapContainer"  -->
     <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dotted;border-color: Fuchsia -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: double;border-color: Fuchsia -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dashed;border-color: Fuchsia -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: groove;border-color: Fuchsia -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-325px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: Fuchsia -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dotted;border-color: lime -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: double;border-color: lime -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dashed;border-color: lime -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: groove;border-color: lime -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:-69px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: lime -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dotted;border-color: cyan -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: double;border-color: cyan -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dashed;border-color: cyan -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: groove;border-color: cyan -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:187px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: cyan -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dotted;border-color: yellow -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: double;border-color: yellow -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dashed;border-color: yellow -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: groove;border-color: yellow -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:443px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: yellow -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-325px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dotted;border-color: red -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:-69px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: double;border-color: red -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:187px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: dashed;border-color: red -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:443px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: groove;border-color: red -->
-      <img style="visibility:hidden;z-index:0; position:absolute; top:699px; left:699px; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
+      <img style="visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on"/>
       <!-- border-style: solid;border-color: red -->
       <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);"></div>
       <img style="display:inline;cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
