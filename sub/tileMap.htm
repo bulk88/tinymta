@@ -301,7 +301,8 @@ function initializeDocumentObjects(detachedBodyEl) {
       el = el[nextFlag ? 'nextSibling' : 'previousSibling'];
     } while (el && el.nodeName !== "DIV");
   return el;
-};
+  },
+  zm_icon_urls = ['_over.png', '.png'];
 
 /*closure globals \|/ */
 var customAlertEl;
@@ -316,12 +317,18 @@ var delayedMouseMoveEvt;
     (imgEl = aElement[i] = imgArr_el[i]).onload = showImage;
     aStyle[i] = imgEl.style;
   }
-  (imgEl = imgArr_el[25]).onmouseover = (imgArr_el = imgArr_el[26]).onmouseover = function (/*evt*/) {
-    this.src = this.src.replace('.png', '_over.png');
-  };
-  imgEl.onmouseout = imgArr_el.onmouseout = function (/*evt*/) {
-    this.src = this.src.replace('_over.png', '.png');
-  };
+
+  //zoom icon evt handlers
+  (imgEl = imgArr_el[25]).onmouseover =
+  imgEl.onmouseout =
+  (imgArr_el = imgArr_el[26]).onmouseover =
+  imgArr_el.onmouseout =
+    function (evt) {
+      //one fn does both mouseout (8 chars) and mouseover (9 chars)
+      this.src = this.src.replace(zm_icon_urls[evt = evt.type.length-8], zm_icon_urls[!evt|0]);
+    }
+  ;
+
   imgArr_el.onclick = imgEl.onclick = zoom;
   
   //use el.nS is MINIFIED ALL UAs or el.nS for old IE (no text nodes test above)
@@ -521,25 +528,23 @@ var delayedMouseMoveEvt;
     }
   }
   function getPosition(e/*evt*/) {
-    var cursor = {};
     if (e.targetTouches) {
       e = e.targetTouches[0];
-      cursor.x = Math.round(e.pageX);
-      cursor.y = Math.round(e.pageY);
+      return {x: Math.round(e.pageX), y: Math.round(e.pageY)};
       /* disabled from SO sample to allow pinch zoom by browser
       and DOM drag
       e.preventDefault();
        */
     } else if (e.pageX || e.pageY) {
-      cursor.x = e.pageX;
-      cursor.y = e.pageY;
+      return {x: e.pageX, y: e.pageY};
     } else {
-      cursor.x = e.clientX +
-        (htmlEl.scrollLeft || detachedBodyEl.scrollLeft) - (htmlEl.clientLeft || 0);
-      cursor.y = e.clientY +
-        (htmlEl.scrollTop || detachedBodyEl.scrollTop) - (htmlEl.clientTop || 0);
+      return {
+        x: e.clientX +
+          (htmlEl.scrollLeft || detachedBodyEl.scrollLeft) - (htmlEl.clientLeft || 0),
+        y: e.clientY +
+          (htmlEl.scrollTop || detachedBodyEl.scrollTop) - (htmlEl.clientTop || 0)
+      };
     }
-    return cursor;
   }
 
 }// END function initializeDocumentObjects()
