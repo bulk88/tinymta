@@ -73,7 +73,7 @@ var maxX;
 var maxY;
 var tileDirectory;
 var tilesNotHidden;
-var mapDrag = false;
+var mapDrag;
 
 var centerPixX;
 var centerPixY;
@@ -288,7 +288,7 @@ function showImage(/*evt*/) {
 //in SPA mode body El is usually detached
 //on navigate its reg "attached" document.body
 function initializeDocumentObjects(detachedBodyEl) {
-  var imgEl,
+  var imgEl, //ultimatly transp .gif drag IMG
   imgArr_el,
   i = 0,
       //IE 5.0 and 5.5 return type 1 for comments and ! as node name
@@ -324,6 +324,7 @@ var delayedMouseMoveEvt;
   (imgArr_el = imgArr_el[26]).onmouseover =
   imgArr_el.onmouseout =
     function (evt) {
+      evt = evt || event; //old IE
       //one fn does both mouseout (8 chars) and mouseover (9 chars)
       this.src = this.src.replace(zm_icon_urls[evt = evt.type.length-8], zm_icon_urls[!evt|0]);
     }
@@ -348,8 +349,9 @@ var delayedMouseMoveEvt;
   //DIV with transparentTile.gif
   imgEl = (pfNextElementSibling &&  pfNextElementSibling(imgEl)) || imgEl.previousSibling;
   imgEl.ontouchstart = imgEl.onmousedown = mapmousedown;
-  imgEl.ontouchmove = imgEl.onmousemove = mapmousemove;
-  imgEl.ontouchcancel = imgEl.ontouchend = imgEl.onmouseout =  imgEl.onmouseup = mapmouseup;
+
+  imgEl.ontouchcancel = imgEl.ontouchend = /*imgEl.onmouseup = */ document.onmouseup = mapmouseup;
+  //DONT REUSE imgEl, its now a global
 
   //if SPA mode can't use document.getElementById("customAlert")
   //per spec gEBI returns null if detached body/div/el, and prerender
@@ -421,6 +423,7 @@ var delayedMouseMoveEvt;
 //around 125/s image tiles/UI locks up, rAF locks to 50/s HARD ALWAYS for me
 //but MMM runs and STILL skips upto 130/s calls, while rAF locks to 50/s
 //seems good to me
+
   function mapmousemove (i /*evt really*/) {
     if (!mapDrag) {
       return;
@@ -465,8 +468,10 @@ var delayedMouseMoveEvt;
       mapmousemove(evt);
     }
   }
-  function mapmouseup (/*evt*/) {
-
+  function mapmouseup (evt) {
+    if (!mapDrag) {
+      return;
+    }
     var arr = getCurrentCenter();
     var x;
     var y;
@@ -476,7 +481,8 @@ var delayedMouseMoveEvt;
     var elem;
     var hideFlag;
     var i = 0;
-    mapDrag = false;
+    //this. is document obj rn
+    mapDrag = imgEl.ontouchmove = imgEl.onmousemove = null;
     centerPixX = arr[0];
     centerPixY = arr[1];
     for (; i < 25; i++) {
@@ -518,8 +524,10 @@ var delayedMouseMoveEvt;
       evt_i = event;
     }
     hideCustomAlert();
-    mapDrag = true;
+    mapDrag = 1;
     startXY = getPosition(evt_i);
+
+    this.ontouchmove = this.onmousemove = mapmousemove;
 
     for (evt_i = 0; evt_i < 25; evt_i++) {
       el = aStyle[evt_i];
@@ -555,8 +563,8 @@ var delayedMouseMoveEvt;
 //but SPA swapper, already switched out window.y global
 //so DETACHED DISCONNECED OFFSCREEN <IMG> throws an exception, just make a global
 //for SPA mode that keeps the tM.htm global funcs around 24/7 as a fix
-this.T = _exports;
 if (this.onpopstate) {
+  this.T = _exports;
   onNewURL.body = initializeDocumentObjects;
   onhashchange = onNewURL;
 }
