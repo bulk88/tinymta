@@ -12,16 +12,82 @@
   <meta name="mobileoptimized" content="0">
   <meta name="referrer" content="no-referrer">
   <title>The Weekender</title>
-  <style>:root{color-scheme:light dark}</style>
+  <style>:root{color-scheme:light dark}
+    .tl {
+      visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;
+    }
+  </style>
 </head>
 <body style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
 <!-- keep this comment for IE aka pfNextElementSibling -->
-  <style>
-.tl {
-  visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;
-}
-  </style>
-  <script>
+
+  <!-- id="mapApplication" -->
+  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+    <!-- id="mapContainer"  -->
+    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dotted;border-color: Fuchsia -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: double;border-color: Fuchsia -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dashed;border-color: Fuchsia -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: groove;border-color: Fuchsia -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: solid;border-color: Fuchsia -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dotted;border-color: lime -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: double;border-color: lime -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dashed;border-color: lime -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: groove;border-color: lime -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: solid;border-color: lime -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dotted;border-color: cyan -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: double;border-color: cyan -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dashed;border-color: cyan -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: groove;border-color: cyan -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: solid;border-color: cyan -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dotted;border-color: yellow -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: double;border-color: yellow -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dashed;border-color: yellow -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: groove;border-color: yellow -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: solid;border-color: yellow -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dotted;border-color: red -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: double;border-color: red -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: dashed;border-color: red -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: groove;border-color: red -->
+      <img class="tl" unselectable="on"/>
+      <!-- border-style: solid;border-color: red -->
+      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);"></div>
+      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
+      <!-- skip id="zi" for zoom in to save code bytes -->
+      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
+      <!-- rmved id="customAlert", not needed anymore -->
+<!-- WARING DO NOT REMOVE THE LITTERAL UTF8 NBSP IN THIS DIV -->
+      <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+ 
+      </div>
+    </div>
+  </div>
+</body>
+<script>
 // Neighborhood Map Dimensions
 /* removed/inlined
 var mapImgDimensions = {
@@ -101,17 +167,18 @@ var _exports = { /*GC:0 prop GC (free unused tiles) is not mangled*/
 //image tile load order
 var tileSrcSetOrderArr = [12, 7, 17, 11, 13, 6, 8, 16, 18, 0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24];
 
+var _window = window;
 var rAF =
-  this.requestAnimationFrame ||
-  this.mozRequestAnimationFrame ||
-  this.webkitRequestAnimationFrame ||
-  this.oRequestAnimationFrame ||
-  this.msRequestAnimationFrame || function (callback) {
+  _window.requestAnimationFrame ||
+  _window.mozRequestAnimationFrame ||
+  _window.webkitRequestAnimationFrame ||
+  _window.oRequestAnimationFrame ||
+  _window.msRequestAnimationFrame || function (callback) {
     setTimeout(callback, 33)
   };
 
 //.SEMV() is IE only FN all vers
-var pfIECopyEvt = this.ScriptEngineMajorVersion && function(evt) {
+var pfIECopyEvt = _window.ScriptEngineMajorVersion && function(evt) {
   return {targetTouches: evt.targetTouches, pageX: evt.pageX, pageY: evt.pageY, clientX: evt.clientX, clientY: evt.clientY};
 };
 
@@ -194,7 +261,7 @@ function onNewURL(body, stationLocInfo) {
 }
 
 function freeImagesTiles() {
-  (this.requestIdleCallback || this.requestAnimationFrame || function (callback) {
+  (_window.requestIdleCallback || _window.requestAnimationFrame || function (callback) {
     setTimeout(callback, 40)
   })(function () {
     //free this func from global space flag/CB
@@ -568,87 +635,20 @@ var delayedMouseMoveEvt;
 //but SPA swapper, already switched out window.y global
 //so DETACHED DISCONNECED OFFSCREEN <IMG> throws an exception, just make a global
 //for SPA mode that keeps the tM.htm global funcs around 24/7 as a fix
-if (this.onpopstate) {
-  this.T = _exports;
+if (_window.onpopstate) {
+  _window.T = _exports;
   onNewURL.body = initializeDocumentObjects;
   onhashchange = onNewURL;
 }
-  </script>
-  <!-- id="mapApplication" -->
-  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-    <!-- id="mapContainer"  -->
-    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dotted;border-color: Fuchsia -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: double;border-color: Fuchsia -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dashed;border-color: Fuchsia -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: groove;border-color: Fuchsia -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: solid;border-color: Fuchsia -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dotted;border-color: lime -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: double;border-color: lime -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dashed;border-color: lime -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: groove;border-color: lime -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: solid;border-color: lime -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dotted;border-color: cyan -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: double;border-color: cyan -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dashed;border-color: cyan -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: groove;border-color: cyan -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: solid;border-color: cyan -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dotted;border-color: yellow -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: double;border-color: yellow -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dashed;border-color: yellow -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: groove;border-color: yellow -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: solid;border-color: yellow -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dotted;border-color: red -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: double;border-color: red -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: dashed;border-color: red -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: groove;border-color: red -->
-      <img class="tl" unselectable="on"/>
-      <!-- border-style: solid;border-color: red -->
-      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);"></div>
-      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
-      <!-- skip id="zi" for zoom in to save code bytes -->
-      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
-      <!-- rmved id="customAlert", not needed anymore -->
-<!-- WARING DO NOT REMOVE THE LITTERAL UTF8 NBSP IN THIS DIV -->
-      <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
- 
-      </div>
-    </div>
-  </div>
-  <script>
     //not a SPA, SPA loader doesn't exec 2nd script tag
-    if (!this.onpopstate) {
-      if (this.onpopstate === null)
+    //if (!_window.onpopstate) {
+    else {
+      if (_window.onpopstate === null)
         onpopstate = function (evt) {
           evt.state !== null && location.reload()
         };
       initializeDocumentObjects(document.body);
       onNewURL(0,location.hash);
     }
-  </script>
-</body>
+</script>
 </html>
