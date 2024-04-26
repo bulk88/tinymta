@@ -5,10 +5,10 @@
   <link href="//tiles2.tinymta.us.to" rel="dns-prefetch">
   <link href="//tiles2.tinymta.us.to" rel="preconnect">
   <!-- biggest most visible to least -->
-  <link rel="preload" href="mapTileBackground.png" as="image">
-  <link rel="preload" href="zoom_out.png" as="image">
-  <link rel="preload" href="zoom_in.png" as="image">
-  <link rel="preload" href="transparentTile.gif" as="image">
+  <link rel="preload" href="bk.png" as="image">
+  <link rel="preload" href="zo.png" as="image">
+  <link rel="preload" href="zi.png" as="image">
+  <link rel="preload" href="ts.gif" as="image">
   <meta name="mobileoptimized" content="0">
   <meta name="referrer" content="no-referrer">
   <title>The Weekender</title>
@@ -24,7 +24,7 @@
   <!-- id="mapApplication" -->
   <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
     <!-- id="mapContainer"  -->
-    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(mapTileBackground.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(bk.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
       <img class="tl" unselectable="on"/>
       <!-- border-style: dotted;border-color: Fuchsia -->
       <img class="tl" unselectable="on"/>
@@ -75,10 +75,10 @@
       <!-- border-style: groove;border-color: red -->
       <img class="tl" unselectable="on"/>
       <!-- border-style: solid;border-color: red -->
-      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(transparentTile.gif);"></div>
-      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zoom_out.png" id="zo">
+      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(ts.gif);"></div>
+      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zo.png" id="zo">
       <!-- skip id="zi" for zoom in to save code bytes -->
-      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
+      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zi.png">
       <!-- rmved id="customAlert", not needed anymore -->
 <!-- WARING DO NOT REMOVE THE LITTERAL UTF8 NBSP IN THIS DIV -->
       <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
@@ -374,7 +374,7 @@ function initializeDocumentObjects(detachedBodyEl) {
     } while (el && el.nodeName !== "DIV");
   return el;
   },
-  zm_icon_urls = ['_over.png', '.png'];
+  zm_icon_urls = ['o.png', '.png'];
 
 /*closure globals \|/ */
 var customAlertEl;
@@ -418,7 +418,7 @@ var delayedMouseMoveEvt;
         customAlertEl.appendChild(document.createTextNode(text));
   };
 */
-  //DIV with transparentTile.gif
+  //DIV with ts.gif transparentTile.gif
   imgEl = (pfNextElementSibling &&  pfNextElementSibling(imgEl)) || imgEl.previousSibling;
   imgEl.ontouchstart = imgEl.onmousedown = mapmousedown;
 
@@ -652,3 +652,15 @@ if (_window.onpopstate) {
     }
 </script>
 </html>
+<!-- baseline -->
+<!-- ./docs/tileMap.htm     uc  9256 gz 4716 -->
+<!-- all JS rmved minified html only -->
+<!-- ./docs/tileMap.htm     uc  2453 gz  616 -->
+<!-- sta code DB string ONLY no js no html -->
+<!-- ./docs/tileMap.htm     uc  2306 gz 1874 -->
+<!-- js+html no sta code DB -->
+<!-- ./docs/tileMap.htm     uc  6973 gz 2717 -->
+<!-- no htm just js no sta codes -->
+<!-- ./docs/tileMap.htm     uc  4537 gz 2166 -->
+<!-- no htm just js WITH sta codes -->
+<!-- ./docs/tileMap.htm     uc  6820 gz 4135 -->

@@ -1,14 +1,14 @@
 CACHE MANIFEST
-# v Fri Apr 26 06:18:41 2024
+# v Fri Apr 26 11:29:23 2024
 
 CACHE:
 tileMap.htm
-mapTileBackground.png
-transparentTile.gif
-zoom_in.png
-zoom_in_over.png
-zoom_out.png
-zoom_out_over.png
+bk.png
+ts.gif
+zi.png
+zio.png
+zo.png
+zoo.png
 
 #http://* is FF 3.5 fix bug 544462 590705
 NETWORK:

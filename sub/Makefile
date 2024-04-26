@@ -59,22 +59,22 @@ plan2.htm : plan.htm
 	perl adj_tilepath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c tileMap_minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
-../docs/mapTileBackground.png : $(@F)
+../docs/bk.png : $(@F)
 	copy /y $(@F) "$@"
 
-../docs/transparentTile.gif : $(@F)
+../docs/ts.gif : $(@F)
 	copy /y $(@F) "$@"
 
-../docs/zoom_in.png : $(@F)
+../docs/zi.png : $(@F)
 	copy /y $(@F) "$@"
 
-../docs/zoom_in_over.png : $(@F)
+../docs/zio.png : $(@F)
 	copy /y $(@F) "$@"
 
-../docs/zoom_out.png : $(@F)
+../docs/zo.png : $(@F)
 	copy /y $(@F) "$@"
 
-../docs/zoom_out_over.png : $(@F)
+../docs/zoo.png : $(@F)
 	copy /y $(@F) "$@"
 
 stations.htm : gr3.pl routedatafinal.pl nmapnidsdata.pl
@@ -138,10 +138,10 @@ gtfs.zip :
 mini:
 	html-minifier.cmd -c minify_config.json -o "$(F)" "$(F)"
 
-../docs/stop.appcache: ../docs/tileMap.htm ../docs/mapTileBackground.png
-../docs/stop.appcache: ../docs/transparentTile.gif ../docs/zoom_in.png
-../docs/stop.appcache: ../docs/zoom_in_over.png ../docs/zoom_out.png
-../docs/stop.appcache: ../docs/zoom_out_over.png
+../docs/stop.appcache: ../docs/tileMap.htm ../docs/bk.png
+../docs/stop.appcache: ../docs/ts.gif ../docs/zi.png
+../docs/stop.appcache: ../docs/zio.png ../docs/zo.png
+../docs/stop.appcache: ../docs/zoo.png
 	perl -e"use File::Slurp; \
 	my $$f = read_file('stop.appcache', { binmode => ':raw' }); \
 	$$f =~  s/# v .+/\"# v \".localtime()/e;\
