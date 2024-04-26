@@ -9,7 +9,7 @@
   <link rel="preload" href="zoom_out.png" as="image">
   <link rel="preload" href="zoom_in.png" as="image">
   <link rel="preload" href="transparentTile.gif" as="image">
-  <meta name="viewport" content="width=device-width">
+  <meta name="mobileoptimized" content="0">
   <meta name="referrer" content="no-referrer">
   <title>The Weekender</title>
   <style>:root{color-scheme:light dark}</style>
@@ -305,7 +305,6 @@ function initializeDocumentObjects(detachedBodyEl) {
 
 /*closure globals \|/ */
 var customAlertEl;
-var pfSetTextContent;
 var alertTimer;
 var delayedMouseMoveEvt;
 
@@ -329,15 +328,16 @@ var delayedMouseMoveEvt;
   //other wise use the PF which supports !!!no el.nES UAs
   customAlertEl = (pfNextElementSibling && pfNextElementSibling(imgArr_el,1)) || imgArr_el.nextSibling;
 
+/*OBSOLETE
   //PF IE 8 and under
-  pfSetTextContent = customAlertEl.textContent === undefined
+  pfSetTextContent = typeof customAlertEl.textContent != 'string'
     && function (text) {
         while (customAlertEl.lastChild !== null) {
           customAlertEl.removeChild(customAlertEl.lastChild); //remove all existing content
         }
         customAlertEl.appendChild(document.createTextNode(text));
   };
-
+*/
   //DIV with transparentTile.gif
   imgEl = (pfNextElementSibling &&  pfNextElementSibling(imgEl)) || imgEl.previousSibling;
   imgEl.ontouchstart = imgEl.onmousedown = mapmousedown;
@@ -390,7 +390,7 @@ var delayedMouseMoveEvt;
     var w = detachedBodyEl.clientWidth;
     var s = customAlertEl.style;
     //cAE and aT globals
-    (pfSetTextContent && pfSetTextContent(text)) || (customAlertEl.textContent = text);
+    customAlertEl.firstChild.nodeValue = text;
     s.display = "inline";
 
     //vh and vh not avail on legacy UAs
@@ -615,7 +615,9 @@ if (this.onpopstate) {
       <!-- skip id="zi" for zoom in to save code bytes -->
       <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zoom_in.png">
       <!-- rmved id="customAlert", not needed anymore -->
+<!-- WARING DO NOT REMOVE THE LITTERAL UTF8 NBSP IN THIS DIV -->
       <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+ 
       </div>
     </div>
   </div>
