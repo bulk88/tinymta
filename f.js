@@ -29,9 +29,17 @@ if(!window.requestAnimationFrame) {
     window.oRequestAnimationFrame ||
     window.msRequestAnimationFrame ||
     function(callback){
-      window.setTimeout(callback, 40); //1000/30fps=33 ms
+      window.setTimeout(callback, 33); //1000/30fps=33 ms
     }
   ;
+}
+if(!window.requestIdleCallback) {
+  //do atleast 1 paint before GC/idle looping
+  window.requestIdleCallback = function(cb) {
+    requestAnimationFrame(function(){
+      requestAnimationFrame(cb);
+    });
+  };
 }
 
 /* 2 polyfills for status.htm
@@ -694,7 +702,13 @@ if(this.y) {
     oldOnLoad && oldOnLoad();
     this.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
     //char w is freq exist code vs char z which is zero hits
-    this.w && w();
+    //arg 1 is for tileMap.htm, .SEMV() is IE only FN all vers
+    //https://stackoverflow.com/questions/11689892/event-event-window-event-member-not-found-requiredfieldvalidator
+    this.w && w(window.ScriptEngineMajorVersion
+      && function(evt) {
+        //no version of IE has targetTouches, dont copy, https://caniuse.com/?search=targetTouches
+        return {pageX: evt.pageX, pageY: evt.pageY, clientX: evt.clientX, clientY: evt.clientY};
+    });
     this.x && x();
   };
 }

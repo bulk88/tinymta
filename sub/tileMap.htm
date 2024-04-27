@@ -137,7 +137,7 @@ Q12: "1500,1500",
 S1: "1500,1500"
 };
  */
-
+var pfIECopyEvt;
 var tilePath;
 var mapWidth;
 var mapHeight;
@@ -167,21 +167,7 @@ var _exports = { /*GC:0 prop GC (free unused tiles) is not mangled*/
 };
 //image tile load order
 var tileSrcSetOrderArr = [12, 7, 17, 11, 13, 6, 8, 16, 18, 0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24];
-
 var _window = window;
-var rAF =
-  _window.requestAnimationFrame ||
-  _window.mozRequestAnimationFrame ||
-  _window.webkitRequestAnimationFrame ||
-  _window.oRequestAnimationFrame ||
-  _window.msRequestAnimationFrame || function (callback) {
-    setTimeout(callback, 33)
-  };
-
-//.SEMV() is IE only FN all vers
-var pfIECopyEvt = _window.ScriptEngineMajorVersion && function(evt) {
-  return {targetTouches: evt.targetTouches, pageX: evt.pageX, pageY: evt.pageY, clientX: evt.clientX, clientY: evt.clientY};
-};
 
 //nvr changes in SPA mode
 var htmlEl = document.documentElement;
@@ -262,12 +248,9 @@ function onNewURL(body, stationLocInfo) {
 }
 
 function freeImagesTiles() {
-  (_window.requestIdleCallback || _window.requestAnimationFrame || function (callback) {
-    setTimeout(callback, 40)
-  })(function () {
-    //free this func from global space flag/CB
-    _exports.GC = 0;
-    hideImageTiles();
+  requestIdleCallback(function () {
+    //free this func from global space flag/CB, hIT rets undef
+    _exports.GC = hideImageTiles();
     for (var k = 0; k < 25; k++) {
       aElement[k].src = "";
     }
@@ -368,6 +351,7 @@ function initializeDocumentObjects(detachedBodyEl) {
       //IE 6.0 returns 8 and #comment as node name (W3C correct)
       //use !== 1 for perf as 1st check
       //but it will only be true on >= IE 6 and FF 3.0
+/*STARTDELETE*/
   pfNextElementSibling = (detachedBodyEl.firstChild.nodeName !== "SCRIPT")
     && function (el, nextFlag) {
     do {
@@ -375,6 +359,7 @@ function initializeDocumentObjects(detachedBodyEl) {
     } while (el && el.nodeName !== "DIV");
   return el;
   },
+/*ENDDELETE*/
   zm_icon_urls = ['o.png', '.png'];
 
 /*closure globals \|/ */
@@ -407,7 +392,11 @@ var delayedMouseMoveEvt;
   
   //use el.nS is MINIFIED ALL UAs or el.nS for old IE (no text nodes test above)
   //other wise use the PF which supports !!!no el.nES UAs
-  customAlertEl = (pfNextElementSibling && pfNextElementSibling(imgArr_el,1)) || imgArr_el.nextSibling;
+  customAlertEl =
+/*STARTDELETE*/
+    (pfNextElementSibling && pfNextElementSibling(imgArr_el,1)) ||
+/*ENDDELETE*/
+    imgArr_el.nextSibling;
 
 /*OBSOLETE
   //PF IE 8 and under
@@ -420,10 +409,16 @@ var delayedMouseMoveEvt;
   };
 */
   //DIV with ts.gif transparentTile.gif
-  imgEl = (pfNextElementSibling &&  pfNextElementSibling(imgEl)) || imgEl.previousSibling;
+  imgEl =
+/*STARTDELETE*/
+    (pfNextElementSibling &&  pfNextElementSibling(imgEl)) ||
+/*ENDDELETE*/
+    imgEl.previousSibling;
   imgEl.ontouchstart = imgEl.onmousedown = mapmousedown;
 
-  imgEl.ontouchcancel = imgEl.ontouchend = /*imgEl.onmouseup = */ document.onmouseup = mapmouseup;
+  //imgEl.onmouseup NOT SET b/c img.oMU doesn't fire if drag release (UP) is outside IMG El, BODY, or UA window
+  //but d.oMU DOES always fire for outside BODY/OS window drag release
+  imgEl.ontouchcancel = imgEl.ontouchend = mapmouseup;
   //DONT REUSE imgEl, its now a global
 
   //if SPA mode can't use document.getElementById("customAlert")
@@ -532,9 +527,9 @@ var delayedMouseMoveEvt;
           curCenterX.top = (yDownStart[i] + curY)/*+"px"*/;
       }
     }
-    //de-bounce all onMMs until next rAF() frame or 33 ms timer
+    //de-bounce all onMMs until next rAF() frame or PF 33 ms timer
     delayedMouseMoveEvt = 1;
-    rAF(delayedMM);
+    requestAnimationFrame(delayedMM);
   }
 
   function delayedMM(evt /*really is fltng pt tmstmp*/) {
@@ -558,7 +553,7 @@ var delayedMouseMoveEvt;
     var hideFlag;
     var i = 0;
     //this. is document obj rn
-    mapDrag = imgEl.ontouchmove = imgEl.onmousemove = null;
+    mapDrag = imgEl.ontouchmove = imgEl.onmousemove = document.onmouseup = null;
     centerPixX = arr[0];
     centerPixY = arr[1];
     for (; i < 25; i++) {
@@ -601,6 +596,7 @@ var delayedMouseMoveEvt;
     }
     hideCustomAlert();
     mapDrag = 1;
+    document.onmouseup = mapmouseup;
     startXY = getPosition(evt_i);
 
     this.ontouchmove = this.onmousemove = mapmousemove;
@@ -646,13 +642,25 @@ if (_window.onpopstate) {
 }
 //not a SPA, SPA loader doesn't exec 2nd script tag
 else {
+  function w(fn) {
+    pfIECopyEvt = fn;
+    initializeDocumentObjects(document.body);
+    //GC, unk if f.js or not, but do it
+    _window.w = onNewURL(0,location.hash);
+  }
   if (_window.onpopstate === null)
     onpopstate = function (evt) {
       evt.state !== null && location.reload()
     };
-  initializeDocumentObjects(document.body);
-  onNewURL(0,location.hash);
-}
+
+  if(!_window.requestIdleCallback) {
+    _window.w = w;
+    //IE 5.5 and 6.0 don't have document.head
+    htmlEl.firstChild.appendChild(document.createElement("script")).src = 'f.js';
+  } else {
+    w();
+  }
+} //END else ! SPA
 
 })() //END root IIFE
 </script>
