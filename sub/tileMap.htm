@@ -471,13 +471,16 @@ var delayedMouseMoveEvt;
     var h = detachedBodyEl.clientHeight;
     var w = detachedBodyEl.clientWidth;
     var s = customAlertEl.style;
-    //cAE and aT globals
+    //cAE and aT dBE r globals
+
     customAlertEl.firstChild.nodeValue = text;
-    s.display = "inline";
 
     //vh and vh not avail on legacy UAs
     s.top = ((((h>630?630:h)-(50+50+3+3+21))/2)|0);
     s.left = ((((w>630?630:w)-300)/2)|0);
+    //altho modern UA's won't paint after 1 JS DOM touch
+    //just to be sure, chg this last
+    s.display = "inline";
 
     //this fn showCustomAlert() so rare called
     //just skip if(alertTimer) {clearTimeout(alertTimer)} for code size
