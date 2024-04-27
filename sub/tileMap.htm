@@ -88,6 +88,7 @@
   </div>
 </body>
 <script>
+(function(){
 // Neighborhood Map Dimensions
 /* removed/inlined
 var mapImgDimensions = {
@@ -640,16 +641,17 @@ if (_window.onpopstate) {
   onNewURL.body = initializeDocumentObjects;
   onhashchange = onNewURL;
 }
-    //not a SPA, SPA loader doesn't exec 2nd script tag
-    //if (!_window.onpopstate) {
-    else {
-      if (_window.onpopstate === null)
-        onpopstate = function (evt) {
-          evt.state !== null && location.reload()
-        };
-      initializeDocumentObjects(document.body);
-      onNewURL(0,location.hash);
-    }
+//not a SPA, SPA loader doesn't exec 2nd script tag
+else {
+  if (_window.onpopstate === null)
+    onpopstate = function (evt) {
+      evt.state !== null && location.reload()
+    };
+  initializeDocumentObjects(document.body);
+  onNewURL(0,location.hash);
+}
+
+})() //END root IIFE
 </script>
 </html>
 <!-- baseline -->
