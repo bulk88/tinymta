@@ -20,7 +20,7 @@ try {
 } catch (e) {}
 
   localStorage.clear();//anti-leak/old code/dev code etc
-  localStorage.setItem("fav", prefix + '[' + DRAW_VER() + ',1,0,'+(dont_have_clr_emoji = (!dont_have_clr_emoji)|0)+'])');
+  localStorage.setItem("fav", prefix + '[' + DRAW_VER() + ',1,0,'+(dont_have_clr_emoji = +!dont_have_clr_emoji)+'])');
   config = [DRAW_VER(), 1, 0, dont_have_clr_emoji];
 
 if(location.pathname == '/') {

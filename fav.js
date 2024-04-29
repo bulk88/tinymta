@@ -38,7 +38,7 @@ function read_fav(finish) {
           ctx.fillText("\ud83d\udca7", -4, 4);
           dont_have_clr_emoji = ctx.getImageData(0, 0, 1, 1).data[2]; //RGBA, [2] is blue
         } catch (e) {}
-        dont_have_clr_emoji = (!dont_have_clr_emoji) | 0;
+        dont_have_clr_emoji = +!dont_have_clr_emoji;
         localStorage.setItem("fav", prefix + '[' + '99999999' + ',1,0,' + dont_have_clr_emoji + '])');
         finish([1, [99999999, 1, 0, dont_have_clr_emoji]]);
       } else {
@@ -160,12 +160,12 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   newEl_i.as = 'script';
   newEl_i.href = 'routes.js';
   delayedStaHits_head.appendChild(newEl_i);
-  // newEl_i = document.createElement('link');
-  // newEl_i.rel = 'prefetch';
-  // newEl_i.href = 'stop.htm';
-  // newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
-  // newEl_i.href = 'rstop.htm';
-  // delayedStaHits_head.appendChild(newEl_i);
+  newEl_i = document.createElement('link');
+  newEl_i.rel = 'prefetch';
+  newEl_i.href = 'stop.htm';
+  newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
+  newEl_i.href = 'rstop.htm';
+  delayedStaHits_head.appendChild(newEl_i);
 
   window.onpageshow = function (event_div){
     if (event_div.persisted && location.pathname == "/") {

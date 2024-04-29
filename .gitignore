@@ -1,3 +1,5 @@
+/opera/*
+/include/*
 /docs/*.gz
 /docs/*.gz.png
 /docs/li/*.gz
@@ -6,6 +8,7 @@
 /docs/mn/*.gz.png
 /docs/as.js*
 /docs/routes.js*
+/routes.js*
 /docs/draw_fav.js*
 as.js*
 *.bak
