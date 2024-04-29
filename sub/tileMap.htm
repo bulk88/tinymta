@@ -168,9 +168,10 @@ var _exports = { /*GC:0 prop GC (free unused tiles) is not mangled*/
 //image tile load order
 var tileSrcSetOrderArr = [12, 7, 17, 11, 13, 6, 8, 16, 18, 0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24];
 var _window = window;
+var _document = document;
 
 //nvr changes in SPA mode
-var htmlEl = document.documentElement;
+var htmlEl = _document.documentElement;
 
 //arg stationLocInfo is mandatory "#123" type str from ".hash" (undef/null not allowed)
 function onNewURL(body, stationLocInfo) {
@@ -245,17 +246,19 @@ function onNewURL(body, stationLocInfo) {
     centerPixY = yCoor_i;
     loadMap();
   }//if found staCodeEntry
+
+  function freeImagesTiles() {
+    requestIdleCallback(function () {
+      //free this func from global space flag/CB, hIT rets undef
+      _exports.GC = hideImageTiles();
+      for (var k = 0; k < 25; k++) {
+        aElement[k].src = "";
+      }
+    });
+  }
+
 }
 
-function freeImagesTiles() {
-  requestIdleCallback(function () {
-    //free this func from global space flag/CB, hIT rets undef
-    _exports.GC = hideImageTiles();
-    for (var k = 0; k < 25; k++) {
-      aElement[k].src = "";
-    }
-  });
-}
 function hideImageTiles() {
   tilesNotHidden = 0;
   for (var k = 0; k < 25; k++) {
@@ -263,12 +266,6 @@ function hideImageTiles() {
   }
 }
 
-function getCurrentCenter() {
-  //formerly 12 == document.getElementById("a22");
-  var el = aElement[12];
-  var style = aStyle[12];
-  return [(el.tX * 256) + (315 - parseInt(style.left)), (el.tY * 256) + (315 - parseInt(style.top))];
-}
 
 /* inlined
 function getRemainderPix(totalPix) {
@@ -336,10 +333,7 @@ function setImgSrc(elem, x, y) {
   ) + tilePath + (zoomLevel + 14) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
 }
 
-function showImage(/*evt*/) {
-  tilesNotHidden = 1; //this is IMG obj
-  this.style.visibility = "visible";
-}
+
 
 //in SPA mode body El is usually detached
 //on navigate its reg "attached" document.body
@@ -405,7 +399,7 @@ var delayedMouseMoveEvt;
         while (customAlertEl.lastChild !== null) {
           customAlertEl.removeChild(customAlertEl.lastChild); //remove all existing content
         }
-        customAlertEl.appendChild(document.createTextNode(text));
+        customAlertEl.appendChild(_document.createTextNode(text));
   };
 */
   //DIV with ts.gif transparentTile.gif
@@ -427,13 +421,16 @@ var delayedMouseMoveEvt;
   //use gEBI because QS not avail, note IE 9 added QS, IE 10 added pushState()
   //customAlertEl = imgArr_el.querySelector ?
   //  imgArr_el.querySelector("div#customAlert")
-  //   : document.getElementById("customAlert");
+  //   : _document.getElementById("customAlert");
 
   /* 2021 factor out
   centerPixX = defaultCenterX
   centerPixY = defaultCenterY
    */
-
+  function showImage(/*evt*/) {
+    tilesNotHidden = 1; //this is IMG obj
+    this.style.visibility = "visible";
+  }
   //fn zoom() closure scoped
   function zoom(/*evt*/) {
     hideCustomAlert();
@@ -445,8 +442,8 @@ var delayedMouseMoveEvt;
     if (this.id/* == "zo"*/) {
       if (zoomLevel == 2 /* minZoom */) {
         zoomLevel = 1;
-        centerPixX = /*newCenterX =*/ parseInt(currentCenterX / 2);
-        centerPixY = /*newCenterY =*/ parseInt(currentCenterY / 2);
+        centerPixX = /*newCenterX =*/ (currentCenterX / 2)|0;
+        centerPixY = /*newCenterY =*/ (currentCenterY / 2)|0;
       } else {
         return showCustomAlert("This is the lowest zoom level");
       }
@@ -553,7 +550,7 @@ var delayedMouseMoveEvt;
     var hideFlag;
     var i = 0;
     //this. is document obj rn
-    mapDrag = imgEl.ontouchmove = imgEl.onmousemove = document.onmouseup = null;
+    mapDrag = imgEl.ontouchmove = imgEl.onmousemove = _document.onmouseup = null;
     centerPixX = arr[0];
     centerPixY = arr[1];
     for (; i < 25; i++) {
@@ -562,7 +559,8 @@ var delayedMouseMoveEvt;
       elem = aElement[i];
       x = elem.tX;
       y = elem.tY;
-      left = parseInt(styleObj.left);
+      //https://jsben.ch/Us2Qn this faster than parseInt()
+      left = +styleObj.left.slice(0,-2);
       if (left > 630) {
         x = x - 5;
         styleObj.left = (left - 1280)/*+"px"*/;
@@ -572,7 +570,7 @@ var delayedMouseMoveEvt;
         styleObj.left = (left + 1280)/*+"px"*/;
         hideFlag = 1;
       }
-      top = parseInt(styleObj.top);
+      top = +styleObj.top.slice(0,-2);
       if (top > 630) {
         y = y - 5;
         styleObj.top = (top - 1280)/*+"px"*/;
@@ -596,15 +594,15 @@ var delayedMouseMoveEvt;
     }
     hideCustomAlert();
     mapDrag = 1;
-    document.onmouseup = mapmouseup;
+    _document.onmouseup = mapmouseup;
     startXY = getPosition(evt_i);
 
     this.ontouchmove = this.onmousemove = mapmousemove;
 
     for (evt_i = 0; evt_i < 25; evt_i++) {
       el = aStyle[evt_i];
-      xDownStart[evt_i] = parseInt(el.left);
-      yDownStart[evt_i] = parseInt(el.top);
+      xDownStart[evt_i] = +el.left.slice(0,-2);
+      yDownStart[evt_i] = +el.top.slice(0,-2);
     }
   }
   function getPosition(e/*evt*/) {
@@ -629,6 +627,12 @@ var delayedMouseMoveEvt;
       };
     }
   }
+  function getCurrentCenter() {
+    //formerly 12 == _document.getElementById("a22");
+    var el = aElement[12];
+    var style = aStyle[12];
+    return [(el.tX * 256) + (315 - +style.left.slice(0,-2)), (el.tY * 256) + (315 - +style.top.slice(0,-2))];
+  }
 
 }// END function initializeDocumentObjects()
 
@@ -647,7 +651,7 @@ if (_window.onpopstate) {
 else {
   function w(fn) {
     pfIECopyEvt = fn;
-    initializeDocumentObjects(document.body);
+    initializeDocumentObjects(_document.body);
     //GC, unk if f.js or not, but do it
     _window.w = onNewURL(0,location.hash);
   }
@@ -659,7 +663,7 @@ else {
   if(!_window.requestIdleCallback) {
     _window.w = w;
     //IE 5.5 and 6.0 don't have document.head
-    htmlEl.firstChild.appendChild(document.createElement("script")).src = 'f.js';
+    htmlEl.firstChild.appendChild(_document.createElement("script")).src = 'f.js';
   } else {
     w();
   }
