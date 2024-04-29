@@ -59,6 +59,13 @@ plan2.htm : plan.htm
 	perl adj_tilepath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c tileMap_minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
+#debug tool
+tileMap.js : ../docs/tileMap.htm
+	perl -e"use File::Slurp; \
+	my $$f = read_file('../docs/tileMap.htm', { binmode => ':raw' }); \
+	$$f =~ /<script>(.+?)<\/script>/;\
+	write_file('tileMap.js', {binmode => ':raw'}, $$1);\
+
 ../docs/bk.png : $(@F)
 	copy /y $(@F) "$@"
 
@@ -155,8 +162,10 @@ all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm
 all: ../docs/stopie50.htm ../docs/stopie50_.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/stop.appcache
+all: tileMap.js
 #all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
 #all: plan2.htm
 
 gz: ../docs/stop.htm.gz.png ../docs/stations.htm.gz.png ../docs/tileMap.htm.gz.png
 gz: ../docs/stop.htm.gz ../docs/stations.htm.gz ../docs/tileMap.htm.gz
+gz: tileMap.js

@@ -1,5 +1,6 @@
 /opera/*
 /include/*
+/sub/tileMap.js
 /docs/*.gz
 /docs/*.gz.png
 /docs/li/*.gz
