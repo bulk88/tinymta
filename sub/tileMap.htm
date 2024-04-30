@@ -154,7 +154,7 @@ var xDownStart = [];
 var yDownStart = [];
 
 //set the initial map settings
-var zoomLevel = 2;
+var zoomLevel = 1;
 /* 2021 factor out
 var defaultCenterX
 var defaultCenterY
@@ -190,17 +190,29 @@ function onNewURL(body, stationLocInfo) {
     tileDirectory = (xCoor_value % 44 /*scaledir*/) + 1;
     tileDirectory = tileDirectory < 11 ? "BX" + tileDirectory : tileDirectory < 30 ? "B" + (tileDirectory - 10) : tileDirectory == 30 ? ((isManhattan=1),"Manhattan") : tileDirectory == 43 ? "S1" : "Q" + (tileDirectory - 30);
 
-    yCoor_i = ((((xCoor_value / (44 /*scaledir*/ * 3607 /*scalex*/) % 16942 /*scaley*/)) + 19) /*shifty*/ * zoomLevel) | 0;
+    yCoor_i = (((xCoor_value / (44 /*scaledir*/ * 3607 /*scalex*/) % 16942 /*scaley*/)) + 19) /*shifty*/ << zoomLevel;
 
     //VARIABLE REUSE watch X Y order
-    xCoor_value = (((xCoor_value / 44 /*scaledir*/ % 3607 /*scalex*/) + 69) /*shiftx*/ * zoomLevel) | 0;
+    xCoor_value = ((xCoor_value / 44 /*scaledir*/ % 3607 /*scalex*/) + 69) /*shiftx*/ << zoomLevel;
 
     if (xCoor_value < 315)
       xCoor_value = 315;
     if (yCoor_i < 315)
       yCoor_i = 315;
 
-    if (zoomLevel == 1) {
+    if(zoomLevel) {
+      if (isManhattan) {
+        if (xCoor_value > 9685)
+          xCoor_value = 9685;
+        if (yCoor_i > 34501)
+          yCoor_i = 34501;
+      } else {
+        if (xCoor_value > 2685)
+          xCoor_value = 2685;
+        if (yCoor_i > 2685)
+          yCoor_i = 2685;
+      }
+    } else {
       if (isManhattan) {
         if (xCoor_value > 4685)
           xCoor_value = 4685;
@@ -213,25 +225,11 @@ function onNewURL(body, stationLocInfo) {
           yCoor_i = 1185;
       }
     }
-    //if (zoomLevel == 2) { no oth zLvls in API
-    else {
-      if (isManhattan) {
-        if (xCoor_value > 9685)
-          xCoor_value = 9685;
-        if (yCoor_i > 34501)
-          yCoor_i = 34501;
-      } else {
-        if (xCoor_value > 2685)
-          xCoor_value = 2685;
-        if (yCoor_i > 2685)
-          yCoor_i = 2685;
-      }
-    }
     // prev var mapArgs = mapImgDimensions[tileDirectory].split(",")
     mapWidth = isManhattan ? 5000 : 1500;
     mapHeight = isManhattan ? 17408 : 1500;
-    maxX = (mapWidth * zoomLevel) - 315;
-    maxY = (mapHeight * zoomLevel) - 315;
+    maxX = (mapWidth << zoomLevel) - 315;
+    maxY = (mapHeight << zoomLevel) - 315;
     //function setTilePath(d)
     //{
     //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
@@ -330,7 +328,7 @@ function setImgSrc(elem, x, y) {
 /*STARTINSERTPATH*/
     "../docs/"
 /*ENDINSERTPATH*/
-  ) + tilePath + (zoomLevel + 14) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
+  ) + tilePath + zoomLevel + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
 }
 
 
@@ -440,16 +438,16 @@ var delayedMouseMoveEvt;
 
     //zoom out=zo, zoom in IMG el has no id attr (byte savings)
     if (this.id/* == "zo"*/) {
-      if (zoomLevel == 2 /* minZoom */) {
-        zoomLevel = 1;
+      if (zoomLevel) {
+        zoomLevel = 0;
         centerPixX = /*newCenterX =*/ (currentCenterX / 2)|0;
         centerPixY = /*newCenterY =*/ (currentCenterY / 2)|0;
       } else {
         return showCustomAlert("This is the lowest zoom level");
       }
     } else { //zoom in
-      if (zoomLevel == 1 /* maxZoom */) {
-        zoomLevel = 2;
+      if (!zoomLevel) {
+        zoomLevel = 1;
         centerPixX = /*newCenterX =*/ currentCenterX * 2;
         centerPixY = /*newCenterY =*/ currentCenterY * 2;
       } else {
