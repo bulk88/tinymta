@@ -72,6 +72,10 @@ if (exists $routes->{SI}) {
     $routes->{SIR} = {route_color => "0078c6"};
   }
 }
+#42nd GS internally is GS, but is "S" in alert message bodies
+if(!exists $routes->{S}) {
+  $routes->{S} = {route_color => "6d6e71"};
+}
 
 foreach(keys %$routes) {
     my $route = $_;

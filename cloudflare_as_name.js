@@ -16,13 +16,13 @@ var s={"0AR":"Ardsley-on-Hudson","0BC":"Beacon","0BK":"Breakneck Ridge","0CS":"C
 /*ENDINSERT*/
 
 /*STARTSUBCOLOR*/
-var colorStrsSUB = ["ff6319","00933c","fccc0a","6d6e71","ee352e","286ded","0078c6","b933ad","996633"];
-var colorRoutesSUB = {/*"B":0,*//*"F":0,*//*"M":0,*//*"FX":0,*//*"D":0,*/"6X":1,"5X":1,"6":1,"5":1,"4":1,"W":2,"N":2,"R":2,"Q":2,"FS":3,"H":3,"GS":3,"3":4,"1":4,"2":4,"A":5,"E":5,"C":5,"SI":6,"SIR":6,"7":7,"7X":7,"Z":8,"J":8,"G":"6cbe45","L":"a7a9ac"};
+var colorStrsSUB = ["ff6319","00933c","fccc0a","6d6e71","ee352e","286ded","996633","0078c6","b933ad"];
+var colorRoutesSUB = {/*"D":0,*//*"B":0,*//*"M":0,*//*"FX":0,*//*"F":0,*/"5":1,"4":1,"5X":1,"6X":1,"6":1,"N":2,"W":2,"R":2,"Q":2,"S":3,"FS":3,"H":3,"GS":3,"3":4,"2":4,"1":4,"A":5,"E":5,"C":5,"Z":6,"J":6,"SIR":7,"SI":7,"7X":8,"7":8,"G":"6cbe45","L":"a7a9ac"};
 /*ENDSUBCOLOR*/
 
 /*STARTRAILCOLOR*/
 var colorStrsRAIL = ["ee0034","4d5357","006ec7"];
-var colorRoutesRAIL = {/*"NC":0,*//*"DN":0,*//*"WB":0,*//*"NH":0,*/"12":1,"CI":1,"HH":2,"PJ":2,"BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","HA":"066afe","11":"60269e","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
+var colorRoutesRAIL = {/*"WB":0,*//*"DN":0,*//*"NC":0,*//*"NH":0,*/"CI":1,"12":1,"PJ":2,"HH":2,"BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","HA":"066afe","11":"60269e","S":"6d6e71","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
 /*ENDRAILCOLOR*/
 
 /*
