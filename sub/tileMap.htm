@@ -339,26 +339,30 @@ var tsGifDivEl =
   detachedBodyEl.onmousedown = hideCustomAlert;
 
   tsGifDivEl.ontouchstart = tsGifDivEl.onmousedown = mapmousedown;
-  //imgEl.onmouseup NOT SET b/c img.oMU doesn't fire if drag release (UP) is outside IMG El, BODY, or UA window
-  //but d.oMU DOES always fire for outside BODY/OS window drag release
+  //tsGifDivEl.onmouseup NOT SET b/c tsGifDivEl.oMU doesn't fire if drag release (UP)
+  //is outside IMG El, BODY, or UA window
+  //but d.oMU (set elsewhere) DOES always fire for outside BODY/OS window drag release
   tsGifDivEl.ontouchcancel = tsGifDivEl.ontouchend = mapmouseup;
 
-  imgZoomOut =
+;
+
+;
+
+  //zoom icon evt handlers
+  (imgZoomOut =
 /*STARTDELETE*/
     (pfNextElementSibling &&  pfNextElementSibling(tsGifDivEl)) ||
 /*ENDDELETE*/
-    tsGifDivEl.nextSibling;
-
+    tsGifDivEl.nextSibling
+  ).onmouseover =
+  imgZoomOut.onmouseout =
+  (
   imgZoomIn =
 /*STARTDELETE*/
     (pfNextElementSibling &&  pfNextElementSibling(imgZoomOut)) ||
 /*ENDDELETE*/
-    imgZoomOut.nextSibling;
-
-  //zoom icon evt handlers
-  imgZoomOut.onmouseover =
-  imgZoomOut.onmouseout =
-  imgZoomIn.onmouseover =
+    imgZoomOut.nextSibling
+  ).onmouseover =
   imgZoomIn.onmouseout =
     function (evt) {
       evt = evt || event; //old IE
@@ -437,20 +441,20 @@ DDDDDDDDDDDDD
     loadMap();
   } //end fn zoom()
 
-  function showCustomAlert(text) {
+  function showCustomAlert(text_s) {
     var h = detachedBodyEl.clientHeight;
     var w = detachedBodyEl.clientWidth;
-    var s = customAlertEl.style;
-    //cAE and aT dBE r globals
+    //cAE and aT, dBE r globals
 
-    customAlertEl.firstChild.nodeValue = text;
+    customAlertEl.firstChild.nodeValue = text_s;
 
+    text_s = customAlertEl.style;
     //vh and vh not avail on legacy UAs
-    s.top = ((((h>630?630:h)-(50+50+3+3+21))/2)|0);
-    s.left = ((((w>630?630:w)-300)/2)|0);
+    text_s.top = ((((h>630?630:h)-(50+50+3+3+21))/2)|0);
+    text_s.left = ((((w>630?630:w)-300)/2)|0);
     //altho modern UA's won't paint after 1 JS DOM touch
     //just to be sure, chg this last
-    s.display = "inline";
+    text_s.display = "inline";
 
     //this fn showCustomAlert() so rare called
     //just skip if(alertTimer) {clearTimeout(alertTimer)} for code size
@@ -647,7 +651,7 @@ else {
     _document.addEventListener("DOMContentLoaded", DCL, 0);
   } else {
     _document.onreadystatechange = function (/*evt*/) {
-      if (document.readyState === "interactive") {
+      if (_document.readyState === "interactive") {
         initializeDocumentObjects(_document.body);
         //GC
         _document.onreadystatechange = null;
