@@ -12,31 +12,6 @@
   <meta name="mobileoptimized" content="0">
   <meta name="referrer" content="no-referrer">
   <title>The Weekender</title>
-  <style>:root{color-scheme:light dark}
-    .tl {
-      visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;
-    }
-  </style>
-</head>
-<body style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
-<!-- keep this comment for IE aka pfNextElementSibling -->
-
-  <!-- id="mapApplication" -->
-  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-    <!-- id="mapContainer"  -->
-    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(bk.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
-      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(ts.gif);"></div>
-      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zo.png" id="zo"></img>
-      <!-- skip id="zi" for zoom in to save code bytes -->
-      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zi.png"></img>
-      <!-- rmved id="customAlert", not needed anymore -->
-<!-- WARING DO NOT REMOVE THE LITTERAL UTF8 NBSP IN THIS DIV -->
-      <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
- 
-      </div>
-    </div>
-  </div>
-</body>
 <script>
 (function(){
 // Neighborhood Map Dimensions
@@ -268,15 +243,6 @@ function loadMap() {
     setImgSrc((aElement[k_adj] || initImgElFn_div(k_adj)), nameX_topShift[k_adj % 5], nameY_leftShift[(k_adj / 5) | 0]);
   }
 
-  //defer .style getter() b/c on FF .style is slow, and on all UAs
-  //.style get or 1st ".style.cssFoo =" set, DOM is changed(style attr reflection)
-  if (initImgElFn_div) {
-    initImgElFn_div = _document.createElement("div");
-    for (k = 0; k < 25; k++) {
-      aStyle[k] = initImgElFn_div.appendChild(aElement[k]).style;
-    }
-  }
-
   nameX_topShift = 128 - /*getRemainderPix*/(centerPixY % 256);
   nameY_leftShift = 128 - /*getRemainderPix*/(centerPixX % 256);
   //on navigate IMG.style.top/.left undef, on redraw has old values that are tossed
@@ -303,21 +269,26 @@ function setImgSrc(elem, x, y) {
 
 function showImage(/*evt*/) {
   tilesNotHidden = 1; //this is IMG obj
-  this.style.visibility = "visible";
+  //aStyle might be deferred/fake style obj
+  aStyle[this.tIdx].visibility = "visible";
 }
 
-function initImgElFn_div(i) {
-  i = aElement[i] = imgTileTemplateEl.cloneNode(0);
+function initImgElFn_div(i,el) {
+  aStyle[i] = {};
+  el = aElement[i] = imgTileTemplateEl.cloneNode(0);
+  el.tIdx = i;
   //evts don't survive cloneNode()
-  i.onload = showImage;
-  return i;
+  el.onload = showImage;
+  return el;
 }
 
 //in SPA mode body El is usually detached
 //on navigate its reg "attached" document.body
-function initializeDocumentObjects(detachedBodyEl) {
+ function initializeDocumentObjects (detachedBodyEl) {
   var imgZoomOut,
   imgZoomIn,
+  k,
+  str,
   //IE 5.0 and 5.5 return type 1 for comments and ! as node name
   //IE 6.0 returns 8 and #comment as node name (W3C correct)
   //use !== 1 for perf as 1st check
@@ -388,7 +359,22 @@ var tsGifDivEl =
     (pfNextElementSibling && pfNextElementSibling(imgZoomIn)) ||
 /*ENDDELETE*/
     imgZoomIn.nextSibling;
-
+  //defer .style getter() b/c on FF .style is slow, and on all UAs
+  //.style get or 1st ".style.cssFoo =" set, DOM is changed(style attr reflection)
+  if (initImgElFn_div) {
+    initImgElFn_div = _document.createElement("div");
+    for (k = 0; k < 25; k++) {
+      imgZoomOut = aStyle[k];
+      imgZoomIn = aStyle[k] = initImgElFn_div.appendChild(aElement[k]).style;
+      imgZoomIn.top = imgZoomOut.top;
+      imgZoomIn.left = imgZoomOut.left;
+      //sometimes hit, esp if JPEGs r UA cached, but usually not
+      if(str = imgZoomOut.visibility) {
+        imgZoomIn.visibility = str;
+        showCustomAlert("fk vis");
+      }
+    }
+  }
   tsGifDivEl.parentNode.insertBefore(initImgElFn_div, tsGifDivEl);
   initImgElFn_div = 0; //GC this global one time func, its always visible from loadMap();
 
@@ -624,25 +610,43 @@ if (_window.onpopstate) {
 }
 //not a SPA, SPA loader doesn't exec 2nd script tag
 else {
-  function w(fn) {
-    pfIECopyEvt = fn;
-    //run onNewURL() first to start <IMG> I/O ASAP
-    //GC gbl .w, unk if f.js or not, but do it
-    _window.w = onNewURL(0,location.hash);
+
+
+  //run onNewURL() first to start <IMG> I/O ASAP
+  onNewURL(0,location.hash);
+
+  //use DCL/oRSC CBs to avoid a 2nd SCRIPT tag that needs to be parsed
+  //and also let UA "finialize" DOM tree parsing before calling the CB
+  function DCL (/*evt*/) {
     initializeDocumentObjects(_document.body);
+    //GC
+    _document.removeEventListener("DOMContentLoaded",DCL);
   }
+  if (_document.addEventListener) {
+    _document.addEventListener("DOMContentLoaded", DCL, 0);
+  } else {
+    _document.onreadystatechange = function (/*evt*/) {
+      if (document.readyState === "interactive") {
+        initializeDocumentObjects(_document.body);
+        //GC
+        _document.onreadystatechange = null;
+      }
+    };
+  }
+
   if (_window.onpopstate === null)
     onpopstate = function (evt) {
       evt.state !== null && location.reload()
     };
-
   //TODO for 2024 SF reasons, if no SPA code, rmv f.js load overhead
   if(!_window.requestIdleCallback) {
-    _window.w = w;
+    _window.w = function (fn) {
+      pfIECopyEvt = fn;
+      //GC gbl .w
+      _window.w = 0;
+    };
     //IE 5.5 and 6.0 don't have document.head
     htmlEl.firstChild.appendChild(_document.createElement("script")).src = 'f.js';
-  } else {
-    w();
   }
 } //END else ! SPA
 
@@ -668,7 +672,33 @@ else {
   //   : _document.getElementById("customAlert");
 */
 </script>
+  <style>:root{color-scheme:light dark}
+    .tl {
+      visibility:hidden;z-index:0; position:absolute; width:256px; height:256px; -moz-user-select: none; -webkit-user-select: none;
+    }
+  </style>
+</head>
+<body style="width:630px; height:630px; margin:0px; padding:0px; overflow:hidden;">
+<!-- keep this comment for IE aka pfNextElementSibling -->
+
+  <!-- id="mapApplication" -->
+  <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+    <!-- id="mapContainer"  -->
+    <div style="position:absolute; top:0px; left:0px; width:630px; height:630px; overflow:hidden; cursor:move; background-image:url(bk.png); -moz-user-select: none; -webkit-user-select: none;" unselectable="on">
+      <div style="display:inline; position:absolute; top:0px; left:0px; width:630px; height:630px; -moz-user-select: none; -webkit-user-select: none; background-image:url(ts.gif);"></div>
+      <img style="cursor:pointer; position:relative; top:2%; left:2%; height:30px; width:26px;" border="0" src="zo.png" id="zo"></img>
+      <!-- skip id="zi" for zoom in to save code bytes -->
+      <img style="cursor:pointer; position:relative; top:2%; left:4%; height:30px; width:26px;" border="0" src="zi.png"></img>
+      <!-- rmved id="customAlert", not needed anymore -->
+<!-- WARING DO NOT REMOVE THE LITTERAL UTF8 NBSP IN THIS DIV -->
+      <div style="display:none; position:absolute; width:300px; background-color:black; color:white; font-family:arial; font-family:arial; font-weight:bold; font-size:18px; border:solid silver 3px; text-align:center; padding-top:50px; padding-bottom:50px;">
+ 
+      </div>
+    </div>
+  </div>
+</body>
 </html>
+
 <!-- baseline -->
 <!-- ./docs/tileMap.htm     uc  9256 gz 4716 -->
 <!-- all JS rmved minified html only -->
