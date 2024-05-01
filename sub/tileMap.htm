@@ -86,6 +86,8 @@ var defaultCenterY
 
 var aStyle = new Array();
 var aElement = new Array();
+var aPreload;
+var isInImgPreload;
 /*orig dev tile debug code that I removed (check git history) was pattern of
 css = border-style: dotted;border-color: Fuchsia
 */
@@ -175,11 +177,9 @@ function onNewURL(body, stationLocInfo) {
 
     //}
 
-    centerPixX = xCoor_value;
-    centerPixY = yCoor_i;
     //0.01ms
     //console.log("a "+(performance.now()-st));
-    loadMap();
+    loadMap(centerPixX = xCoor_value, centerPixY = yCoor_i);
   }//if found staCodeEntry
 
   function freeImagesTiles() {
@@ -215,19 +215,19 @@ function getNumberOfTiles(totalPix) {
   return tilesCount;
 }
 
-function loadMap() {
+function loadMap(newCenterX, newCenterY) {
   //var st = performance.now();
   //virgin no SPA page load, or SPA GC jps, the tiles are already hidden
   //so skip the loop
-  if (tilesNotHidden)
+  if (tilesNotHidden && !isInImgPreload)
     hideImageTiles();
 
   //function getCenterTile(pY,pX)
   //{
   // old name numberOfRow
-  var nameX_topShift = getNumberOfTiles(centerPixX);
+  var nameX_topShift = getNumberOfTiles(newCenterX);
   //old name numberOfColumns
-  var nameY_leftShift = getNumberOfTiles(centerPixY);
+  var nameY_leftShift = getNumberOfTiles(newCenterY);
   //}
   //resetTileCells(128 - getRemainderPix(centerPixY), 128 - getRemainderPix(centerPixX));
   //}
@@ -245,8 +245,10 @@ function loadMap() {
   //prefer loading center tiles over outer or hidden tiles, domain sharding is other idea
   for (k = 0; k < 25; k++) {
     k_adj = tileSrcSetOrderArr[k];
-    setImgSrc((aElement[k_adj] || initImgElFn_div(k_adj)), nameX_topShift[k_adj % 5], nameY_leftShift[(k_adj / 5) | 0]);
+    setImgSrc(((isInImgPreload ? aPreload : aElement)[k_adj] || initImgElFn_div(k_adj)), nameX_topShift[k_adj % 5], nameY_leftShift[(k_adj / 5) | 0]);
   }
+  if(isInImgPreload)
+    return;
   //performance.now() this loop takes 11 ms on C122, nothing can really be done
   //console.log("c "+(performance.now()-st));
   //st = performance.now();
@@ -270,11 +272,11 @@ function loadMap() {
 function setImgSrc(elem, x, y) {
   //var st = performance.now();
   var shard = (x + y) % 3;
-  elem.src = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
+  elem[isInImgPreload ? "href" : "src"] = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
 /*STARTINSERTPATH*/
     "../docs/"
 /*ENDINSERTPATH*/
-  ) + tilePath + zoomLevel + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
+  ) + tilePath + (isInImgPreload ? +!zoomLevel : zoomLevel) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
   //0.35 ms
   //console.log("ssrc "+(performance.now()-st));
 }
@@ -344,10 +346,6 @@ var tsGifDivEl =
   //but d.oMU (set elsewhere) DOES always fire for outside BODY/OS window drag release
   tsGifDivEl.ontouchcancel = tsGifDivEl.ontouchend = mapmouseup;
 
-;
-
-;
-
   //zoom icon evt handlers
   (imgZoomOut =
 /*STARTDELETE*/
@@ -371,7 +369,7 @@ var tsGifDivEl =
     }
   ;
 
-  imgZoomIn.onclick = imgZoomOut.onclick = zoom;
+  imgZoomIn.onmousedown = imgZoomOut.onmousedown = imgZoomIn.ontouchstart = imgZoomOut.ontouchstart = imgZoomIn.onclick = imgZoomOut.onclick = zoom;
 
   customAlertEl =
 /*STARTDELETE*/
@@ -414,31 +412,58 @@ DDDDDDDDDDDDD
    */
 
   //fn zoom() closure scoped
-  function zoom(/*evt*/) {
+  function zoom(evt_k) {
+
     hideCustomAlert();
     var currentCenter = getCurrentCenter();
-    var currentCenterX = currentCenter[0];
-    var currentCenterY = currentCenter[1];
+    var newCenterX = currentCenter[0];
+    var newCenterY = currentCenter[1];
+    var div;
 
     //zoom out=zo, zoom in IMG el has no id attr (byte savings)
     if (this.id/* == "zo"*/) {
       if (zoomLevel) {
-        zoomLevel = 0;
-        centerPixX = /*newCenterX =*/ (currentCenterX / 2)|0;
-        centerPixY = /*newCenterY =*/ (currentCenterY / 2)|0;
+        newCenterX = (newCenterX / 2)|0;
+        newCenterY = (newCenterY / 2)|0;
       } else {
         return showCustomAlert("This is the lowest zoom level");
       }
     } else { //zoom in
       if (!zoomLevel) {
-        zoomLevel = 1;
-        centerPixX = /*newCenterX =*/ currentCenterX * 2;
-        centerPixY = /*newCenterY =*/ currentCenterY * 2;
+        newCenterX = newCenterX * 2;
+        newCenterY = newCenterY * 2;
       } else {
         return showCustomAlert("This is the highest zoom level");
       }
     }
-    loadMap();
+    //var event is old IE
+    if(isInImgPreload = ((evt_k || event).type != 'click')) {
+      if(!aPreload) {
+        aPreload = [];
+        div = _document.createElement('div');
+        currentCenter = _document.createElement('link');
+        currentCenter.rel = 'preload';
+        currentCenter.as = 'image';
+        for(evt_k = 0; evt_k < 25; evt_k++) {
+          div.appendChild(aPreload[evt_k] = currentCenter.cloneNode(0));
+        }
+      }
+    } else {
+      centerPixX = newCenterX;
+      centerPixY = newCenterY;
+      zoomLevel = +!zoomLevel;
+    }
+
+    loadMap(newCenterX, newCenterY);
+
+    if(isInImgPreload) {
+      isInImgPreload = 0;
+      if(div) {
+        //must append late to silence "<link rel=preload> has an invalid `href` value"
+        //href is empty str
+        htmlEl.firstChild.appendChild(div);
+      }
+    }
   } //end fn zoom()
 
   function showCustomAlert(text_s) {
