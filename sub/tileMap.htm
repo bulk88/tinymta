@@ -109,7 +109,7 @@ var htmlEl = _document.documentElement;
 
 //arg stationLocInfo is mandatory "#123" type str from ".hash" (undef/null not allowed)
 function onNewURL(body, stationLocInfo) {
-  var st = performance.now();
+  //var st = performance.now();
   var isManhattan;
   var yCoor_i = 0;
   var xCoor_value = 0;
@@ -178,7 +178,7 @@ function onNewURL(body, stationLocInfo) {
     centerPixX = xCoor_value;
     centerPixY = yCoor_i;
     //0.01ms
-    console.log("a "+(performance.now()-st));
+    //console.log("a "+(performance.now()-st));
     loadMap();
   }//if found staCodeEntry
 
@@ -216,7 +216,7 @@ function getNumberOfTiles(totalPix) {
 }
 
 function loadMap() {
-  var st = performance.now();
+  //var st = performance.now();
   //virgin no SPA page load, or SPA GC jps, the tiles are already hidden
   //so skip the loop
   if (tilesNotHidden)
@@ -240,16 +240,16 @@ function loadMap() {
   nameX_topShift = [nameX_topShift - 2, nameX_topShift - 1, nameX_topShift, nameX_topShift + 1, nameX_topShift + 2];
   nameY_leftShift = [nameY_leftShift - 2, nameY_leftShift - 1, nameY_leftShift, nameY_leftShift + 1, nameY_leftShift + 2];
   //0.03 ms
-  console.log("b "+(performance.now()-st));
-  st = performance.now();
+  //console.log("b "+(performance.now()-st));
+  //st = performance.now();
   //prefer loading center tiles over outer or hidden tiles, domain sharding is other idea
   for (k = 0; k < 25; k++) {
     k_adj = tileSrcSetOrderArr[k];
     setImgSrc((aElement[k_adj] || initImgElFn_div(k_adj)), nameX_topShift[k_adj % 5], nameY_leftShift[(k_adj / 5) | 0]);
   }
   //performance.now() this loop takes 11 ms on C122, nothing can really be done
-  console.log("c "+(performance.now()-st));
-  st = performance.now();
+  //console.log("c "+(performance.now()-st));
+  //st = performance.now();
   nameX_topShift = 128 - /*getRemainderPix*/(centerPixY % 256);
   nameY_leftShift = 128 - /*getRemainderPix*/(centerPixX % 256);
   //on navigate IMG.style.top/.left undef, on redraw has old values that are tossed
@@ -264,11 +264,11 @@ function loadMap() {
   aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = ((699)+nameY_leftShift)/*+"px"*/;
   aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = ((699)+nameX_topShift)/*+"px"*/;
   //0.03 ms
-  console.log("d "+(performance.now()-st));
+  //console.log("d "+(performance.now()-st));
 }
 
 function setImgSrc(elem, x, y) {
-  var st = performance.now();
+  //var st = performance.now();
   var shard = (x + y) % 3;
   elem.src = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
 /*STARTINSERTPATH*/
@@ -276,7 +276,7 @@ function setImgSrc(elem, x, y) {
 /*ENDINSERTPATH*/
   ) + tilePath + zoomLevel + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
   //0.35 ms
-  console.log("ssrc "+(performance.now()-st));
+  //console.log("ssrc "+(performance.now()-st));
 }
 
 function showImage(/*evt*/) {
@@ -286,20 +286,20 @@ function showImage(/*evt*/) {
 }
 
 function initImgElFn_div(i,el) {
-  var st = performance.now();
+  //var st = performance.now();
   aStyle[i] = {};
   el = aElement[i] = imgTileTemplateEl.cloneNode(0);
   el.tIdx = i;
   //evts don't survive cloneNode()
   el.onload = showImage;
-  console.log("e "+(performance.now()-st));
+  //console.log("e "+(performance.now()-st));
   return el;
 }
 
 //in SPA mode body El is usually detached
 //on navigate its reg "attached" document.body
  function initializeDocumentObjects (detachedBodyEl) {
-  var st = performance.now();
+  //var st = performance.now();
   var imgZoomOut,
   imgZoomIn,
   k,
@@ -375,10 +375,10 @@ var tsGifDivEl =
 /*ENDDELETE*/
     imgZoomIn.nextSibling;
   //0.09ms
-  console.log("ff "+(performance.now()-st));
+  //console.log("ff "+(performance.now()-st));
   //defer/batch .style getter() b/c on FF .style is slow, and on all UAs
   //.style get or 1st ".style.cssFoo =" set, DOM is changed(style attr reflection)
-  st = performance.now();
+  //st = performance.now();
     //cE div+loop 0.45 ms
   initImgElFn_div = _document.createElement("div");
   for (k = 0; k < 25; k++) {
@@ -392,13 +392,13 @@ var tsGifDivEl =
     }
   }
   //0.45ms
-  console.log("f "+(performance.now()-st));
+  //console.log("f "+(performance.now()-st));
 
-  st = performance.now();
+  //st = performance.now();
   tsGifDivEl.parentNode.insertBefore(initImgElFn_div, tsGifDivEl);
   initImgElFn_div = 0; //GC this global one time func, its always visible from loadMap();
   //0.25 ms p.now() for insertBefore()
-  console.log("g "+(performance.now()-st));
+  //console.log("g "+(performance.now()-st));
 /*
 EEEEEEEEEEEEE
 NNNNNNNNNNNNN
