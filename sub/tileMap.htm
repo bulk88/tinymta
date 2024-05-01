@@ -8,9 +8,8 @@
   <link rel="preload" href="bk.png" as="image">
   <link rel="preload" href="zo.png" as="image">
   <link rel="preload" href="zi.png" as="image">
-  <link rel="preload" href="ts.gif" as="image">
+  <!-- ts.gif not preloaded b/c it stalls HTTP 1/2 connection vs a visible img -->
   <meta name="mobileoptimized" content="0">
-  <meta name="referrer" content="no-referrer">
   <title>The Weekender</title>
 <script>
 (function(){
@@ -368,10 +367,9 @@ var tsGifDivEl =
       imgZoomIn = aStyle[k] = initImgElFn_div.appendChild(aElement[k]).style;
       imgZoomIn.top = imgZoomOut.top;
       imgZoomIn.left = imgZoomOut.left;
-      //sometimes hit, esp if JPEGs r UA cached, but usually not
+      //hit almost always if JPEGs tiles r UA cached
       if(str = imgZoomOut.visibility) {
         imgZoomIn.visibility = str;
-        showCustomAlert("fk vis");
       }
     }
   }
