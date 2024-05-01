@@ -1,14 +1,15 @@
 (function() {
-  var ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  var _onpagehide, _onpageshow, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
   ver = ver ? parseInt(ver[2], 10) : false;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
   if ((ver > 70 && ver < 84) || ver > 86) {
-    onpageshow = function(cord_event) {
+    _onpageshow = function(cord_event) {
       if (!cord_event.persisted) {
         if (cord_event = sessionStorage.getItem('1p'+location.pathname)) {
           cord_event = JSON.parse(cord_event);
           if (cord_event.hasOwnProperty('scrollX') && cord_event.hasOwnProperty('scrollX')) {
+            console.log('g 1p');
             requestAnimationFrame(function() {
               scroll(cord_event.scrollX, cord_event.scrollY);
             });
@@ -17,17 +18,30 @@
       }
     };
 
-    onpagehide = function(event) {
+    _onpagehide = function(event) {
       if (!event.persisted) {
+        //debugger
+        console.log('s 1p');
         sessionStorage.setItem('1p'+location.pathname, JSON.stringify({
           scrollY: scrollY,
           scrollX: scrollX
         }));
       }
     };
+  } else {
+    _onpagehide = 0;
+  }
+  //SPA preloader CB
+  if (ver = this.onpagehide) {
+    ver(_onpagehide);
+  } else if (_onpagehide) { //is buggy scroll restore chrome
+    onpagehide = _onpagehide;
+    onpageshow = _onpageshow;
   }
 
-if(this.addEventListener) {
+
+//DISABLED
+if(/*this.addEventListener*/0) {
   //skip f=1 and this.f test, no y() on 1p htms
   if (!this.fetch) {
     //IE 5.5 and 6.0 don't have document.head
@@ -85,8 +99,22 @@ if(this.addEventListener) {
       }
     }
   }
-  addEventListener('touchstart', preload, {passive: true});
-  addEventListener('mousedown', preload, {passive: true});
+  //addEventListener('touchstart', preload, {passive: true});
+  //addEventListener('mousedown', preload, {passive: true});
+}
+
+if(!onpopstate) {(function (){
+  var curPathname = location.pathname;
+  var curHash = location.hash;
+  onpopstate = function () {
+    if(curPathname == location.pathname && curHash != location.hash) {
+      sessionStorage.removeItem('1p'+location.pathname);
+      return;
+    } else {
+      location.reload();
+    };
+  };
+})();
 }
 
 //.SEMV() is IE only FN all vers

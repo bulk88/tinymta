@@ -8,14 +8,13 @@
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect" crossorigin>
 <link href="//collector-otp-prod.camsys-apps.com" rel="dns-prefetch">
 <script async src=routes.js></script>
+<script>var R/*allRoutes*/;</script>
 <style>:root{color-scheme:light dark}</style>
 </head>
 <body>No javascript</body>
-<script type="text/javascript">
+<script>
 /*y = getStop*/
 mangleIndex={name:"mangleIndex"};
-y.name = 'y';
-fastRefresh.name = 'fastRefresh';
 
 /*STARTSUBCOLOR*/
 var colorStrsSUB = ["00933c","ff6319","fccc0a","6d6e71","ee352e","286ded","0078c6","996633","b933ad"];
@@ -48,31 +47,39 @@ var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alert
 */
 /* generate body top string once, its later used for fast refresh */
 /* var t is "top" as in top of body (header), func y() real name is getStop */
-var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href=javascript:fastRefresh()>Fast</a> <a href=\"javascript:location.replace(\''
+/* put y() first b/c 3rd party AJAX APIs (MTA alerts API) are usually
+   slower/larger/latency/often not preconnected vs our
+   very tiny in gz bytes, same origin, /routes.js */
+var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:y();document.documentElement.firstChild.appendChild(document.createElement(\'script\')).src =\'routes.js\';0">Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/status\.htm$/.test(location.pathname) ? "status_.htm" : "status.htm")
 /*ENDINSERTPATH*/
           +'\')">Slow</a>] <a href='+url_alerts+'>Raw</a><br>';
 var scriptElem;
-var R;
 
+function onNewURL(){
 /* reqs
 fetch C42, S10.1, FF 39,Op 29
 array.find C45, S7.1, FF25, OP 32
 object.values C50, S10.1, FF 47, OP 41
 */
-
+this.y = y;
 if (Object.values) {
+
   y/*getStop*/();
 } else {
 //IE 5.5 and 6.0 don't have document.head
   document.documentElement.firstChild.appendChild(document.createElement("script")).src = 'f.js';
 }
+}//end onNewURL
+
+onhashchange = onNewURL;
+(location.pathname == '/status.htm' ||  location.pathname == '/status_.htm') && onNewURL();
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
-function y(/*unused args in PF mode, empty reg*/) {
-  fetch(url_alerts).then(function (r) {
+function y(ls /*unused args in PF mode, empty reg*/) {
+  function fCB(r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
      :
@@ -85,22 +92,18 @@ function y(/*unused args in PF mode, empty reg*/) {
       else
         R = drawHTML;
     });
-  });
-  document.body.innerHTML = t; /*t=top*/
-}
-
-function fastRefresh() {
-  //refresh routes.js
-  var el = document.documentElement.firstChild.lastChild, src_newEl;
-  for(;el;el = el.previousSibling) {
-    src_newEl = el.src;
-    if(src_newEl && src_newEl.lastIndexOf("routes.js") === src_newEl.length-9) {
-      (src_newEl = document.createElement('script')).src = "routes.js";
-      el.parentNode.replaceChild(src_newEl, el);
-      break;
-    }
   }
-  y();
+  if (ls = window.S) {
+    window.S = 0;
+    if(ls.s === location.hash.slice(1)
+    //&& Date.now()-ls.t < 3000
+    ) {
+      ls.f(fCB);
+    }
+  } else {
+    fetch(url_alerts).then(fCB);
+  }
+  document.body.innerHTML = t; /*t=top*/
 }
 
 //typ a .replace() CB, but manual call sometimes
@@ -237,7 +240,6 @@ function noPTag(str) {
   : '';
 }
 
-var R/*allRoutes*/;
 var alertsResp;
 
 function drawHTML() {

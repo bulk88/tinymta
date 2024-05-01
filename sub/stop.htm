@@ -11,7 +11,7 @@
 <style>:root{color-scheme:light dark}</style>
 </head>
 <body>No javascript</body>
-<script type="text/javascript">
+<script>
 mangleIndex={name:"mangleIndex"};
 
 /*STARTSUBCOLOR*/
@@ -20,10 +20,17 @@ var colorRoutesSUB = {/*"F":0,*//*"D":0,*//*"B":0,*//*"M":0,*//*"FX":0,*/"6X":1,
 /*ENDSUBCOLOR*/
 
 var url;
+/* var t is "top" as in top of body (header) */
+var t;
 var curTime;
 
-/* var t is "top" as in top of body (header) */
-var t = location.hash;
+if(!onpopstate) {
+  onpopstate = function () {location.reload()};
+}
+
+function onNewURL(){
+
+t = location.hash;
 /* on Chrome, refresh does a 200 or 304 on stop.htm on GH Pages plus MTA call
    even though if I do a "back" then navigate back to stop.htm, no TCPIP traffic
    related to stop.htm because stop.htm is fetched from browser cache, sadly there
@@ -61,6 +68,7 @@ http://otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?stops=MTASBWY%3AF
 
 if (url) {
   if (this.fetch) {
+    this.y = y;
     y/*getStop*/();
   } else {
     //IE 5.5 and 6.0 don't have document.head
@@ -69,6 +77,9 @@ if (url) {
 }
 else
     document.body.innerHTML = 'No station specified in url anchor.';
+}//end onNewURL
+onhashchange = onNewURL;
+location.pathname == '/stop.htm' && onNewURL();
 
 //text includes [] chars usually, if route blank, text is route
 function mkSubFontTag(text, route) {
@@ -117,10 +128,10 @@ function minsAway(t) {
 }*/
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
-function y() {
+function y(ls) {
   document.body.innerHTML = t; /*t=top*/
-  fetch(url).then(
-    function (r) {
+
+    function fCB (r) {
     r.status != 200 ? //put != first for r.status gzip reasons
     alert("error http status " + r.status)
      :
@@ -229,7 +240,18 @@ midnight of today, happens right after 1200AM */
 
     (window.rF = window.rF || []).push(sta_name, "s"+location.hash.slice(1));
 
-})});
+})} //end fCB
+
+  if (ls = window.S) {
+    window.S = 0;
+    if(ls.s === location.hash.slice(1)
+    //&& Date.now()-ls.t < 3000
+    ) {
+      ls.f(fCB);
+    }
+  } else {
+    fetch(url).then(fCB);
+  }
 
 }
 
