@@ -23,6 +23,7 @@ if (history.pushState) {
   var curPFEl;
   var pagehideCB_1p;
 
+  var lirr_headers = {headers: {'accept-version': '3.0'}};
   //array is in pagetype nums
   var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9],[]];
   //can't expose tiles2 oh well
@@ -192,8 +193,8 @@ because window.name update speed unreliable, just always use SS
           : pathtype === 2 ? '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP'
           : pathtype === 1 ? '//backend-unified.mylirr.org/arrivals/' + stacode
           : '//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE'
-          , pathtype > 1 ? {} : {headers: {'accept-version': '3.0'}
-        }).then(function(r){
+          , pathtype > 1 ? {} : lirr_headers
+        ).then(function(r){
           if(fCB2) {fCB2(r)}
           else {fResp = r}}
         );

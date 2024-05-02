@@ -43,7 +43,7 @@ function parseIsoDatetime(dt,i) {
 function RTS (sta, span) {
   if(sta.charAt() == 'r') {
     sta = sta.slice(1);
-    fetch('//backend-unified.mylirr.org/arrivals/'+sta, {headers: {'accept-version': '3.0'}}).then(
+    fetch('//backend-unified.mylirr.org/arrivals/'+sta, lirr_headers).then(
     function (r) {
     r.status == 200 &&
     r.json().then(function (r /*r=resp*/) {
@@ -279,6 +279,7 @@ var colorRoutesSUB = {/*"B":0,*//*"M":0,*//*"D":0,*//*"FX":0,*//*"F":0,*/"5X":1,
 var colorStrsRAIL = ["ee0034","4d5357","006ec7"];
 var colorRoutesRAIL = {/*"DN":0,*//*"NH":0,*//*"WB":0,*//*"NC":0,*/"CI":1,"12":1,"HH":2,"PJ":2,"BY":"00985f","HU":"009b3a","WH":"00a1de","OB":"00af3f","MK":"00b2a9","HA":"066afe","11":"60269e","S":"6d6e71","FR":"6e3219","RK":"a626aa","PW":"c60c30","HM":"ce8e00","LB":"ff6319"};
 /*ENDRAILCOLOR*/
+var lirr_headers = {headers: {'accept-version': '3.0'}};
 
 }
 

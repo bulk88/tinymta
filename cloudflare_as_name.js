@@ -6,6 +6,11 @@ let textEnc = new TextEncoder();
 
 let curTime;
 
+const lirr_headers = {
+  headers: {
+    'accept-version': '3.0'
+  }
+};
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304
 //says include Content-Location, I am leaving it out
 const copy_res_headers = ["age", "cache-control", "date", "etag", "expires", "last-modified", "vary"];
@@ -346,11 +351,7 @@ else if (pathname_callback.startsWith('/li/s/')) {
   pathname_callback = pathname_callback.substr(('/li/s/'.length), 3);
   if (/^\w+$/.test(pathname_callback)) {
     var url_headsign = "http://backend-unified.mylirr.org/arrivals/" + pathname_callback;
-    resp = fetch(url_headsign, {
-      headers: {
-        'accept-version' : '3.0'
-      }
-    });
+    resp = fetch(url_headsign, lirr_headers);
     var h = '<meta content=0 name=mobileoptimized>[1][<a accesskey=1 href=' + pathname_callback + '>Refresh</a>] <a href=' + url_headsign + '>Raw</a><br>'
       + new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York' })
       +" via CFW<br>"

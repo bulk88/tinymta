@@ -23,6 +23,8 @@ var colorStrsRAIL = ["ee0034"];
 var colorRoutesRAIL = {/*"New Haven":0,*//*"Waterbury":0,*//*"New Canaan":0,*//*"Danbury":0,*/"Port Jefferson":"006ec7","Babylon":"00985f","Hudson":"009b3a","West Hempstead":"00a1de","Oyster Bay":"00af3f","Montauk":"00b2a9","Harlem":"066afe","City Zone":"4d5357","Belmont Park":"60269e","S":"6d6e71","Far Rockaway":"6e3219","Ronkonkoma":"a626aa","Port Washington":"c60c30","Hempstead":"ce8e00","Long Beach":"ff6319"};
 /*ENDRAILCOLOR*/
 
+var lirr_headers = {headers: {'accept-version': '3.0'}};
+
 /* var t is "top" as in top of body (header) */
 var t;
 var stacode;
@@ -119,7 +121,7 @@ function y() {
   ) {
     ls.f(fCB);
   } else { // start new XHR I/O call, freshness or stacode
-    fetch('//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', {headers: {'accept-version': '3.0'}}).then(fCB);
+    fetch('//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE', lirr_headers).then(fCB);
   }
 
     function gotJson(r, /*r=resp*/ jsonp) {
