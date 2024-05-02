@@ -186,7 +186,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   };
   //dumb.js SPA async race fav.js vs dumb.js
   if(newEl_i = this.onpageshow) {
-    newEl_i(_onpageshow);
+    newEl_i(0,_onpageshow);
   } else { //not SPA, or race win
     this.onpageshow = _onpageshow;
   }

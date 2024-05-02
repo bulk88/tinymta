@@ -26,7 +26,7 @@ if (history.pushState) {
   //array is in pagetype nums
   var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9],[]];
   //can't expose tiles2 oh well
-  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/mapTileBackground.png','/zoom_out.png','/zoom_in.png','/transparentTile.gif']];
+  var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/bk.png','/zo.png','/zi.png','/ts.gif']];
   var genericStyle = document.createElement('style');
   var genericBody = document.createElement('body');
   var genericDarkMStyle;
@@ -85,9 +85,9 @@ function STATE_PATHTYPE() {
     } else {
       div = arr[0];
     }
-    curPCEl = preconPrefetEls[preconPrefetElMap[curPathtype][1]] = spa.pf = div;
+    curPFEl = preconPrefetEls[preconPrefetElMap[curPathtype][1]] = spa.pf = div;
     
-    div = curPCEl.nodeName === 'DIV' ? curPCEl.firstChild : curPCEl;
+    div = curPFEl.nodeName === 'DIV' ? curPFEl.firstChild : curPFEl;
     ;
     (genericPF = div.cloneNode(0)).removeAttribute('href');
   } else alert('bug');
@@ -96,7 +96,7 @@ function STATE_PATHTYPE() {
     spa.pg = el_fn;
   } else {
     //fav.js delayed exec
-    window.onpageshow = function (fn) {
+    window.onpageshow = function (unused_evt, fn) {
       spa.pg = fn;
       window.onpageshow = fn;
     };
@@ -149,6 +149,7 @@ function getPathType(pathname) {
   function preload(evt) {
     var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
     var preren;
+    var prerenState;
     var pathtype;
     var str;
     var spa;
@@ -204,9 +205,17 @@ because window.name update speed unreliable, just always use SS
       }
       //preren tilemap
       if(pathtype === 8) {
-        preren = function (spa) {
-          window.S = {t:Date.now(), s:stacode, pt: pathtype, pr: spa.body};
-          spa.js(spa.body,stacode);
+        preren = function (spa, deferredNewBody) {
+          if(deferredNewBody) {
+            //set delay body, b/c the SPA initial load's HTML body parse happens
+            //after JS run where Net I/O started, .pr is used by our
+            //onclick()/pushState to know if there is a PR-ed body el or not
+            //in theory there could be a fetch() obj, but no <BODY>
+            prerenState.pr = deferredNewBody;
+          } else {
+            window.S = prerenState = {t:Date.now(), s:stacode, pt: pathtype, pr: spa.body};
+            spa.js(0,stacode);
+          }
         }
       }
       //reload 1p.js if need, was I/O prob earlier
@@ -256,22 +265,36 @@ because window.name update speed unreliable, just always use SS
           htmlEl.removeChild(histArr[STATE_BODY()]);
 
           if((el = oldspa.style) !== (el2 = spa.style)) {
-            if(el)
-              head.removeChild(el);
-            if(el2)
-              head.appendChild(el2);
+            if(el && el2) {
+              head.replaceChild(el2, el);
+            } else {
+              if(el)
+                head.removeChild(el);
+              if(el2)
+                head.appendChild(el2);
+            }
           }
           if(curPCEl !== (el2 = spa.pc)) {
-            if(curPCEl)
-              head.removeChild(curPCEl);
-            if(curPCEl = el2)
-              head.appendChild(el2);
+            if(curPCEl && el2) {
+              head.replaceChild(el2, curPCEl);
+            } else {
+              if(curPCEl)
+                head.removeChild(curPCEl);
+              if(el2)
+                head.appendChild(el2);
+            }
+            curPCEl = el2;
           }
           if(curPFEl !== (el2 = spa.pf)) {
-            if(curPFEl)
-              head.removeChild(curPFEl);
-            if(curPFEl = el2)
-              head.appendChild(el2);
+            if(curPFEl && el2) {
+              head.replaceChild(el2, curPFEl);
+            } else {
+              if(curPFEl)
+                head.removeChild(curPFEl);
+              if(el2)
+                head.appendChild(el2);
+            }
+            curPFEl = el2;
           }
         }
         pageHistoryIdx++;
@@ -289,8 +312,7 @@ because window.name update speed unreliable, just always use SS
         }
 
         //special GC/free images CB to tileMap.htm, if tM.htm wants a gc evt
-        //add type 8 protect eventually
-        if(!prerenBody) {
+        if(pathtype != 8) {
           (el = this.T) && (el = el.GC) && el();
         }
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
@@ -390,22 +412,36 @@ onpopstate = function (e) {
   //rmv old BODY dom tree
   htmlEl.removeChild(s[STATE_BODY()]);
   if((el = oldspa.style) !== (el2 = spa.style)) {
-    if(el)
-      head.removeChild(el);
-    if(el2)
-      head.appendChild(el2);
+    if(el && el2) {
+      head.replaceChild(el2, el);
+    } else {
+      if(el)
+        head.removeChild(el);
+      if(el2)
+        head.appendChild(el2);
+    }
   }
   if(curPCEl !== (el2 = spa.pc)) {
-    if(curPCEl)
-      head.removeChild(curPCEl);
-    if(curPCEl = el2)
-      head.appendChild(el2);
+    if(curPCEl && el2) {
+      head.replaceChild(el2, curPCEl);
+    } else {
+      if(curPCEl)
+        head.removeChild(curPCEl);
+      if(el2)
+        head.appendChild(el2);
+    }
+    curPCEl = el2;
   }
   if(curPFEl !== (el2 = spa.pf)) {
-    if(curPFEl)
-      head.removeChild(curPFEl);
-    if(curPFEl = el2)
-      head.appendChild(el2);
+    if(curPFEl && el2) {
+      head.replaceChild(el2, curPFEl);
+    } else {
+      if(curPFEl)
+        head.removeChild(curPFEl);
+      if(el2)
+        head.appendChild(el2);
+    }
+    curPFEl = el2;
   }
 
   //set new page IDX to global
@@ -468,43 +504,39 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
       }
   });
 }
+function setLinkEl(linkType_el, href) {
+  var hrefSuffix = href.slice(-4);
+  linkType_el = (linkType_el ? genericPF : genericPC).cloneNode(0);
+  if(hrefSuffix == '.png' || hrefSuffix == '.gif') {
+    linkType_el.rel = 'preload';
+    linkType_el.as = 'image';
+  }
+  if(/*startsWith*/!href.indexOf('//tiles')) {
+    linkType_el.crossOrigin = null; //null from UA JS DOM, 0 will trig "anon"
+  }
+  linkType_el.href = href;
+  return linkType_el;
+}
 
 function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
   var
   i,
-  el,
   div,
-  href,
-  hrefSuffix,
   strArr = preconPrefetEls[strArrIdx];
 
   if (typeof strArr == "string") {
-    div = (linkType ? genericPF : genericPC).cloneNode(0); ;
-    hrefSuffix = strArr.slice(-4);
-    if(hrefSuffix == '.png' || hrefSuffix == '.gif') {
-      div.rel = 'preload';
-      div.as = 'image';
-    }
-    div.href = strArr;
+    div = setLinkEl(linkType, strArr);
   } else {
     div = document.createElement('div');
     for (i = 0; i < strArr.length; i++) {
-      el = (linkType ? genericPF : genericPC).cloneNode(0);
-      href = strArr[i];
-      hrefSuffix = href.slice(-4);
-      if(hrefSuffix == '.png' || hrefSuffix == '.gif') {
-        el.rel = 'preload';
-        el.as = 'image';
-      }
-      el.href = href;
-      div.appendChild(el);
+      div.appendChild(setLinkEl(linkType, strArr[i]));
     }
   }
   return preconPrefetEls[strArrIdx] = div;
 }
 
 //if != 200???
-function spaPrefetch(pathname, pathtype, finish) {
+function spaPrefetch(pathname, pathtype, prerenFn) {
   var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, is1pjs, fetch_js_all_cb;
   var parentPathname = curPathname;
   var parentPathtype = curPathtype;
@@ -567,7 +599,6 @@ function spaPrefetch(pathname, pathtype, finish) {
           pCpFIdx = pCpFArr[1];
           pCpFEl = preconPrefetEls[pCpFIdx];
           if(pCpFEl && pCpFEl.length) {
-            pFIdxToFree = pCpFIdx;
             pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
           }
           spa.pf = pCpFEl;
@@ -624,6 +655,8 @@ function spaPrefetch(pathname, pathtype, finish) {
           y = old_fn_y;
           window.onpageshow = old_pg_rel;
           onhashchange = null;
+          //run new page's drawUrl/SPA body-less
+          prerenFn && prerenFn(spa);
         }
         //dont parse an html BODY if this .htm is bodyless API viewer
         if(r.indexOf('No javascript', start) == -1) {
@@ -642,24 +675,20 @@ function spaPrefetch(pathname, pathtype, finish) {
           el.innerHTML = r; //time me
           //extract body
           spa.body = el = el.lastElementChild;
+          //maybe delivery body to a inflight prerender obj
+          //does NOT call onNewURL
+          prerenFn && prerenFn(0/*unused spa arg*/, el);
           if(haveBodyElCB) {
             haveBodyElCB(el);
           }
-          //tileMap.htm has unused unexec ed el at end
-          if((r=el.lastElementChild).nodeName == 'SCRIPT') {
-            el.removeChild(r);
-          }
-
         }
         if(!is1pjs || fetch_js_all_cb) {
           pageCache[pathname] = spa;
-          finish && finish(spa);
           purgePreFetchHTML(parentPathname,pathname,parentPathtype);
         //wait for 1p.js before writing spa cache ent to global
         } else {
           fetch_js_all_cb = function() {
             pageCache[pathname] = spa;
-            finish && finish(spa);
             purgePreFetchHTML(parentPathname,pathname,parentPathtype);
           };
         }
