@@ -177,8 +177,8 @@ because window.name update speed unreliable, just always use SS
 
     //IE 11 fix, no initial /
     pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
-    if(pathname.length >= ('/jsrdt.htm'.length)
-      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-('/jsrdt.htm'.length)))){
+    if(pathname.length >= (10 /*'/jsrdt.htm'.length*/)
+      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-(10 /*'/jsrdt.htm'.length*/)))){
       evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
     }
     pathtype = getPathType(pathname);
@@ -285,8 +285,8 @@ because window.name update speed unreliable, just always use SS
       pathname = evt.pathname;
     //IE 11 fix, no initial /
     pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
-    if(pathname.length >= ('/jsrdt.htm'.length)
-      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-('/jsrdt.htm'.length)))){
+    if(pathname.length >= (10 /*'/jsrdt.htm'.length*/)
+      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-(10 /*'/jsrdt.htm'.length*/)))){
       evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
     }
     pathtype = getPathType(pathname);
@@ -308,38 +308,9 @@ because window.name update speed unreliable, just always use SS
           //STYLE removed
           htmlEl.removeChild(histArr[STATE_BODY()]);
 
-          if((el = oldspa.style) !== (el2 = spa.style)) {
-            if(el && el2) {
-              head.replaceChild(el2, el);
-            } else {
-              if(el)
-                head.removeChild(el);
-              if(el2)
-                head.appendChild(el2);
-            }
-          }
-          if(curPCEl !== (el2 = spa.pc)) {
-            if(curPCEl && el2) {
-              head.replaceChild(el2, curPCEl);
-            } else {
-              if(curPCEl)
-                head.removeChild(curPCEl);
-              if(el2)
-                head.appendChild(el2);
-            }
-            curPCEl = el2;
-          }
-          if(curPFEl !== (el2 = spa.pf)) {
-            if(curPFEl && el2) {
-              head.replaceChild(el2, curPFEl);
-            } else {
-              if(curPFEl)
-                head.removeChild(curPFEl);
-              if(el2)
-                head.appendChild(el2);
-            }
-            curPFEl = el2;
-          }
+          swapElMaybe(oldspa.style, spa.style);
+          curPCEl = swapElMaybe(curPCEl, spa.pc);
+          curPFEl = swapElMaybe(curPFEl, spa.pf);
         }
         pageHistoryIdx++;
         histArr = pageHistory[pageHistoryIdx] = [];
@@ -393,10 +364,10 @@ because window.name update speed unreliable, just always use SS
           curPathtype = pathtype;
           //tileMap has images
           if(pathtype == 8 && spa.pf) {
-            purgePreFetchHTML(pathname, '/mapTileBackground.png', 8);
-            purgePreFetchHTML(pathname, '/zoom_out.png', 8);
-            purgePreFetchHTML(pathname, '/zoom_in.png', 8);
-            purgePreFetchHTML(pathname, '/transparentTile.gif', 8);
+            purgePreFetchHTML(pathname, '/bk.png', 8);
+            purgePreFetchHTML(pathname, '/zo.png', 8);
+            purgePreFetchHTML(pathname, '/zi.png', 8);
+            purgePreFetchHTML(pathname, '/ts.gif', 8);
           }
         }
         histArr[STATE_PFHTMCACHE()] = spa;
@@ -455,38 +426,9 @@ onpopstate = function (e) {
 
   //rmv old BODY dom tree
   htmlEl.removeChild(s[STATE_BODY()]);
-  if((el = oldspa.style) !== (el2 = spa.style)) {
-    if(el && el2) {
-      head.replaceChild(el2, el);
-    } else {
-      if(el)
-        head.removeChild(el);
-      if(el2)
-        head.appendChild(el2);
-    }
-  }
-  if(curPCEl !== (el2 = spa.pc)) {
-    if(curPCEl && el2) {
-      head.replaceChild(el2, curPCEl);
-    } else {
-      if(curPCEl)
-        head.removeChild(curPCEl);
-      if(el2)
-        head.appendChild(el2);
-    }
-    curPCEl = el2;
-  }
-  if(curPFEl !== (el2 = spa.pf)) {
-    if(curPFEl && el2) {
-      head.replaceChild(el2, curPFEl);
-    } else {
-      if(curPFEl)
-        head.removeChild(curPFEl);
-      if(el2)
-        head.appendChild(el2);
-    }
-    curPFEl = el2;
-  }
+  swapElMaybe(oldspa.style, spa.style);
+  curPCEl = swapElMaybe(curPCEl, spa.pc);
+  curPFEl = swapElMaybe(curPFEl, spa.pf);
 
   //set new page IDX to global
   pageHistoryIdx = e;
@@ -579,6 +521,20 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
   return preconPrefetEls[strArrIdx] = div;
 }
 
+function swapElMaybe(el,el2) {
+  if(el !== el2) {
+    if(el && el2) {
+      head.replaceChild(el2, el);
+    } else {
+      if(el)
+        head.removeChild(el);
+      if(el2)
+        head.appendChild(el2);
+    }
+  }
+  return el2;
+}
+
 //if != 200???
 function spaPrefetch(pathname, pathtype, prerenFn) {
   var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, is1pjs, fetch_js_all_cb;
@@ -632,12 +588,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           if(pCpFEl && pCpFEl.length) {
             pCpFEl = inflateLinkElsPcPF(pCpFIdx,0);
           }
-          spa.pc = pCpFEl;
-          if(pCpFEl) {
-            if(curPCEl)
-              head.removeChild(curPCEl);
-            curPCEl = head.appendChild(pCpFEl);
-          }
+          curPCEl = swapElMaybe(curPCEl, spa.pc = pCpFEl);
 
           //LINK prefetch
           pCpFIdx = pCpFArr[1];
@@ -645,12 +596,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           if(pCpFEl && pCpFEl.length) {
             pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
           }
-          spa.pf = pCpFEl;
-          if(pCpFEl) {
-            if(curPFEl)
-              head.removeChild(curPFEl);
-            curPFEl = head.appendChild(pCpFEl);
-          }
+          curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
         }
         
     //arg 3 private API want text resp
@@ -660,7 +606,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         var start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
 
         if((start = r.indexOf('<style>')) != -1) {
-          start += '<style>'.length;
+          start += 7 /*'<style>'.length*/;
           old_fn_y = r.slice(start, start = r.indexOf('</style>', start));
           start += 8;
           el = 0;
@@ -687,8 +633,8 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           old_fn_y = y;
           old_pg_rel = window.onpageshow;
           window.onpageshow = null;/*IE 11 doesnt like 0*/
-          scriptEnd = r.indexOf('</script>', scriptStart+'<script>'.length);
-          Function(r.slice(scriptStart+'<script>'.length, scriptEnd))();
+          scriptEnd = r.indexOf('</script>', scriptStart+8 /*'<script>'.length*/);
+          Function(r.slice(scriptStart+8 /*'<script>'.length*/, scriptEnd))();
           //tmp var
           el = spa.js = onhashchange;
           if(haveBodyElCB = el.body) {
@@ -710,7 +656,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           //htm parsers deal with unclosed tags on the regular
           if(scriptStart != -1) {
             r = r.slice(start,scriptStart)
-                +r.slice(scriptEnd+'</script>'.length);
+                +r.slice(scriptEnd+9 /*'</script>'.length*/);
           } else {
             r = r.slice(start);
           }

@@ -281,7 +281,7 @@ function setImgSrc(elem, x, y) {
 /*STARTINSERTPATH*/
     "../docs/"
 /*ENDINSERTPATH*/
-  ) + tilePath + (isInImgPreload ? +!zoomLevel : zoomLevel) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
+  ) + tilePath + (isInImgPreload ? zoomLevel^1 : zoomLevel) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
   //0.35 ms
   //console.log("ssrc "+(performance.now()-st));
 }
@@ -370,7 +370,7 @@ var tsGifDivEl =
     function (evt) {
       evt = evt || event; //old IE
       //one fn does both mouseout (8 chars) and mouseover (9 chars)
-      this.src = this.src.replace(zm_icon_urls[evt = evt.type.length-8], zm_icon_urls[!evt|0]);
+      this.src = this.src.replace(zm_icon_urls[evt = evt.type.length-8], zm_icon_urls[evt^1]);
     }
   ;
 
@@ -457,7 +457,7 @@ DDDDDDDDDDDDD
     } else {
       centerPixX = newCenterX;
       centerPixY = newCenterY;
-      zoomLevel = +!zoomLevel;
+      zoomLevel ^= 1; //invert 1 or 0
     }
 
     loadMap(newCenterX, newCenterY);
@@ -644,7 +644,7 @@ DDDDDDDDDDDDD
     //formerly 12 == _document.getElementById("a22");
     var el = aElement[12];
     var style = aStyle[12];
-    return [(el.tX * 256) + (315 - +style.left.slice(0,-2)), (el.tY * 256) + (315 - +style.top.slice(0,-2))];
+    return [(el.tX * 256) + (315 - style.left.slice(0,-2)), (el.tY * 256) + (315 - style.top.slice(0,-2))];
   }
 
 }// END function initializeDocumentObjects()
