@@ -676,7 +676,7 @@ else {
   function DCL (/*evt*/) {
     initializeDocumentObjects(_document.body);
     //GC
-    _document.removeEventListener("DOMContentLoaded",DCL);
+    _document.removeEventListener("DOMContentLoaded", DCL, 0);
   }
   if (_document.addEventListener) {
     _document.addEventListener("DOMContentLoaded", DCL, 0);

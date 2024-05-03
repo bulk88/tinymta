@@ -183,10 +183,20 @@ because window.name update speed unreliable, just always use SS
     }
     pathtype = getPathType(pathname);
       var fResp;
-      var fCB2;
+      var fCB1;
       if(pathtype < 4) {
         stacode = stacode.slice(1);
-        window.S = {t:Date.now(), s:stacode, f: function(cb){if(fResp){cb(fResp)} else {fCB2 = cb}}};
+        window.S = {
+          t: Date.now(),
+          s: stacode,
+          f: function (cb) {
+            if (fResp) {
+              cb(fResp)
+            } else {
+              fCB1 = cb
+            }
+          }
+        };
   /* race on old between f.js and mousedown/touchstart but IDC */
         fetch(
           pathtype === 3 ? '//otp-mta-prod.camsys-apps.com/otp/routers/default/nearby?timerange=1800&apikey=Z276E3rCeTzOQEoBPPN4JCEc6GfvdnYE&stops=MTASBWY:' + stacode.slice(0, 3)
@@ -195,9 +205,42 @@ because window.name update speed unreliable, just always use SS
           : '//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE'
           , pathtype > 1 ? {} : lirr_headers
         ).then(function(r){
-          if(fCB2) {fCB2(r)}
-          else {fResp = r}}
-        );
+          var fCB2;
+          var respJSON;
+          if(fCB1) {
+            fCB1(r);
+          } else {
+            //dwn and JSON parse in preload time gap before onClick
+            //if network I/O latency vs finger is fast enough
+            //preconnected and CORS-preflight cached LIRR resps are very fast
+            //30 ms-40 ms on cable modem, subway times are 40-80 ms
+            if(r.status == 200) {
+              r.json().then(function (r) {
+                if(fCB2) {
+                  fCB2(r);
+                } else {
+                  respJSON = r;
+                }
+              });
+              fResp = {
+                status: 200,
+                json: function () {
+                  return {
+                    then: function (fn) {
+                      if(respJSON) {
+                        fn(respJSON);
+                      } else {
+                        fCB2 = fn;
+                      }
+                    }
+                  };
+                }
+              };
+            } else {
+            fResp = r;
+            }
+          }
+        });
         if(pathtype === 2) {
           //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
           R = 0;
