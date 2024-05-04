@@ -287,7 +287,7 @@ API resp is preloaded to full inflated json obj
   addEventListener('touchstart', preload, {passive: true});
   addEventListener('mousedown', preload, {passive: true});
   
-  addEventListener('click', function(e) {
+  addEventListener('click', function aELonClick(e) {
     var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn, ls, prerenBody;
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
@@ -313,7 +313,8 @@ API resp is preloaded to full inflated json obj
         oldspa = histArr[STATE_PFHTMCACHE()];
 
         if(oldspa.p1 && pagehideCB_1p && curPathtype !== pathtype) {
-          pagehideCB_1p({}); //if(!evt.persisted) save scroll
+          //arg 2 non-std arg
+          pagehideCB_1p({},curPathname); //if(!evt.persisted) save scroll
         }
 
         if(!hashNavFlag) {
@@ -430,13 +431,15 @@ onpopstate = function (e) {
   //load new from cache
   newState = pageHistory[e];
   newPathtype = newState[STATE_PATHTYPE()];
-  curPathname = newPathname;
-  curHash = newHash;
   var spa = newState[STATE_PFHTMCACHE()];
 
   if(oldspa.p1 && pagehideCB_1p && curPathtype !== newPathtype) {
-    pagehideCB_1p({}); //if(!evt.persisted) save scroll chrome bug
+    //arg 2 non-std arg
+    pagehideCB_1p({},curPathname); //if(!evt.persisted) save scroll chrome bug
   }
+
+  curPathname = newPathname;
+  curHash = newHash;
 
   //rmv old BODY dom tree
   htmlEl.removeChild(s[STATE_BODY()]);
@@ -633,8 +636,8 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         }
         
     //arg 3 private API want text resp
-    fetch(pathname,{},1).then(function (r) {
-      r.text().then(function (r) {
+    fetch(pathname,{},1).then(function pLFetCB(r) {
+      r.text().then(function pLFetTextCB(r) {
         // .p1 for grep
         var start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
 

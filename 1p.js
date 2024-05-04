@@ -18,10 +18,10 @@
       }
     };
 
-    _onpagehide = function oph1p (event) {
+    _onpagehide = function oph1p (event, spa_prv_pathname) {
       if (!event.persisted) {
         console.log('s 1p');
-        sessionStorage.setItem('1p'+location.pathname, JSON.stringify({
+        sessionStorage.setItem('1p'+(spa_prv_pathname || location.pathname), JSON.stringify({
           scrollY: scrollY,
           scrollX: scrollX
         }));

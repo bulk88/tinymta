@@ -5,8 +5,23 @@ window.log = function () {
     try {
       opera.postError.apply(opera, arguments);
     } catch (e) {
-      for(var i = 0, s= ''; i < arguments.length; i++)
-        s+=arguments[i]+ " ";
+      for(var i = 0, s= '', n, s2, arg; i < arguments.length; i++) {
+        arg = arguments[i];
+        s += arg + " | ";
+        if(arg && typeof arg === 'object') {
+          s2 = 'Obj(';
+          for(n in arg) {
+            s2 += n + " ";
+            try {
+              s2 += (arg[n]+"").slice(0,20)+" | ";
+            }
+            catch(e) {
+              s2 += "EXP "+e.message+" | ";
+            }
+          }
+          s += s2+')';
+        }
+      }
       alert(s);
     }
   }
