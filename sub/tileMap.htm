@@ -67,7 +67,6 @@ S1: "1500,1500"
 };
  */
 var pfIECopyEvt;
-var tilePath;
 var mapWidth;
 var mapHeight;
 var maxX;
@@ -88,8 +87,8 @@ var defaultCenterX
 var defaultCenterY
  */
 
-var aStyle = new Array();
-var aElement = new Array();
+var aStyle = [];
+var aElement = [];
 var aPreload;
 var isInImgPreload;
 /*orig dev tile debug code that I removed (check git history) was pattern of
@@ -180,7 +179,7 @@ function onNewURL(body, stationLocInfo) {
     //tilePath = "http://web.mta.info/neighborhoodMaps/" + tileDirectory + "/"
     //tilePath = "http://10.8.86.78/WeekenderVer2/neighborhoodMaps/" + d + "/"
 
-    tilePath = "neighborhoodMaps/" + tileDirectory + "/";
+    tileDirectory = "neighborhoodMaps/" + tileDirectory + "/";
 
     //}
 
@@ -222,7 +221,9 @@ function getNumberOfTiles(totalPix) {
   return tilesCount;
 }
 
-function loadMap(newCenterX, newCenterY) {
+function loadMap(newCenterX_nameX_topShift, newCenterY_nameY_leftShift) {
+  var k = 0;
+  var k_adj;
   //var st = performance.now();
   //virgin no SPA page load, or SPA GC jps, the tiles are already hidden
   //so skip the loop
@@ -232,46 +233,45 @@ function loadMap(newCenterX, newCenterY) {
   //function getCenterTile(pY,pX)
   //{
   // old name numberOfRow
-  var nameX_topShift = getNumberOfTiles(newCenterX);
+  newCenterX_nameX_topShift = getNumberOfTiles(newCenterX_nameX_topShift);
   //old name numberOfColumns
-  var nameY_leftShift = getNumberOfTiles(newCenterY);
+  newCenterY_nameY_leftShift = getNumberOfTiles(newCenterY_nameY_leftShift);
   //}
   //resetTileCells(128 - getRemainderPix(centerPixY), 128 - getRemainderPix(centerPixX));
   //}
 
   //function resetTileCells(topShift,leftShift)
   //{
-  var k;
-  var k_adj;
 
-  nameX_topShift = [nameX_topShift - 2, nameX_topShift - 1, nameX_topShift, nameX_topShift + 1, nameX_topShift + 2];
-  nameY_leftShift = [nameY_leftShift - 2, nameY_leftShift - 1, nameY_leftShift, nameY_leftShift + 1, nameY_leftShift + 2];
+
+  newCenterX_nameX_topShift = [newCenterX_nameX_topShift - 2, newCenterX_nameX_topShift - 1, newCenterX_nameX_topShift, newCenterX_nameX_topShift + 1, newCenterX_nameX_topShift + 2];
+  newCenterY_nameY_leftShift = [newCenterY_nameY_leftShift - 2, newCenterY_nameY_leftShift - 1, newCenterY_nameY_leftShift, newCenterY_nameY_leftShift + 1, newCenterY_nameY_leftShift + 2];
   //0.03 ms
   //console.log("b "+(performance.now()-st));
   //st = performance.now();
   //prefer loading center tiles over outer or hidden tiles, domain sharding is other idea
   for (k = 0; k < 25; k++) {
     k_adj = tileSrcSetOrderArr[k];
-    setImgSrc(((isInImgPreload ? aPreload : aElement)[k_adj] || initImgElFn_div(k_adj)), nameX_topShift[k_adj % 5], nameY_leftShift[(k_adj / 5) | 0]);
+    setImgSrc(((isInImgPreload ? aPreload : aElement)[k_adj] || initImgElFn_div(k_adj)), newCenterX_nameX_topShift[k_adj % 5], newCenterY_nameY_leftShift[(k_adj / 5) | 0]);
   }
   if(isInImgPreload)
     return;
   //performance.now() this loop takes 11 ms on C122, nothing can really be done
   //console.log("c "+(performance.now()-st));
   //st = performance.now();
-  nameX_topShift = 128 - /*getRemainderPix*/(centerPixY % 256);
-  nameY_leftShift = 128 - /*getRemainderPix*/(centerPixX % 256);
+  newCenterX_nameX_topShift = 128 - /*getRemainderPix*/(centerPixY % 256);
+  newCenterY_nameY_leftShift = 128 - /*getRemainderPix*/(centerPixX % 256);
   //on navigate IMG.style.top/.left undef, on redraw has old values that are tossed
-  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = ((-325)+nameY_leftShift)/*+"px"*/;
-  aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = ((-325)+nameX_topShift)/*+"px"*/;
-  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = ((-69)+nameY_leftShift)/*+"px"*/;
-  aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = ((-69)+nameX_topShift)/*+"px"*/;
-  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = ((187)+nameY_leftShift)/*+"px"*/;
-  aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = ((187)+nameX_topShift)/*+"px"*/;
-  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = ((443)+nameY_leftShift)/*+"px"*/;
-  aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = ((443)+nameX_topShift)/*+"px"*/;
-  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = ((699)+nameY_leftShift)/*+"px"*/;
-  aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = ((699)+nameX_topShift)/*+"px"*/;
+  aStyle[0].left = aStyle[5].left = aStyle[10].left = aStyle[15].left = aStyle[20].left = ((-325)+newCenterY_nameY_leftShift)/*+"px"*/;
+  aStyle[0].top = aStyle[1].top = aStyle[2].top = aStyle[3].top = aStyle[4].top = ((-325)+newCenterX_nameX_topShift)/*+"px"*/;
+  aStyle[1].left = aStyle[6].left = aStyle[11].left = aStyle[16].left = aStyle[21].left = ((-69)+newCenterY_nameY_leftShift)/*+"px"*/;
+  aStyle[5].top = aStyle[6].top = aStyle[7].top = aStyle[8].top = aStyle[9].top = ((-69)+newCenterX_nameX_topShift)/*+"px"*/;
+  aStyle[2].left = aStyle[7].left = aStyle[12].left = aStyle[17].left = aStyle[22].left = ((187)+newCenterY_nameY_leftShift)/*+"px"*/;
+  aStyle[10].top = aStyle[11].top = aStyle[12].top = aStyle[13].top = aStyle[14].top = ((187)+newCenterX_nameX_topShift)/*+"px"*/;
+  aStyle[3].left = aStyle[8].left = aStyle[13].left = aStyle[18].left = aStyle[23].left = ((443)+newCenterY_nameY_leftShift)/*+"px"*/;
+  aStyle[15].top = aStyle[16].top = aStyle[17].top = aStyle[18].top = aStyle[19].top = ((443)+newCenterX_nameX_topShift)/*+"px"*/;
+  aStyle[4].left = aStyle[9].left = aStyle[14].left = aStyle[19].left = aStyle[24].left = ((699)+newCenterY_nameY_leftShift)/*+"px"*/;
+  aStyle[20].top = aStyle[21].top = aStyle[22].top = aStyle[23].top = aStyle[24].top = ((699)+newCenterX_nameX_topShift)/*+"px"*/;
   //0.03 ms
   //console.log("d "+(performance.now()-st));
 }
@@ -283,7 +283,7 @@ function setImgSrc(elem, x, y) {
 /*STARTINSERTPATH*/
     "../docs/"
 /*ENDINSERTPATH*/
-  ) + tilePath + (isInImgPreload ? zoomLevel^1 : zoomLevel) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
+  ) + tileDirectory + (isInImgPreload ? zoomLevel^1 : zoomLevel) + "_" + (elem.tX = x) + "_" + (elem.tY = y) + ".png";
   //0.35 ms
   //console.log("ssrc "+(performance.now()-st));
 }
@@ -294,11 +294,9 @@ function showImage(/*evt*/) {
   aStyle[this.tIdx].visibility = "visible";
 }
 
-function initImgElFn_div(i,el) {
+function initImgElFn_div(i,el/*el not passed, lcl only*/) {
   //var st = performance.now();
-  aStyle[i] = {};
-  el = aElement[i] = imgTileTemplateEl.cloneNode(0);
-  el.tIdx = i;
+  aStyle[(el = aElement[i] = imgTileTemplateEl.cloneNode(0)).tIdx = i] = {};
   //evts don't survive cloneNode()
   el.onload = showImage;
   //console.log("e "+(performance.now()-st));
@@ -370,9 +368,8 @@ var tsGifDivEl =
   ).onmouseover =
   imgZoomIn.onmouseout =
     function (evt) {
-      evt = evt || event; //old IE
       //one fn does both mouseout (8 chars) and mouseover (9 chars)
-      this.src = this.src.replace(zm_icon_urls[evt = evt.type.length-8], zm_icon_urls[evt^1]);
+      this.src = this.src.replace(zm_icon_urls[evt = (evt || event /*old IE*/).type.length-8], zm_icon_urls[evt^1]);
     }
   ;
 
@@ -385,6 +382,7 @@ var tsGifDivEl =
     imgZoomIn.nextSibling;
   //0.09ms
   //console.log("ff "+(performance.now()-st));
+
   //defer/batch .style getter() b/c on FF .style is slow, and on all UAs
   //.style get or 1st ".style.cssFoo =" set, DOM is changed(style attr reflection)
   //st = performance.now();
@@ -456,7 +454,7 @@ DDDDDDDDDDDDD
           div.appendChild(aPreload[evt_k] = currentCenter.cloneNode(0));
         }
       }
-    } else {
+    } else { //zoom buttom CLICKED not PL
       centerPixX = newCenterX;
       centerPixY = newCenterY;
       zoomLevel ^= 1; //invert 1 or 0
@@ -604,13 +602,10 @@ DDDDDDDDDDDDD
 
   function mapmousedown (evt_i) {
     var el;
-    if(!evt_i) { //old IE
-      evt_i = event;
-    }
     hideCustomAlert();
     mapDrag = 1;
     _document.onmouseup = mapmouseup;
-    startXY = getPosition(evt_i);
+    startXY = getPosition(evt_i || event /*old IE*/);
 
     this.ontouchmove = this.onmousemove = mapmousemove;
 
