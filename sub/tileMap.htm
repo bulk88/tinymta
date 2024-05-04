@@ -405,7 +405,7 @@ var tsGifDivEl =
 
   //st = performance.now();
   tsGifDivEl.parentNode.insertBefore(initImgElFn_div, tsGifDivEl);
-  initImgElFn_div = 0; //GC this global one time func, its always visible from loadMap();
+  return (initImgElFn_div = 0); //GC this global one time func, its always visible from loadMap();
   //0.25 ms p.now() for insertBefore()
   //console.log("g "+(performance.now()-st));
 /*
@@ -669,28 +669,46 @@ if (_window.onpopstate) {
 //not a SPA, SPA loader doesn't exec 2nd script tag
 else {
 
-
   //run onNewURL() first to start <IMG> I/O ASAP
   onNewURL();
 
   //use DCL/oRSC CBs to avoid a 2nd SCRIPT tag that needs to be parsed
   //and also let UA "finialize" DOM tree parsing before calling the CB
-  function DCL (/*evt*/) {
-    initializeDocumentObjects(_document.body);
-    //GC
-    _document.removeEventListener("DOMContentLoaded", DCL, 0);
+  function DCL (e_unused) {
+    //!.rS old FFs https://bugzilla.mozilla.org/show_bug.cgi?id=347174
+    if( initializeDocumentObjects
+        && (
+          !  (e_unused = _document.readyState)
+          //modern chrome always fires 8 first (from DCL)
+          || (e_unused = e_unused.length) == 8
+          ||  e_unused == 11 //IE cache hit but dont optim for IE
+        )
+//99% time IE == interactive is body parsed, 1% typ alert() blocking
+//caused, interactive WILL have a null .body, just loop to complete
+//then if .body == null
+        && _document.body
+    ) {
+/* ONLY possible values W3C HTML 5 and legacy IE
+https://web.archive.org/web/20120806065436/http://msdn.microsoft.com/en-us/library/ie/ms534359(v=vs.85).aspx
+uninitialized 13
+loading 7
+loaded 6
+interactive 11
+complete 8
+*/
+      //stop iDO() from running twice on IE, with "interactive" and "complete"
+      e_unused = initializeDocumentObjects;
+      initializeDocumentObjects = 0;
+      e_unused(_document.body);
+      _document[pFDCL[1]](pFDCL[2], DCL, 0);
+    }
+  } //end DCL_CB()
+
+  var pFDCL = ["addEventListener", "removeEventListener", "DOMContentLoaded"];
+  if (!_document[pFDCL[0]]) {
+    pFDCL = ["attachEvent", "detachEvent", "onreadystatechange"];
   }
-  if (_document.addEventListener) {
-    _document.addEventListener("DOMContentLoaded", DCL, 0);
-  } else {
-    _document.onreadystatechange = function (/*evt*/) {
-      if (_document.readyState === "interactive") {
-        initializeDocumentObjects(_document.body);
-        //GC
-        _document.onreadystatechange = null;
-      }
-    };
-  }
+  _document[pFDCL[0]](pFDCL[2], DCL, 0);
 
   if (_window.onpopstate === null)
     onpopstate = function (evt) {
