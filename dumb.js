@@ -107,7 +107,7 @@ function STATE_PATHTYPE() {
   //mk global arr
   pageHistory = [state];
   if(history.state !== pageHistoryIdx)
-    history.pushState(pageHistoryIdx,0,location.href);
+    history.replaceState(pageHistoryIdx,0,location.href);
 })();
 
 
@@ -228,7 +228,19 @@ because window.name update speed unreliable, just always use SS
                   return {
                     then: function (fn) {
                       if(respJSON) {
-                        fn(respJSON);
+/*
+spin event loop because child's onNewURL/y() assumes fetch CBs are always
+real I/O deferred/called async, and child onNewURL/y() wants to do
+fake__or_real_fetch(fnCB); then syncronously do
+document.body.innerHTML = "IO not finished UI";
+then onNewURL/y() assumes that LATER fnCB() execs, and it aka fnCB()
+can do document.body.innerHTML += more_html;
+
+slightly inefficient for onNewURL/y()/fnCB() to call "body.innerHTML =" twice
+but for now all the API I/O child htm's assume 2 ".innerHTML = " even if
+API resp is preloaded to full inflated json obj
+*/
+                        setTimeout(fn,0,respJSON);
                       } else {
                         fCB2 = fn;
                       }
@@ -392,20 +404,21 @@ onpopstate = function (e) {
   e = e.state;
 
   if(e === null) {
+    console.log('spa leave 3 '+newPathname);
     return;
   }
 
   //hash only nav back or forwards
   if(curPathname == newPathname && curHash != newHash) {;
     curHash = newHash;
-    console.log('spa leave 1');
+    console.log('spa leave 1 '+newPathname);
     return;
   }
   //a refresh
   if(e === pageHistoryIdx || e >= pageHistory.length
   ) //a refresh, or forward after refresh (no future state)
   {
-    console.log('spa leave 2');
+    console.log('spa leave 2 '+newPathname);
     location.reload();
     return;
   }
