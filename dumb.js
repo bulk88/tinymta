@@ -31,8 +31,11 @@ if(history.pushState) {
   var genericStyle = document.createElement('style');
   var genericBody = document.createElement('body');
   var genericDarkMStyle;
-  var genericPC;
-  var genericPF;
+  var genericPF = document.createElement('link');
+  var genericPC = genericPF.cloneNode(0);
+  genericPC.rel = "preconnect";
+  genericPC.crossOrigin = "anonymous";
+  genericPF.rel = "prefetch";
 
 function STATE_PFHTMCACHE() {
   return 0;
@@ -69,11 +72,7 @@ function STATE_PATHTYPE() {
       div = arr[0];
     }
     curPCEl = preconPrefetEls[preconPrefetElMap[curPathtype][0]] = spa.pc = div;
-    
-    div = curPCEl.nodeName === 'DIV' ? curPCEl.firstChild : curPCEl;
-
-    (genericPC = div.cloneNode(0)).removeAttribute('href');
-  } else alert('bug');
+  }
 
   arr = head.querySelectorAll('link[rel="prefetch"]');
   if(arr.length) {
@@ -87,11 +86,7 @@ function STATE_PATHTYPE() {
       div = arr[0];
     }
     curPFEl = preconPrefetEls[preconPrefetElMap[curPathtype][1]] = spa.pf = div;
-    
-    div = curPFEl.nodeName === 'DIV' ? curPFEl.firstChild : curPFEl;
-    ;
-    (genericPF = div.cloneNode(0)).removeAttribute('href');
-  } else alert('bug');
+  }
 
   if(el_fn = window.onpageshow) {
     spa.pg = el_fn;
