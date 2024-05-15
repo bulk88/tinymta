@@ -18,7 +18,7 @@ if(history.pushState) {
   var curPathname = location.pathname;
   var curHash = location.hash;
   var _origin = location.origin;
-  var curPathtype = getPathType(location.pathname);
+  var curPathtype = getPathType(curPathname);
   var curPCEl;
   var curPFEl;
   var pagehideCB_1p;
@@ -27,10 +27,9 @@ if(history.pushState) {
   //array is in pagetype nums
   var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9],[]];
   var preconPrefetPurgedHtm = {};
-  //can't expose tiles2 oh well
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/bk.png','/zo.png','/zi.png','/ts.gif']];
+  var genericDarkMStyle;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
-  var genericElsReallocTimer;
   var requestIdleCallbackPF =
     this.requestIdleCallback
     || ( // note, RAF can't be cancelled, rewrite maybe
@@ -45,7 +44,7 @@ if(history.pushState) {
          return setTimeout(callback, 40)
       }
   ;
-  var genericDarkMStyle;
+
 
 function GENERIC_STYLE() {
   return 0;
@@ -121,6 +120,7 @@ function STATE_PATHTYPE() {
   newEl.rel = "preconnect";
   newEl.crossOrigin = "anonymous";
 
+  /* double in the array from 1 el to 2 els */
   reallocGenericEls();
 
   arr = head.querySelectorAll('link[rel="preconnect"]')
@@ -236,8 +236,6 @@ because window.name update speed unreliable, just always use SS
     if(pathname === location.pathname)
       return;
 
-    //IE 11 fix, no initial /
-    pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
     if(pathname.length >= (10 /*'/jsrdt.htm'.length*/)
       && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-(10 /*'/jsrdt.htm'.length*/)))){
       evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
@@ -407,16 +405,17 @@ API resp is preloaded to full inflated json obj
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         
         if(prerenBody) {
-          histArr[STATE_BODY()] = htmlEl.appendChild(prerenBody);
-        } else if(!spa.body) {//add new empty BODY
-          histArr[STATE_BODY()] = htmlEl.appendChild(genericEls[GENERIC_BODY()][1]);
-          genericEls[GENERIC_BODY()][1] = 0;
-          requestIdleCallbackPF(reallocGenericEls);
-        } else if (!hashNavFlag) {
-          histArr[STATE_BODY()] = htmlEl.appendChild(spa.body);
+          el = prerenBody;
         } else {
-          histArr[STATE_BODY()] = spa.body;
+          el = spa.body;
+          if(!el) {//add new empty BODY
+            el = genericEls[GENERIC_BODY()][1];
+            genericEls[GENERIC_BODY()][1] = 0;
+            requestIdleCallbackPF(reallocGenericEls);
+          }
         }
+
+        histArr[STATE_BODY()] = !hashNavFlag ? htmlEl.appendChild(el) : el;
 
         history.pushState(pageHistoryIdx,0,evt.href);
 
@@ -671,7 +670,6 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           else
             fetch_js_all_cb = 1;
         };
-        head = document.documentElement.firstChild;
         el = document.createElement('script');
         el.onerror = function () { //anti-UI-freeze
         //retry I/O eventually
