@@ -26,6 +26,7 @@ if (history.pushState) {
   var lirr_headers = {headers: {'accept-version': '3.0'}};
   //array is in pagetype nums
   var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9],[]];
+  var preconPrefetPurgedHtm = {};
   //can't expose tiles2 oh well
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/bk.png','/zo.png','/zi.png','/ts.gif']];
   var genericStyle = document.createElement('style');
@@ -458,6 +459,8 @@ onpopstate = function (e) {
 //stop banging disk I/O or network I/O or the dom tree unneceserily
 function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
 
+  //todo test tilemap vs its images
+  preconPrefetPurgedHtm[pathname] = 1;
   (this.requestIdleCallback || this.requestAnimationFrame || function(callback){setTimeout(callback, 40)})(function(){
 
      var pf, pn, el, el2;
@@ -504,15 +507,25 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
   });
 }
 function setLinkEl(linkType_el, href) {
-  var hrefSuffix = href.slice(-4);
-  linkType_el = (linkType_el ? genericPF : genericPC).cloneNode(0);
-  if(hrefSuffix == '.png' || hrefSuffix == '.gif') {
-    linkType_el.rel = 'preload';
-    linkType_el.as = 'image';
+  var hrefSuffix;
+  if (linkType_el) {
+    if(preconPrefetPurgedHtm[href]) {
+      return 0;
+    }
+    linkType_el = genericPF.cloneNode(0);
+    hrefSuffix = href.slice(-4);
+    /*for tileMap */
+    if (hrefSuffix == '.png' || hrefSuffix == '.gif') {
+      linkType_el.rel = 'preload';
+      linkType_el.as = 'image';
+    }
+  } else {
+    linkType_el = genericPC.cloneNode(0);
+    if (/*startsWith*/!href.indexOf('//tiles')) {
+       linkType_el.crossOrigin = null; //null from UA JS DOM, 0 will trig "anon"
+     }
   }
-  if(/*startsWith*/!href.indexOf('//tiles')) {
-    linkType_el.crossOrigin = null; //null from UA JS DOM, 0 will trig "anon"
-  }
+ 
   linkType_el.href = href;
   return linkType_el;
 }
@@ -520,6 +533,7 @@ function setLinkEl(linkType_el, href) {
 function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
   var
   i,
+  el,
   div,
   strArr = preconPrefetEls[strArrIdx];
 
@@ -528,7 +542,13 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
   } else {
     div = document.createElement('div');
     for (i = 0; i < strArr.length; i++) {
-      div.appendChild(setLinkEl(linkType, strArr[i]));
+      el = setLinkEl(linkType, strArr[i]);
+      el && div.appendChild(el);
+    }
+/* I assume .fC faster than .cN.length and dont want a JS bool var here for
+   JS code size */
+    if(!div.firstChild) {
+      div = 0;
     }
   }
   return preconPrefetEls[strArrIdx] = div;
