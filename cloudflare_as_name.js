@@ -148,13 +148,19 @@ async function handleRequest(request, event) {
     ,resp, str;
   //console.log(pathname_callback);
 
-  if (pathname_callback==='/jsp') {
+  if (pathname_callback === '/jsp') {
   var headers = {}, str2, rheaders, i = 0;
-  pathname_callback = decodeURIComponent(url.searchParams.get('url'));
-  if(pathname_callback.startsWith('//')) {
-    pathname_callback = 'http:'+pathname_callback; //perf
+  if((pathname_callback = url.searchParams.get('url')) !== null) {
+    pathname_callback = decodeURIComponent(pathname_callback);
+    if(pathname_callback.startsWith('//')) {
+      pathname_callback = 'http:'+pathname_callback; //perf
+    }
+    str = new URL(pathname_callback);
+  } else {
+    return new Response(null, {
+      status: 400
+    });
   }
-  str = new URL(pathname_callback);
   //anti-abuse
   if((str = str.host) === 'otp-mta-prod.camsys-apps.com'
     || str === 'collector-otp-prod.camsys-apps.com'
@@ -578,8 +584,29 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
       }
     }));
   event.waitUntil((updateRoutes(event)));
-      return null;
+  return null;
     }
+//old smart/flip phone browser debug tool
+else if (
+  (pathname_callback === '/t' && (url.pathname = '/touch'))
+  || pathname_callback.startsWith('/touch')
+) {
+  //need to save THIS domain/prot in var url for later
+  pathname_callback = new URL(url);
+  pathname_callback.protocol = "https:";
+  pathname_callback.hostname = "patrickhlauke.github.io";
+  resp = await fetch(pathname_callback,request);
+  //3rd party GH Pages redirects if any, must be to THIS
+  //maybe http: cleartext, domain
+  if(pathname_callback = resp.headers.get('location')) {
+    pathname_callback = new URL(pathname_callback);
+    pathname_callback.protocol = url.protocol;
+    pathname_callback.hostname = url.hostname;
+    resp = new Response(resp.body, resp);
+    resp.headers.set('location', pathname_callback.href);
+  }
+  return resp;
+}
   /* Workers Preview has undef cf obj and cf prop is tested R/O
   United Nations (AS676) is a very unique looking ISP */
   var cf = request?.cf || {
