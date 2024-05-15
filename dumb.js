@@ -190,7 +190,7 @@ because window.name update speed unreliable, just always use SS
         window.S = {
           t: Date.now(),
           s: stacode,
-          f: function (cb) {
+          f: function w_S_f(cb) {
             if (fResp) {
               cb(fResp)
             } else {
@@ -205,7 +205,7 @@ because window.name update speed unreliable, just always use SS
           : pathtype === 1 ? '//backend-unified.mylirr.org/arrivals/' + stacode
           : '//backend-unified.mylirr.org/locations/'+stacode+'?geometry=NONE'
           , pathtype > 1 ? {} : lirr_headers
-        ).then(function(r){
+        ).then(function pLApiF1(r){
           var fCB2;
           var respJSON;
           if(fCB1) {
@@ -216,7 +216,7 @@ because window.name update speed unreliable, just always use SS
             //preconnected and CORS-preflight cached LIRR resps are very fast
             //30 ms-40 ms on cable modem, subway times are 40-80 ms
             if(r.status == 200) {
-              r.json().then(function (r) {
+              r.json().then(function pLApiF2 (r) {
                 if(fCB2) {
                   fCB2(r);
                 } else {
@@ -225,9 +225,9 @@ because window.name update speed unreliable, just always use SS
               });
               fResp = {
                 status: 200,
-                json: function () {
+                json: function pLFkFJsn() {
                   return {
-                    then: function (fn) {
+                    then: function pLFkThen(fn) {
                       if(respJSON) {
 /*
 spin event loop because child's onNewURL/y() assumes fetch CBs are always
