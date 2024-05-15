@@ -8,6 +8,7 @@
 //IE 8-10 has AEL/QS but not document.head+var el, newEl;
 var htmlEl = document.documentElement;
 var head = htmlEl.firstChild;
+var el, newEl;
 
 if(history.pushState) {
 
@@ -28,14 +29,64 @@ if(history.pushState) {
   var preconPrefetPurgedHtm = {};
   //can't expose tiles2 oh well
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/bk.png','/zo.png','/zi.png','/ts.gif']];
-  var genericStyle = document.createElement('style');
-  var genericBody = document.createElement('body');
+  var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
+  var genericElsReallocTimer;
+  var requestIdleCallbackPF =
+    this.requestIdleCallback
+    || ( // note, RAF can't be cancelled, rewrite maybe
+      this.requestAnimationFrame
+      && function (cb) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(cb);
+        });
+      }
+    )
+    || function (callback) {
+         return setTimeout(callback, 40)
+      }
+  ;
   var genericDarkMStyle;
   var genericPF = document.createElement('link');
   var genericPC = genericPF.cloneNode(0);
   genericPC.rel = "preconnect";
   genericPC.crossOrigin = "anonymous";
   genericPF.rel = "prefetch";
+
+function GENERIC_STYLE() {
+  return 0;
+}
+function GENERIC_BODY() {
+  return 1;
+}
+function GENERIC_HTML() {
+  return 2;
+}
+function GENERIC_DIVONE() {
+  return 3;
+}
+function GENERIC_DIVTWO() {
+  return 4;
+}
+function GENERIC_PF() {
+  return 5;
+}
+function GENERIC_PC() {
+  return 6;
+}
+
+
+
+/*duplicate master template el, into a hot and ready to use el,
+  to skip .cloneNode(), in performance critical areas*/
+function reallocGenericEls() {
+  var twoElArr;
+  for(var i=0;i<genericEls.length;i++) {
+    twoElArr = genericEls[i];
+    if(!twoElArr[1]) {
+      twoElArr[1] = twoElArr[0].cloneNode(0);
+    }
+  }
+}
 
 function STATE_PFHTMCACHE() {
   return 0;
@@ -56,14 +107,32 @@ function STATE_PATHTYPE() {
   }
 
 (function(){
-  var el
+  var el, newEl;
   var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: this.y};
   var state = [spa, spa.body, curPathname+curHash, curPathtype];
-  var i, arr = head.querySelectorAll('link[rel="preconnect"]');
+  var i, arr;
   var div;
+
+  for(i=0;i<genericEls.length;i++) {
+    if(el = genericEls[i]) {
+      newEl = document.createElement(el);
+    } else {
+      newEl = newEl.cloneNode(0);
+    }
+    genericEls[i] = [newEl];
+  }
+  genericEls[GENERIC_PF()][0].rel = "prefetch";
+  newEl = genericEls[GENERIC_PC()][0];
+  newEl.rel = "preconnect";
+  newEl.crossOrigin = "anonymous";
+
+  reallocGenericEls();
+
+  arr = head.querySelectorAll('link[rel="preconnect"]')
   if(arr.length) {
     if(arr.length > 1) {
-      div = document.createElement('div');
+      div = genericEls[GENERIC_DIVONE()][1];
+      genericEls[GENERIC_DIVONE()][1] = 0;
       for(i=0;i<arr.length;i++) {
         div.appendChild(arr[i]);
       }
@@ -77,7 +146,8 @@ function STATE_PATHTYPE() {
   arr = head.querySelectorAll('link[rel="prefetch"]');
   if(arr.length) {
     if(arr.length > 1) {
-      div = document.createElement('div');
+      div = genericEls[GENERIC_DIVTWO()][1];
+      genericEls[GENERIC_DIVTWO()][1] = 0;
       for(i=0;i<arr.length;i++) {
         div.appendChild(arr[i]);
       }
@@ -87,6 +157,7 @@ function STATE_PATHTYPE() {
     }
     curPFEl = preconPrefetEls[preconPrefetElMap[curPathtype][1]] = spa.pf = div;
   }
+  requestIdleCallbackPF(reallocGenericEls);
 
   if(el_fn = window.onpageshow) {
     spa.pg = el_fn;
@@ -343,7 +414,9 @@ API resp is preloaded to full inflated json obj
         if(prerenBody) {
           histArr[STATE_BODY()] = htmlEl.appendChild(prerenBody);
         } else if(!spa.body) {//add new empty BODY
-          histArr[STATE_BODY()] = htmlEl.appendChild(genericBody.cloneNode(0));
+          histArr[STATE_BODY()] = htmlEl.appendChild(genericEls[GENERIC_BODY()][1]);
+          genericEls[GENERIC_BODY()][1] = 0;
+          requestIdleCallbackPF(reallocGenericEls);
         } else if (!hashNavFlag) {
           histArr[STATE_BODY()] = htmlEl.appendChild(spa.body);
         } else {
@@ -458,7 +531,7 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
 
   //todo test tilemap vs its images
   preconPrefetPurgedHtm[pathname] = 1;
-  (this.requestIdleCallback || this.requestAnimationFrame || function(callback){setTimeout(callback, 40)})(function(){
+  requestIdleCallbackPF(function(){
 
      var pf, pn, el, el2;
      var origin_len = location.origin.length;
@@ -501,7 +574,7 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
           }
         }
       }
-  });
+  }); //end CB to .rIdleC/.rAF
 }
 function setLinkEl(linkType_el, href) {
   var hrefSuffix;
@@ -537,7 +610,9 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
   if (typeof strArr == "string") {
     div = setLinkEl(linkType, strArr);
   } else {
-    div = document.createElement('div');
+    //DIVONE or DIVTWO
+    div = genericEls[GENERIC_DIVONE()+linkType][1];
+    genericEls[GENERIC_DIVONE()+linkType][1] = 0;
     for (i = 0; i < strArr.length; i++) {
       el = setLinkEl(linkType, strArr[i]);
       el && div.appendChild(el);
@@ -627,13 +702,14 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
           }
           curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
+          requestIdleCallbackPF(reallocGenericEls);
         }
         
     //arg 3 private API want text resp
     fetch(pathname,{},1).then(function pLFetCB(r) {
       r.text().then(function pLFetTextCB(r) {
         // .p1 for grep
-        var start, startScript, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
+        var start, scriptStart, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
 
         if((start = r.indexOf('<style>')) != -1) {
           start += 7 /*'<style>'.length*/;
@@ -647,7 +723,9 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
               old_pg_rel = 1;
           }
           if(!el) {
-            el = genericStyle.cloneNode(0);//perf
+            el = genericEls[GENERIC_STYLE()][1];
+            genericEls[GENERIC_STYLE()][1] = 0;
+            requestIdleCallbackPF(reallocGenericEls);
             el.textContent = old_fn_y;
             if(old_pg_rel) {
               genericDarkMStyle = el;
@@ -691,7 +769,10 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             r = r.slice(start);
           }
           //can't do bodyEl.innerHTML = , tileMap has BODY attrs
-          el = document.createElement('html');
+          el = genericEls[GENERIC_HTML()][1];
+          genericEls[GENERIC_HTML()][1] = 0;
+          //dupe rIC call
+          requestIdleCallbackPF(reallocGenericEls);
           el.innerHTML = r; //time me
           //extract body
           spa.body = el = el.lastElementChild;
