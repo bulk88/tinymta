@@ -15,11 +15,12 @@
 var t, e,
   o=document.getElementById('t'),
   ea = ['keydown', 'keypress', 'keyup', 'focus', 'blur','mousedown','touchstart','touchcancel','touchend', 'mouseup'],
-  ta = [window, document, document.documentElement, document.body, o, document.getElementById('b1'),document.getElementById('b2')];
+  ta = [window, document, document.documentElement, document.body, o, document.getElementById('b1'),document.getElementById('b2')],
+  dateNowAtLoad = Date.now(); 
 for(t in ta) {
   for(e in ea) {
     ta[t].addEventListener(ea[e], function (evt) {
-    var s = evt.timeStamp;
+    var s = evt.timeStamp > dateNowAtLoad ? (evt.timeStamp - dateNowAtLoad) : evt.timeStamp ;
     var r = (((s*10) % 10000)|0)+"";
     var l = ((s / 1000)|0)+"";
     r = ("0000"+r).slice(-4);

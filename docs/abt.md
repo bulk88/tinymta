@@ -3,6 +3,11 @@ permalink: /abt.htm
 ---
 # tinymta
 Lightweight Javascript-free HTML flip phone client for NYC MTA Subway Train arrival times
+
+## Tools
+[Events Handlers](/events.htm)
+[Touch](/touch)
+
 ## About
 
 The official SubwayTime website at [http://subwaytime.mta.info/index.html#/app/home](http://subwaytime.mta.info/index.html#/app/home) (defunct May 2021, [https://new.mta.info/nearby](https://new.mta.info/nearby) is even slower) is too bloated.  It uses a modern huge Javascript framework.  Does not scroll with up/down key presses on modern desktop browsers.  Does not work on smartphones older than 3 years (like my Windows Mobile phone).  Does not work on dumb phones.  Too slow to use over 2G cell networks.  Its UI takes too long to find the correct station.  "goto your appstore and get a real subway time app" is not a solution if you have an old phone that does not have an appstore anymore.  I have never seen any not-an-app web-front end for subway time arrival data except the MTA's official [http://apps.mta.info/traintime3/index.html#/app/home](http://subwaytime.mta.info/index.html#/app/home) and [http://boerumhillscott.com/transit/](http://boerumhillscott.com/transit/) (not real time AFAIK).
@@ -80,9 +85,6 @@ Hint, disable the `html-minifier` in `grmp.pl` when doing development, it adds m
 
 ## License
 To be determined.
-
-## Tools
-[Events Handlers](/events.htm)
 
 ## Author
 Daniel Dragan (bulk88@hotmail.com)
