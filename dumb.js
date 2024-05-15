@@ -5,13 +5,12 @@
    have one to test with
 */
 (function(){
-if (history.pushState) {
-  //IE 8-10 has AEL/QS but not document.head
-  var el, newEl;
-  var htmlEl = document.documentElement;
-  var head = htmlEl.firstChild;
+//IE 8-10 has AEL/QS but not document.head+var el, newEl;
+var htmlEl = document.documentElement;
+var head = htmlEl.firstChild;
 
-  
+if(history.pushState) {
+
   var pageCache = {};
   var pageHistory;
   var pageHistoryIdx = 0;
@@ -723,8 +722,15 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
   } catch (e) {}
 }
 
+}//end block if (this.pushState) {
 
-function kph(e_realkey) {
+if (this.addEventListener) {
+  function kph(e_realkey) {
+    //ZTE flip Chrome 0 key conflicts with checkbox's
+    //space key
+    if(e_realkey.keyCode === 32
+       && e_realkey.target.nodeName === 'INPUT')
+      return;
     e_realkey = [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,0,1,2,3,4,5,6,7,8,9,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9,,,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9][e_realkey.keyCode];
 
     //gz 978 to 971 chg, +x===x vs typeof x === 'number'
@@ -818,7 +824,7 @@ function kph(e_realkey) {
   //FF3.0 throws exception "not enough arguments" if #3 missing
   addEventListener('keyup', kph, 0);
   addEventListener('keypress', kph, 0);
-
+}// end if (this.addEventListener) {
 
 /*
 use nextElementSibling for perf/native/C++,
@@ -862,7 +868,6 @@ DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't
       //quietly die here, no exceptions thrown
     el = el.nextElementSibling;
   }
-}//end block if (this.pushState) {
 
 //.SEMV() is IE only FN all vers
 if(this.ScriptEngineMajorVersion
@@ -909,6 +914,6 @@ if(this.ScriptEngineMajorVersion
     }// el loop
     onload = null; //GC FWIW
   };
-}
+}// end if(this.ScriptEngineMajorVersion
 
 })();
