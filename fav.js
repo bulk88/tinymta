@@ -3,8 +3,8 @@ var L;//async race CB fav.js vs inline wea script
 
 (function(){
 //don't touch next 4 lines, they are matched by adj_fav.pl
-function DRAW_VER() { return 125; };
-function DRAW_VER_STR() { return "125"; };
+function DRAW_VER() { return 126; };
+function DRAW_VER_STR() { return "126"; };
 function DRAW_VER_LEN() { return 3; };
 function PREFIX_LEN() { return 3659; };
 //returns array [createdNewFavsBool,favsConfig]
@@ -160,6 +160,13 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   newEl_i.as = 'script';
   newEl_i.href = 'routes.js';
   delayedStaHits_head.appendChild(newEl_i);
+/* race between fav.js and dumb.js, if possible get SPA loader's
+   DIV in HEAD of LINK/rel=prefetch .htms so stop.htm/rstop.htm get purged
+   by EITHER index.htm and stations.htm, whichever first */
+  newEl_i = delayedStaHits_head.getElementsByTagName('div');
+  if(newEl_i = newEl_i[0]) {
+    delayedStaHits_head = newEl_i;
+  }
   newEl_i = document.createElement('link');
   newEl_i.rel = 'prefetch';
   newEl_i.href = 'stop.htm';

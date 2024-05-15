@@ -75,7 +75,7 @@ function STATE_PATHTYPE() {
     (genericPC = div.cloneNode(0)).removeAttribute('href');
   } else alert('bug');
 
-  arr = head.querySelectorAll('link[rel="prefetch"]')
+  arr = head.querySelectorAll('link[rel="prefetch"]');
   if(arr.length) {
     if(arr.length > 1) {
       div = document.createElement('div');
