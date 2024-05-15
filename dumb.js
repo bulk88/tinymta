@@ -46,11 +46,6 @@ if(history.pushState) {
       }
   ;
   var genericDarkMStyle;
-  var genericPF = document.createElement('link');
-  var genericPC = genericPF.cloneNode(0);
-  genericPC.rel = "preconnect";
-  genericPC.crossOrigin = "anonymous";
-  genericPF.rel = "prefetch";
 
 function GENERIC_STYLE() {
   return 0;
@@ -67,10 +62,10 @@ function GENERIC_DIVONE() {
 function GENERIC_DIVTWO() {
   return 4;
 }
-function GENERIC_PF() {
+function GENERIC_PC() {
   return 5;
 }
-function GENERIC_PC() {
+function GENERIC_PF() {
   return 6;
 }
 
@@ -576,28 +571,32 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
       }
   }); //end CB to .rIdleC/.rAF
 }
-function setLinkEl(linkType_el, href) {
-  var hrefSuffix;
-  if (linkType_el) {
-    if(preconPrefetPurgedHtm[href]) {
-      return 0;
-    }
-    linkType_el = genericPF.cloneNode(0);
+function setLinkEl(linkType /*0 PC 1 PF*/, href) {
+  var hrefSuffix, el;
+  if (linkType && preconPrefetPurgedHtm[href]) {
+    return 0;
+  }
+  hrefSuffix = genericEls[GENERIC_PC()+linkType];
+  if(el = hrefSuffix[1]) {
+    hrefSuffix[1] = 0;
+  } else {
+    el = hrefSuffix[0].cloneNode(0); //rareish, clone from real master El
+  }
+  if (linkType) {
     hrefSuffix = href.slice(-4);
     /*for tileMap */
     if (hrefSuffix == '.png' || hrefSuffix == '.gif') {
-      linkType_el.rel = 'preload';
-      linkType_el.as = 'image';
+      el.rel = 'preload';
+      el.as = 'image';
     }
   } else {
-    linkType_el = genericPC.cloneNode(0);
     if (/*startsWith*/!href.indexOf('//tiles')) {
-       linkType_el.crossOrigin = null; //null from UA JS DOM, 0 will trig "anon"
+       el.crossOrigin = null; //null from UA JS DOM, 0 will trig "anon"
      }
   }
  
-  linkType_el.href = href;
-  return linkType_el;
+  el.href = href;
+  return el;
 }
 
 function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
