@@ -50,7 +50,7 @@ var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alert
 /* put y() first b/c 3rd party AJAX APIs (MTA alerts API) are usually
    slower/larger/latency/often not preconnected vs our
    very tiny in gz bytes, same origin, /routes.js */
-var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:y();document.documentElement.firstChild.appendChild(document.createElement(\'script\')).src =\'routes.js\';0">Fast</a> <a href=\"javascript:location.replace(\''
+var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:y();document.documentElement.firstChild.appendChild(document.createElement(\'script\')).src =\'routes.js\';void 0">Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
           (/status\.htm$/.test(location.pathname) ? "status_.htm" : "status.htm")
