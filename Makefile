@@ -61,6 +61,10 @@ docs/li/jsrdt.htm : docs/jsrdt.htm
 docs/mn/jsrdt.htm : docs/jsrdt.htm
 	copy /y "docs\jsrdt.htm" "$@"
 
+docs/events.htm : events.htm
+	copy /y events.htm "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+
 docs/dumb.js : dumb.js
 	copy /y dumb.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
@@ -201,7 +205,7 @@ docs/ac.appcache : docs/index.htm docs/404.html docs/favicon.ico
 docs/ac.appcache : docs/CNAME docs/abt.md docs/_config.yml docs/index.html
 docs/ac.appcache : docs/google71e8cfa7440e51ce.html docs/dumb.js docs/jsrdt.htm
 docs/ac.appcache : docs/li/jsrdt.htm docs/1p.js docs/status.htm docs/status_.htm
-docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm
+docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm docs/events.htm
 docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js docs/ifav.js
 docs/ac.appcache : docs/ht.png docs/hg.svg docs/dp.png
 docs/ac.appcache : docs/hg.png docs/draw_fav.js docs/as.js

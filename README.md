@@ -1,4 +1,5 @@
 ---
+permalink: /abt.htm
 ---
 # tinymta
 Lightweight Javascript-free HTML flip phone client for NYC MTA Subway Train arrival times
@@ -80,5 +81,13 @@ Hint, disable the `html-minifier` in `grmp.pl` when doing development, it adds m
 ## License
 To be determined.
 
+## Tools
+[Events Handlers](/events.htm)
+
 ## Author
 Daniel Dragan (bulk88@hotmail.com)
+
+<!-- spam trap -->
+<a style="color:#fefefe" href="mailto:bulk88@tinymta.com"><font color="#fefefe">Contact us</font></a>
+
+<a style="color:#fefefe" href="mailto:bulk88@tinymta.us.to"><font color="#fefefe">Contact us</font></a>

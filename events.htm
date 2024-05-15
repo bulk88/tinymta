@@ -1,0 +1,40 @@
+<html manifest="ac.appcache"><head>
+<!-- title must be first, IE 6 (test) and under, put title tag first in -->
+<!-- childNodes/children, regardless of HTML src code tree order, if title -->
+<!-- not first absolute pos into .children will fail -->
+<title>TM - Events</title>
+<!-- put no-referrer so preload reqs match later fetch reqs instead of double req -->
+<meta name=mobileoptimized content=0><meta name="referrer" content="no-referrer">
+</head><body style="height: 95%">
+<button id=b1 style="height: 5%">1</button>
+<button id=b2 style="height: 5%">2</button>
+<br>
+<textarea id=t readonly style="height: 90%; width: 100%"></textarea>
+<script>
+(function(){
+var t, e,
+  o=document.getElementById('t'),
+  ea = ['keydown', 'keypress', 'keyup', 'focus', 'blur','mousedown','touchstart','touchcancel','touchend', 'mouseup'],
+  ta = [window, document, document.documentElement, document.body, o, document.getElementById('b1'),document.getElementById('b2')];
+for(t in ta) {
+  for(e in ea) {
+    ta[t].addEventListener(ea[e], function (evt) {
+    var s = evt.timeStamp;
+    var r = (((s*10) % 10000)|0)+"";
+    var l = ((s / 1000)|0)+"";
+    r = ("0000"+r).slice(-4);
+    var t = ("   ".slice(0,3-(l.length))+l)+'.'+r.slice(0,3)+'_'+r.slice(3);
+    o.value =
+      t + " "
+      + evt.type + " "
+      +(evt.currentTarget.nodeName?evt.currentTarget.nodeName:'window')
+      + ("key" in evt ? " key "+evt.key:"")
+      +("keyCode" in evt ? " keyCode "+evt.keyCode:"")
+      +("code" in evt ? " code "+evt.code:"")
+      +"\n"+o.value;
+    },0);
+    }
+}
+})();
+</script>
+</body></html>

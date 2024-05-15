@@ -81,6 +81,9 @@ Hint, disable the `html-minifier` in `grmp.pl` when doing development, it adds m
 ## License
 To be determined.
 
+## Tools
+[Events Handlers](/events.htm)
+
 ## Author
 Daniel Dragan (bulk88@hotmail.com)
 
