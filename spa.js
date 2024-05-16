@@ -1,6 +1,7 @@
 (function(){
   "use strict";
 var _window = window;
+var _location = location;
 //IE 8-10 has AEL/QS but not document.head
 var htmlEl = document.documentElement;
 var head = htmlEl.firstChild;
@@ -11,9 +12,9 @@ var el, newEl;
   var pageCache = {};
   var pageHistory;
   var pageHistoryIdx = 0;
-  var curPathname = location.pathname;
-  var curHash = location.hash;
-  var _origin = location.origin;
+  var curPathname = _location.pathname;
+  var curHash = _location.hash;
+  var _origin = _location.origin;
   var curPathtype = getPathType(curPathname);
   var curPCEl;
   var curPFEl;
@@ -165,7 +166,7 @@ function STATE_PATHTYPE() {
   //mk global arr
   pageHistory = [state];
   if(history.state !== pageHistoryIdx)
-    history.replaceState(pageHistoryIdx,0,location.href);
+    history.replaceState(pageHistoryIdx,0,_location.href);
 })();
 
 
@@ -230,7 +231,7 @@ fast mousedown/mouseup click, it does work on "slow" clicks, but
 because window.name update speed unreliable, just always use SS
 */
 
-    if(pathname === location.pathname)
+    if(pathname === _location.pathname) /* hash nav */
       return;
 
     if(pathname.length >= (10 /*'/jsrdt.htm'.length*/)
@@ -362,7 +363,7 @@ API resp is preloaded to full inflated json obj
 
       if(spa=pageCache[pathname]) {
         hash = evt.hash;
-        hashNavFlag = pathname === location.pathname && hash != location.hash;
+        hashNavFlag = pathname === _location.pathname && hash != _location.hash;
 
         histArr = pageHistory[pageHistoryIdx];
 
@@ -447,7 +448,9 @@ API resp is preloaded to full inflated json obj
           curPathname = pathname;
           curHash = hash;
           curPathtype = pathtype;
-          //tileMap has images
+          //tileMap has images, b/c imgs are never real or faux-nav-ed to,
+          //and PL only schedules purges for LINK rel=PF AFTER a fetch() of the
+          //.htm, the purge must be scheduled explictly here
           if(pathtype == 8 && spa.pf) {
             purgePreFetchHTML(pathname, '/bk.png', 8);
             purgePreFetchHTML(pathname, '/zo.png', 8);
@@ -470,8 +473,8 @@ onpopstate = function (e) {
   var el2;
   var newState;
   var newPathtype;
-  var newPathname = location.pathname;
-  var newHash = location.hash;
+  var newPathname = _location.pathname;
+  var newHash = _location.hash;
   //null if errors/problems, very old safari always calls oPS with
   //null on "onload" new page
   e = e.state;
@@ -492,7 +495,7 @@ onpopstate = function (e) {
   ) //a refresh, or forward after refresh (no future state)
   {
     console.log('spa leave 2 '+newPathname);
-    location.reload();
+    _location.reload();
     return;
   }
 
@@ -538,7 +541,7 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
   requestIdleCallbackPF(function(){
 
      var pf, pn, el, el2;
-     var origin_len = location.origin.length;
+     var origin_len = _origin.length;
      var href;
 
       var spa = pageCache[parentPathname];
