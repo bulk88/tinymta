@@ -1,13 +1,13 @@
 (function() {
-  var _onpagehide, _onpageshow, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  var _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
-  ver = ver ? parseInt(ver[2], 10) : false;
+  ver = ver ? +ver[2] : 0;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
   if ((ver > 70 && ver < 84) || ver > 86) {
     _onpageshow = function ops1p (cord_event) {
       if (!cord_event.persisted) {
         if (
-          (cord_event = sessionStorage.getItem('1p'+location.pathname))
+          (cord_event = sessionStorage.getItem('1p'+_location.pathname))
           //don't parse old pre-May 2024 entries with old JSON format
           && cord_event.charAt(0) !== "{"
         ) {
@@ -23,7 +23,7 @@
     _onpagehide = function oph1p (event, spa_prv_pathname) {
       if (!event.persisted) {
         console.log('s 1p');
-        sessionStorage.setItem('1p'+(spa_prv_pathname || location.pathname), scrollX+','+scrollY);
+        sessionStorage.setItem('1p'+(spa_prv_pathname || _location.pathname), scrollX+','+scrollY);
       }
     };
   }
@@ -36,13 +36,13 @@
   }
 
 if(!this.onpopstate) {(function (){
-  var curPathname = location.pathname;
-  var curHash = location.hash;
+  var curPathname = _location.pathname;
+  var curHash = _location.hash;
   this.onpopstate = function (evt) {
-    if(curPathname == location.pathname && curHash != location.hash) {
-      sessionStorage.removeItem('1p'+location.pathname);
+    if(curPathname == _location.pathname && curHash != _location.hash) {
+      sessionStorage.removeItem('1p'+_location.pathname);
     } else if(evt.state !== null){
-      location.reload();
+      _location.reload();
     }
   };
 })();
