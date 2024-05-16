@@ -6,14 +6,16 @@
   if ((ver > 70 && ver < 84) || ver > 86) {
     _onpageshow = function ops1p (cord_event) {
       if (!cord_event.persisted) {
-        if (cord_event = sessionStorage.getItem('1p'+location.pathname)) {
-          cord_event = JSON.parse(cord_event);
-          if (cord_event.hasOwnProperty('scrollX') && cord_event.hasOwnProperty('scrollX')) {
-            console.log('g 1p');
-            requestAnimationFrame(function() {
-              scroll(cord_event.scrollX, cord_event.scrollY);
-            });
-          }
+        if (
+          (cord_event = sessionStorage.getItem('1p'+location.pathname))
+          //don't parse old pre-May 2024 entries with old JSON format
+          && cord_event.charAt(0) !== "{"
+        ) {
+          console.log('g 1p');
+          cord_event = cord_event.split(',');
+          requestAnimationFrame(function() {
+            scroll(cord_event[0], cord_event[1]);
+          });
         }
       }
     };
@@ -21,10 +23,7 @@
     _onpagehide = function oph1p (event, spa_prv_pathname) {
       if (!event.persisted) {
         console.log('s 1p');
-        sessionStorage.setItem('1p'+(spa_prv_pathname || location.pathname), JSON.stringify({
-          scrollY: scrollY,
-          scrollX: scrollX
-        }));
+        sessionStorage.setItem('1p'+(spa_prv_pathname || location.pathname), scrollX+','+scrollY);
       }
     };
   }
