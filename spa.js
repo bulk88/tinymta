@@ -151,13 +151,13 @@ function STATE_PATHTYPE() {
   }
   requestIdleCallbackPF(reallocGenericEls);
 
-  if(el = window.onpageshow) {
+  if(el = _window.onpageshow) {
     spa.pg = el;
   } else {
     //fav.js delayed exec
-    window.onpageshow = function (unused_evt, fn) {
+    _window.onpageshow = function (unused_evt, fn) {
       spa.pg = fn;
-      window.onpageshow = fn;
+      _window.onpageshow = fn;
     };
   }
 
@@ -242,7 +242,7 @@ because window.name update speed unreliable, just always use SS
       var fCB1;
       if(pathtype < 4) {
         stacode = stacode.slice(1);
-        window.S = {
+        _window.S = {
           t: Date.now(),
           s: stacode,
           f: function w_S_f(cb) {
@@ -326,7 +326,7 @@ API resp is preloaded to full inflated json obj
             //in theory there could be a fetch() obj, but no <BODY>
             prerenState.pr = deferredNewBody;
           } else {
-            window.S = prerenState = {t:Date.now(), s:stacode, pt: pathtype, pr: spa.body};
+            _window.S = prerenState = {t:Date.now(), s:stacode, pt: pathtype, pr: spa.body};
             spa.js(0,stacode);
           }
         }
@@ -398,9 +398,9 @@ API resp is preloaded to full inflated json obj
         histArr = pageHistory[pageHistoryIdx] = [];
 
 
-        ls = window.S; //inflight prerender maybe
+        ls = _window.S; //inflight prerender maybe
         if(ls && ls.pr) {
-          window.S = 0;
+          _window.S = 0;
           if(ls.pt === pathtype && ls.s === hash
             && (Date.now()-ls.t < 3000)
           ) {
@@ -437,10 +437,10 @@ API resp is preloaded to full inflated json obj
           e.preventDefault();
 
           y = spa.y;
-          window.onpageshow = spa.pg;
+          _window.onpageshow = spa.pg;
 
           if((fn = spa.js) && !prerenBody) {
-             //this must be window. not a meth call
+             //in fn() "this." must be window. not a meth call
              fn();
           }
           //dont use evt obj anymore, /li changes to /li/li after url chg
@@ -746,8 +746,8 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         //STYLE parse advs var start to almost end of HEAD/start of BODY
         if((scriptStart = r.indexOf('<script>',start)) != -1) {
           old_fn_y = y;
-          old_pg_rel = window.onpageshow;
-          window.onpageshow = null;/*IE 11 doesnt like 0*/
+          old_pg_rel = _window.onpageshow;
+          _window.onpageshow = null;/*IE 11 doesnt like 0*/
           scriptEnd = r.indexOf('</script>', scriptStart+8 /*'<script>'.length*/);
           Function(r.slice(scriptStart+8 /*'<script>'.length*/, scriptEnd))();
           //tmp var
@@ -756,9 +756,9 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             delete el.body; //anti-leak, el is really onDrawURL() fn obj
           }
           spa.y = y;
-          spa.pg = window.onpageshow;
+          spa.pg = _window.onpageshow;
           y = old_fn_y;
-          window.onpageshow = old_pg_rel;
+          _window.onpageshow = old_pg_rel;
           onhashchange = null;
           //run new page's drawUrl/SPA body-less
           prerenFn && prerenFn(spa);
