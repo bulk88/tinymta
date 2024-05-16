@@ -145,11 +145,13 @@ function _recordFavStopHit(sta_name, fav_url) {
   newEl_i;
 
 
-
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
 if (location.pathname == '/') {
   //not index.htm render critical files
   delayedStaHits_head = document.documentElement.firstChild;
+  if(history.pushState) {
+    delayedStaHits_head.appendChild(document.createElement("script")).src = 'spa.js';
+  }
 /*
 routes.js takes a while to generate b/c its a CFW, so start it early
 it doesn't cause congestion on the wire b/c CFW latency, its also small

@@ -16,6 +16,7 @@ my @a = qw(
   ./docs/1p.js
   ./docs/dumb.js
   ./docs/as.js
+  ./docs/spa.js
 );
 
 foreach(@a) {

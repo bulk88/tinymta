@@ -69,6 +69,10 @@ docs/dumb.js : dumb.js
 	copy /y dumb.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
 
+docs/spa.js : spa.js
+	copy /y spa.js "$@"
+	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
+
 docs/1p.js : 1p.js
 	copy /y 1p.js "$@"
 	uglifyjs -c -m toplevel -m eval "$@" -o "$@"
@@ -209,6 +213,7 @@ docs/ac.appcache : docs/statusie50.htm docs/statusie50_.htm docs/events.htm
 docs/ac.appcache : docs/f.js docs/mn/jsrdt.htm docs/fav.js docs/ifav.js
 docs/ac.appcache : docs/ht.png docs/hg.svg docs/dp.png
 docs/ac.appcache : docs/hg.png docs/draw_fav.js docs/as.js
+docs/ac.appcache : docs/spa.js
 docs/ac.appcache : MNRR LIRRMKF SUBMKF WEATHERICONS
 	perl -e"use File::Slurp; \
 	my $$f = read_file('ac.appcache', { binmode => ':raw' }); \
@@ -225,6 +230,6 @@ gz: docs/index.htm.gz docs/status.htm.gz
 gz: routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
 gz: docs/fav.js.gz docs/fav.js.gz.png docs/ifav.js.gz docs/ifav.js.gz.png
-gz: docs/as.js.gz docs/as.js.gz.png
+gz: docs/as.js.gz docs/as.js.gz.png docs/spa.js.gz docs/spa.js.gz.png
 gz: MNRRgz LIRRMKFgz SUBMKFgz
 
