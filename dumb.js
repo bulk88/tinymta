@@ -22,6 +22,7 @@ if(history.pushState) {
   var curPCEl;
   var curPFEl;
   var pagehideCB_1p;
+  var haveRoutesJS;
 
   var lirr_headers = {headers: {'accept-version': '3.0'}};
   //array is in pagetype nums
@@ -315,6 +316,7 @@ API resp is preloaded to full inflated json obj
         if(pathtype === 2) {
           //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
           R = 0;
+          haveRoutesJS = 1;
           head.appendChild(document.createElement('script')).src = "routes.js";
         }
       }
@@ -373,6 +375,18 @@ API resp is preloaded to full inflated json obj
         if(oldspa.p1 && pagehideCB_1p && curPathtype !== pathtype) {
           //arg 2 non-std arg
           pagehideCB_1p({},curPathname); //if(!evt.persisted) save scroll
+        }
+        if(pathtype === 2) {
+          //somehow a onClick happened WITHOUT onMouseDown/onTouchStart
+          //keyboard TAB/ENTER or a flip phone
+          if(!haveRoutesJS) {
+            //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
+            R = 0;
+            haveRoutesJS = 1;
+            head.appendChild(document.createElement('script')).src = "routes.js";
+          } else {
+            haveRoutesJS = 0;
+          }
         }
 
         if(!hashNavFlag) {
