@@ -1,4 +1,6 @@
 (function(){
+  "use strict";
+var _window = window;
 //IE 8-10 has AEL/QS but not document.head
 var htmlEl = document.documentElement;
 var head = htmlEl.firstChild;
@@ -26,9 +28,9 @@ var el, newEl;
   var genericDarkMStyle;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
   var requestIdleCallbackPF =
-    this.requestIdleCallback
+    _window.requestIdleCallback
     || ( // note, RAF can't be cancelled, rewrite maybe
-      this.requestAnimationFrame
+      _window.requestAnimationFrame
       && function (cb) {
         requestAnimationFrame(function () {
           requestAnimationFrame(cb);
@@ -90,14 +92,14 @@ function STATE_PATHTYPE() {
   return 3;
 }
   //1p and dumb phone pages, don't naturally do XHR IO
-  if (!this.fetch && !this.f) {
+  if (!_window.fetch && !_window.f) {
     f=1;//anti double load f.js in index.htm
     head.appendChild(document.createElement("script")).src = '/f.js';
   }
 
 (function(){
   var el, newEl;
-  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: this.y};
+  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: _window.y};
   var state = [spa, spa.body, curPathname+curHash, curPathtype];
   var i, arr;
   var div;
@@ -149,8 +151,8 @@ function STATE_PATHTYPE() {
   }
   requestIdleCallbackPF(reallocGenericEls);
 
-  if(el_fn = window.onpageshow) {
-    spa.pg = el_fn;
+  if(el = window.onpageshow) {
+    spa.pg = el;
   } else {
     //fav.js delayed exec
     window.onpageshow = function (unused_evt, fn) {
@@ -408,7 +410,7 @@ API resp is preloaded to full inflated json obj
 
         //special GC/free images CB to tileMap.htm, if tM.htm wants a gc evt
         if(pathtype != 8) {
-          (el = this.T) && (el = el.GC) && el();
+          (el = _window.T) && (el = el.GC) && el();
         }
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         
@@ -803,5 +805,5 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
   } catch (e) {}
 } // end function spaPrefetch(pathname, pathtype, prerenFn) {
 
-//}//end block if (this.pushState) {
+//}//end block if (history.pushState) {
 })();
