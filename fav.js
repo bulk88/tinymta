@@ -141,17 +141,16 @@ function _recordFavStopHit(sta_name, fav_url) {
 }
 
   var prefix,
-  delayedStaHits_head,
+  delayedStaHits_head = document.documentElement.firstChild,
   newEl_i;
 
-
-//"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
-if (location.pathname == '/') {
-  //not index.htm render critical files
-  delayedStaHits_head = document.documentElement.firstChild;
-  if(history.pushState) {
+  //index.htm stop.htm and rstop.htm will load spa.js, all 3 have child pages
+  if(history.pushState) { //note fav.js won't load spa.js if /li/*.htm or /mn/*.htm
     delayedStaHits_head.appendChild(document.createElement("script")).src = 'spa.js';
   }
+//"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
+if (location.pathname == '/') {
+  //not index.htm render critical files below
 /*
 routes.js takes a while to generate b/c its a CFW, so start it early
 it doesn't cause congestion on the wire b/c CFW latency, its also small

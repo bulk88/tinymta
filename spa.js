@@ -162,6 +162,16 @@ function STATE_PATHTYPE() {
     };
   }
 
+   spa.pgh = _window.onpagehide;
+
+  //grab 1p evt hand fns early if possible (root htm is a 1p.js)
+  if(pagehideCB_1p = history.pushState.p1) {
+    pagehideCB_1p = pagehideCB_1p[0];
+    //dont let undef cause reloads if UA not chrome
+    pagehideCB_1p || (pagehideCB_1p = 0);
+    delete history.pushState.p1;
+  }
+
   pageCache[curPathname] = spa;
   //mk global arr
   pageHistory = [state];
@@ -333,7 +343,7 @@ API resp is preloaded to full inflated json obj
         }
       }
       //reload 1p.js if need, was I/O prob earlier
-      if((spa = pageCache[pathname]) && (!spa.p1 || typeof pagehideCB_1p !== "undefined")) {
+      if((spa = pageCache[pathname]) && (!spa.pgh || typeof pagehideCB_1p !== "undefined")) {
         preren && preren(spa);
       } else {
         spaPrefetch(pathname, pathtype, preren);
@@ -368,10 +378,9 @@ API resp is preloaded to full inflated json obj
         histArr = pageHistory[pageHistoryIdx];
 
         oldspa = histArr[STATE_PFHTMCACHE()];
-
-        if(oldspa.p1 && pagehideCB_1p && curPathtype !== pathtype) {
+        if(fn = oldspa.pgh) {
           //arg 2 non-std arg
-          pagehideCB_1p({},curPathname); //if(!evt.persisted) save scroll
+          fn({},curPathname); //probably 1p.js if(!evt.persisted) save scroll
         }
         if(pathtype === 2) {
           //somehow a onClick happened WITHOUT onMouseDown/onTouchStart
@@ -437,8 +446,9 @@ API resp is preloaded to full inflated json obj
         if(!hashNavFlag) {
           e.preventDefault();
 
-          y = spa.y;
+          _window.y = spa.y;
           _window.onpageshow = spa.pg;
+          _window.onpagehide = spa.pgh;
 
           if((fn = spa.js) && !prerenBody) {
              //in fn() "this." must be window. not a meth call
@@ -507,9 +517,9 @@ onpopstate = function (e) {
   newPathtype = newState[STATE_PATHTYPE()];
   var spa = newState[STATE_PFHTMCACHE()];
 
-  if(oldspa.p1 && pagehideCB_1p && curPathtype !== newPathtype) {
+  if(el = oldspa.pgh) {
     //arg 2 non-std arg
-    pagehideCB_1p({},curPathname); //if(!evt.persisted) save scroll chrome bug
+    el({},curPathname);  //probably 1p.js if(!evt.persisted) save scroll
   }
 
   curPathname = newPathname;
@@ -527,8 +537,9 @@ onpopstate = function (e) {
   curPathtype = newPathtype;
 
   htmlEl.appendChild(newState[STATE_BODY()]);
-  y = spa.y;
+  _window.y = spa.y;
   onpageshow = el = spa.pg;
+  onpagehide = spa.pgh;
   el && el({persisted:1});
 };
 
@@ -653,7 +664,7 @@ function swapElMaybe(el,el2) {
 
 //if != 200???
 function spaPrefetch(pathname, pathtype, prerenFn) {
-  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, is1pjs, fetch_js_all_cb;
+  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, fetch_js_all_cb;
   var parentPathname = curPathname;
   var parentPathtype = curPathtype;
   
@@ -663,35 +674,38 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
     //but 1p.js isnt, so start this I/O first if needed
     
     if (pathname.indexOf('/stations') != -1) {
-      spa.p1 = is1pjs = 1;
       if (typeof pagehideCB_1p === "undefined") {
-        //win.pushS C5 FF4, O11.5, SF5, IE10
-        //pagehide C4 FF6, O15, SF5, IE 11
-        //must guard for UAs no win.onpagehide evt
-        onpopstate.o /*one*/ = evt_cb_setter = function (evt_cb,err) {
-          if(err) {
-            //retry I/O eventually
-            head.removeChild(el);
-          } else {
-            //dont let undef cause reloads if UA not chrome
-            pagehideCB_1p = evt_cb ? evt_cb : 0;
-          }
-          el.onerror = 0; //GC fn
-          onpopstate.o = 0;
-          if(fetch_js_all_cb)
+        if(history.pushState.p1) {
+          pagehideCB_1p = history.pushState.p1[0];
+          delete history.pushState.p1;
+          //dont let undef cause reloads if UA not chrome
+          spa.pgh = (pagehideCB_1p || (pagehideCB_1p = 0));
+        } else {
+          //win.pushS C5 FF4, O11.5, SF5, IE10
+          //pagehide C4 FF6, O15, SF5, IE 11
+          //must guard for UAs no win.onpagehide evt
+          history.pushState.p1 = evt_cb_setter = function (evt) {
+            //error
+            if(evt) {
+              //retry I/O eventually
+              head.removeChild(el);
+            } else {
+              pagehideCB_1p = history.pushState.p1[0];
+              //dont let undef cause reloads if UA not chrome
+              spa.pgh = (pagehideCB_1p || (pagehideCB_1p = 0));
+            }
+            el.onerror = 0; //GC fn
+            delete history.pushState.p1;
             fetch_js_all_cb();
-          else
-            fetch_js_all_cb = 1;
-        };
-        el = document.createElement('script');
-        el.onerror = function () { //anti-UI-freeze
-        //retry I/O eventually
-          evt_cb_setter(0,1);
-        };
-        el.src = "1p.js";
-        head.appendChild(el);
-      } else {
-        fetch_js_all_cb = 1;
+          };
+          el = document.createElement('script');
+          el.onerror = evt_cb_setter; //anti-UI-freeze
+          el.src = "1p.js";
+          head.appendChild(el);
+          fetch_js_all_cb = 1; //flag for below
+        }
+      } else { //else have "pagehideCB_1p", its a fn or int 0, UA dependent
+        spa.pgh = pagehideCB_1p;
       }
     }
 
@@ -748,7 +762,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         //status.htm don't exec inline SCRIPT in HEAD, that tag is for globals decl
         //STYLE parse advs var start to almost end of HEAD/start of BODY
         if((scriptStart = r.indexOf('<script>',start)) != -1) {
-          old_fn_y = y;
+          old_fn_y = _window.y;
           old_pg_rel = _window.onpageshow;
           _window.onpageshow = null;/*IE 11 doesnt like 0*/
           scriptEnd = r.indexOf('</script>', scriptStart+8 /*'<script>'.length*/);
@@ -758,9 +772,9 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           if(haveBodyElCB = el.body) {
             delete el.body; //anti-leak, el is really onDrawURL() fn obj
           }
-          spa.y = y;
+          spa.y = _window.y;
           spa.pg = _window.onpageshow;
-          y = old_fn_y;
+          _window.y = old_fn_y;
           _window.onpageshow = old_pg_rel;
           onhashchange = null;
           //run new page's drawUrl/SPA body-less
@@ -793,7 +807,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             haveBodyElCB(el);
           }
         }
-        if(!is1pjs || fetch_js_all_cb) {
+        if(!fetch_js_all_cb) {
           pageCache[pathname] = spa;
           purgePreFetchHTML(parentPathname,pathname,parentPathtype);
         //wait for 1p.js before writing spa cache ent to global

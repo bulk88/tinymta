@@ -1,5 +1,5 @@
 (function() {
-  var _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  var finCB, _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
   ver = ver ? +ver[2] : 0;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
@@ -27,10 +27,20 @@
       }
     };
   }
-  //SPA preloader CB
-  if ((ver = this.onpopstate) && (ver = ver.o)) {
-    ver(_onpagehide);
-  } else if (_onpagehide) { //is buggy scroll restore chrome
+  /* SPA preloader CB, always deliver event handler, either as 1p.js being
+     root load (must be race safe between spa.js and 1p.js)
+     or 1p.js being delayed background preloaded (don't install) */
+  if (ver = history.pushState) {
+    finCB = ver.p1;
+    ver.p1 = [_onpagehide];
+    if(!finCB) { //load spa.js for all *stations.htm s
+      document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/spa.js';
+    } else {
+      finCB();
+    }
+
+  }
+  if (_onpagehide && !finCB) { //is buggy scroll restore chrome and is root load
     onpagehide = _onpagehide;
     onpageshow = _onpageshow;
   }
