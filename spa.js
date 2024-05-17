@@ -42,7 +42,6 @@ var el, newEl;
     ['/fav.js'],
     ['/dumb.js']
   ];
-  var prefetJSScanedHead;
   var genericDarkMStyle;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
   var requestIdleCallbackPF =
@@ -134,6 +133,7 @@ function STATE_PATHTYPE() {
   var state = [spa, spa.body, curPathname+curHash, curPathtype];
   var i, arr;
   var div;
+  var origin_len = _origin.length;
 
   for(i=0;i<genericEls.length;i++) {
     if(el = genericEls[i]) {
@@ -180,6 +180,23 @@ function STATE_PATHTYPE() {
     }
     curPFEl = preconPrefetEls[preconPrefetElMap[curPathtype][1]] = spa.pf = div;
   }
+//get 1p.js for Chrome scroll restore bug and any other root .js files
+  div = {}; //url str to idx map
+  for(i=0; i< prefetJS.length; i++) {
+    div[prefetJS[i][0]] = i+1;
+  }
+ //h.pS FF 4 Op 11.5 , d.scripts FF 9 Op 12.1
+  arr = head.getElementsByTagName('script');
+  for(i=0; i < arr.length; i++) {
+    newEl = arr[i];
+    newEl = newEl.src.slice(origin_len);
+    if(newEl = div[newEl]) {
+      newEl--;
+      (el = prefetJS[newEl][1]) && el(); //1p.js cb
+      prefetJS[newEl] = 0;
+    }
+  }
+
   requestIdleCallbackPF(reallocGenericEls);
 
   spa.pg = _window.onpageshow;// usually index.htm, rare stations.htm root load
@@ -698,30 +715,6 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
   var parentPathtype = curPathtype;
   
   try {
-    //get 1p.js for Chrome scroll restore bug, we can't find out if bad UA until
-    //1p.js executes, todo, stations.htm prob preloaded to disk already
-    //but 1p.js isnt, so start this I/O first if needed
-    if(!prefetJSScanedHead) {
-      //debugger;
-      origin_len = _origin.length;
-      pCpFEl = {}; //url str to idx map
-      for(pCpFIdx=0; pCpFIdx< prefetJS.length; pCpFIdx++) {
-        pCpFEl[prefetJS[pCpFIdx][0]] = pCpFIdx+1;
-      }
-     //h.pS FF 4 Op 11.5 , d.scripts FF 9 Op 12.1
-      pCpFArr = head.getElementsByTagName('script');
-      for(pCpFIdx=0; pCpFIdx< pCpFArr.length; pCpFIdx++) {
-        el = pCpFArr[pCpFIdx];
-        el = el.src.slice(origin_len);
-        if(el = pCpFEl[el]) {
-          el--;
-          (str = prefetJS[el][1]) && str(); //1p.js cb
-          prefetJS[el] = 0;
-        }
-      }
-      prefetJSScanedHead = 1;
-    }
-
         if(pCpFArr = preconPrefetElMap[pathtype]) {
           //JS_NEED
           pCpFEl = pCpFArr[2];
