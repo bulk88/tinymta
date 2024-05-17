@@ -124,7 +124,7 @@ function STATE_PATHTYPE() {
 }
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!_window.fetch && !_window.f) {
-    f=1;//anti double load f.js in index.htm
+    _window.f=1;//anti double load f.js in index.htm
     head.appendChild(document.createElement("script")).src = '/f.js';
   }
 
