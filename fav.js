@@ -21,7 +21,7 @@ function read_fav(finish) {
           finish(config);
           this.F = 0;
         };
-        document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/ifav.js';
+        head.appendChild(_document.createElement("script")).src = '/ifav.js';
       } else {
         prefix = c.slice(0, PREFIX_LEN() + 0);
         finish([0, JSON.parse(c.slice(PREFIX_LEN() + 0, c.length - 1))]);
@@ -31,7 +31,7 @@ function read_fav(finish) {
       prefix = '(function(c){var f=function(e,t){return window.draw_fav_ld(e,t)};f(c)})(';
       if (!c || c.indexOf(prefix) != 0) {
         var dont_have_clr_emoji;
-        var ctx = document.createElement("canvas");
+        var ctx = _document.createElement("canvas");
         try {
           ctx = ctx.getContext("2d");
           ctx.canvas.width = ctx.canvas.height = 1;
@@ -141,13 +141,15 @@ function _recordFavStopHit(sta_name, fav_url) {
 }
 
   var prefix,
-  delayedStaHits_head = document.documentElement.firstChild,
+  delayedStaHits,
+  _document = document,
+  head = _document.documentElement.firstChild,
   newEl_i,
   _onpageshow_el2;
 
   //index.htm stop.htm and rstop.htm will load spa.js, all 3 have child pages
   if(history.pushState && !onpopstate) { //note fav.js won't load spa.js if /li/*.htm or /mn/*.htm
-    delayedStaHits_head.appendChild(document.createElement("script")).src = 'spa.js';
+    delayedStaHits_head.appendChild(_document.createElement("script")).src = 'spa.js';
   }
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
 if (location.pathname == '/') {
@@ -157,27 +159,29 @@ routes.js takes a while to generate b/c its a CFW, so start it early
 it doesn't cause congestion on the wire b/c CFW latency, its also small
 vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 */
-  _onpageshow_el2 = document.createElement('link');
+  _onpageshow_el2 = _document.createElement('link');
   _onpageshow_el2.rel = 'preload';
   _onpageshow_el2.as = 'script';
   _onpageshow_el2.href = 'routes.js';
-  delayedStaHits_head.appendChild(_onpageshow_el2);
+  head.appendChild(_onpageshow_el2);
 /* race between fav.js and dumb.js, if possible get SPA loader's
    DIV in HEAD of LINK/rel=prefetch .htms so stop.htm/rstop.htm get purged
    by EITHER index.htm and stations.htm, whichever first */
-  newEl_i = delayedStaHits_head.getElementsByTagName('div');
+  newEl_i = head.getElementsByTagName('div');
   if(newEl_i = newEl_i[0]) {
-    delayedStaHits_head = newEl_i;
+    delayedStaHits = newEl_i;
+  } else {
+    delayedStaHits = head;
   }
-  newEl_i = document.createElement('link');
+  newEl_i = _document.createElement('link');
   newEl_i.rel = 'prefetch';
   newEl_i.href = 'stop.htm';
-  newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
+  newEl_i = delayedStaHits.appendChild(newEl_i).cloneNode(0);
   newEl_i.href = 'rstop.htm';
-  delayedStaHits_head.appendChild(newEl_i);
+  delayedStaHits.appendChild(newEl_i);
   newEl_i = _onpageshow_el2.cloneNode(0);
   newEl_i.href = '/1p.js';
-  delayedStaHits_head.appendChild(newEl_i);
+  delayedStaHits.appendChild(newEl_i);
 
   _onpageshow_el2 = function (event_div){
     if (event_div.persisted) {
@@ -238,9 +242,9 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 }// if index.htm
 
 //always add recordFav global, b/c SPA
-if(delayedStaHits_head = this.rF) {
-  for(newEl_i=0;newEl_i<delayedStaHits_head.length;newEl_i+=2) {
-    _recordFavStopHit(delayedStaHits_head[newEl_i], delayedStaHits_head[newEl_i+1]);
+if(delayedStaHits = this.rF) {
+  for(newEl_i=0;newEl_i<delayedStaHits.length;newEl_i+=2) {
+    _recordFavStopHit(delayedStaHits[newEl_i], delayedStaHits[newEl_i+1]);
   }
 }
 //fake the Array API so delayed and direct callers r simpler
