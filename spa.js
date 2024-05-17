@@ -181,15 +181,7 @@ function STATE_PATHTYPE() {
     };
   }
 
-   spa.pgh = _window.onpagehide;
-
-  //grab 1p evt hand fns early if possible (root htm is a 1p.js)
-  if(pagehideCB_1p = history.pushState.p1) {
-    pagehideCB_1p = pagehideCB_1p[0];
-    //dont let undef cause reloads if UA not chrome
-    pagehideCB_1p || (pagehideCB_1p = 0);
-    delete history.pushState.p1;
-  }
+  spa.pgh = _window.onpagehide; //1p.js
 
   pageCache[curPathname] = spa;
   //mk global arr
@@ -680,10 +672,29 @@ function swapElMaybe(el,el2) {
   }
   return el2;
 }
+function loadJS(idx, finArr) {
+  var el = document.createElement('script');
+  el.onerror = //anti-UI-freeze
+  el.onload =  //onload runs AFTER script body execs
+    function (evt) {
+      if(evt.type == "error") {
+        //retry I/O eventually
+        head.removeChild(el);
+      } else {
+        prefetJS[idx] = 0;
+        el.onerror = el.onload = 0; //GC fn
+      }
+      if(!--finArr[0])
+        finArr[1]();
+  };
+  el.src = prefetJS[idx];
+  head.appendChild(el);
+  finArr[0]++;
+}
 
 //if != 200???
 function spaPrefetch(pathname, pathtype, prerenFn) {
-  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, origin_len, str, evt_cb_setter, fetch_js_all_cb;
+  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, origin_len, str, loadJSCBArr, evt_cb_setter, fetch_js_all_cb;
   var parentPathname = curPathname;
   var parentPathtype = curPathtype;
   
@@ -709,7 +720,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
       }
       prefetJSScanedHead = 1;
     }
-    if (pathname.indexOf('/stations') != -1) {
+    if (pathname.indexOf('/stations') != -1,0) {
       if (typeof pagehideCB_1p === "undefined") {
         if(history.pushState.p1) {
           pagehideCB_1p = history.pushState.p1[0];
@@ -769,22 +780,44 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           pCpFEl = pCpFArr[2];
           for(pCpFIdx=0; pCpFEl; pCpFIdx++) {
             if(pCpFEl & 1) {
-               if(str = prefetJS[pCpFIdx]) {
-                 //debugger;
-               }
+              if(prefetJS[pCpFIdx]) {
+                if(!loadJSCBArr) {
+                  loadJSCBArr = [0,
+                  function () {
+                    if(fetch_js_all_cb !== 1)
+                    fetch_js_all_cb();
+                    fetch_js_all_cb = 0;
+                  }];
+                }
+                if(pCpFIdx == 1) { //1p.js
+                  history.pushState.p1 = 1;
+                }
+                loadJS(pCpFIdx, loadJSCBArr);
+                fetch_js_all_cb = 1;
+              }
             }
             pCpFEl >>= 1;
           }
           
         }
+
         
     //arg 3 private API want text resp
     fetch(pathname,{},1).then(function pLFetCB(r) {
       r.text().then(function pLFetTextCB(r) {
         // .p1 for grep
-        var start, scriptStart, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB;
+        var start, scriptStart, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB, need1pjs;
+        if((start = r.indexOf("<script async defer src=")) != -1) {
+          start += 24;
+          old_fn_y = r.slice(start, start = r.indexOf('>', start));
+          if(old_fn_y == "/1p.js") {
+            need1pjs = 1;
+          }
+        } else {
+          start = 0;
+        }
 
-        if((start = r.indexOf('<style>')) != -1) {
+        if((start = r.indexOf('<style>', start)) != -1) {
           start += 7 /*'<style>'.length*/;
           old_fn_y = r.slice(start, start = r.indexOf('</style>', start));
           start += 8;
@@ -857,11 +890,29 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           }
         }
         if(!fetch_js_all_cb) {
+          if(need1pjs) {
+            if (pagehideCB_1p === void 0) {
+              pagehideCB_1p = history.pushState.p1[0];
+              //dont let undef cause reloads if UA not chrome
+              pagehideCB_1p = (pagehideCB_1p || (pagehideCB_1p = 0));
+              delete history.pushState.p1;
+            }
+            spa.pgh = pagehideCB_1p
+          }
           pageCache[pathname] = spa;
           purgePreFetchHTML(parentPathname,pathname,parentPathtype);
         //wait for 1p.js before writing spa cache ent to global
         } else {
           fetch_js_all_cb = function() {
+          if(need1pjs) {
+            if (pagehideCB_1p === void 0) {
+              pagehideCB_1p = history.pushState.p1[0];
+              //dont let undef cause reloads if UA not chrome
+              pagehideCB_1p = (pagehideCB_1p || (pagehideCB_1p = 0));
+              delete history.pushState.p1;
+            }
+            spa.pgh = pagehideCB_1p
+          }
             pageCache[pathname] = spa;
             purgePreFetchHTML(parentPathname,pathname,parentPathtype);
           };

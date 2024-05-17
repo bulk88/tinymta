@@ -31,14 +31,10 @@
      root load (must be race safe between spa.js and 1p.js)
      or 1p.js being delayed background preloaded (don't install) */
   if (ver = history.pushState) {
-    finCB = ver.p1;
-    ver.p1 = [_onpagehide];
-    if(!finCB) { //load spa.js for all *stations.htm s
+    if(!(finCB=ver.p1)) { //load spa.js for all *stations.htm s
       document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/spa.js';
-    } else {
-      finCB();
     }
-
+    ver.p1 = [_onpagehide];
   }
   if (_onpagehide && !finCB) { //is buggy scroll restore chrome and is root load
     onpagehide = _onpagehide;

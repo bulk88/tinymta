@@ -35,7 +35,7 @@ binmode(HTMLFILE);
 print #mobileoptimized for IE Mobile 6 text wrapping/zoom behavior, otherwise route names dont wrap and scrolling required
 '<html><head><meta name="mobileoptimized" content="0"><meta name="referrer" content="no-referrer">'
 .($js?'<link href="//backend-unified.mylirr.org" rel="preconnect" crossorigin><link href="//backend-unified.mylirr.org" rel="dns-prefetch"><link rel=prefetch href=/rstop.htm>':'')
-.'<script async src="../1p.js"></script><style>:root{color-scheme:light dark}</style></head><body><a name="#">
+.'<script async defer src=/1p.js></script><style>:root{color-scheme:light dark}</style></head><body><a name="#">
 ';
 foreach my $rtid (nsort keys %$VAR1) {
     my $route = $$VAR1{$rtid};
