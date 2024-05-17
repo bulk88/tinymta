@@ -228,6 +228,15 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
         }
       }
     });//read_fav cb
+    var arr = document.links, len = arr.length, i = 0, el, pn;
+    for(;i<len;i++) {
+      el = arr[i];
+      pn = el.pathname;
+      if(pn.length >= (10 /*'/jsrdt.htm'.length*/)
+        && (pn.lastIndexOf('/jsrdt.htm') === (pn.length-(10 /*'/jsrdt.htm'.length*/)))){
+        el.pathname = pn.replace('/jsrdt.htm', '/js/rt.htm');
+      }
+    }
     return;
   };//dom loaded CB
   if(

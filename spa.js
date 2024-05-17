@@ -257,10 +257,6 @@ because window.name update speed unreliable, just always use SS
     if(pathname === _location.pathname) /* hash nav */
       return;
 
-    if(pathname.length >= (10 /*'/jsrdt.htm'.length*/)
-      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-(10 /*'/jsrdt.htm'.length*/)))){
-      evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
-    }
     pathtype = getPathType(pathname);
       var fResp;
       var fCB1;
@@ -379,10 +375,7 @@ API resp is preloaded to full inflated json obj
       pathname = evt.pathname;
     //IE 11 fix, no initial /
     pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
-    if(pathname.length >= (10 /*'/jsrdt.htm'.length*/)
-      && (pathname.lastIndexOf('/jsrdt.htm') === (pathname.length-(10 /*'/jsrdt.htm'.length*/)))){
-      evt.pathname = pathname = pathname.replace('/jsrdt.htm', '/js/rt.htm');
-    }
+
     pathtype = getPathType(pathname);
 
       if(spa=pageCache[pathname]) {
