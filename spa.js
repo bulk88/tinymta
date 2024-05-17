@@ -30,7 +30,18 @@ var el, newEl;
   //rethink tileMap and rIC dep b/c its PFed in spa.js here
   var preconPrefetPurgedHtm = {};
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/bk.png','/zo.png','/zi.png','/ts.gif']];
-  var prefetJS = ['/f.js','/1p.js','/fav.js','/dumb.js'];
+  var prefetJS = [
+    ['/f.js'],
+    ['/1p.js',
+    function() {
+      pagehideCB_1p = history.pushState.p1[0];
+      //dont let undef cause reloads if UA not chrome
+      !pagehideCB_1p && (pagehideCB_1p = 0);
+      delete history.pushState.p1;
+    }],
+    ['/fav.js'],
+    ['/dumb.js']
+  ];
   var prefetJSScanedHead;
   var genericDarkMStyle;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
@@ -171,16 +182,7 @@ function STATE_PATHTYPE() {
   }
   requestIdleCallbackPF(reallocGenericEls);
 
-  if(el = _window.onpageshow) {
-    spa.pg = el;
-  } else {
-    //fav.js delayed exec
-    _window.onpageshow = function (unused_evt, fn) {
-      spa.pg = fn;
-      _window.onpageshow = fn;
-    };
-  }
-
+  spa.pg = _window.onpageshow;// usually index.htm, rare stations.htm root load
   spa.pgh = _window.onpagehide; //1p.js
 
   pageCache[curPathname] = spa;
@@ -683,13 +685,15 @@ function loadJS(idx, finArr) {
         //retry I/O eventually
         head.removeChild(el);
       } else {
+        //optional CB, used by 1p.js
+        (evt = prefetJS[idx][1]) && evt()
         prefetJS[idx] = 0;
         el.onerror = el.onload = 0; //GC fn
       }
       if(!--finArr[0])
         finArr[1]();
   };
-  el.src = prefetJS[idx];
+  el.src = prefetJS[idx][0];
   head.appendChild(el);
   finArr[0]++;
 }
@@ -707,9 +711,9 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
     if(!prefetJSScanedHead) {
       //debugger;
       origin_len = _origin.length;
-      pCpFEl = {};
+      pCpFEl = {}; //url str to idx map
       for(pCpFIdx=0; pCpFIdx< prefetJS.length; pCpFIdx++) {
-        pCpFEl[prefetJS[pCpFIdx]] = pCpFIdx+1;
+        pCpFEl[prefetJS[pCpFIdx][0]] = pCpFIdx+1;
       }
      //h.pS FF 4 Op 11.5 , d.scripts FF 9 Op 12.1
       pCpFArr = head.getElementsByTagName('script');
@@ -717,47 +721,12 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         el = pCpFArr[pCpFIdx];
         el = el.src.slice(origin_len);
         if(el = pCpFEl[el]) {
-          prefetJS[el-1] = 0
+          el--;
+          (str = prefetJS[el][1]) && str(); //1p.js cb
+          prefetJS[el] = 0;
         }
       }
       prefetJSScanedHead = 1;
-    }
-    if (pathname.indexOf('/stations') != -1,0) {
-      if (typeof pagehideCB_1p === "undefined") {
-        if(history.pushState.p1) {
-          pagehideCB_1p = history.pushState.p1[0];
-          delete history.pushState.p1;
-          //dont let undef cause reloads if UA not chrome
-          spa.pgh = (pagehideCB_1p || (pagehideCB_1p = 0));
-        } else {
-          //win.pushS C5 FF4, O11.5, SF5, IE10
-          //pagehide C4 FF6, O15, SF5, IE 11
-          //must guard for UAs no win.onpagehide evt
-          history.pushState.p1 = evt_cb_setter = function (evt) {
-            //error
-            if(evt) {
-              //retry I/O eventually
-              head.removeChild(el);
-            } else {
-              pagehideCB_1p = history.pushState.p1[0];
-              //dont let undef cause reloads if UA not chrome
-              spa.pgh = (pagehideCB_1p || (pagehideCB_1p = 0));
-            }
-            el.onerror = 0; //GC fn
-            delete history.pushState.p1;
-            if(fetch_js_all_cb !== 1)
-              fetch_js_all_cb();
-            fetch_js_all_cb = 0;
-          };
-          el = document.createElement('script');
-          el.onerror = evt_cb_setter; //anti-UI-freeze
-          el.src = "1p.js";
-          head.appendChild(el);
-          fetch_js_all_cb = 1; //flag for below
-        }
-      } else { //else have "pagehideCB_1p", its a fn or int 0, UA dependent
-        spa.pgh = pagehideCB_1p;
-      }
     }
 
         if(pCpFArr = preconPrefetElMap[pathtype]) {
@@ -773,9 +742,6 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
                     fetch_js_all_cb();
                     fetch_js_all_cb = 0;
                   }];
-                }
-                if(pCpFIdx == 1) { //1p.js
-                  history.pushState.p1 = 1;
                 }
                 loadJS(pCpFIdx, loadJSCBArr);
                 fetch_js_all_cb = 1;
@@ -891,12 +857,6 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         }
         if(!fetch_js_all_cb) {
           if(need1pjs) {
-            if (pagehideCB_1p === void 0) {
-              pagehideCB_1p = history.pushState.p1[0];
-              //dont let undef cause reloads if UA not chrome
-              pagehideCB_1p = (pagehideCB_1p || (pagehideCB_1p = 0));
-              delete history.pushState.p1;
-            }
             spa.pgh = pagehideCB_1p
           }
           pageCache[pathname] = spa;
@@ -904,15 +864,9 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         //wait for 1p.js before writing spa cache ent to global
         } else {
           fetch_js_all_cb = function() {
-          if(need1pjs) {
-            if (pagehideCB_1p === void 0) {
-              pagehideCB_1p = history.pushState.p1[0];
-              //dont let undef cause reloads if UA not chrome
-              pagehideCB_1p = (pagehideCB_1p || (pagehideCB_1p = 0));
-              delete history.pushState.p1;
+            if(need1pjs) {
+              spa.pgh = pagehideCB_1p
             }
-            spa.pgh = pagehideCB_1p
-          }
             pageCache[pathname] = spa;
             purgePreFetchHTML(parentPathname,pathname,parentPathtype);
           };

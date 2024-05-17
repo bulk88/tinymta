@@ -1,5 +1,5 @@
 (function() {
-  var finCB, head, _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  var head, _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
   ver = ver ? +ver[2] : 0;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
@@ -28,14 +28,15 @@
     };
   }
   /* SPA preloader CB, always deliver event handler, either as 1p.js being
-     root load (must be race safe between spa.js and 1p.js)
-     or 1p.js being delayed background preloaded (don't install) */
+     root load or 1p.js being delayed background preloaded (don't install),
+     no race possible b/c 1p.js loads spa.js if 1p.js is root load
+   */
   if (ver = history.pushState) {
-    finCB = ver.p1;
     ver.p1 = [_onpagehide];
-    if(!finCB) { //load spa.js for all *stations.htm s
+    if(!onpageshow) { //load spa.js for all *stations.htm s
       head = document.documentElement.firstChild;
       head.appendChild(document.createElement("script")).src = '/spa.js';
+      //fav.js for /*stop.htm, since stations.htm doesnt naturally use fav.js
       ver = document.createElement("link");
       ver.rel = 'preload';
       ver.as = 'script';
@@ -44,7 +45,7 @@
     }
 
   }
-  if (_onpagehide && !finCB) { //is buggy scroll restore chrome and is root load
+  if (_onpagehide && !onpageshow) { //is buggy scroll restore chrome and is root load
     onpagehide = _onpagehide;
     onpageshow = _onpageshow;
   }

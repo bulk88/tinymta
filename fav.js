@@ -148,7 +148,7 @@ function _recordFavStopHit(sta_name, fav_url) {
   _document = document,
   head = _document.documentElement.firstChild,
   newEl_i,
-  _onpageshow_el2;
+  el2;
 
   //index.htm stop.htm and rstop.htm will load spa.js, all 3 have child pages
   if(history.pushState && !onpopstate) { //note fav.js won't load spa.js if /li/*.htm or /mn/*.htm
@@ -162,11 +162,12 @@ routes.js takes a while to generate b/c its a CFW, so start it early
 it doesn't cause congestion on the wire b/c CFW latency, its also small
 vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 */
-  _onpageshow_el2 = _document.createElement('link');
-  _onpageshow_el2.rel = 'preload';
-  _onpageshow_el2.as = 'script';
-  _onpageshow_el2.href = 'routes.js';
-  head.appendChild(_onpageshow_el2);
+  el2 = _document.createElement('link');
+  el2.rel = 'preload';
+  el2.as = 'script';
+  el2.href = 'routes.js';
+  head.appendChild(el2);
+  //note var head, is async/defer used in read_fav(), can't reuse the var
 /* race between fav.js and dumb.js, if possible get SPA loader's
    DIV in HEAD of LINK/rel=prefetch .htms so stop.htm/rstop.htm get purged
    by EITHER index.htm and stations.htm, whichever first */
@@ -176,17 +177,21 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   } else {
     delayedStaHits = head;
   }
-  newEl_i = _document.createElement('link');
+  newEl_i = el2.cloneNode(0);
   newEl_i.rel = 'prefetch';
+  newEl_i.as = ''; //testing shows in JS .as is empty string, not null or undef
   newEl_i.href = 'stop.htm';
   newEl_i = delayedStaHits.appendChild(newEl_i).cloneNode(0);
   newEl_i.href = 'rstop.htm';
   delayedStaHits.appendChild(newEl_i);
-  newEl_i = _onpageshow_el2.cloneNode(0);
+  //put last, since its a sub resource, after a nav! or faux-nav, and probably
+  //already cached in the browser, unlike routes.js
+  newEl_i = el2.cloneNode(0);
   newEl_i.href = '/1p.js';
   delayedStaHits.appendChild(newEl_i);
 
-  _onpageshow_el2 = function (event_div){
+  /* spa.js is dynamically loaded by fav.js, spa will always see w.onpgs */
+  _window.onpageshow = function (event_div){
     if (event_div.persisted) {
       event_div = _window.favDiv;
       if(event_div) {
@@ -203,13 +208,6 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
       }
     }
   };
-  //dumb.js SPA async race fav.js vs dumb.js
-  if(newEl_i = _window.onpageshow) {
-    newEl_i(0,_onpageshow_el2);
-  } else { //not SPA, or race win
-    _window.onpageshow = _onpageshow_el2;
-  }
-  newEl_i = _onpageshow_el2 = 0; //GC
 
   var checkDOMFn = function (fn) {
     //call as.js DOM load CB if needed, typ for no fav support UA
