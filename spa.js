@@ -247,24 +247,26 @@ function getPathType(pathname) {
   }
   return pathtype;
 }
-  function preload(evt) {
+  function preload(e) {
     var el, stacode, pathname;
     var preren;
     var prerenState;
     var pathtype;
     var str;
     var spa;
-    evt = evt.target;
-    if (evt.nodeName === 'FONT') { //rstop.htm colored links
-      evt = evt.parentNode;
+    el = e.target;
+    if(el.window)
+      return;
+    if (el.nodeName === 'FONT') { //rstop.htm colored links
+      el = el.parentNode;
     }
     /* debounce dedup touchstart mousedown keypress/down */
-    if (evt.nodeName === 'A' && evt.href != lastPLURL) {
-      lastPLURL = evt.href;
-      if(evt.origin !== _origin)
+    if (el.nodeName === 'A' && el.href != lastPLURL) {
+      lastPLURL = el.href;
+      if(el.origin !== _origin)
         return;
-      stacode = evt.hash;
-      pathname = evt.pathname;
+      stacode = el.hash;
+      pathname = el.pathname;
       //IE 11 fix, no initial /
       pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
 /* REMOVED CODE notes
@@ -280,6 +282,9 @@ because window.name update speed unreliable, just always use SS
     pathtype = getPathType(pathname);
       var fResp;
       var fCB1;
+      /* focus assume kbd nav with tab, getting .htm is safe, 1x operation
+         JSON/API calls hell no */
+    if(e.type != "focus") {
       if(pathtype < 4) {
         stacode = stacode.slice(1);
         _window.S = {
@@ -371,20 +376,38 @@ API resp is preloaded to full inflated json obj
           }
         }
       }
+    } /* evt.type != "focus" */
+    /* if focus was first (kbd), with no prior touchstart/mousedown,
+       let preload() run again for JSON API PLing if possible
+       (not seen on Win32 desktop Chrome) */
+    else {
+      lastPLURL = "";
+    }
       //reload 1p.js if need, was I/O prob earlier
       if((spa = pageCache[pathname]) && (!spa.pgh || typeof pagehideCB_1p !== "undefined")) {
         preren && preren(spa);
-      } else {
+      }
+      else if (spa !== 0) {
+      /* kbd mode, prevent .htm being twice fetched()
+         b/c focus FIRST is .htm only, 2nd call is JSON API */
+        pageCache[pathname] = 0;
         spaPrefetch(pathname, pathtype, preren);
       }
     }
   }
   addEventListener('touchstart', preload, {passive: true});
   addEventListener('mousedown', preload, {passive: true});
+  /* kbd tab key, desktop Chrome Win32 evt seq is
+     -"keydown" old A tag,
+     -"focus" new A tag
+     20 ms later
+     -"keyup" new A tag
+  */
+  addEventListener('focus', preload, {passive: true, capture: true});
   
   addEventListener('click', aELonClick);
   function aELonClick(e) {
-    console.log(e);
+    console.log('c',performance.now());
     var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn, ls, prerenBody;
     lastPLURL = "";
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
