@@ -22,10 +22,16 @@ var el, newEl;
   var haveRoutesJS;
 
   var lirr_headers = {headers: {'accept-version': '3.0'}};
-  //array is in pagetype nums
-  var preconPrefetElMap = [,[0,5],,[3,8],[2,7],[0,4],[0,4],[1,6],[,9],[]];
+  //array is in pagetype nums [PC,PF,.JS] .JS is a bitfield
+  //JSNEED_FJS is int 1, only put a object value for FJS, if it is
+  //NOT window.fetch or greater than, since spa.js loads f.js if no window.fetch
+  var preconPrefetElMap = [,[0,5,JSNEED_FAV()|JSNEED_DUMB()],[,,!Object.values],[3,8,JSNEED_FAV()],[2,7,JSNEED_FAV()],[0,4,JSNEED_1P()],[0,4,JSNEED_1P()],[1,6,JSNEED_1P()],[,9,!_window.requestIdleCallback],[]];
+
+  //rethink tileMap and rIC dep b/c its PFed in spa.js here
   var preconPrefetPurgedHtm = {};
   var preconPrefetEls = ['//backend-unified.mylirr.org', '//otp-mta-prod.camsys-apps.com', '//collector-otp-prod.camsys-apps.com', ['//tiles1.tinymta.us.to','//tiles2.tinymta.us.to'], '/rstop.htm', '/rtrain.htm', '/stop.htm', '/status.htm', '/tileMap.htm',['/bk.png','/zo.png','/zi.png','/ts.gif']];
+  var prefetJS = ['/f.js','/1p.js','/fav.js','/dumb.js'];
+  var prefetJSScanedHead;
   var genericDarkMStyle;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
   var requestIdleCallbackPF =
@@ -66,6 +72,19 @@ function GENERIC_PF() {
   return 6;
 }
 
+
+function JSNEED_FJS() {
+  return 1; //MUST STAY as 1
+}
+function JSNEED_1P() {
+  return 2;
+}
+function JSNEED_FAV() {
+  return 4;
+}
+function JSNEED_DUMB() {
+  return 8;
+}
 
 
 /*duplicate master template el, into a hot and ready to use el,
@@ -664,7 +683,7 @@ function swapElMaybe(el,el2) {
 
 //if != 200???
 function spaPrefetch(pathname, pathtype, prerenFn) {
-  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, evt_cb_setter, fetch_js_all_cb;
+  var spa = {}, pCpFArr, pCpFIdx, pCpFEl, el, origin_len, str, evt_cb_setter, fetch_js_all_cb;
   var parentPathname = curPathname;
   var parentPathtype = curPathtype;
   
@@ -672,7 +691,24 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
     //get 1p.js for Chrome scroll restore bug, we can't find out if bad UA until
     //1p.js executes, todo, stations.htm prob preloaded to disk already
     //but 1p.js isnt, so start this I/O first if needed
-    
+    if(!prefetJSScanedHead) {
+      //debugger;
+      origin_len = _origin.length;
+      pCpFEl = {};
+      for(pCpFIdx=0; pCpFIdx< prefetJS.length; pCpFIdx++) {
+        pCpFEl[prefetJS[pCpFIdx]] = pCpFIdx+1;
+      }
+     //h.pS FF 4 Op 11.5 , d.scripts FF 9 Op 12.1
+      pCpFArr = head.getElementsByTagName('script');
+      for(pCpFIdx=0; pCpFIdx< pCpFArr.length; pCpFIdx++) {
+        el = pCpFArr[pCpFIdx];
+        el = el.src.slice(origin_len);
+        if(el = pCpFEl[el]) {
+          prefetJS[el-1] = 0
+        }
+      }
+      prefetJSScanedHead = 1;
+    }
     if (pathname.indexOf('/stations') != -1) {
       if (typeof pagehideCB_1p === "undefined") {
         if(history.pushState.p1) {
@@ -696,7 +732,9 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             }
             el.onerror = 0; //GC fn
             delete history.pushState.p1;
-            fetch_js_all_cb();
+            if(fetch_js_all_cb !== 1)
+              fetch_js_all_cb();
+            fetch_js_all_cb = 0;
           };
           el = document.createElement('script');
           el.onerror = evt_cb_setter; //anti-UI-freeze
@@ -727,6 +765,17 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
           }
           curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
           requestIdleCallbackPF(reallocGenericEls);
+          //JS_NEED
+          pCpFEl = pCpFArr[2];
+          for(pCpFIdx=0; pCpFEl; pCpFIdx++) {
+            if(pCpFEl & 1) {
+               if(str = prefetJS[pCpFIdx]) {
+                 //debugger;
+               }
+            }
+            pCpFEl >>= 1;
+          }
+          
         }
         
     //arg 3 private API want text resp
