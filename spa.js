@@ -20,6 +20,7 @@ var el, newEl;
   var curPFEl;
   var pagehideCB_1p;
   var haveRoutesJS;
+  var lastPLURL;
 
   var lirr_headers = {headers: {'accept-version': '3.0'}};
   //array is in pagetype nums [PC,PF,.JS] .JS is a bitfield
@@ -247,7 +248,7 @@ function getPathType(pathname) {
   return pathtype;
 }
   function preload(evt) {
-    var el, stacode, pathname, isTouchStart = evt.type === 'touchstart';
+    var el, stacode, pathname;
     var preren;
     var prerenState;
     var pathtype;
@@ -257,7 +258,9 @@ function getPathType(pathname) {
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
     }
-    if (evt.nodeName === 'A' && (isTouchStart || !evt.tmts)) {
+    /* debounce dedup touchstart mousedown keypress/down */
+    if (evt.nodeName === 'A' && evt.href != lastPLURL) {
+      lastPLURL = evt.href;
       if(evt.origin !== _origin)
         return;
       stacode = evt.hash;
@@ -374,15 +377,16 @@ API resp is preloaded to full inflated json obj
       } else {
         spaPrefetch(pathname, pathtype, preren);
       }
-      evt.tmts = isTouchStart;
     }
   }
   addEventListener('touchstart', preload, {passive: true});
   addEventListener('mousedown', preload, {passive: true});
   
-  addEventListener('click', function aELonClick(e) {
+  addEventListener('click', aELonClick);
+  function aELonClick(e) {
     console.log(e);
     var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn, ls, prerenBody;
+    lastPLURL = "";
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
     }
@@ -500,7 +504,7 @@ API resp is preloaded to full inflated json obj
        console.log('on click no cache spa ent ',performance.now());
       }
     }
-  });
+  }
   
 onpopstate = function (e) {
   var evt = e;
@@ -572,6 +576,7 @@ onpopstate = function (e) {
   onpagehide = spa.pgh;
   el && el({persisted:1});
 };
+onpopstate.p = [aELonClick, preload]; /*for dumb.js*/
 
 //delete these prefetch Els, the .htm was loaded and parsed into JS/DOM long ago
 //stop banging disk I/O or network I/O or the dom tree unneceserily
@@ -740,24 +745,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             }
             pCpFEl >>= 1;
           }
-          //LINK preconnect
-          pCpFIdx = pCpFArr[0];
-          pCpFEl = preconPrefetEls[pCpFIdx];
-          if(pCpFEl && pCpFEl.length) {
-            pCpFEl = inflateLinkElsPcPF(pCpFIdx,0);
-          }
-          curPCEl = swapElMaybe(curPCEl, spa.pc = pCpFEl);
-
-          //LINK prefetch
-          pCpFIdx = pCpFArr[1];
-          pCpFEl = preconPrefetEls[pCpFIdx];
-          if(pCpFEl && pCpFEl.length) {
-            pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
-          }
-          curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
-          requestIdleCallbackPF(reallocGenericEls);
         }
-
         
     //arg 3 private API want text resp
     fetch(pathname,{},1).then(function pLFetCB(r) {
@@ -860,6 +848,30 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         }
       });//.text() CB
     }); //fet CB
+
+    /* this is for NEXT future nav some seconds/mins away, not current maybe
+    nav/PL, appendChild(SCRIPT) is marked "low" in chrome, API fetch() marked
+    "high", and the PC/PFs below just waste microseocnds/ms before time critical
+    I/O hits UA I/O stack, too many PCs and PFs can trigger a Chrome throttle
+    I think */
+    if(pCpFArr){
+      //LINK preconnect
+      pCpFIdx = pCpFArr[0];
+      pCpFEl = preconPrefetEls[pCpFIdx];
+      if(pCpFEl && pCpFEl.length) {
+        pCpFEl = inflateLinkElsPcPF(pCpFIdx,0);
+      }
+      curPCEl = swapElMaybe(curPCEl, spa.pc = pCpFEl);
+
+      //LINK prefetch
+      pCpFIdx = pCpFArr[1];
+      pCpFEl = preconPrefetEls[pCpFIdx];
+      if(pCpFEl && pCpFEl.length) {
+        pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
+      }
+      curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
+      requestIdleCallbackPF(reallocGenericEls);
+    }
   } catch (e) {}
 } // end function spaPrefetch(pathname, pathtype, prerenFn) {
 

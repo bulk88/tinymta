@@ -5,24 +5,33 @@
    have one to test with
 */
 (function(){
+var _document = document;
 //IE 8-10 has AEL/QS but not document.head+var el, newEl;
-var head = document.documentElement.firstChild;
+var head = _document.documentElement.firstChild;
 var el, newEl;
 
 if (this.addEventListener) {
-  function kph(e_realkey) {
+  function kph(e) {
     //ZTE flip Chrome 0 key conflicts with checkbox's
     //space key
-    if(e_realkey.keyCode === 32
-       && e_realkey.target.nodeName === 'INPUT')
+    var realkey = e.keyCode;
+    if(realkey=== 32
+       && e.target.nodeName === 'INPUT')
       return;
-    e_realkey = [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,0,1,2,3,4,5,6,7,8,9,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9,,,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9][e_realkey.keyCode];
+    realkey = [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,0,1,2,3,4,5,6,7,8,9,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9,,,,,,,,,,2,,,3,,,4,,,5,,,6,,,7,,,,8,,,9][realkey];
 
     //gz 978 to 971 chg, +x===x vs typeof x === 'number'
-    if (+e_realkey===e_realkey) {
-      e_realkey = document.querySelector('[accesskey="' + e_realkey + '"]');
+    if (+realkey===realkey) {
+      realkey = _document.querySelector('[accesskey="' + realkey + '"]');
       //avoid err console noise for "called method click on undef"
-      e_realkey && e_realkey.click()
+      if (realkey) {
+        if(onpopstate) {
+          e = e.type;
+          onpopstate.p[+(e == "keydown" || e == "keypress")]({target:realkey,preventDefault:function(){}});
+        } else {
+          realkey.click();
+        }
+      }
     }
     return;
 //ODL CODE bigger wire format, optimized above
@@ -109,6 +118,7 @@ if (this.addEventListener) {
   //FF3.0 throws exception "not enough arguments" if #3 missing
   addEventListener('keyup', kph, 0);
   addEventListener('keypress', kph, 0);
+  addEventListener('keydown', kph, 0);
 }// end if (this.addEventListener) {
 
 /*
@@ -131,7 +141,7 @@ DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't
   //don't test el.nodeName === 'LINK', to save wire bytes
   //upper case chars esp bad for GZ, undef === "str" good enough and perf enough (vs ==)
       if (el.rel === 'preconnect') {
-        newEl = document.createElement('link');
+        newEl = _document.createElement('link');
         newEl.rel = 'dns-prefetch';
         newEl.href = el.href;
         head.appendChild(newEl);
@@ -163,7 +173,7 @@ if(this.ScriptEngineMajorVersion
   onload = function () {
     //warning, d.anchors is ONLY name="#" hash nav elements, d.links correct
     //cache arr.length b/c this a live node list/overhead
-    var arr = document.links, len = arr.length, i = 0
+    var arr = _document.links, len = arr.length, i = 0
       , el, pn, pnlen, needle, newpn;
     for(;i<len;i++){
       el = arr[i];
