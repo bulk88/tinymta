@@ -2,6 +2,7 @@ var R;//maybe as.js CB
 var L;//async race CB fav.js vs inline wea script
 
 (function(){
+"use strict";
 //don't touch next 4 lines, they are matched by adj_fav.pl
 function DRAW_VER() { return 126; };
 function DRAW_VER_STR() { return "126"; };
@@ -16,10 +17,10 @@ function read_fav(finish) {
       if (!c || c.substr(PREFIX_LEN() + 1, DRAW_VER_LEN()) !== DRAW_VER_STR()) {
         //initial default/first ever!!! (cookie/LS clear) favs obj on particular user
         //global config array is, version int, keep hist bool, realtime bool, has emoji bool, sta#1, sta#2
-        this.F = function (_prefix, config) {
+        _window.F = function (_prefix, config) {
           prefix = _prefix;
           finish(config);
-          this.F = 0;
+          _window.F = 0;
         };
         head.appendChild(_document.createElement("script")).src = '/ifav.js';
       } else {
@@ -107,6 +108,7 @@ function extend_fav(divEl,left) {
 
 function _recordFavStopHit(sta_name, fav_url) {
   read_fav(function (c) {
+  var i;
   var found;
   var minus_1_sta;
   var c_len;
@@ -142,6 +144,7 @@ function _recordFavStopHit(sta_name, fav_url) {
 
   var prefix,
   delayedStaHits,
+  _window = window,
   _document = document,
   head = _document.documentElement.firstChild,
   newEl_i,
@@ -149,7 +152,7 @@ function _recordFavStopHit(sta_name, fav_url) {
 
   //index.htm stop.htm and rstop.htm will load spa.js, all 3 have child pages
   if(history.pushState && !onpopstate) { //note fav.js won't load spa.js if /li/*.htm or /mn/*.htm
-    delayedStaHits_head.appendChild(_document.createElement("script")).src = 'spa.js';
+    head.appendChild(_document.createElement("script")).src = 'spa.js';
   }
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
 if (location.pathname == '/') {
@@ -185,7 +188,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 
   _onpageshow_el2 = function (event_div){
     if (event_div.persisted) {
-      event_div = this.favDiv;
+      event_div = _window.favDiv;
       if(event_div) {
         read_fav(function(c){
           event_div.draw_fav(
@@ -201,10 +204,10 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
     }
   };
   //dumb.js SPA async race fav.js vs dumb.js
-  if(newEl_i = this.onpageshow) {
+  if(newEl_i = _window.onpageshow) {
     newEl_i(0,_onpageshow_el2);
   } else { //not SPA, or race win
-    this.onpageshow = _onpageshow_el2;
+    _window.onpageshow = _onpageshow_el2;
   }
   newEl_i = _onpageshow_el2 = 0; //GC
 
@@ -219,7 +222,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
           extend_fav(favDiv);
         } else {
           //remove fav div test eventually, this can only hit if syntax error in LS JS code
-          if(!(favDiv = this.favDiv)) {
+          if(!(favDiv = _window.favDiv)) {
             alert('no div but saw fav draw code');
           }
           else
@@ -232,7 +235,7 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   if(
     //document.body && is redundant, Safari 5.1.7 has FULL <BODY> dom tree built
     //but DIDNT run inline script tags yet, just test for wea draw y() func instead
-    this.y
+    _window.y
   ) { //async script tags supported/have DOM
     checkDOMFn();
   } else {//defer the run
@@ -242,13 +245,13 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 }// if index.htm
 
 //always add recordFav global, b/c SPA
-if(delayedStaHits = this.rF) {
+if(delayedStaHits = _window.rF) {
   for(newEl_i=0;newEl_i<delayedStaHits.length;newEl_i+=2) {
     _recordFavStopHit(delayedStaHits[newEl_i], delayedStaHits[newEl_i+1]);
   }
 }
 //fake the Array API so delayed and direct callers r simpler
-this.rF = {push:_recordFavStopHit};
+_window.rF = {push:_recordFavStopHit};
 
 })();
 
