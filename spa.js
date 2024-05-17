@@ -407,7 +407,6 @@ API resp is preloaded to full inflated json obj
   
   addEventListener('click', aELonClick);
   function aELonClick(e) {
-    console.log('c',performance.now());
     var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn, ls, prerenBody;
     lastPLURL = "";
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
@@ -522,9 +521,9 @@ API resp is preloaded to full inflated json obj
         histArr[STATE_PFHTMCACHE()] = spa;
         histArr[STATE_PATHHASH()] = pathname+hash;
         histArr[STATE_PATHTYPE()] = pathtype;
-        console.log('on click have ent ',performance.now());
+        //console.log('on click have ent ',performance.now());
       } else {
-       console.log('on click no cache spa ent ',performance.now());
+       //console.log('on click no cache spa ent ',performance.now());
       }
     }
   }
@@ -542,14 +541,14 @@ onpopstate = function (e) {
   e = e.state;
 
   if(e === null) {
-    console.log('spa leave 3 '+newPathname);
+    //console.log('spa leave 3 '+newPathname);
     return;
   }
 
   //hash only nav back or forwards
   if(curPathname == newPathname && curHash != newHash) {;
     curHash = newHash;
-    console.log('spa leave 1 '+newPathname);
+    //console.log('spa leave 1 '+newPathname);
     return;
   }
 
@@ -564,7 +563,7 @@ onpopstate = function (e) {
   if(e === pageHistoryIdx || e >= pageHistory.length
   ) //a refresh, or forward after refresh (no future state)
   {
-    console.log('spa leave 2 '+newPathname, location.pathname, curPathname, performance.now());
+    //console.log('spa leave 2 '+newPathname, location.pathname, curPathname, performance.now());
     /* disarm oph, it fires with aborted (THIS RN window.location) URL AFTER
        this ops evt hand exec/returns, and oph has "WRONG" url in location
        and a real event obj, not our "curPathname" fakery */
