@@ -525,27 +525,32 @@ onpopstate = function (e) {
     console.log('spa leave 1 '+newPathname);
     return;
   }
+
+  var s = pageHistory[pageHistoryIdx];
+  var oldspa = s[STATE_PFHTMCACHE()];
+  /* must run oph with old URL before possible location.reload() below */
+  if(el = oldspa.pgh) {
+    //arg 2 non-std arg
+    el({},curPathname);  //probably 1p.js if(!evt.persisted) save scroll
+  }
   //a refresh
   if(e === pageHistoryIdx || e >= pageHistory.length
   ) //a refresh, or forward after refresh (no future state)
   {
-    console.log('spa leave 2 '+newPathname);
+    console.log('spa leave 2 '+newPathname, location.pathname, curPathname, performance.now());
+    /* disarm oph, it fires with aborted (THIS RN window.location) URL AFTER
+       this ops evt hand exec/returns, and oph has "WRONG" url in location
+       and a real event obj, not our "curPathname" fakery */
+    onpagehide = 0;
     _location.reload();
     return;
   }
-
-  var s = pageHistory[pageHistoryIdx];
-  var oldspa = s[STATE_PFHTMCACHE()];
 
   //load new from cache
   newState = pageHistory[e];
   newPathtype = newState[STATE_PATHTYPE()];
   var spa = newState[STATE_PFHTMCACHE()];
 
-  if(el = oldspa.pgh) {
-    //arg 2 non-std arg
-    el({},curPathname);  //probably 1p.js if(!evt.persisted) save scroll
-  }
 
   curPathname = newPathname;
   curHash = newHash;
@@ -797,8 +802,6 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         //STYLE parse advs var start to almost end of HEAD/start of BODY
         if((scriptStart = r.indexOf('<script>',start)) != -1) {
           old_fn_y = _window.y;
-          old_pg_rel = _window.onpageshow;
-          _window.onpageshow = null;/*IE 11 doesnt like 0*/
           scriptEnd = r.indexOf('</script>', scriptStart+8 /*'<script>'.length*/);
           Function(r.slice(scriptStart+8 /*'<script>'.length*/, scriptEnd))();
           //tmp var
@@ -807,9 +810,7 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             delete el.body; //anti-leak, el is really onDrawURL() fn obj
           }
           spa.y = _window.y;
-          spa.pg = _window.onpageshow;
           _window.y = old_fn_y;
-          _window.onpageshow = old_pg_rel;
           onhashchange = null;
           //run new page's drawUrl/SPA body-less
           prerenFn && prerenFn(spa);
