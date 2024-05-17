@@ -142,10 +142,11 @@ function _recordFavStopHit(sta_name, fav_url) {
 
   var prefix,
   delayedStaHits_head = document.documentElement.firstChild,
-  newEl_i;
+  newEl_i,
+  _onpageshow_el2;
 
   //index.htm stop.htm and rstop.htm will load spa.js, all 3 have child pages
-  if(history.pushState) { //note fav.js won't load spa.js if /li/*.htm or /mn/*.htm
+  if(history.pushState && !onpopstate) { //note fav.js won't load spa.js if /li/*.htm or /mn/*.htm
     delayedStaHits_head.appendChild(document.createElement("script")).src = 'spa.js';
   }
 //"abc"[2] string as array, doesn't work IE 5.0, its undef, use .charAt()
@@ -156,11 +157,11 @@ routes.js takes a while to generate b/c its a CFW, so start it early
 it doesn't cause congestion on the wire b/c CFW latency, its also small
 vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
 */
-  newEl_i = document.createElement('link');
-  newEl_i.rel = 'preload';
-  newEl_i.as = 'script';
-  newEl_i.href = 'routes.js';
-  delayedStaHits_head.appendChild(newEl_i);
+  _onpageshow_el2 = document.createElement('link');
+  _onpageshow_el2.rel = 'preload';
+  _onpageshow_el2.as = 'script';
+  _onpageshow_el2.href = 'routes.js';
+  delayedStaHits_head.appendChild(_onpageshow_el2);
 /* race between fav.js and dumb.js, if possible get SPA loader's
    DIV in HEAD of LINK/rel=prefetch .htms so stop.htm/rstop.htm get purged
    by EITHER index.htm and stations.htm, whichever first */
@@ -174,8 +175,11 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   newEl_i = delayedStaHits_head.appendChild(newEl_i).cloneNode(0);
   newEl_i.href = 'rstop.htm';
   delayedStaHits_head.appendChild(newEl_i);
+  newEl_i = _onpageshow_el2.cloneNode(0);
+  newEl_i.href = '/1p.js';
+  delayedStaHits_head.appendChild(newEl_i);
 
-  var _onpageshow = function (event_div){
+  _onpageshow_el2 = function (event_div){
     if (event_div.persisted) {
       event_div = this.favDiv;
       if(event_div) {
@@ -194,11 +198,11 @@ vs MTA alerts file, which is gz LARGER than this entire web site!!! gz-ed
   };
   //dumb.js SPA async race fav.js vs dumb.js
   if(newEl_i = this.onpageshow) {
-    newEl_i(0,_onpageshow);
+    newEl_i(0,_onpageshow_el2);
   } else { //not SPA, or race win
-    this.onpageshow = _onpageshow;
+    this.onpageshow = _onpageshow_el2;
   }
-  newEl_i = _onpageshow = 0; //GC
+  newEl_i = _onpageshow_el2 = 0; //GC
 
   var checkDOMFn = function (fn) {
     //call as.js DOM load CB if needed, typ for no fav support UA

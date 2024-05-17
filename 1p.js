@@ -1,5 +1,5 @@
 (function() {
-  var finCB, _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  var finCB, head, _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
   ver = ver ? +ver[2] : 0;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
@@ -31,28 +31,23 @@
      root load (must be race safe between spa.js and 1p.js)
      or 1p.js being delayed background preloaded (don't install) */
   if (ver = history.pushState) {
-    if(!(finCB=ver.p1)) { //load spa.js for all *stations.htm s
-      document.documentElement.firstChild.appendChild(document.createElement("script")).src = '/spa.js';
-    }
+    finCB = ver.p1;
     ver.p1 = [_onpagehide];
+    if(!finCB) { //load spa.js for all *stations.htm s
+      head = document.documentElement.firstChild;
+      head.appendChild(document.createElement("script")).src = '/spa.js';
+      ver = document.createElement("link");
+      ver.rel = 'preload';
+      ver.as = 'script';
+      ver.href = '/fav.js';
+      head.appendChild(ver);
+    }
+
   }
   if (_onpagehide && !finCB) { //is buggy scroll restore chrome and is root load
     onpagehide = _onpagehide;
     onpageshow = _onpageshow;
   }
-
-if(!this.onpopstate) {(function (){
-  var curPathname = _location.pathname;
-  var curHash = _location.hash;
-  this.onpopstate = function (evt) {
-    if(curPathname == _location.pathname && curHash != _location.hash) {
-      sessionStorage.removeItem('1p'+_location.pathname);
-    } else if(evt.state !== null){
-      _location.reload();
-    }
-  };
-})();
-}
 
 //.SEMV() is IE only FN all vers
 if(this.ScriptEngineMajorVersion

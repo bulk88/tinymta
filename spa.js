@@ -366,6 +366,7 @@ API resp is preloaded to full inflated json obj
   addEventListener('mousedown', preload, {passive: true});
   
   addEventListener('click', function aELonClick(e) {
+    console.log(e);
     var str, oldspa, spa, el, el2, evt = e.target, pathname, hash, pathtype, histArr, hashNavFlag, fn, ls, prerenBody;
     if (evt.nodeName === 'FONT') { //rstop.htm colored links
       evt = evt.parentNode;
@@ -482,8 +483,9 @@ API resp is preloaded to full inflated json obj
         histArr[STATE_PFHTMCACHE()] = spa;
         histArr[STATE_PATHHASH()] = pathname+hash;
         histArr[STATE_PATHTYPE()] = pathtype;
+        console.log('on click have ent ',performance.now());
       } else {
-       console.log('on click no cache spa ent');
+       console.log('on click no cache spa ent ',performance.now());
       }
     }
   });
@@ -759,23 +761,6 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
     }
 
         if(pCpFArr = preconPrefetElMap[pathtype]) {
-
-          //LINK preconnect
-          pCpFIdx = pCpFArr[0];
-          pCpFEl = preconPrefetEls[pCpFIdx];
-          if(pCpFEl && pCpFEl.length) {
-            pCpFEl = inflateLinkElsPcPF(pCpFIdx,0);
-          }
-          curPCEl = swapElMaybe(curPCEl, spa.pc = pCpFEl);
-
-          //LINK prefetch
-          pCpFIdx = pCpFArr[1];
-          pCpFEl = preconPrefetEls[pCpFIdx];
-          if(pCpFEl && pCpFEl.length) {
-            pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
-          }
-          curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
-          requestIdleCallbackPF(reallocGenericEls);
           //JS_NEED
           pCpFEl = pCpFArr[2];
           for(pCpFIdx=0; pCpFEl; pCpFIdx++) {
@@ -798,7 +783,22 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
             }
             pCpFEl >>= 1;
           }
-          
+          //LINK preconnect
+          pCpFIdx = pCpFArr[0];
+          pCpFEl = preconPrefetEls[pCpFIdx];
+          if(pCpFEl && pCpFEl.length) {
+            pCpFEl = inflateLinkElsPcPF(pCpFIdx,0);
+          }
+          curPCEl = swapElMaybe(curPCEl, spa.pc = pCpFEl);
+
+          //LINK prefetch
+          pCpFIdx = pCpFArr[1];
+          pCpFEl = preconPrefetEls[pCpFIdx];
+          if(pCpFEl && pCpFEl.length) {
+            pCpFEl = inflateLinkElsPcPF(pCpFIdx,1);
+          }
+          curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
+          requestIdleCallbackPF(reallocGenericEls);
         }
 
         
