@@ -1,5 +1,7 @@
 "use strict";
 
+export default { fetch: fCB };
+
 let v8start;
 
 let textEnc = new TextEncoder();
@@ -82,16 +84,18 @@ function mkJSResp(str,etag) {
     })
 }
 
-addEventListener('fetch', event => {
-  if(!v8start) {v8start = Date.now()};
-  console.log('v8start '+v8start);
-try {
-  event.respondWith(handleRequest(event.request, event).catch(e => console.log('c'+e)))
-      }catch (e) {
-        console.log(e+' '+e.stack+' '+e.columnNumber+e.fileName+e.lineNumber);
-      //event.respondWith(new Response(e))
-    }
-})
+async function fCB(request, env, ctx) {
+  if (!v8start) {
+    v8start = Date.now()
+  };
+  console.log('v8start ' + v8start);
+  try {
+    return handleRequest(request, env, ctx).catch(e => console.log(e));
+  } catch (e) {
+    console.log(e + ' ' + e.stack + ' ' + e.columnNumber + e.fileName + e.lineNumber);
+    //event.respondWith(new Response(e))
+  }
+}
 
 
 //typ a .replace() CB, but manual call sometimes
@@ -142,7 +146,7 @@ function parseIsoDatetime(dt,i) {
  * Respond to the request
  * @param {Request} request
  */
-async function handleRequest(request, event) {
+async function handleRequest(request, env, ctx) {
   var url = new URL(request.url)
     ,pathname_callback = url.pathname
     ,resp, str;
@@ -573,7 +577,8 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
     }
   }
 
-  event.respondWith(new Response(
+  ctx.waitUntil(updateRoutes(env, ctx));
+  return new Response(
       resp, {
       status: clientEtag === routesEtag ? 304 : 200,
       headers: {
@@ -582,10 +587,8 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
         //don't double fetch with preload and fetch()
         'cache-control': 'max-age=10, stale-while-revalidate=86400',
       }
-    }));
-  event.waitUntil((updateRoutes(event)));
-  return null;
-    }
+    });
+}
 //old smart/flip phone browser debug tool
 else if (
   (pathname_callback === '/t' && (url.pathname = '/touch'))
@@ -622,6 +625,7 @@ else if (
   asnqstr = String.fromCharCode(asnqstr.length) + asnqstr +
     "\x03\x61\x73\x6e\x05\x63\x79\x6d\x72\x75\x03\x63\x6f\x6d\x00\x00\x10\x00\x01";
   /* Workers Preview bug doesn't allow IP addr hosts */
+  console.log("a",performance.now());
   resp = fetch("https://" + (request?.cf ? "1.1.1.1" :
     "cloudflare-dns.com") + "/dns-query", {
     method: 'post',
@@ -636,8 +640,10 @@ else if (
     future memcmp range leaving only QNAME (host name) as the field to match*/
   var endptr = asnqstr.byteLength - 4;
   resp = await resp;
+  console.log("b",performance.now());
   /* don't error check the 1.1.1.1 HTTP server, unimaginable it goes down */
   var bufmetaobj = await resp.arrayBuffer();
+  console.log("c",performance.now());
   var bufdv = new DataView(bufmetaobj);
   /*QR bit 0x8000, Recur desire 0x100
    (0x200 is truncate, error if on, check is free CPU wise),
@@ -704,7 +710,7 @@ else if (
 //try{handleRequest().then(function(r){r.text().then(function(s){console.log(s)})})}
 //catch(e){}
 
-async function updateRoutes (event) {
+async function updateRoutes (env, ctx) {
       var i = 0,
       ghkey,
       e, /* entry */
@@ -782,7 +788,7 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
         if (routesEtag !== etag) {
           //console.log('etag mismatch');
           try {
-            ghkey = GHAPISECRET
+            ghkey = env.GHAPISECRET
           } catch (e) {
             if(!(ghkey = url.searchParams.get('key'))) {
               console.log("GHAPI key is invalid="+ghkey)
@@ -1054,7 +1060,7 @@ agency (can't be removed b/c RAIL and BUS, don't bother adding/splitting it from
               }
               console.log('will push commit');
 
-              event.waitUntil(commitFilesToBranch("master", [{
+              ctx.waitUntil(commitFilesToBranch("master", [{
                     name: "cloudflare_as_name.js",
                     contents: new_resp
                   },{
