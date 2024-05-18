@@ -14,7 +14,21 @@ var el, newEl;
   var pageHistoryIdx = 0;
   var curPathname = _location.pathname;
   var curHash = _location.hash;
+  /* h.pS C5 SF5 FF4 Op 11.5 IE 10
+    loc.origin C8 SF5.1 FF 21 Op 15 IE 11
+  */
   var _origin = _location.origin;
+/*  
+  var originPF = "origin" in HTMLAnchorElement.prototype ? 0 : function (url) {
+          var expectedPort = { 'http:': 80, 'https:': 443, 'ftp:': 21 }[url.protocol];
+          var addPortToOrigin = url.port != expectedPort &&
+            url.port !== '';
+
+          return url.protocol +
+            '//' +
+            url.hostname +
+            (addPortToOrigin ? (':' + url.port) : '');
+  };*/
   var curPathtype = getPathType(curPathname);
   var curPCEl;
   var curPFEl;
@@ -37,7 +51,7 @@ var el, newEl;
     function() {
       pagehideCB_1p = history.pushState.p1[0];
       //dont let undef cause reloads if UA not chrome
-      !pagehideCB_1p && (pagehideCB_1p = 0);
+      !pagehideCB_1p && (pagehideCB_1p = null);
       delete history.pushState.p1;
     }],
     ['/fav.js'],
@@ -127,6 +141,12 @@ function STATE_PATHTYPE() {
     _window.f=1;//anti double load f.js in index.htm
     head.appendChild(document.createElement("script")).src = '/f.js';
   }
+
+/*
+  if(!_origin) { //PF
+    _origin = originPF(_location);
+  }
+*/
 
 (function(){
   var el, newEl;
@@ -263,7 +283,7 @@ function getPathType(pathname) {
     /* debounce dedup touchstart mousedown keypress/down */
     if (el.nodeName === 'A' && el.href != lastPLURL) {
       lastPLURL = el.href;
-      if(el.origin !== _origin)
+      if(el.href.indexOf(_origin)) //not 0
         return;
       stacode = el.hash;
       pathname = el.pathname;
@@ -413,7 +433,7 @@ API resp is preloaded to full inflated json obj
       evt = evt.parentNode;
     }
     if(evt.nodeName === "A") {
-      if(evt.origin !== _origin)
+      if(evt.href.indexOf(_origin)) //not 0
         return;
       pathname = evt.pathname;
     //IE 11 fix, no initial /
@@ -567,7 +587,7 @@ onpopstate = function (e) {
     /* disarm oph, it fires with aborted (THIS RN window.location) URL AFTER
        this ops evt hand exec/returns, and oph has "WRONG" url in location
        and a real event obj, not our "curPathname" fakery */
-    onpagehide = 0;
+    _window.onpagehide = null;
     _location.reload();
     return;
   }
@@ -594,8 +614,8 @@ onpopstate = function (e) {
 
   htmlEl.appendChild(newState[STATE_BODY()]);
   _window.y = spa.y;
-  onpageshow = el = spa.pg;
-  onpagehide = spa.pgh;
+  _window.onpageshow = el = spa.pg;
+  _window.onpagehide = spa.pgh;
   el && el({persisted:1});
 };
 onpopstate.p = [aELonClick, preload]; /*for dumb.js*/
