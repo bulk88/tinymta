@@ -1,4 +1,10 @@
-window.log = function () {
+(function (){
+"use strict";
+var _window = window;
+var _document = document;
+var _class = Array.prototype;
+var _Date = Date;
+_window.log = function () {
   try {
     console.log.apply(console, arguments);
   } catch (e) {
@@ -29,28 +35,28 @@ window.log = function () {
 
 //FF 3.0 has sessionStorage but no JSON
 //rtrain/rstop touchstart/mousedown preloader
-if (!window.JSON) {
+if (!_window.JSON) {
 //security irrel, native JSON faster than JS eval
 //according to articles online, but just use eval for
 //perf as a PF, we use JSONP/innerHTML, and loading a JSON parser
 //polyfill is abs insane in this micro-HTML site
-  window.JSON = {parse: function(str) {return (new Function("return " + str ))()}};
+  _window.JSON = {parse: function(str) {return (new Function("return " + str ))()}};
 }
 
-if(!window.requestAnimationFrame) {
-  window.requestAnimationFrame =
-    window.mozRequestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
+if(!_window.requestAnimationFrame) {
+  _window.requestAnimationFrame =
+    _window.mozRequestAnimationFrame ||
+    _window.webkitRequestAnimationFrame ||
+    _window.oRequestAnimationFrame ||
+    _window.msRequestAnimationFrame ||
     function(callback){
-      window.setTimeout(callback, 33); //1000/30fps=33 ms
+      _window.setTimeout(callback, 33); //1000/30fps=33 ms
     }
   ;
 }
-if(!window.requestIdleCallback) {
+if(!_window.requestIdleCallback) {
   //do atleast 1 paint before GC/idle looping
-  window.requestIdleCallback = function(cb) {
+  _window.requestIdleCallback = function(cb) {
     requestAnimationFrame(function(){
       requestAnimationFrame(cb);
     });
@@ -60,8 +66,8 @@ if(!window.requestIdleCallback) {
 /* 2 polyfills for status.htm
  fetch added Chrome 42, Array.forEach added way before
 */
-if (!Array.prototype.forEach) {
-  Array.prototype.forEach = function (fn, scope) {
+if (!/*Array.prototype*/_class.forEach) {
+  _class.forEach = function (fn, scope) {
     'use strict';
     var i,
     len;
@@ -74,17 +80,10 @@ if (!Array.prototype.forEach) {
   };
 }
 
-/* fetch added Chrome 42, Date.now added Chrome 4 */
-if (!Date.now) {
-  Date.now = function now() {
-    return new Date().getTime();
-  };
-}
-
 /* fetch() added in Chrome 42, Array.find in Chrome 45, f.js sometimes called
    for just Array.find */
-if (!Array.prototype.find) {
-  Array.prototype.find = function(callback) {
+if (!/*Array.prototype*/_class.find) {
+  _class.find = function(callback) {
   if (this === null) {
     throw new TypeError('Array.prototype.find called on null or undefined');
   } else if (typeof callback !== 'function') {
@@ -104,8 +103,8 @@ if (!Array.prototype.find) {
 }
 
 /* IE 5.0 polyfill, 5.5 has array push() */
-if (!Array.prototype.push) {
-  Array.prototype.push = function() {
+if (!_class.push) {
+  _class.push = function() {
     for (var i = 0; i < arguments.length; i++) {
       this[this.length] = arguments[i];
     }
@@ -124,9 +123,10 @@ if (!Object.values) {
   };
 }
 
+_class = _Date.prototype;
 // toLocaleTimeString polyfill for IE 5
-if (!Date.prototype.toLocaleTimeString) {
-  Date.prototype.toLocaleTimeString = function() {
+if (!_class.toLocaleTimeString) {
+  _class.toLocaleTimeString = function() {
     var hours = this.getHours();
     var minutes = this.getMinutes();
     var seconds = this.getSeconds();
@@ -135,17 +135,23 @@ if (!Date.prototype.toLocaleTimeString) {
     return hours + ":" + minutes + ":" + seconds + " " + meridian;
   };
 }
+/* fetch added Chrome 42, Date.now added Chrome 4 */
+if (!_Date.now) {
+  _Date.now = function now() {
+    return new _Date().getTime();
+  };
+}
 
 (function(){
-
+_class = Function.prototype;
 //added in IE 5.5, not in 5.0, PF hand made by me, not copied
-if (!Function.prototype.call) {
+if (!_class.call) {
 /* a PF I saw, used eval('string') to pass .arguments var arg, to make a
    one time use function, that is unlimited args for IE w/o .call()/apply()
    for perf/sanity, just hardwire to 3 args, the max used by all other PFs
    calling .call
 */
-  Function.prototype.call = function (newThis, a1, a2, a3 /*, a4, a5, a6*/) {
+  _class.call = function (newThis, a1, a2, a3 /*, a4, a5, a6*/) {
     var ret;
     var fnName;
     if (typeof newThis === 'object') { //untested but prob correct
@@ -165,14 +171,14 @@ if (!Function.prototype.call) {
 //added in IE 5.5, not in 5.0, PF hand made by me, not copied
 (function () {
   var cbCache;
-  if (!Function.prototype.apply) {
+  if (!_class.apply) {
     /* a PF I saw, used eval('string') to pass .arguments var arg, to make a
     one time use function, that is unlimited args for IE w/o .call()/apply()
     for perf/sanity, just hardwire to 3 args, the max used by all other PFs
     calling .call
      */
     cbCache = [];
-    Function.prototype.apply = function (obj, args) {
+    _class.apply = function (obj, args) {
       var fn = this;
       var fnCb;
       var result;
@@ -305,7 +311,7 @@ if (!!("a".replace(/a/,function(){return ""}))) {
 */
 }
 
-if (!window.encodeURIComponent)
+if (!_window.encodeURIComponent)
   (function () {
 
     var hexchars = "0123456789ABCDEF";
@@ -316,7 +322,7 @@ if (!window.encodeURIComponent)
 
     var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
-    window.encodeURIComponent = function (s) {
+    _window.encodeURIComponent = function (s) {
       var enc = "";
       if (typeof s !== 'string') //catch undef
         s = String(s);
@@ -330,18 +336,16 @@ if (!window.encodeURIComponent)
     };
   })();
 
-if (location.pathname == "/" && !window.E && window.E !== 0) {
-  (function () {
-    var drop = window.E = document.createElement('img');
+if (location.pathname == "/" && !_window.E && _window.E !== 0) {
+    var drop = _window.E = _document.createElement('img');
     //see draw_fav.js for reasoning of sA() vs .style
     drop.setAttribute("style","height:1em;width:1em;vertical-align:middle;");
     drop.src = "dp.png";
-  })();
 }
 //sometimes just polyfills above needed, fetch exists
-if (!window.fetch) {
+if (!_window.fetch) {
 
-var dhead = document.documentElement.firstChild;
+var dhead = _document.documentElement.firstChild;
 //FF 3.0 no .children, FF 3.5 has .children and all IEs >=5 have it
 if(!dhead.children)
   dhead.children = dhead.childNodes;
@@ -383,7 +387,7 @@ if(dhead.children[3].nodeName.charCodeAt() < 65 /*A*/) {
 //text() vs json() from caller, not known!!! until after status==200 delivered
 //to caller, and its too late for legacy XHR and legacy JSONP, to set
 //.resonseType or tell JSONP server to send a string not obj as .contents
-window.fetch = function (url, options_headers, want_not_json) {
+_window.fetch = function (url, options_headers, want_not_json) {
   options_headers && (options_headers = options_headers.headers);
   return {
     then: function (cb, addIMS /*arg 2 spec breaking, shud be reject cb*/) {
@@ -401,12 +405,12 @@ window.fetch = function (url, options_headers, want_not_json) {
               };
               var want_text; /*.text() called instead of .json(), non-JSON content*/
               var jsonpFnName;
-              var x = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+              var x = _window.XMLHttpRequest ? new _window.XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
               //many call sites, make this a func, with closure vars
               function call_f_then_cb(httpstatus, jsonpFlag) {
                 /* don't leak, run first in case user CB throw exceptions
                  IE doesnt support/throws xcpt for delete op on window obj */
-                jsonpFlag && (window[jsonpFnName] = 0);
+                jsonpFlag && (_window[jsonpFnName] = 0);
                 //note, the CB might never call json() method if
                 //bad status, but we syncronously must give a chance for
                 //fetch.then() cb to offer the json().then() cb for us to
@@ -457,7 +461,8 @@ window.fetch = function (url, options_headers, want_not_json) {
                 and only "Slow" works
                 http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
                 x.onreadystatechange = function () {
-                  if (x.readyState == 2) { //2 == headers status rcv
+                  var rs = x.readyState;
+                  if (rs == 2) { //2 == headers status rcv
                     if(x.status /* not 0 */) {
                       /* IE 6 cache hit, no IP traffic happened, thats bad,
                       this detects it and resends it, on Chrome with CORS
@@ -480,7 +485,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                         i_thisFunc(cb, 1);
                       }
                     }
-                  } else if (x.readyState == 4) {// 4 == full body, 3 is partial body
+                  } else if (rs == 4) {// 4 == full body, 3 is partial body
                     if( ! x.status /* == 0*/) {
                       //in reality, if CORS browser and 100% CORS 3pty API
                       //status 0 should be shown to user, to show no I/O
@@ -568,7 +573,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                 } else {
                   x = 0;
                 }
-                scriptElem = document.createElement("script");
+                scriptElem = _document.createElement("script");
                 //note this WILL NOT RUN FROM 127.0.0.1 or file://
                 scriptElem.src =
 /*STARTDELETE*/
@@ -582,7 +587,7 @@ window.fetch = function (url, options_headers, want_not_json) {
 //                  +'&a='+((new Date().getTime())+0)
                   ;
                 scriptElem.onerror = function (e) {
-                  alert("JSONP network error "+(JSON && JSON.stringify ? JSON.stringify(e) :''));
+                  alert("JSONP network error "+(JSON.stringify ? JSON.stringify(e) :''));
                   //never use .parentElement, not old IE or old FF compat
                   scriptElem.parentNode.removeChild(scriptElem);
                   /* ,1 is window.jsonpCB anti-leak */
@@ -597,7 +602,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                 JSONP req script tag*/
                 ;
                 /* add JSONP runner to global scope*/
-                window[jsonpFnName] = function (r) {
+                _window[jsonpFnName] = function (r) {
                   /* anti leak, IE 5 will never load the .js if
                   appendChild/removeChild is done syncronously,
                   Opera/Chrome/FF/Safari don't mind rapid sync
@@ -615,7 +620,7 @@ window.fetch = function (url, options_headers, want_not_json) {
                     g_jtcb = r.contents;
                 };
                 jsonp.appendChild(scriptElem);
-                /*document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
+                /*_document.body.appendChild(scriptElem);/*crashes on IE6 if forced JSONP mode*/
               } //end catch blk
             } //end of fetch.then() method
     };
@@ -624,7 +629,7 @@ window.fetch = function (url, options_headers, want_not_json) {
 
   var jsonp, //must be not global
   jsonpi = 0,
-  ua_IeGTE55 = window.navigator.userAgent,
+  ua_IeGTE55 = _window.navigator.userAgent,
   uaIdx_styleShtArr = ua_IeGTE55.indexOf('MSIE '),
   is_ie = uaIdx_styleShtArr > 0;
   if (is_ie) {
@@ -632,7 +637,7 @@ window.fetch = function (url, options_headers, want_not_json) {
     ua_IeGTE55 = ua_IeGTE55.slice(uaIdx_styleShtArr, ua_IeGTE55.indexOf(';',uaIdx_styleShtArr)).split('.');
     ua_IeGTE55 = (ua_IeGTE55[0] == 5 && ua_IeGTE55[1] >= 5) || ua_IeGTE55[0] > 5;
     if(!ua_IeGTE55) {
-      uaIdx_styleShtArr = document.styleSheets;
+      uaIdx_styleShtArr = _document.styleSheets;
       //insert CSS for IE 5.0 no inline-block fix using tables
       if (uaIdx_styleShtArr.length) {
         uaIdx_styleShtArr = uaIdx_styleShtArr[uaIdx_styleShtArr.length-1];
@@ -645,15 +650,15 @@ window.fetch = function (url, options_headers, want_not_json) {
 
 var nosvg =
 /* SVG test for IE, and ancient FFs (FF 3.5 tested has no svg) */
-  document.implementation
-  && document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
+  _document.implementation
+  && _document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1')
   ? 0 : '.png';
 var no_inline_block_container_fill =
     is_ie && !ua_IeGTE55 ? function (parentEl) {
-        return parentEl.appendChild(document.createElement('table'))
-        .appendChild(document.createElement('tbody'))
-        .appendChild(document.createElement('tr'))
-        .appendChild(document.createElement('td'));
+        return parentEl.appendChild(_document.createElement('table'))
+        .appendChild(_document.createElement('tbody'))
+        .appendChild(_document.createElement('tr'))
+        .appendChild(_document.createElement('td'));
     } : 0;
 /*
 IE 6.0 has doc.CDF, IE 5.5 missing doc.CDF func (undef)
@@ -668,11 +673,11 @@ in 5.5, so nobody can write polyfills, then MS fixed/turned it back on for
 IE 6.0
 */
 var no_CDF_fill =
-    document.createDocumentFragment && (!is_ie || ua_IeGTE55) ? 0 : function () {
+    _document.createDocumentFragment && (!is_ie || ua_IeGTE55) ? 0 : function () {
 /*IE 5.5 xfrag tag works, with appendChild, no prob, 5.0 throws
 "Error: Unexpected call to method or property access" in appendChild to tag xfrag
 switch to div, no render diff between docfrag and the div in doc tree*/
-    return document.createElement('div');
+    return _document.createElement('div');
     };
 
 var oldOnLoad;
@@ -710,12 +715,12 @@ var oldOnLoad;
 
 //run main body
 //args (nosvg, polyfill_no_inline_block_el_container, polyfillCDF_or_false)
-if(this.y) {
+if(_window.y) {
   //chk_as_js(); //obsolete
   y(nosvg,no_inline_block_container_fill,no_CDF_fill);
   //char w is freq exist code vs char z which is zero hits
-  this.w && w();
-  this.x && x();
+  _window.w && w();
+  _window.x && x();
 } else {
   //FF 3.5 has sync/blocking appendChild(<SCRIPT>) as a bug, f.js executes on
   //ancient FF, BEFORE inline root index.htm <SCRIPT> executes
@@ -725,20 +730,20 @@ if(this.y) {
   //so try y() one more time if y() missing, dumb.js and/or 1p.js do load
   //f.js but legit never call y(), station selector .htm s dont have y()
 
-  oldOnLoad = this.onload;
-  this.onload = function(){
+  oldOnLoad = onload;
+  onload = function(){
     //chk_as_js(); //obsolete
     oldOnLoad && oldOnLoad();
-    this.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
+    _window.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
     //char w is freq exist code vs char z which is zero hits
     //arg 1 is for tileMap.htm, .SEMV() is IE only FN all vers
     //https://stackoverflow.com/questions/11689892/event-event-window-event-member-not-found-requiredfieldvalidator
-    this.w && w(window.ScriptEngineMajorVersion
+    _window.w && w(_window.ScriptEngineMajorVersion
       && function(evt) {
         //no version of IE has targetTouches, dont copy, https://caniuse.com/?search=targetTouches
         return {pageX: evt.pageX, pageY: evt.pageY, clientX: evt.clientX, clientY: evt.clientY};
     });
-    this.x && x();
+    _window.x && x();
   };
 }
 })();
@@ -807,3 +812,4 @@ JSONP innerhtml on body element/appendchild script element to body IE6 crash
     IEXPLORE.EXE!__ModuleEntry@0()  + 0x99
     kernel32.dll!_BaseProcessStart@4()  + 0x23
 */
+})();

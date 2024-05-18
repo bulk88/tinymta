@@ -1,5 +1,6 @@
 (function() {
-  var head, _onpagehide, _onpageshow, _location = location, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  "use strict";
+  var head, _onpagehide, _onpageshow, _location = location, _document = document, ver = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
 
   ver = ver ? +ver[2] : 0;
 //https://bugs.chromium.org/p/chromium/issues/detail?id=1199012#c_ts1635192305
@@ -34,10 +35,10 @@
   if (ver = history.pushState) {
     ver.p1 = [_onpagehide];
     if(!onpageshow) { //load spa.js for all *stations.htm s
-      head = document.documentElement.firstChild;
-      head.appendChild(document.createElement("script")).src = '/spa.js';
+      head = _document.documentElement.firstChild;
+      head.appendChild(_document.createElement("script")).src = '/spa.js';
       //fav.js for /*stop.htm, since stations.htm doesnt naturally use fav.js
-      ver = document.createElement("link");
+      ver = _document.createElement("link");
       ver.rel = 'preload';
       ver.as = 'script';
       ver.href = '/fav.js';
@@ -51,7 +52,7 @@
   }
 
 //.SEMV() is IE only FN all vers
-if(this.ScriptEngineMajorVersion
+if(window.ScriptEngineMajorVersion
   && (
     (ScriptEngineMajorVersion() < 5)
     || (ScriptEngineMajorVersion() === 5 && ScriptEngineMinorVersion() < 5)
@@ -59,7 +60,7 @@ if(this.ScriptEngineMajorVersion
   onload = function () {
     //warning, d.anchors is ONLY name="#" hash nav elements, d.links correct
     //cache arr.length b/c this a live node list/overhead
-    var arr = document.links, len = arr.length, i = 0
+    var arr = _document.links, len = arr.length, i = 0
       , el, pn, pnlen, needle, newpn;
     for(;i<len;i++){
       el = arr[i];
