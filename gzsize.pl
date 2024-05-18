@@ -17,6 +17,7 @@ my @a = qw(
   ./docs/dumb.js
   ./docs/as.js
   ./docs/spa.js
+  draw_fav.min.js
 );
 
 foreach(@a) {

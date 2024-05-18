@@ -12,8 +12,8 @@ function postDrawArv(span,arrHTMLLines) {
     //requestAnimationFrame no pfx is C24, FF23, SF 6.1
     //fetch is C42, FF 39, SF 10.1 (will then have PF for requestAnimationFrame)
     (this.requestIdleCallback || requestAnimationFrame)(function (ch) {
-      if (localStorage.getItem('fh') != (ch = span.clientHeight)) {
-        localStorage.setItem('fh', ch);
+      if (_localStorage.getItem('fh') != (ch = span.clientHeight)) {
+        _localStorage.setItem('fh', ch);
       }
     });
   }
@@ -149,6 +149,7 @@ var lirr_headers = {headers: {'accept-version': '3.0'}},
     curTime = this.R,
     pendingFetch,
     doc = document,
+    _localStorage = localStorage,
     heart = doc.createElement('label'),
     hourglass = heart.appendChild(doc.createElement('input'));
 //IE 8 does NOT allow changing .type after tree insert, but rn, these els are unattached
@@ -228,7 +229,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
   } else {
     //if RT checking on, add cached minHeight so weather div doesn't jerk
     if(config[2]) {
-      if(e = localStorage.getItem('fh')) {
+      if(e = _localStorage.getItem('fh')) {
         d.style.minHeight = e+'px';
       }
     }
@@ -258,7 +259,7 @@ function draw_fav (config, insertFDivFn, fetchDelayTypeCode) {
     //fav checkmarks and station list (which is a no I/O sync draw) if AS Name
     //text happens to be 2 or 3 lines, wrapped, on mobile UAs
     //skip LS & loop if as.js already drew to screen
-    e2 = curTime && localStorage.getItem("as");
+    e2 = curTime && _localStorage.getItem("as");
     if (e2) {
       for (i = e.lastChild; i = i.previousSibling; /*empty*/) {
         if ("DIV" === i.nodeName) {

@@ -231,5 +231,6 @@ gz: routes.js.gz routes.js.gz.png docs/f.js.gz docs/1p.js.gz
 gz: docs/dumb.js.gz docs/f.js.gz.png docs/1p.js.gz.png docs/dumb.js.gz.png
 gz: docs/fav.js.gz docs/fav.js.gz.png docs/ifav.js.gz docs/ifav.js.gz.png
 gz: docs/as.js.gz docs/as.js.gz.png docs/spa.js.gz docs/spa.js.gz.png
+gz: draw_fav.min.js.gz draw_fav.min.js.gz.png
 gz: MNRRgz LIRRMKFgz SUBMKFgz
 
