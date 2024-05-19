@@ -462,8 +462,9 @@ _window.fetch = function (url, options_headers, want_not_json) {
                 http://keelypavan.blogspot.com/2006/03/reusing-xmlhttprequest-object-in-ie.html*/
                 x.onreadystatechange = function () {
                   var rs = x.readyState;
+                  var status = x.status;
                   if (rs == 2) { //2 == headers status rcv
-                    if(x.status /* not 0 */) {
+                    if(status /* not 0 */) {
                       /* IE 6 cache hit, no IP traffic happened, thats bad,
                       this detects it and resends it, on Chrome with CORS
                       XMLHttpRequest cannot load //mtasubwaytime.info/getTime/E/G14. Request header field If-Modified-Since is not allowed by Access-Control-Allow-Headers in preflight response.
@@ -486,7 +487,7 @@ _window.fetch = function (url, options_headers, want_not_json) {
                       }
                     }
                   } else if (rs == 4) {// 4 == full body, 3 is partial body
-                    if( ! x.status /* == 0*/) {
+                    if( ! status /* == 0*/) {
                       //in reality, if CORS browser and 100% CORS 3pty API
                       //status 0 should be shown to user, to show no I/O
                       //available, and never fallback to JSONP
@@ -502,7 +503,7 @@ _window.fetch = function (url, options_headers, want_not_json) {
                       //fires RSC 4, status 0, and skips firing RSC 3, so
                       //don't do fallback to JSONP in RSC 3, but in RSC 4
                       i_thisFunc(cb);
-                    } else if (x.status == 200) {
+                    } else if (status == 200) {
                         //unknown if XHR has JSON parse or not, we don't care
                         //.response is "newer" and native browser parsed
                         //by "responseType" if .RT implemented, otherwise fall back to

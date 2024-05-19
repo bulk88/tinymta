@@ -13,8 +13,9 @@
 </head>
 <body>No javascript</body>
 <script>
-/*y = getStop*/
-mangleIndex={name:"mangleIndex"};
+"use strict";
+
+(function(){
 
 /*STARTSUBCOLOR*/
 var colorStrsSUB = ["00933c","ff6319","fccc0a","6d6e71","ee352e","286ded","0078c6","996633","b933ad"];
@@ -34,6 +35,10 @@ function AGENCIES_MAP_BUS() {return ['MTA NYCT', 'MTABC']}
 function AGENCY_MTASBWY() {return 0};
 function AGENCIES_MAP_SUBWAY() {return ['MTASBWY']}
 */
+var _window = window;
+var _location = location;
+var _document = document;
+var head = _document.documentElement.firstChild;
 var jsonp;
 
 var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alerts?type=json&apikey=qeqy84JE7hUKfaI0Lxm2Ttcm6ZA0bYrP';
@@ -50,35 +55,35 @@ var url_alerts = '//collector-otp-prod.camsys-apps.com/realtime/gtfsrt/ALL/alert
 /* put y() first b/c 3rd party AJAX APIs (MTA alerts API) are usually
    slower/larger/latency/often not preconnected vs our
    very tiny in gz bytes, same origin, /routes.js */
-var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:y();document.documentElement.firstChild.appendChild(document.createElement(\'script\')).src =\'routes.js\';void 0">Fast</a> <a href=\"javascript:location.replace(\''
+var t = '<a href=javascript:history.back()>Back</a> Refresh[<a href="javascript:y();void 0">Fast</a> <a href=\"javascript:location.replace(\''
           +
 /*STARTINSERTPATH*/
-          (/status\.htm$/.test(location.pathname) ? "status_.htm" : "status.htm")
+          (/status\.htm$/.test(_location.pathname) ? "status_.htm" : "status.htm")
 /*ENDINSERTPATH*/
           +'\')">Slow</a>] <a href='+url_alerts+'>Raw</a><br>';
-var scriptElem;
 
-if(!this.onpopstate) {
-  this.onpopstate = function (evt) {evt.state !== null && location.reload()};
-}
+_window.y = y;
 
-function onNewURL(){
+if(!_window.onpopstate) {
+
+  /* real nav (UA refresh) to status.htm after prior spa load of status.htm
+     do reload() to draw index.htm back on the screen
+  */
+  _window.onpopstate = function (evt) {evt.state !== null && _location.reload()};
 /* reqs
 fetch C42, S10.1, FF 39,Op 29
 array.find C45, S7.1, FF25, OP 32
 object.values C50, S10.1, FF 47, OP 41
 */
-if (Object.values) {
-  y/*getStop*/();
+  if (Object.values) {
+    y/*getStop*/();
+  } else {
+  //IE 5.5 and 6.0 don't have document.head
+    head.appendChild(_document.createElement("script")).src = 'f.js';
+  }
 } else {
-//IE 5.5 and 6.0 don't have document.head
-  document.documentElement.firstChild.appendChild(document.createElement("script")).src = 'f.js';
+  onhashchange = y;
 }
-}//end onNewURL
-
-this.y = y;
-onhashchange = onNewURL;
-(location.pathname == '/status.htm' ||  location.pathname == '/status_.htm') && onNewURL();
 
 /*y=getStop, must be var "y" for f.js polyfill to find and call on f.js load/exec */
 function y(ls /*unused args in PF mode, empty reg*/) {
@@ -96,15 +101,19 @@ function y(ls /*unused args in PF mode, empty reg*/) {
         R = drawHTML;
     });
   }
-  //todo # hash is a str const!!!
-  if ((ls = window.S) && ((window.S = 0),ls.s === location.hash.slice(1))
+
+  if ((ls = _window.S) && ((_window.S = 0),ls.s == "")
       && (Date.now()-ls.t < 3000)
   ) {
     ls.f(fCB);
   } else {
     fetch(url_alerts).then(fCB);
   }
-  document.body.innerHTML = t; /*t=top*/
+
+  if (R === 0) { //fast refresh, R eq undef is root load or SPA
+    head.appendChild(_document.createElement("script")).src = 'routes.js';
+  }
+  _document.body.innerHTML = t; /*t=top*/
 }
 
 //typ a .replace() CB, but manual call sometimes
@@ -182,7 +191,6 @@ function filterCurrentStatii (statii) {
         }
       }
     } catch (e) {
-    //window.console ? console.log(e) : alert(e.message+e.error+e.toString()+e.toValue());
     }
 
     // add to output byRoutes hash, initial props if needed
@@ -473,10 +481,11 @@ function emitRRStatus(name, lines) {
       h += emitRRStatus('Long Island Rail Road', longIslandLines);
       h += emitRRStatus('Bus', alertedBuses);
 
-    document.body.innerHTML += h;
+    _document.body.innerHTML += h;
     alertsResp = 0;
     R/*allRoutes*/ = 0;
 }
+})();
 </script></html>
 <!--
 JSONP innerhtml on body element/appendchild script element to body IE6 crash

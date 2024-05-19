@@ -1,4 +1,4 @@
-system('gmake gz');
+system('gmake -j4 gz');
 my @a = qw(
   ./docs/index.htm
   ./docs/status.htm

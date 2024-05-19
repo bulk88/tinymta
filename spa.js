@@ -376,7 +376,7 @@ API resp is preloaded to full inflated json obj
         });
         if(pathtype === 2) {
           //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
-          R = 0;
+          R = void 0;
           haveRoutesJS = 1;
           head.appendChild(document.createElement('script')).src = "routes.js";
         }
@@ -457,7 +457,7 @@ API resp is preloaded to full inflated json obj
           //keyboard TAB/ENTER or a flip phone
           if(!haveRoutesJS) {
             //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
-            R = 0;
+            R = void 0;
             haveRoutesJS = 1;
             head.appendChild(document.createElement('script')).src = "routes.js";
           } else {
