@@ -589,6 +589,9 @@ decimal ints win, sometimes 1 extra dec digit, shorter than mandatory "0x" 2 cha
       }
     });
 }
+else if (pathname_callback === "/wea.js") {
+  return fetch("https://api.weather.com/v3/wx/forecast/hourly/1day?geocode=40.74,-73.91&format=json&units=e&language=en-us&apiKey=8de2d8b3a93542c9a2d8b3a935a2c909");
+}
 //old smart/flip phone browser debug tool
 else if (
   (pathname_callback === '/t' && (url.pathname = '/touch'))
