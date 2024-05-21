@@ -1,8 +1,9 @@
 (function(){
 var _window = window;
 var _location = location;
+var _document = document;
 //IE 8-10 has AEL/QS but not document.head
-var htmlEl = document.documentElement;
+var htmlEl = _document.documentElement;
 var head = htmlEl.firstChild;
 var el, newEl;
 
@@ -145,7 +146,7 @@ function STATE_PATHTYPE() {
   //1p and dumb phone pages, don't naturally do XHR IO
   if (!_window.fetch && !_window.f) {
     _window.f=1;//anti double load f.js in index.htm
-    head.appendChild(document.createElement("script")).src = '/f.js';
+    head.appendChild(_document.createElement("script")).src = '/f.js';
   }
 
 /*
@@ -156,11 +157,12 @@ function STATE_PATHTYPE() {
 
 (function(){
   var el, newEl;
-  var spa = {body: document.body, style: head.getElementsByTagName('style')[0], y: _window.y};
+  var spa = {body: _document.body, style: head.getElementsByTagName('style')[0], y: _window.y};
   var state = [spa, spa.body, curPathname+curHash, curPathtype];
   var i, arr;
   var div;
   var origin_len = _origin.length;
+  var ac = _window.applicationCache;
   var ua = getInfoBrowser();
 
   //prefetch (htm docs) C8, Edge 12, no SFs, FF2, Opera 15, IE 11
@@ -168,32 +170,19 @@ function STATE_PATHTYPE() {
     hasLinkPF = 1;
   }
 
-  if (el = _window.applicationCache) {
-    el.onupdateready = function () {
+  if (ac) {
+    ac.onupdateready = function () { //prevent old UAs refusing to load new .htms from server
       console.log('spa ac swap ',(_window.performance && _window.performance.now()) || Date.now());
       var ac = _window.applicationCache;
       ac.swapCache();
       ac.onupdateready = null;
     };
-    el.onerror = function () {
+/*    ac.onerror = function () { // private browsing probably
       var ac = _window.applicationCache;
-      if(!ac.status/*0*/ && !hasLinkPF) {
+      if( !ac.status && !hasLinkPF) {
         0;
       }
-    };
-  function logEvent(event) {
-      console.log(event.type);
-  }
-  window.applicationCache.addEventListener('checking',logEvent,false);
-  window.applicationCache.addEventListener('noupdate',logEvent,false);
-  window.applicationCache.addEventListener('downloading',logEvent,false);
-  window.applicationCache.addEventListener('cached',logEvent,false);
-  window.applicationCache.addEventListener('updateready',logEvent,false);
-  window.applicationCache.addEventListener('obsolete',logEvent,false);
-  window.applicationCache.addEventListener('error',logEvent,false);
-  window.applicationCache.addEventListener('load',logEvent,false);
-  window.applicationCache.addEventListener('readystatechange',logEvent,false);
-window.applicationCache.addEventListener('success',logEvent,false);
+    }; */
     searchForAppCache = !hasLinkPF;
   }
 
@@ -215,16 +204,19 @@ window.applicationCache.addEventListener('success',logEvent,false);
 
   for(i=0;i<genericEls.length;i++) {
     if(el = genericEls[i]) {
-      newEl = document.createElement(el);
+      newEl = _document.createElement(el);
     } else {
       newEl = newEl.cloneNode(0);
     }
     genericEls[i] = [newEl];
   }
+
   genericEls[GENERIC_PF()][0].rel = "prefetch";
-  if(!hasLinkPF && (!_window.applicationCache || _window.applicationCache.status == 0)) {
-    genericEls[GENERIC_PF()][0] = document.createElement('img');
+
+  if(!hasLinkPF && (!ac || !ac.status)) { //.s==0
+    genericEls[GENERIC_PF()][0] = _document.createElement('img');
   }
+
   newEl = genericEls[GENERIC_PC()][0];
   if(hasLinkPC) {
     newEl.rel = "preconnect";
@@ -484,7 +476,7 @@ API resp is preloaded to full inflated json obj
           //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
           R = void 0;
           haveRoutesJS = 1;
-          head.appendChild(document.createElement('script')).src = "routes.js";
+          head.appendChild(_document.createElement('script')).src = "routes.js";
         }
       }
       //preren tilemap
@@ -565,7 +557,7 @@ API resp is preloaded to full inflated json obj
             //maybe unused/aborted R routes resp array obj, messes with status.htm code that protects race cond against routes.js
             R = void 0;
             haveRoutesJS = 1;
-            head.appendChild(document.createElement('script')).src = "routes.js";
+            head.appendChild(_document.createElement('script')).src = "routes.js";
           } else {
             haveRoutesJS = 0;
           }
@@ -787,17 +779,18 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
 }
 function setLinkEl(linkType /*0 PC 1 PF*/, href) {
   var hrefSuffix, el, isImg;
-  if (linkType && preconPrefetPurgedHtm[href]) {
-    return 0;
-  }
-  if(linkType) {
+
+  if(linkType) { //PF
+    if(preconPrefetPurgedHtm[href]) {
+      return 0;
+    }
     hrefSuffix = href.slice(-4);
     /*for tileMap */
     if (hrefSuffix == '.png' || hrefSuffix == '.gif') {
       isImg = 1;
     }
     if (isImg && !hasLinkPLImg) {
-      el = document.createElement('img');
+      el = _document.createElement('img');
       el.src = href;
       return el;
     }
@@ -821,9 +814,9 @@ function setLinkEl(linkType /*0 PC 1 PF*/, href) {
   }
  
   if("href" in el) {
-  el.href = href;
+    el.href = href;
   } else {
-  el.src = href;
+    el.src = href; //img with real png or .htm for cache hit ancient UA
   }
   return el;
 }
@@ -847,9 +840,7 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
     for (i = 0; i < strArr.length; i++) {
       el = setLinkEl(linkType, strArr[i]);
       el && div.appendChild(el);
-          if(linkType && el) el.onload = function(e) {
-      //debugger
-      };
+      //if(linkType && el) el.onload = function(e) {}; //old UAs dont fire
     }
 /* I assume .fC faster than .cN.length and dont want a JS bool var here for
    JS code size */
@@ -874,7 +865,7 @@ function swapElMaybe(el,el2) {
   return el2;
 }
 function loadJS(idx, finArr) {
-  var el = document.createElement('script');
+  var el = _document.createElement('script');
   el.onerror = //anti-UI-freeze
   el.onload =  //onload runs AFTER script body execs
     function (evt) {
@@ -1053,9 +1044,10 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
       curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
       requestIdleCallbackPF(reallocGenericEls);
     }
-    if(searchForAppCache && pathtype == 3) { //stop.htm
+
+    if(searchForAppCache && pathtype == 3) { //stop.htm, ancient UAs
       //idea from https://blog.jamesdbloom.com/TipsForUsingApplicationCache.html
-      el = document.createElement('iframe');
+      el = _document.createElement('iframe');
       el.src = "/stopac.htm";
       console.log('add stopac el ',(_window.performance && _window.performance.now()) || Date.now());
       head.appendChild(el);
