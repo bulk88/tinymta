@@ -736,8 +736,8 @@ if(_window.y) {
   //so try y() one more time if y() missing, dumb.js and/or 1p.js do load
   //f.js but legit never call y(), station selector .htm s dont have y()
 
-  oldOnLoad = onload;
-  onload = function(){
+  oldOnLoad = _window.onload;
+  _window.onload = function(){
     //chk_as_js(); //obsolete
     oldOnLoad && oldOnLoad();
     _window.y && y(nosvg,no_inline_block_container_fill,no_CDF_fill);
