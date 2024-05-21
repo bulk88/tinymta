@@ -342,6 +342,15 @@ if (location.pathname == "/" && !_window.E && _window.E !== 0) {
     drop.setAttribute("style","height:1em;width:1em;vertical-align:middle;");
     drop.src = "dp.png";
 }
+
+function stringToHash(string) {
+  for (var hash=0,i=0; i<string.length; i++) {
+    hash = ((hash << 5) - hash) + string.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return hash < 0 ? -hash : hash; //abs()
+}
+
 //sometimes just polyfills above needed, fetch exists
 if (!_window.fetch) {
 
@@ -568,8 +577,9 @@ _window.fetch = function (url, options_headers, want_not_json) {
                 put script tag first, some browser preemptive start .src
                 download before tree insert, on IE getTime() returns same time
                 if called twice fast, add mixer number so CBs dont clash
+                OBSOLETE /\, routes.js and JSONP mta/alerts are not same
+                name space, routes.js used to be a MTA API call
                 */
-                jsonpFnName = 'j'+((new Date().getTime())+(jsonpi++));
                 if(options_headers) {
                   x = []; //JSON.stringify not avail old browsers
                   for(i_thisFunc in options_headers) {
@@ -579,19 +589,20 @@ _window.fetch = function (url, options_headers, want_not_json) {
                 } else {
                   x = 0;
                 }
-                scriptElem = _document.createElement("script");
-                //note this WILL NOT RUN FROM 127.0.0.1 or file://
-                scriptElem.src =
+                url = 
 /*STARTDELETE*/
                   '//tinymta.us.to' +
 /*ENDDELETE*/
                   '/jsp?url='+encodeURIComponent(url)
-                  +'&callback='+jsonpFnName
                   +(x ? '&headers='+encodeURIComponent(x) : '')
                   +(want_not_json ? '&type=text' : '')
 //doesnt seem to be needed on old IEs
 //                  +'&a='+((new Date().getTime())+0)
-                  ;
+                ;
+                jsonpFnName = 'j'+stringToHash(url);
+                scriptElem = _document.createElement("script");
+                //note this WILL NOT RUN FROM 127.0.0.1 or file://
+                scriptElem.src = url + '&callback='+jsonpFnName;
                 scriptElem.onerror = function (e) {
                   alert("JSONP network error "+(JSON.stringify ? JSON.stringify(e) :''));
                   //never use .parentElement, not old IE or old FF compat
@@ -634,7 +645,7 @@ _window.fetch = function (url, options_headers, want_not_json) {
 }//end fetch pf
 
   var jsonp, //must be not global
-  jsonpi = 0,
+  jsonpi = 0, // a not fetch PF uses this
   ua_IeGTE55 = _window.navigator.userAgent,
   uaIdx_styleShtArr = ua_IeGTE55.indexOf('MSIE '),
   is_ie = uaIdx_styleShtArr > 0;
