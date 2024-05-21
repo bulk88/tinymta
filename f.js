@@ -720,8 +720,8 @@ if(_window.y) {
   //chk_as_js(); //obsolete
   y(nosvg,no_inline_block_container_fill,no_CDF_fill);
   //char w is freq exist code vs char z which is zero hits
-  _window.w && w();
-  _window.x && x();
+  if(_window.w) { w(); w = 0; /*GC*/}
+  _window.x && x(); //fmr used by fav.js, now unused
 } else {
   //FF 3.5 has sync/blocking appendChild(<SCRIPT>) as a bug, f.js executes on
   //ancient FF, BEFORE inline root index.htm <SCRIPT> executes
@@ -739,12 +739,16 @@ if(_window.y) {
     //char w is freq exist code vs char z which is zero hits
     //arg 1 is for tileMap.htm, .SEMV() is IE only FN all vers
     //https://stackoverflow.com/questions/11689892/event-event-window-event-member-not-found-requiredfieldvalidator
-    _window.w && w(_window.ScriptEngineMajorVersion
+    //tileMap.htm .x .y are DOM props or TODO RESEARCH were conflicts
+    if(_window.w) {
+      w(_window.ScriptEngineMajorVersion
       && function(evt) {
         //no version of IE has targetTouches, dont copy, https://caniuse.com/?search=targetTouches
         return {pageX: evt.pageX, pageY: evt.pageY, clientX: evt.clientX, clientY: evt.clientY};
-    });
-    _window.x && x();
+      });
+      w = 0; /*GC*/
+    }
+    _window.x && x(); //fmr used by fav.js, now unused
   };
 }
 })();

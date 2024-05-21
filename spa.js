@@ -61,17 +61,19 @@ var el, newEl;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
   var requestIdleCallbackPF =
     _window.requestIdleCallback
-    || ( // note, RAF can't be cancelled, rewrite maybe
-      _window.requestAnimationFrame
-      && function (cb) {
-        requestAnimationFrame(function () {
-          requestAnimationFrame(cb);
-        });
-      }
-    )
-    || function (callback) {
-         return setTimeout(callback, 40)
-      }
+    || ( _window.requestIdleCallback = //global for tileMap.htm
+      ( // note, RAF can't be cancelled, rewrite maybe
+        _window.requestAnimationFrame
+        && function (cb) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(cb);
+          });
+        }
+      )
+      || function (callback) {
+           return setTimeout(callback, 40)
+        }
+    );
   ;
 
 
@@ -490,7 +492,7 @@ API resp is preloaded to full inflated json obj
 
         //special GC/free images CB to tileMap.htm, if tM.htm wants a gc evt
         if(pathtype != 8) {
-          (el = _window.T) && (el = el.GC) && el();
+          (el = _window.T) && el();
         }
         pageHistory.length = pageHistoryIdx + 1; //GC Fwd entries
         
