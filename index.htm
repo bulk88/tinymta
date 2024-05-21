@@ -10,6 +10,16 @@
 <!-- dont do preconnect fallback for weather, not worth wire bytes -->
 <!-- 1062 vs 1059 bytes gz local af rm weather PC tag -->
 <!-- 1059 vs 1047 bytes gz local af rm 2 dns-fetch tags -->
+<!-- as.js is a CFW, so higher latency vs static files on CF, put these 2 .js -->
+<!-- on wire asap, for parallel download and parse/latency by modern UAs with -->
+<!-- async, f.js has work arounds for as.js no-async early failed paint/no DOM -->
+<!-- body yet problems, IMO as.js is less important than getting "new socket"  -->
+<!-- cross origin weather JSON preload on wire, since tinymta socket 25%-99% chance -->
+<!-- already started -->
+<link href=as.js rel=preload as=script>
+<script async defer src=as.js></script>
+<script async defer src=dumb.js></script>
+<script async defer src=fav.js></script>
 <!-- preconnect to status.htm's API -->
 <link href="//collector-otp-prod.camsys-apps.com" rel="preconnect" crossorigin>
 <!-- not time sensitive, all below are navigates or unimplimented by SF -->
@@ -20,15 +30,7 @@
 <!-- draw_fav.js is dev only -->
 <!-- <script src=draw_fav.js></script> -->
 
-<!-- as.js is a CFW, so higher latency vs static files on CF, put these 2 .js -->
-<!-- on wire asap, for parallel download and parse/latency by modern UAs with -->
-<!-- async, f.js has work arounds for as.js no-async early failed paint/no DOM -->
-<!-- body yet problems, IMO as.js is less important than getting "new socket"  -->
-<!-- cross origin weather JSON preload on wire, since tinymta socket 25%-99% chance -->
-<!-- already started -->
-<script async defer src=as.js></script>
-<script async defer src=dumb.js></script>
-<script async defer src=fav.js></script>
+
 <style>:root{color-scheme:light dark}span{display:inline-block}img{height:2em}</style>
 </head><body>
 Do you have a<br>

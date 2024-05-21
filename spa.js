@@ -175,6 +175,19 @@ function STATE_PATHTYPE() {
       ac.swapCache();
       ac.onupdateready = null;
     };
+  function logEvent(event) {
+      console.log(event.type);
+  }
+  window.applicationCache.addEventListener('checking',logEvent,false);
+  window.applicationCache.addEventListener('noupdate',logEvent,false);
+  window.applicationCache.addEventListener('downloading',logEvent,false);
+  window.applicationCache.addEventListener('cached',logEvent,false);
+  window.applicationCache.addEventListener('updateready',logEvent,false);
+  window.applicationCache.addEventListener('obsolete',logEvent,false);
+  window.applicationCache.addEventListener('error',logEvent,false);
+  window.applicationCache.addEventListener('load',logEvent,false);
+  window.applicationCache.addEventListener('readystatechange',logEvent,false);
+window.applicationCache.addEventListener('success',logEvent,false);
     searchForAppCache = !hasLinkPF;
   }
 
