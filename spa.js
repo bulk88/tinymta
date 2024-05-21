@@ -175,6 +175,12 @@ function STATE_PATHTYPE() {
       ac.swapCache();
       ac.onupdateready = null;
     };
+    el.onerror = function () {
+      var ac = _window.applicationCache;
+      if(!ac.status/*0*/ && !hasLinkPF) {
+        0;
+      }
+    };
   function logEvent(event) {
       console.log(event.type);
   }
@@ -216,6 +222,9 @@ window.applicationCache.addEventListener('success',logEvent,false);
     genericEls[i] = [newEl];
   }
   genericEls[GENERIC_PF()][0].rel = "prefetch";
+  if(!hasLinkPF && (!_window.applicationCache || _window.applicationCache.status == 0)) {
+    genericEls[GENERIC_PF()][0] = document.createElement('img');
+  }
   newEl = genericEls[GENERIC_PC()][0];
   if(hasLinkPC) {
     newEl.rel = "preconnect";
@@ -811,7 +820,11 @@ function setLinkEl(linkType /*0 PC 1 PF*/, href) {
      }
   }
  
+  if("href" in el) {
   el.href = href;
+  } else {
+  el.src = href;
+  }
   return el;
 }
 
