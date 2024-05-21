@@ -67,11 +67,20 @@ Q12: "1500,1500",
 S1: "1500,1500"
 };
  */
+
+/*
+array descrip
+notmanhat, manhat
+zoom 0, zoom 1
+xClamp, yClamp, maxTileXLen, maxTileYLen
+*/
+var limitsTab = [
+  [[1185,1185,6,6],[2685,2685,12,12]],
+  [[4685,17093,20,68],[9685, 34501,40,136]]
+];
+var limit;
+var limitZoomed;
 var pfIECopyEvt;
-var maxX;
-var maxY;
-var maxTileXLen;
-var maxTileYLen;
 var tileDirectory;
 var tilesNotHidden;
 var mapDrag;
@@ -119,18 +128,12 @@ var htmlEl = _document.documentElement;
 //arg stationLocInfo is "#123" type str from ".hash" for prerendering or undef/false for URL bar addr
 function onNewURL(body, stationLocInfo) {
   //var st = performance.now();
-  var mapWidth;
-  var mapHeight;
   var isManhattan;
   var yCoor_i = 0;
   var xCoor_value = 0;
-  var stationLoc = "'V7Y:((Pt+'J,]m'O;J`&s,.d&EXM3'F1jS&)Jc;'Klcj'E0L?(Q?&9'QS_)'l3V?'A&cr/H2UV'3>dh(4CoR(j/.I%%)2;%7I2R&*;yy&nO<b's_f.&+;3F&^uZJ%9w{p'Xf]k(QjlB)5t[d%[Tlv&F]-P'I<P*(7y??(-sU/&7`]f'%rUa%^/co%dW;9&NrPR'>GAW%ig;{'t_'k(+@d9%k,R*%y:Cv&dn6?'e1I+(SAl5&HM6X'cq'g(d5Z'(8;{O&s11O&-DB1(`Aoj%k+T;'(Kmw(T^]'%p;R,&M]1m&/v*n'J-(-'?_iA%U-Fn'{0VF&IfVx&ZUWK'e5EU&8x7n(:la<&Wv4y'ge%`(m5pW%U.B/&/s@u'J)3H&maMS'xWA-'a;BV)9mfV%H9()(YhS3'S+.8)%0/j'GLTy)2+/j%IO7[&LD0Q(^Ja0'ocTh&NZyf%Vq1l%n2yW'nbw;&-A1d([/]n&2%;y&ta?8((3uZ%?5U{)-pBf&eq{N&]E.L&+OXR'n7XZ'*PI`&h:N((g%^,&m`dw'5nBg%^0u;'k/-U')yqU'CA@-%TX>d(I)0I%ykUu&s{F`'stR8(O;PR(9U:D(XVhB'u`%C&e]>R('vZ)'@9oY&HO'<&.{oJ%6qwJ(eNrP&(L1Z(0QB>&i++d%tIcp%tC-0&J&*a&:glr&?wZ`'[FNL'6q-W(*g:K)@PKb&pgE0)5t3m'nd^;&YRa`)5vch'Nb`d(%]ah(V;/+(<-9q(rD8)'b@Bl&TX3N%^0wq)6Kx5&squ4&8y5E%AeE1)&K9J(5^B@'9;xr'=,hb({F'I&[kd:&/r8S'X:(q&V_/0%Fq]q(j[;2'B>g<%m^LZ(d3[Q'oQx8&,*.)&o:Fj)5rX{(KX,M)=^Cu(J?xk'VvI4&T-FC'O7(C%VG]%'%opa(K[{?'O9db%2wDc&5*`T'-XF+(FK::%3Rmc)5s2;(XRK1'r-`T&tHPh&?JqJ(wR]i(4BTU'Qgjn&heus%t.aK%-)+A)+WBZ')cfn(+?a(&6EV<%;<1F'aA=.',DQ8).1I3'oMy8&yT-t&IeXt%-)R3(d3{-(Coi=(j]Pf&^MQW'w@3{%Sh+*(/3BM'2ey*(LqaW'4,Gk(]b]aJb21+;[B?+:V]vW6JI[b8;NSN4n),g2Z-cv-l+T:(:n)5,&&a]*P-@S0O6Al<k0mN>^gHg@=d]lA`s,v1[/gXC6m4X(rJ4v'C[>S34t[lDF{?54a2D_6abk:8_a,:2r_m&EU2qqG>Lj+HwXF5JSxwbLKP(?N7FY&:CmCq<yFF5>BFN:@9rSlAP2{?C:eF:;`T{gGBC:XF>66NGi/Z5J_ZiNKg]dSL['DDMV0xgNOvfIFo>vqI4aU?Oo:ogQ@&F]43wZ:F53_IG`-.0L]ZB5NAes?Ouc3DI21*0JZMj?4w3O56q<8?8hh=q:JB6N;D2y0QUy^IRc5uSK{*HII,xY0SQFr:Te*O0S*[.lV/CKSEVO`0LaQPlW<U1qFpZiqU'A,]V4RCgW3QU:U>W8DWvb:]Vwc3SU'AmDS)Cn]N:(ogW8`qbJk?YqKe0GSL[+_qXP9sbQN<CXX3j^+UpymSOX)DNI&SrvQ1mB]S5%,]VoyFNTj;;:G;vX:Pm&-&QrLDSEY.s+TZeKX8laWb:OTB+;V>KD<qaoq>LiZ]@D@`:B+(tqCktS5OK0WIDqF-&NC.qNR,y-:Px]lIRQ3v:NC1']Qu-;lS>-w]+hqBX-_0-I)Ks,+.wwJX'TCm@'+&rE(5[Xc&ZTQr(E2m'&)M0w&B)'X'?2mc'xRw<''1LA'd1'i&[,d''{tG+(OgVQ%y@>m%o:T/&TlgL&DUk'&Cj)m&:&QF';AS+&,+Kr(Xk`7(QXSV&&G5J&KS=A(5Zfu(Bk*[(]arF&,)UJ(c2<5&,*N,(0PU7'pma7(J>ki(BU4-(9RtA'b.8N'&X&2'JnbP),o<)'1d&k(aUsh(+?5B(s]u((3*QG'JTf>'NK)p&i(t6&/tFV&_dy3'm_P_'2'VP&OMk^&Oyx-'.vn&&iQRq&`NoH%^^I=&V_t<&/Hp&&SBN&&ErJ5'6v,9%)tT2'o9fK%YeZ/'MGcN&Rl8a'vyI*'WM6t(KYI8'C@a*'3*/b'1Q*w''w_j'M[UN'CUje';l3)'Xix/(:oMu&8^v=&]{`X'-pJ]'4o{U'&si>&q+N3&e5?x&U3cN&B?Bj%^b(n%Jj{2%8c.=%o%-y(e3,_(_NA=(Xfb?(RV6-(?ww.(.1su(%ZSq(nLIp'i*Kj'^cB='J@K'";
 
-  var sl3 =
+  var stationLoc = 
 "'V7Y:((Pt+'J,]m'O;J`&s,.d&EXM3'F1jS&)Jc;'Klcj'E0L?(Q?&9'QS_)'l3V?'A&cr/H2UV'3>dh(4CoR(j/.I%%)2;%7I2R&*;yy&nO\x3Cb's_f.&+;3F&^uZJ%9w{p'Xf]k(QjlB)5t[d%[Tlv&F]-P'I\x3CP*(7y??(-sU/&7`]f'%rUa%^/co%dW;9&NrPR'>GAW%ig;{'t_'k(+@d9%k,R*%y:Cv&dn6?'e1I+(SAl5&HM6X'cq'g(d5Z'(8;{O&s11O&-DB1(`Aoj%k+T;'(Kmw(T^]'%p;R,&M]1m&/v*n'J-(-'?_iA%U-Fn'{0VF&IfVx&ZUWK'e5EU&8x7n(:la\x3C&Wv4y'ge%`(m5pW%U.B/&/s@u'J)3H&maMS'xWA-'a;BV)9mfV%H9()(YhS3'S+.8)%0/j'GLTy)2+/j%IO7[&LD0Q(^Ja0'ocTh&NZyf%Vq1l%n2yW'nbw;&-A1d([/]n&2%;y&ta?8((3uZ%?5U{)-pBf&eq{N&]E.L&+OXR'n7XZ'*PI`&h:N((g%^,&m`dw'5nBg%^0u;'k/-U')yqU'CA@-%TX>d(I)0I%ykUu&s{F`'stR8(O;PR(9U:D(XVhB'u`%C&e]>R('vZ)'@9oY&HO'\x3C&.{oJ%6qwJ(eNrP&(L1Z(0QB>&i++d%tIcp%tC-0&J&*a&:glr&?wZ`'[FNL'6q-W(*g:K)@PKb&pgE0)5t3m'nd^;&YRa`)5vch'Nb`d(%]ah(V;/+(\x3C-9q(rD8)'b@Bl&TX3N%^0wq)6Kx5&squ4&8y5E%AeE1)&K9J(5^B@'9;xr'=,hb({F'I&[kd:&/r8S'X:(q&V_/0%Fq]q(j[;2'B>g\x3C%m^LZ(d3[Q'oQx8&,*.)&o:Fj)5rX{(KX,M)=^Cu(J?xk'VvI4&T-FC'O7(C%VG]%'%opa(K[{?'O9db%2wDc&5*`T'-XF+(FK::%3Rmc)5s2;(XRK1'r-`T&tHPh&?JqJ(wR]i(4BTU'Qgjn&heus%t.aK%-)+A)+WBZ')cfn(+?a(&6EV\x3C%;\x3C1F'aA=.',DQ8).1I3'oMy8&yT-t&IeXt%-)R3(d3{-(Coi=(j]Pf&^MQW'w@3{%Sh+*(/3BM'2ey*(LqaW'4,Gk(]b]aJb21+;[B?+:V]vW6JI[b8;NSN4n),g2Z-cv-l+T:(:n)5,&&a]*P-@S0O6Al\x3Ck0mN>^gHg@=d]lA`s,v1[/gXC6m4X(rJ4v'C[>S34t[lDF{?54a2D_6abk:8_a,:2r_m&EU2qqG>Lj+HwXF5JSxwbLKP(?N7FY&:CmCq\x3CyFF5>BFN:@9rSlAP2{?C:eF:;`T{gGBC:XF>66NGi/Z5J_ZiNKg]dSL['DDMV0xgNOvfIFo>vqI4aU?Oo:ogQ@&F]43wZ:F53_IG`-.0L]ZB5NAes?Ouc3DI21*0JZMj?4w3O56q\x3C8?8hh=q:JB6N;D2y0QUy^IRc5uSK{*HII,xY0SQFr:Te*O0S*[.lV/CKSEVO`0LaQPlW\x3CU1qFpZiqU'A,]V4RCgW3QU:U>W8DWvb:]Vwc3SU'AmDS)Cn]N:(ogW8`qbJk?YqKe0GSL[+_qXP9sbQN\x3CCXX3j^+UpymSOX)DNI&SrvQ1mB]S5%,]VoyFNTj;;:G;vX:Pm&-&QrLDSEY.s+TZeKX8laWb:OTB+;V>KD\x3Cqaoq>LiZ]@D@`:B+(tqCktS5OK0WIDqF-&NC.qNR,y-:Px]lIRQ3v:NC1']Qu-;lS>-w]+hqBX-_0-I)Ks,+.wwJX'TCm@'+&rE(5[Xc&ZTQr(E2m'&)M0w&B)'X'?2mc'xRw\x3C''1LA'd1'i&[,d''{tG+(OgVQ%y@>m%o:T/&TlgL&DUk'&Cj)m&:&QF';AS+&,+Kr(Xk`7(QXSV&&G5J&KS=A(5Zfu(Bk*[(]arF&,)UJ(c2\x3C5&,*N,(0PU7'pma7(J>ki(BU4-(9RtA'b.8N'&X&2'JnbP),o\x3C)'1d&k(aUsh(+?5B(s]u((3*QG'JTf>'NK)p&i(t6&/tFV&_dy3'm_P_'2'VP&OMk^&Oyx-'.vn&&iQRq&`NoH%^^I=&V_t\x3C&/Hp&&SBN&&ErJ5'6v,9%)tT2'o9fK%YeZ/'MGcN&Rl8a'vyI*'WM6t(KYI8'C@a*'3*/b'1Q*w''w_j'M[UN'CUje';l3)'Xix/(:oMu&8^v=&]{`X'-pJ]'4o{U'&si>&q+N3&e5?x&U3cN&B?Bj%^b(n%Jj{2%8c.=%o%-y(e3,_(_NA=(Xfb?(RV6-(?ww.(.1su(%ZSq(nLIp'i*Kj'^cB='J@K'";
-  //dbg dev code
-  if(sl3 !== stationLoc)
-    alert("bad string");
 
  //we are a child SPA, pass TMs defered GC CB for cleaning IMG/STYLE els to spa.js
   if(freeImagesTiles) {
@@ -159,40 +162,15 @@ function onNewURL(body, stationLocInfo) {
     if (yCoor_i < 315)
       yCoor_i = 315;
 
-    if(zoomLevel) {
-      if (isManhattan) {
-        if (xCoor_value > 9685)
-          xCoor_value = 9685;
-        if (yCoor_i > 34501)
-          yCoor_i = 34501;
-      } else {
-        if (xCoor_value > 2685)
-          xCoor_value = 2685;
-        if (yCoor_i > 2685)
-          yCoor_i = 2685;
-      }
-    } else {
-      if (isManhattan) {
-        if (xCoor_value > 4685)
-          xCoor_value = 4685;
-        if (yCoor_i > 17093)
-          yCoor_i = 17093;
-      } else {
-        if (xCoor_value > 1185)
-          xCoor_value = 1185;
-        if (yCoor_i > 1185)
-          yCoor_i = 1185;
-      }
-    }
+    limitZoomed = (limit = limitsTab[isManhattan])[zoomLevel];
+
+    if(xCoor_value > limitZoomed[0]) 
+      xCoor_value = limitZoomed[0];
+    if(yCoor_i > limitZoomed[1]) 
+      yCoor_i = limitZoomed[1];
+
     // prev var mapArgs = mapImgDimensions[tileDirectory].split(",")
-    mapWidth = isManhattan ? 5000 : 1500;
-    mapHeight = isManhattan ? 17408 : 1500;
-    maxX = (mapWidth << zoomLevel) - 315;
-    maxY = (mapHeight << zoomLevel) - 315;
-    /* note above 2 px unit nums aren't accurate to prevent HTTP 404 for -1, -2, etc or too large tiles
-       original MTA code always did alot of 404s for IMG .png tiles, original dev bug */
-    maxTileXLen = (isManhattan ? (19+1) : (5+1)) << zoomLevel;
-    maxTileYLen = (isManhattan ? (67+1) : (5+1)) << zoomLevel;
+
     //function setTilePath(d)
     //{
     //tilePath = "http://wd1.mtahq.org/neighborhoodMaps/" + d + "/"
@@ -293,7 +271,7 @@ function setImgSrc(elem, x, y) {
      and .tX/.tY are used to calc tile name for IMG.src */
   elem.tX = x;
   elem.tY = y;
-  if(x > 0 && x < maxTileXLen && y > 0 && y < maxTileYLen) {
+  if(x > 0 && x < limitZoomed[2] && y > 0 && y < limitZoomed[3]) {
     var shard = (x + y) % 3;
     elem[isInImgPreload ? "href" : "src"] = (shard == 1 ? "//tiles1.tinymta.us.to/" : shard ? "//tiles2.tinymta.us.to/" :
 /*STARTINSERTPATH*/
@@ -476,11 +454,7 @@ DDDDDDDDDDDDD
     } else { //zoom buttom CLICKED not PL
       centerPixX = newCenterX;
       centerPixY = newCenterY;
-      maxX = ( maxX * scale) | 0;
-      maxY = ( maxY * scale) | 0;
-      maxTileXLen = ( maxTileXLen * scale) | 0;
-      maxTileYLen = ( maxTileYLen * scale) | 0;
-      zoomLevel ^= 1; //invert 1 or 0
+      limitZoomed = limit[zoomLevel ^= 1]; //invert 1 or 0
     }
 
     loadMap(newCenterX, newCenterY);
@@ -548,6 +522,8 @@ DDDDDDDDDDDDD
 
     var curCenterX = centerPixX - curX;
     var curCenterY = centerPixY - curY;
+    var maxX = limitZoomed[0];
+    var maxY = limitZoomed[1];
     var updateX = (curCenterX > 315 && curCenterX < maxX) || (centerPixX < 315 && curX < 0) || (centerPixX > maxX && curX > 0);
     var updateY = (curCenterY > 315 && curCenterY < maxY) || (centerPixY < 315 && curY < 0) || (centerPixY > maxY && curY > 0);
 
