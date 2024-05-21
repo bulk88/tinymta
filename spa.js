@@ -57,7 +57,8 @@ var el, newEl;
     ['/dumb.js']
   ];
   var hasLinkPF;
-  var hasLinkPL; //imgs
+  var hasLinkPLImg; //imgs
+  var hasLinkPC;
   var searchForAppCache;
 
   var genericDarkMStyle;
@@ -182,7 +183,15 @@ function STATE_PATHTYPE() {
     || (ua.name == "Firefox" && (ua.major == 56 || ua.major >= 85))
     || (ua.name == "Opera" && ua.major >=37)
     || (ua.name == "Safari" && ((ua.major == 11 && ua.minor >= 1) || ua.major > 11))) {
-    hasLinkPL = 1;
+    hasLinkPLImg = 1;
+  }
+
+  if(
+    (ua.name == "Chrome" && ua.major >=46)
+    || (ua.name == "Firefox" && ((ua.major >= 40 && ua.major <= 70) || ua.major >= 115))
+    || (ua.name == "Opera" && ua.major >=33)
+    || (ua.name == "Safari" && ((ua.major == 11 && ua.minor >= 1) || ua.major > 11))) {
+    hasLinkPC = 1;
   }
 
   for(i=0;i<genericEls.length;i++) {
@@ -195,8 +204,17 @@ function STATE_PATHTYPE() {
   }
   genericEls[GENERIC_PF()][0].rel = "prefetch";
   newEl = genericEls[GENERIC_PC()][0];
-  newEl.rel = "preconnect";
-  newEl.crossOrigin = "anonymous";
+  if(hasLinkPC) {
+    newEl.rel = "preconnect";
+    newEl.crossOrigin = "anonymous";
+  } else {
+    newEl.rel = "dns-prefetch";
+    if(curPathname == "/") { //index.htm -> later status.htm
+      el = newEl.cloneNode(0);
+      el.href = "//collector-otp-prod.camsys-apps.com";
+      head.appendChild(el);
+    }
+  }
 
   /* double in the array from 1 el to 2 els */
   reallocGenericEls();
@@ -756,7 +774,7 @@ function setLinkEl(linkType /*0 PC 1 PF*/, href) {
     if (hrefSuffix == '.png' || hrefSuffix == '.gif') {
       isImg = 1;
     }
-    if (isImg && !hasLinkPL) {
+    if (isImg && !hasLinkPLImg) {
       el = document.createElement('img');
       el.src = href;
       return el;

@@ -7,7 +7,7 @@
 (function(){
 var _document = document;
 //IE 8-10 has AEL/QS but not document.head+var el, newEl;
-var head = _document.documentElement.firstChild;
+//var head = _document.documentElement.firstChild; // May 2024 disabled
 var el, newEl;
 
 if (this.addEventListener) {
@@ -135,8 +135,9 @@ PC       C46, S11.1,            FF 39-70 >=115, no IE
 DNS-F    C 4, S5,               FF 3.5-126 typ bkn, IE 10-11, IE 9 use PF (don't)
 */
 
-  el = head.firstChild;
-  while (el) {
+  //el = head.firstChild;
+  /* may 2024 disabled, spa.js does this now UA User Agent ver specifically now */
+  while (el, 0) {
   //link tag, its rel/href attrs, all 3 defined HTML 3.02, dont use .getAttribute()
   //don't test el.nodeName === 'LINK', to save wire bytes
   //upper case chars esp bad for GZ, undef === "str" good enough and perf enough (vs ==)
