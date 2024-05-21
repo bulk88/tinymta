@@ -25,6 +25,9 @@ if(ac) {
   //all appcache updates start after doc.onload!!!
   ac.oncached = ac.onnoupdate = ac.onupdateready = ac.onobsolete = ac.onerror = ac.onload = function (e) {
     console.log('stopac rmv ',e.type, (window.performance && window.performance.now()) || Date.now());
+    if(e.type == "updateready") {
+      ac.swapCache();
+    }
     var fe = frameElement;
     fe.parentNode.removeChild(fe); //GC iframe
   };

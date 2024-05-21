@@ -535,9 +535,14 @@ _window.fetch = function (url, options_headers, want_not_json) {
                 MTA's Java EE server, if it sees "application/xml" it sends XML instead of JSON
                 older browsers send "* /*" for XHR, but always override this
                 and don't remove b/c native fetch sends "* /*" while native XHR sends
-                the long "application/xml" accept string
+                the long "application/xml" accept string, don't send for text()
+                b/c its probably a .htm, and Chrome 39 (to modern) will split
+                the .htm into 2 "entries" in cache, one was a
+                LINK prefetch/appcache and 2nd "app/json"
                 */
-                x.setRequestHeader("accept", "application/json");
+                if(!want_not_json) {
+                  x.setRequestHeader("accept", "application/json");
+                }
                 //add headers, LIRR specific
                 if(options_headers) {
                   for(i_thisFunc in options_headers) {

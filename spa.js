@@ -57,6 +57,7 @@ var el, newEl;
     ['/dumb.js']
   ];
   var hasLinkPF;
+  var hasLinkPL; //imgs
   var searchForAppCache;
 
   var genericDarkMStyle;
@@ -161,17 +162,27 @@ function STATE_PATHTYPE() {
   var origin_len = _origin.length;
   var ua = getInfoBrowser();
 
+  //prefetch (htm docs) C8, Edge 12, no SFs, FF2, Opera 15, IE 11
+  if((ua.name == "Chrome" && ua.major >=8) || (ua.name == "Firefox" && ua.major >=2) || (ua.name == "Opera" && ua.major >=15) || (ua.name == "Explorer" && ua.major >=11)) {
+    hasLinkPF = 1;
+  }
+
   if (el = _window.applicationCache) {
     el.onupdateready = function () {
+      console.log('spa ac swap ',(_window.performance && _window.performance.now()) || Date.now());
       var ac = _window.applicationCache;
       ac.swapCache();
       ac.onupdateready = null;
     };
-    //prefetch (htm docs) C8, Edge 12, no SFs, FF2, Opera 15, IE 11
-    if((ua.name == "Chrome" && ua.major >=8) || (ua.name == "Firefox" && ua.major >=2) || (ua.name == "Opera" && ua.major >=15) || (ua.name == "Explorer" && ua.major >=11)) {
-      hasLinkPF = 1;
-    }
     searchForAppCache = !hasLinkPF;
+  }
+
+  if(
+    (ua.name == "Chrome" && ua.major >=50)
+    || (ua.name == "Firefox" && (ua.major == 56 || ua.major >= 85))
+    || (ua.name == "Opera" && ua.major >=37)
+    || (ua.name == "Safari" && ((ua.major == 11 && ua.minor >= 1) || ua.major > 11))) {
+    hasLinkPL = 1;
   }
 
   for(i=0;i<genericEls.length;i++) {
@@ -695,7 +706,10 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
           el = pf.firstChild;
           while(el) {
            el2 = el.nextElementSibling;
-            href = el.href.slice(origin_len);
+            href = el.href; //href .htms more common vs tileMap
+            if(!href) //img el
+              href = el.src;
+            href = href.slice(origin_len);
             if(href == pathname) {
               pf.removeChild(el);
               break;
@@ -713,7 +727,10 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
             preconPrefetEls[preconPrefetElMap[pFIdxToFree][1]] = null;
           }
         } else {
-          href = pf.href.slice(origin_len);
+          href = pf.href; //href .htms more common vs tileMap
+          if(!href) //img el
+            href = pf.src;
+          href = href.slice(origin_len);
           if(href == pathname) {
             if(pn = pf.parentNode) {
               pn.removeChild(pf);
@@ -729,9 +746,21 @@ function purgePreFetchHTML(parentPathname, pathname, pFIdxToFree) {
   }); //end CB to .rIdleC/.rAF
 }
 function setLinkEl(linkType /*0 PC 1 PF*/, href) {
-  var hrefSuffix, el;
+  var hrefSuffix, el, isImg;
   if (linkType && preconPrefetPurgedHtm[href]) {
     return 0;
+  }
+  if(linkType) {
+    hrefSuffix = href.slice(-4);
+    /*for tileMap */
+    if (hrefSuffix == '.png' || hrefSuffix == '.gif') {
+      isImg = 1;
+    }
+    if (isImg && !hasLinkPL) {
+      el = document.createElement('img');
+      el.src = href;
+      return el;
+    }
   }
   hrefSuffix = genericEls[GENERIC_PC()+linkType];
   if(el = hrefSuffix[1]) {
@@ -740,9 +769,8 @@ function setLinkEl(linkType /*0 PC 1 PF*/, href) {
     el = hrefSuffix[0].cloneNode(0); //rareish, clone from real master El
   }
   if (linkType) {
-    hrefSuffix = href.slice(-4);
-    /*for tileMap */
-    if (hrefSuffix == '.png' || hrefSuffix == '.gif') {
+    if(isImg) {
+    /* for tileMap */
       el.rel = 'preload';
       el.as = 'image';
     }
@@ -981,10 +1009,10 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
       curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
       requestIdleCallbackPF(reallocGenericEls);
     }
-    if(searchForAppCache && pathtype == 3,1) {
+    if(searchForAppCache && pathtype == 3) { //stop.htm
       //idea from https://blog.jamesdbloom.com/TipsForUsingApplicationCache.html
       el = document.createElement('iframe');
-      el.src = "stopac.htm";
+      el.src = "/stopac.htm";
       console.log('add stopac el ',(_window.performance && _window.performance.now()) || Date.now());
       head.appendChild(el);
     }
