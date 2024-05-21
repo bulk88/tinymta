@@ -1,0 +1,34 @@
+<html manifest=stop.appcache>
+<head>
+<script>
+//idea from https://blog.jamesdbloom.com/TipsForUsingApplicationCache.html
+var ac = window.applicationCache;
+if(ac) {
+/*
+  function logEvent(event) {
+      console.log(event.type);
+  }
+  window.applicationCache.addEventListener('checking',logEvent,false);
+  window.applicationCache.addEventListener('noupdate',logEvent,false);
+  window.applicationCache.addEventListener('downloading',logEvent,false);
+  window.applicationCache.addEventListener('cached',logEvent,false);
+  window.applicationCache.addEventListener('updateready',logEvent,false);
+  window.applicationCache.addEventListener('obsolete',logEvent,false);
+  window.applicationCache.addEventListener('error',logEvent,false);
+  onload = function () {
+    //debugger; //debugger frameElement
+    var parentHead = parent.document.documentElement.firstChild;
+    //parentHead.removeChild(parentHead.getElementsByTagName('iframe')[0]);
+    console.log('stopac');
+  };
+*/
+  //all appcache updates start after doc.onload!!!
+  ac.oncached = ac.onnoupdate = ac.onupdateready = ac.onobsolete = ac.onerror = ac.onload = function (e) {
+    console.log('stopac rmv ',e.type, (window.performance && window.performance.now()) || Date.now());
+    var fe = frameElement;
+    fe.parentNode.removeChild(fe); //GC iframe
+  };
+}
+</script>
+</head>
+</html>

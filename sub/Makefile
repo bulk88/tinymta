@@ -59,6 +59,10 @@ plan2.htm : plan.htm
 	perl adj_tilepath.pl "$@"
 	html-minifier.cmd --no-include-auto-generated-tags -c tileMap_minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
 
+../docs/stopac.htm : stopac.htm
+	copy /y stopac.htm "$@"
+	html-minifier.cmd --no-include-auto-generated-tags -c ../minify_config.json -o "$@" "$@" || (del "$@" & cmd /c exit 1)
+
 #debug tool
 tileMap.js : ../docs/tileMap.htm
 	perl -e"use File::Slurp; \
@@ -148,7 +152,7 @@ mini:
 ../docs/stop.appcache: ../docs/tileMap.htm ../docs/bk.png
 ../docs/stop.appcache: ../docs/ts.gif ../docs/zi.png
 ../docs/stop.appcache: ../docs/zio.png ../docs/zo.png
-../docs/stop.appcache: ../docs/zoo.png
+../docs/stop.appcache: ../docs/zoo.png ../docs/stopac.htm
 	perl -e"use File::Slurp; \
 	my $$f = read_file('stop.appcache', { binmode => ':raw' }); \
 	$$f =~  s/# v .+/\"# v \".localtime()/e;\
@@ -162,7 +166,7 @@ all: ../docs/stationsnojs.htm ../docs/stations.htm
 all: ../docs/stop_.htm ../docs/stop.htm
 all: ../docs/stopie50.htm ../docs/stopie50_.htm
 all: ../docs/rt.htm ../docs/js/rt.htm ../docs/stop.appcache
-all: tileMap.js
+all: tileMap.js ../docs/stopac.htm
 #all: ../docs/plan.htm ../docs/plan2.htm ../docs/planIE.htm ../docs/plan.js
 #all: plan2.htm
 

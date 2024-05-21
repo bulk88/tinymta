@@ -1,5 +1,4 @@
 (function(){
-  "use strict";
 var _window = window;
 var _location = location;
 //IE 8-10 has AEL/QS but not document.head
@@ -57,6 +56,9 @@ var el, newEl;
     ['/fav.js'],
     ['/dumb.js']
   ];
+  var hasLinkPF;
+  var searchForAppCache;
+
   var genericDarkMStyle;
   var genericEls = ['style', 'body', 'html', 'div', , 'link',0];
   var requestIdleCallbackPF =
@@ -157,6 +159,20 @@ function STATE_PATHTYPE() {
   var i, arr;
   var div;
   var origin_len = _origin.length;
+  var ua = getInfoBrowser();
+
+  if (el = _window.applicationCache) {
+    el.onupdateready = function () {
+      var ac = _window.applicationCache;
+      ac.swapCache();
+      ac.onupdateready = null;
+    };
+    //prefetch (htm docs) C8, Edge 12, no SFs, FF2, Opera 15, IE 11
+    if((ua.name == "Chrome" && ua.major >=8) || (ua.name == "Firefox" && ua.major >=2) || (ua.name == "Opera" && ua.major >=15) || (ua.name == "Explorer" && ua.major >=11)) {
+      hasLinkPF = 1;
+    }
+    searchForAppCache = !hasLinkPF;
+  }
 
   for(i=0;i<genericEls.length;i++) {
     if(el = genericEls[i]) {
@@ -208,6 +224,7 @@ function STATE_PATHTYPE() {
   for(i=0; i< prefetJS.length; i++) {
     div[prefetJS[i][0]] = i+1;
   }
+
  //h.pS FF 4 Op 11.5 , d.scripts FF 9 Op 12.1
   arr = head.getElementsByTagName('script');
   for(i=0; i < arr.length; i++) {
@@ -232,6 +249,41 @@ function STATE_PATHTYPE() {
     history.replaceState(pageHistoryIdx,0,_location.href);
 })();
 
+// from https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
+function getInfoBrowser() {
+  var ua = navigator.userAgent,
+  tem,
+  M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+  if (/trident/i.test(M[1])) {
+    tem = /\brv[ :]+(\d+)\.(\d+)/g.exec(ua) || [];
+    return {
+      name: 'Explorer',
+      major: parseInt((tem[1] || '')),
+      minor: parseInt((tem[2] || ''))
+    };
+  }
+  if (M[1] === 'Chrome') {
+    tem = ua.match(/\b(OPR|Edge)\/(\d+)\.(\d+)/);
+    if (tem != null) {
+      var app = tem.slice(1).toString().split(',');
+      return {
+        name: app[0].replace('OPR', 'Opera'),
+        major: parseInt(app[1]),
+        minor: parseInt(app[2])
+      };
+    }
+  }
+  M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+  if ((tem = ua.match(/version\/(\d+)\.(\d+)/i)) != null) {
+    M.splice(1, 1, tem[1]);
+    M[2] = tem[2];
+  }
+  return {
+    name: M[0],
+    major: parseInt(M[1]),
+    minor: parseInt(M[2])
+  };
+}
 
 function getPathType(pathname) {
   var pathtype;
@@ -289,6 +341,7 @@ function getPathType(pathname) {
         return;
       stacode = el.hash;
       pathname = el.pathname;
+      console.log('in pl', pathname);
       //IE 11 fix, no initial /
       pathname = (pathname.charAt(0) == "/") ? pathname : "/" + pathname;
 /* REMOVED CODE notes
@@ -543,9 +596,11 @@ API resp is preloaded to full inflated json obj
         histArr[STATE_PFHTMCACHE()] = spa;
         histArr[STATE_PATHHASH()] = pathname+hash;
         histArr[STATE_PATHTYPE()] = pathtype;
-        //console.log('on click have ent ',performance.now());
+        console.log('on click have ent ', (_window.performance && _window.performance.now()) || Date.now());
       } else {
-       //console.log('on click no cache spa ent ',performance.now());
+       console.log('on click no cache spa ent ',(_window.performance && _window.performance.now()) || Date.now());
+       //alert('on click no cache spa ent ');
+                 e.preventDefault();
       }
     }
   }
@@ -710,6 +765,9 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
 
   if (typeof strArr == "string") {
     div = setLinkEl(linkType, strArr);
+    if(linkType) div.onload = function(e) {
+      //debugger
+      };
   } else {
     //DIVONE or DIVTWO
     div = genericEls[GENERIC_DIVONE()+linkType][1];
@@ -717,6 +775,9 @@ function inflateLinkElsPcPF(strArrIdx, linkType /*0 PC 1 PF*/) {
     for (i = 0; i < strArr.length; i++) {
       el = setLinkEl(linkType, strArr[i]);
       el && div.appendChild(el);
+          if(linkType && el) el.onload = function(e) {
+      //debugger
+      };
     }
 /* I assume .fC faster than .cN.length and dont want a JS bool var here for
    JS code size */
@@ -758,6 +819,7 @@ function loadJS(idx, finArr) {
         finArr[1]();
   };
   el.src = prefetJS[idx][0];
+  console.log('spa ld .js ', el.src, (_window.performance && _window.performance.now()) || Date.now());
   head.appendChild(el);
   finArr[0]++;
 }
@@ -792,8 +854,11 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
         }
         
     //arg 3 private API want text resp
+    console.log('pl f ', pathname, (_window.performance && _window.performance.now()) || Date.now());
     fetch(pathname,{},1).then(function pLFetCB(r) {
+    console.log('pl f 2 ', pathname, (_window.performance && _window.performance.now()) || Date.now());
       r.text().then(function pLFetTextCB(r) {
+    console.log('pl f 3 ', pathname, (_window.performance && _window.performance.now()) || Date.now());
         // .p1 for grep
         var start, scriptStart, scriptEnd, el, old_fn_y, old_pg_rel, haveBodyElCB, need1pjs;
         if((start = r.indexOf("<script async defer src=")) != -1) {
@@ -915,6 +980,13 @@ function spaPrefetch(pathname, pathtype, prerenFn) {
       }
       curPFEl = swapElMaybe(curPFEl, spa.pf = pCpFEl);
       requestIdleCallbackPF(reallocGenericEls);
+    }
+    if(searchForAppCache && pathtype == 3,1) {
+      //idea from https://blog.jamesdbloom.com/TipsForUsingApplicationCache.html
+      el = document.createElement('iframe');
+      el.src = "stopac.htm";
+      console.log('add stopac el ',(_window.performance && _window.performance.now()) || Date.now());
+      head.appendChild(el);
     }
   } catch (e) {}
 } // end function spaPrefetch(pathname, pathtype, prerenFn) {
