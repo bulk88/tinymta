@@ -148,7 +148,7 @@ cloudflare_as_name.min.js : cloudflare_as_name.js
 	copy /y cloudflare_as_name.js "$@"
 #a regex on minifed code can be created
 #	terser -c -m toplevel -m "reserved=['routesEtag','gRoutes']" -m eval "$@" -o "$@"
-	terser -c -m toplevel -m eval "$@" -o "$@"
+#	terser -c -m toplevel -m eval "$@" -o "$@"
 
 routes.js :
 	perl -e"use File::Slurp;my $$file=read_file(\
